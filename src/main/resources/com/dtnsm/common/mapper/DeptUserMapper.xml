@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dtnsm.common.mapper.DeptUserMapper">
+    <select id="findAllDept" resultType="map">
+        select
+            org_code deptCode,
+			org_depart deptName
+        from ${gwDeptTbl}
+        where p_org_code is null
+        order by org_order asc
+    </select>
+
+    <select id="findByDeptTeam" resultType="map" parameterType="map">
+        select
+            org_code teamCode,
+            org_depart teamName
+        from ${gwDeptTbl}
+        where p_org_code = #{deptCode}
+        order by org_depart asc
+    </select>
+
+    <select id="findByUsername" resultType="com.dtnsm.common.entity.Account" parameterType="map">
+        select
+        u.com_num as empNo,
+        u.user_id as username,
+        u.kor_name as korName,
+        u.eng_name as engName,
+        u.email,
+        u.appro_sign as signImg,
+        u.org_level as lev,
+        u.org_code1 as deptCode,
+        u.org_code2 as teamCode,
+        d.org_depart as deptName,
+        t.org_depart as teamName,
+        u.duty,
+        u.sex,
+        u.com_position as position,
+        u.com_job as job,
+        u.org_level as lev,
+        u.indate as strInDate,
+        case when u.com_state = 1 then 1 else 0 end as enabled
+        from ${gwUserTbl} u left join ${gwDeptTbl} d
+		on u.org_code1 = d.org_code
+		left outer join ${gwDeptTbl} t
+		on u.org_code2 = t.org_code
+		where u.user_id = #{username} and u.isUse = 1
+--             and u.com_state = 1
+--             and u.isDelete = 0
+    </select>
+
+    <select id="getAllUsers" resultType="map" parameterType="map">
+        SELECT
+            d.org_code as deptCode,
+            d.org_depart as deptName,
+            d.org_order as deptOrder,
+            t.org_code as teamCode,
+            t.org_depart as teamName,
+            t.org_order as teamOrder,
+            u.com_num as empNo,
+            u.email,
+            u.user_id as username,
+            u.kor_name as korName,
+            u.eng_name as engName,
+            u.duty,
+            u.sex,
+            u.com_position as position,
+            u.com_job as job,
+            u.org_level as lev,
+            u.indate as strInDate,
+            case when u.com_state = 1 then 1 else 0 end as enabled
+        FROM ${gwUserTbl} u left outer join ${gwDeptTbl} d
+            on u.org_code1 = d.org_code
+            and d.domain_num = 4
+        left outer join ${gwDeptTbl} t
+            on u.org_code2 = t.org_code
+            and t.domain_num = 4
+        where u.isUse = 1
+        <if test="state != null">
+            and u.com_state = #{state}
+        </if>
+--             and u.com_state = 1
+--             and u.isDelete = 0
+        order by deptOrder asc,
+        u.org_level asc,
+        teamOrder asc,
+        u.user_order asc
+    </select>
+
+    <!--
+    /****** 조직도 정보 출력 (View)******/
+SELECT
+	d.org_code deptCode,
+	d.org_depart deptName,
+	d.org_order deptOrder,
+	t.org_code teamCode,
+	t.org_depart teamName,
+	t.org_order teamOrder,
+    u.com_num empNo,
+    u.email,
+    u.user_id username,
+    u.kor_name korName,
+	u.eng_name engName,
+	u.duty,
+    u.sex,
+	u.com_position position,
+	u.com_job job,
+	u.org_level as lev,
+	u.indate as strInDate
+  FROM gw_user u left outer join gw_depart d
+  on u.org_code1 = d.org_code
+  and d.domain_num = 4
+  left outer join gw_depart t
+  on u.org_code2 = t.org_code
+  and t.domain_num = 4
+  where u.isUse = 1
+  and u.com_state = 1
+  order by deptOrder asc, teamOrder asc, u.org_level asc, u.user_order asc;
+    -->
+</mapper>

@@ -1,0 +1,76 @@
+
+spring:
+  devtools:
+    livereload:
+      enabled: true
+  freemarker:
+    cache: false
+#  mail:
+#    host: smtp.gmail.com
+#    port: 587
+#    protocol: smtp
+#    username: sano.noreply@gmail.com
+#    password: apfhd..6!
+#    default-encoding: UTF-8
+#    properties:
+#      mail:
+#        smtp:
+#          starttls:
+#            enable: true
+#          auth: true
+  jpa:
+    show-sql: true
+#    format-sql: true
+    database: sql_server
+    hibernate:
+      naming:
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy #org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy #org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl # 기본 변수이름을 그대로 이용한다.
+#      ddl-auto: create
+      ddl-auto: update
+    properties:
+#      javax:
+#        persistence:
+#          schema-generation:
+#            create-source: metadata
+#            scripts:
+#              action: create
+#              create-target: create.sql
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+  data:
+    jpa:
+      repositories:
+        enabled: true
+  flyway:
+    locations: classpath:/db/migration/local
+    baseline-on-migrate: true
+    enabled: true
+    encoding: UTF-8
+    table: flyway_sop_schema_history
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://localhost:1433;DatabaseName=kcsg_dev_20200703
+    username: sa
+    password: Test1234!
+
+logging.level.org.hibernate.SQL: info
+logging.level.org.hibernate.type.descriptor.sql:  info
+
+
+server:
+  domain: soptest.dtnsm.com
+  port: 8081
+
+
+file:
+  upload-dir: D:\elearning\UploadFiles
+  training-log-upload-dir: D:\elearning\binder
+  binder-dir: C:\UploadFiles\binder\
+gw:
+  userTbl: tblUser
+  deptTbl: tblDepart
+
+groupdocs:
+  license: C:\\dev\\GroupDocs.Total.Java.lic
