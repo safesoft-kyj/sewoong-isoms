@@ -79,9 +79,10 @@ scheduler:
 
 # 시스템 관리자 Role(Job Title) 설정
 role:
-  admin-1: QAA
-  admin-2: QAM
-  admin-3: QMO
-  admin-4: QAD
-  receive-email: QAA,QAD
+  admin-1: ADMIN
+#  admin-1: QAA
+#  admin-2: QAM
+#  admin-3: QMO
+#  admin-4: QAD
+  receive-email: ADMIN
 

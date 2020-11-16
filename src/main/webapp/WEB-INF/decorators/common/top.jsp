@@ -227,6 +227,26 @@
                 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
                 <!--End notifications dropdown-->
 
+                <li class="dropdown">
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle text-right">
+                            <span class="ic-user pull-right">
+                                <i class="fa fa-clock-o"></i>
+                                <small class="text-xs text-semibold"><span id="time-min">10</span>:<span id="time-sec">00</span></small>
+                            </span>
+                    </a>
+
+
+                    <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right panel-default">
+                        <ul class="head-list">
+                            <li>
+                                <a href="#" onclick="resetTimer();"><i class="pli-clock-back icon-lg icon-fw"></i> Reset</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <script>
+                        dailyMissionTimer();
+                    </script>
+                </li>
 
                 <!--User dropdown-->
                 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
@@ -245,8 +265,6 @@
                         <!--<div class="username hidden-xs">Aaron Chavez</div>-->
                         <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
                     </a>
-
-
                     <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right panel-default">
                         <ul class="head-list">
                             <c:if test="${user.userType eq 'U'}">
@@ -262,7 +280,7 @@
                 </li>
                 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
                 <!--End user dropdown-->
-                <sec:authorize access="hasAnyAuthority('QAA','QAM','QMO', 'QAD')">
+                <sec:authorize access="hasAnyAuthority('ADMIN')">
                 <li>
                     <a href="/admin/dashboard">
                         <i class="pli-gears-2 icon-lg"></i>

@@ -60,7 +60,7 @@ logging.level.org.hibernate.type.descriptor.sql:  info
 
 
 server:
-  domain: soptest.dtnsm.com
+  domain: iso.cauh.org
   port: 8081
 
 

@@ -704,16 +704,12 @@
         <div class="container">
             <div class="signup-content">
                 <div class="signup-form" style="padding: 0">
-                    <a href="http://kcsg.org/" target="_blank"><img src="https://www.kcsg.org/_img/web/comn/h1_logo.png" style="height: 40px; padding-bottom: 10px" alt="KCSG"></a>
+                    <a href="http://kcsg.org/" target="_blank"><img src="https://ch.cauhs.or.kr/images/main_re_logo.gif" style="height: 40px; padding-bottom: 10px" alt="KCSG"></a>
                     <h2 class="form-title" style="padding-bottom: 5px">
-                        <!--                            Learning-->
-                        <!--                            Management-->
-                        <!--                            System-->
 
-                        <!--                            <hr style="border:1px solid #999999; margin: 5px 0 0 0;">-->
-                        <span class="title-head" style="padding-top: 5px;">S</span>tandard
-                        <span class="title-head">O</span>perating
-                        <span class="title-head">P</span>rocedure
+                            <span class="title-head" style="padding-top: 5px;">ISO</span>
+                            <span class="title-head">M</span>anagement
+                            <span class="title-head">S</span>ystem
                     </h2>
                     <form action="/login" method="POST" class="register-form" id="register-form" style="padding: 0">
                         <#if RequestParameters.sessionExpired?exists || RequestParameters.invalidSession?exists>

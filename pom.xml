@@ -8,12 +8,12 @@
         <version>2.2.2.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.dtnsm</groupId>
-    <artifactId>kcsg-esop</artifactId>
-    <version>20200703</version>
+    <groupId>com.cauh</groupId>
+    <artifactId>cauh-iso-ms</artifactId>
+    <version>20201105</version>
     <packaging>war</packaging>
-    <name>KCSG-eSOP</name>
-    <description>KCSG-eSOP</description>
+    <name>cauh-iso-ms</name>
+    <description>CAUH ISO Management System</description>
 
     <properties>
         <java.version>11</java.version>
@@ -188,7 +188,7 @@
 <!--        </dependency>-->
 
         <dependency>
-            <groupId>org.kcsg.common</groupId>
+            <groupId>org.cauh.common</groupId>
             <artifactId>entity</artifactId>
             <version>1.0</version>
         </dependency>

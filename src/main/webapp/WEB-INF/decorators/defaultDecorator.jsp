@@ -62,8 +62,6 @@
             <!--Page content-->
             <!--===================================================-->
             <div id="page-content">
-
-
                 <!-- QUICK TIPS -->
                 <!-- ==================================================================== -->
                 <div class="row">
@@ -85,8 +83,6 @@
         <!--===================================================-->
         <nav id="mainnav-container">
             <div id="mainnav">
-
-
                 <!--OPTIONAL : ADD YOUR LOGO TO THE NAVIGATION-->
                 <!--It will only appear on small screen devices.-->
                 <!--================================
@@ -105,8 +101,6 @@
                 <div id="mainnav-menu-wrap">
                     <div class="nano">
                         <div class="nano-content">
-
-
                             <!--================================-->
                             <c:choose>
                                 <c:when test="${user.userType eq 'AUDITOR'}">
@@ -167,9 +161,8 @@
         </div>
 
         <div class="hide-fixed pull-right pad-rgt">
-            <a href="http://dtnsm.com/" target="_blank"><img src="https://www.kcsg.org/_img/web/comn/h1_logo.png" alt="Dt&amp;KCSG" class="brand-icon" style="margin-top:0px;padding-left:15px;padding-bottom:3px; width:150px;height:30px;"></a>
+            <a href="https://ch.cauhs.or.kr/" target="_blank"><img src="https://ch.cauhs.or.kr/images/main_re_logo.gif" alt="cauh" class="brand-icon" style="margin-top:0px;padding-left:15px;padding-bottom:3px; width:150px;height:30px;"></a>
         </div>
-
 
 
         <!-- Visible when footer positions are static -->
@@ -184,7 +177,7 @@
         <!-- Remove the class "show-fixed" and "hide-fixed" to make the content always appears. -->
         <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
-        <p class="pad-lft">COPYRIGHT© KCSG. CO. LTD.ALL RIGHT RESERVED.</p>
+        <p class="pad-lft">COPYRIGHT© CHUNG-ANG UNIVERSITY. ALL RIGHT RESERVED.</p>
 
 
 

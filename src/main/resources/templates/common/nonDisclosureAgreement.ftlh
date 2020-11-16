@@ -3,7 +3,7 @@
 <#setting locale="en_US">
 <html>
 <head>
-    <title>KCSG e-SOP</title>
+    <title>Chung Ang University Hospital - ISO Management System</title>
     <script src="/static/js/signature_pad.min.js"></script>
     <script>
         $(document).ready(function() {

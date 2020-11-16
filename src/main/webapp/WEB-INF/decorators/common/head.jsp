@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <sec:authentication property="principal" var="user"/>
@@ -52,11 +52,11 @@
 
 <c:choose>
     <c:when test="${not empty param['admin']}">
-    <link href="/static/css/themes/type-c/theme-ocean.min.css" rel="stylesheet">
+        <link href="/static/css/themes/type-c/theme-ocean.min.css" rel="stylesheet">
     </c:when>
     <c:otherwise>
         <link href="/static/css/themes/type-d/theme-dark.min.css" rel="stylesheet">
-<%--        <link href="/static/css/themes/type-c/theme-navy.min.css" rel="stylesheet">--%>
+        <%--        <link href="/static/css/themes/type-c/theme-navy.min.css" rel="stylesheet">--%>
     </c:otherwise>
 </c:choose>
 <%--<link href="/static/css/themes/type-c/theme-navy.min.css" rel="stylesheet">--%>
@@ -79,19 +79,119 @@ Detailed information and more samples can be found in the document.
 
 =================================================-->
 <script>
-    $(function() {
+    var intervalId;
+    var duration = 1;
+
+    function dailyMissionTimer() {
+
+        var timer = duration * 90;
+        var hours, minutes, seconds;
+
+        intervalId = setInterval(function () {
+            hours = parseInt(timer / 3600, 10);
+            minutes = parseInt(timer / 60 % 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            if (minutes == 1 && seconds == 0) {
+                // $("#timer-modal").modal('show');
+                // $(".modal-backdrop:eq(0)").css("z-index", "9996");
+                // $(".modal").css("z-index", "9997");
+                // $(".modal-backdrop:eq(1)").css("z-index", "9998");
+                // $("#timer-modal").css("z-index", "9999");
+
+                // bootbox.dialog({
+                //     title: "Your session is about to expired!",
+                //     message: '<div class="media">' +
+                //         '<div class="media-body">' +
+                //         '<p class="text-semibold text-main">You will be logged out in <span id="m-timer-sec" class="text-semibold text-warning">60</span> seconds.</p>' +
+                //         '<p class="text-info">Do you want to stay signed in?</p>' +
+                //         '</div></div>',
+                //     buttons: {
+                //         confirm: {
+                //             label: "Continue Session",
+                //             className: "btn-success",
+                //             callback: function() {
+                //                 resetTimer();
+                //             }
+                //         }
+                //     }
+                // });
+
+                $.niftyNoty({
+                    type: 'info',
+                    container: 'floating',
+                    html: '<h4 class="alert-title">Your session is about to expired!</h4>' +
+                        '<p class="alert-message">You will be logged out in <span id="m-timer-sec" class="text-semibold text-danger">60</span> seconds.<br/' +
+                        '<br/>Do you want to stay signed in?</p>' +
+                        '<div class="mar-top"><button name="continue-session-btn" class="btn btn-primary" type="button">Continue Session</button></div>',
+                    closeBtn: true,
+                    floating: {
+                        position: 'top-right',
+                        animationIn: 'jelly',
+                        animationOut: 'fadeOut'
+                    },
+                    focus: true,
+                    timer: 0
+                });
+            }
+
+            if (minutes > 0 && seconds == 0) {
+                $.ajax({
+                    url: '/ajax/keep-session',
+                    method: 'get',
+                    data: {r: Math.random()},
+                    success: function (res) {
+                    }
+                });
+            }
+
+            hours = hours < 10 ? "0" + hours : hours;
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            // $('#time-hour').text(hours);
+            $('#time-min').text(minutes);
+            $('#time-sec,#m-timer-sec').text(seconds);
+
+            if (--timer < 0) {
+                timer = 0;
+                clearInterval(intervalId);
+                sessionTimeout();
+            }
+        }, 1000);
+    }
+
+    function sessionTimeout() {
+        alert('Your session has expired.');
+        document.location.replace('/logout');
+    }
+
+    function resetTimer() {
+        $("div.alert-wrap button.close").trigger('click');
+        clearInterval(intervalId);
+        dailyMissionTimer();
+    }
+
+    $(document).ready(function () {
+        $(document).on("click", "button[name='continue-session-btn']", function (e) {
+            resetTimer();
+            // $("#timer-modal").modal('hide');
+        });
+    });
+
+    $(function () {
         var pathname = location.pathname;
         activeLink(pathname);
 
         $.ajaxSetup({
-            error:function(x, status, error) {
+            error: function (x, status, error) {
                 if (x.status == 401 || x.status == 403) {
-                    if(unloadMessage) {
+                    if (unloadMessage) {
                         $(window).off("beforeunload", unloadMessage);
                     }
 
                     alert("Sorry, your session has expired. Please login again to continue");
-                    window.location.href ="/login?invalidSession";
+                    window.location.href = "/login?invalidSession";
                 } else {
                     alert("An error occurred: " + status + "nError: " + error);
                 }
@@ -101,14 +201,14 @@ Detailed information and more samples can be found in the document.
 
     var recursionCount = 0;
     function activeLink(pathname) {
-        recursionCount ++;
-        if(recursionCount == 5) {
+        recursionCount++;
+        if (recursionCount == 5) {
             return;
         }
-        var $a = $("#mainnav-menu").find("a[href='"+pathname+"']");
+        var $a = $("#mainnav-menu").find("a[href='" + pathname + "']");
         var li = $a.parents("li");
 
-        if(li.length == 0) {
+        if (li.length == 0) {
             pathname = pathname.substring(0, pathname.lastIndexOf("/"));
             return activeLink(pathname);
         } else {
@@ -124,17 +224,17 @@ Detailed information and more samples can be found in the document.
     }
 
     function setPageTitle(pageTitle) {
-        $("#page-title").html("<h1 class=\"page-header text-overflow\">"+pageTitle+"</h1>");
+        $("#page-title").html("<h1 class=\"page-header text-overflow\">" + pageTitle + "</h1>");
 
     }
 
     function setNav(pathname, pageTitle) {
         $("#breadcrumb").append("<li><a href=\"/\"><i class=\"pli-home\"></i></a></li>");
-        if(pageTitle) {
-            $("#breadcrumb").append("<li>"+pageTitle+"</li>");
+        if (pageTitle) {
+            $("#breadcrumb").append("<li>" + pageTitle + "</li>");
         }
-        var $a = $("#mainnav-menu").find("a[href='"+pathname+"']");
-            $("#breadcrumb").append("<li>"+$a.text()+"</li>");
+        var $a = $("#mainnav-menu").find("a[href='" + pathname + "']");
+        $("#breadcrumb").append("<li>" + $a.text() + "</li>");
         // }
     }
 
@@ -147,11 +247,10 @@ Detailed information and more samples can be found in the document.
     //         return chr.toUpperCase();
     //     });
     // }
-<sec:authorize var="isAdmin" access="hasAnyAuthority('QAA','QAM','QMO', 'QAD')"/>
-<c:if test="${empty param['admin'] or isAdmin eq false}">
+    <c:if test="${empty param['admin']}">
     var pathname = location.pathname;
     // var paths = pathname.split("/");
-    if(pathname.indexOf("/notice/") == -1 || ${isAdmin} == false) {
+    if (pathname.indexOf("/notice/") == -1) {
         $(document).ready(function () {
             $(document).bind("contextmenu", function (e) {
                 return false;
@@ -164,16 +263,16 @@ Detailed information and more samples can be found in the document.
             return false;
         });
     }
-</c:if>
+    </c:if>
 </script>
 <c:if test="${not empty message}">
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $.niftyNoty({
                 type: 'info',
                 container: 'floating',
                 // html: alert_content[alert_layout].type,
-                message:'${message}',
+                message: '${message}',
                 closeBtn: true,
                 floating: {
                     position: 'top-right',
