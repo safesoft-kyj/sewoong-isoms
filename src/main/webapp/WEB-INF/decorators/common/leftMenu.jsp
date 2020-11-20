@@ -14,6 +14,7 @@
 <c:set var="isTraining" value="${training eq true and not empty jobTitle}"/>
 <ul id="mainnav-menu" class="list-group" style="margin-top:10px !important;">
 
+    <%-- Profile Area --%>
     <li style="display: none">
         <a href="#" aria-expanded="true">
             <i class="pli-user"></i>
@@ -27,6 +28,7 @@
         </ul>
     </li>
     <li>
+        <%-- Profile Area --%>
         <a href="#" aria-expanded="true">
             <i class="pli-home"></i>
             <span class="menu-title">Home</span>
@@ -35,6 +37,7 @@
         <!--Submenu-->
         <ul class="collapse" aria-expanded="true">
             <li><a href="/notice">공지사항</a></li>
+            <li><a href="/iso/certification">인증현황</a></li>
         </ul>
     </li>
     <li>

@@ -20,8 +20,9 @@
         <div class="navbar-header">
             <a href="/" class="navbar-brand">
 <%--                <img src="/static/img/logo.png" alt="Nifty Logo" class="brand-icon">--%>
+<%--                <img src="/static/img/cau_logo.png" alt="Nifty Logo" class="brand-icon">--%>
                 <div class="brand-title">
-                    <span class="brand-text">e-SOP</span>
+                    <span class="brand-text">ISO MS</span>
 <%--                    <span class="brand-text">--%>
 <%--                        <sec:authorize access="isAuthenticated()">--%>
 <%--                            <sec:authentication var="companyId" property="principal.companyId" />--%>

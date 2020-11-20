@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>KCSG e-SOP System</title>
+    <title>CAUH ISO Management System</title>
 
     <!-- Font Icon -->
     <link rel="stylesheet" href="/static/material-icon/css/material-design-iconic-font.min.css" type="text/css">
@@ -704,7 +704,7 @@
         <div class="container">
             <div class="signup-content">
                 <div class="signup-form" style="padding: 0">
-                    <a href="http://kcsg.org/" target="_blank"><img src="https://ch.cauhs.or.kr/images/main_re_logo.gif" style="height: 40px; padding-bottom: 10px" alt="KCSG"></a>
+                    <a href="https://ch.cauhs.or.kr/" target="_blank"><img src="https://ch.cauhs.or.kr/images/main_re_logo.gif" style="height: 40px; padding-bottom: 10px" alt="KCSG"></a>
                     <h2 class="form-title" style="padding-bottom: 5px">
 
                             <span class="title-head" style="padding-top: 5px;">ISO</span>

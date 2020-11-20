@@ -30,6 +30,9 @@
 <link href="/static/premium/icon-sets/icons/line-icons/premium-line-icons.min.css" rel="stylesheet">
 <link href="/static/premium/icon-sets/icons/solid-icons/premium-solid-icons.min.css" rel="stylesheet">
 
+<!-- No Print -->
+<link href="/static/css/no_print.css" rel="stylesheet">
+
 <!--JAVASCRIPT-->
 <!--=================================================-->
 
@@ -84,7 +87,7 @@ Detailed information and more samples can be found in the document.
 
     function dailyMissionTimer() {
 
-        var timer = duration * 90;
+        var timer = duration * 600;
         var hours, minutes, seconds;
 
         intervalId = setInterval(function () {
@@ -198,8 +201,8 @@ Detailed information and more samples can be found in the document.
             }
         });
     });
-
     var recursionCount = 0;
+
     function activeLink(pathname) {
         recursionCount++;
         if (recursionCount == 5) {
@@ -212,26 +215,41 @@ Detailed information and more samples can be found in the document.
             pathname = pathname.substring(0, pathname.lastIndexOf("/"));
             return activeLink(pathname);
         } else {
-            li.find("ul.collapse").addClass('in');
+            let upperMenus = li.find("ul.collapse");
+            $.each(upperMenus, function (idx, menu) {
+                if ($(menu).find("a[href='" + pathname + "']").length > 0) {
+                    $(menu).addClass('in');
+                }
+            });
         }
+        // } else {
+        //     li.find("ul.collapse").addClass('in');
+        // }
 
         recursionCount = 0;
         li.addClass('active-sub');
-        var $a = li.find("a");
-        setPageTitle($a.html());
-        setNav(pathname, $a.find("span.menu-title").text());
 
+
+        var $a = li.find("a");
+        var subMenus = $a.find("span.menu-title");
+
+        setPageTitle($a.html());
+        setNav(pathname, subMenus);
     }
 
     function setPageTitle(pageTitle) {
         $("#page-title").html("<h1 class=\"page-header text-overflow\">" + pageTitle + "</h1>");
-
     }
 
     function setNav(pathname, pageTitle) {
         $("#breadcrumb").append("<li><a href=\"/\"><i class=\"pli-home\"></i></a></li>");
         if (pageTitle) {
-            $("#breadcrumb").append("<li>" + pageTitle + "</li>");
+            $.each(pageTitle, function (idx, title) {
+                let check = $(title).parent().next().find("a[href='" + pathname + "']");
+                if (check.length > 0) {
+                    $("#breadcrumb").append("<li>" + $(title).text() + "</li>");
+                }
+            })
         }
         var $a = $("#mainnav-menu").find("a[href='" + pathname + "']");
         $("#breadcrumb").append("<li>" + $a.text() + "</li>");

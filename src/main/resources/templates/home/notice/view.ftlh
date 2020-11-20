@@ -109,14 +109,14 @@
                         <!--Mail toolbar-->
                         <button class="btn btn-default" type="button" onclick="fnPrint();"><i class="pli-printer icon-lg"></i></button>
 <#--                        <div class="btn-group btn-group">-->
-                        <@security.authorize access="hasAnyAuthority('QAA,QAD,QAM,QMO')">
+                        <@security.authorize access="hasAnyAuthority('ADMIN')">
                         <button class="btn btn-default" id="sendEmailBtn" data-id="${notice.id}"><i class="fa fa-send-o"></i> 메일 전송</button>
                         </@security.authorize>
 <#--                        </div>-->
                     </div>
                     <div class="col-sm-5 toolbar-right">
                         <!--Reply & forward buttons-->
-                        <@security.authorize access="hasAnyAuthority('QAA,QAD,QAM,QMO')">
+                        <@security.authorize access="hasAnyAuthority('ADMIN')">
                         <a class="btn btn-default" href="javascript:goToURL('/notice/${notice.id}/edit');"><i class="pli-pencil"></i> 수정</a>
                         <button class="btn btn-default" id="removeBtn"><i class="pli-trash icon-lg"></i> 삭제</button>
                         </@security.authorize>

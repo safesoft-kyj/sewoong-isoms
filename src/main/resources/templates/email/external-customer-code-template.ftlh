@@ -18,7 +18,7 @@
                 <table class="main" width="100%" cellpadding="0" cellspacing="0">
                     <tr>
                         <td class="alert alert-good">
-                            <strong>[KCSG] e-SOP Access Code</strong>
+                            <strong>[CAUH] ISO Management System Access Code</strong>
                         </td>
                     </tr>
                     <tr>
@@ -60,7 +60,7 @@
                     <table width="100%">
                         <tr>
                             <td class="aligncenter">
-                                <small>This email has sent from KCSG e-SOP system.
+                                <small>This email has sent from CAUH ISO Management System.
                                 </small></td>
                         </tr>
                     </table>

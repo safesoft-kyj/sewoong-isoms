@@ -18,6 +18,7 @@ logging:
     org.apache.tiles: DEBUG
 
 spring.jndi.ignore: true
+
 spring:
   main:
     banner-mode: console
@@ -40,6 +41,13 @@ spring:
 #      use-key-prefix: false
   jpa:
     open-in-view: true
+    properties:
+      org:
+        hibernate:
+          envers:
+            #audit_table_suffix: _history
+            #modified_flag_suffix: _mod
+            store_data_at_delete: true
   servlet:
     multipart:
       enabled: true

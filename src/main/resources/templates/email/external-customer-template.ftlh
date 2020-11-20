@@ -28,8 +28,8 @@
                                     <td class="content-block aligncenter">
                                         <table class="invoice">
                                             <tr>
-                                            <td>Welcome to KCSG e-SOP System. You have been invited to access the e-SOP system.<br/>
-                                                In order to use the e-SOP system, you will need the following software;<br/>
+                                            <td>Welcome to Chung-Ang Unitersity Hospital ISO Management System. You have been invited to access the e-SOP system.<br/>
+                                                In order to use the ISO Management System, you will need the following software;<br/>
                                                 - Microsoft Internet Explorer 9.0 and above OR Mozilla Firefox and Google Chrome.<br/>
                                             </td>
                                             </tr>

@@ -203,7 +203,7 @@
 
 <#--                </div>-->
                 <div class="col-sm-6 table-toolbar-left">
-                    <@security.authorize access="hasAnyAuthority('QAA,QAM,QMO,QAD')">
+                    <@security.authorize access="hasAnyAuthority('ADMIN')">
                     <a class="btn btn-primary" href="javascript:goToURL('/notice/new')"><i class="pli-pencil"></i> 공지 작성</a>
                     </@security.authorize>
 <#--                    <button class="btn btn-default"><i class="pli-printer"></i></button>-->
