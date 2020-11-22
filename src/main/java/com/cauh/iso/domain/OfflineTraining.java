@@ -8,6 +8,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.envers.AuditOverride;
+import org.hibernate.envers.Audited;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -24,6 +26,8 @@ import java.util.List;
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @SequenceGenerator(name = "OFFLINE_TRAINING_SEQ_GENERATOR", sequenceName = "SEQ_OFFLINE_TRAINING", initialValue = 1, allocationSize = 1)
+@Audited
+@AuditOverride(forClass = BaseEntity.class)
 public class OfflineTraining extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 2129309089355715487L;
 

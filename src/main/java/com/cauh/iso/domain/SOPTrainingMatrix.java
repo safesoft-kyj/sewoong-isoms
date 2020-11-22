@@ -4,6 +4,8 @@ import com.cauh.common.entity.BaseEntity;
 import com.cauh.common.entity.JobDescription;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.envers.AuditOverride;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,6 +21,8 @@ import java.io.Serializable;
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @SequenceGenerator(name = "TRAINING_MATRIX_SEQ_GENERATOR", sequenceName = "SEQ_TRAINING_MATRIX", initialValue = 1, allocationSize = 1)
+@Audited
+@AuditOverride(forClass = BaseEntity.class)
 public class SOPTrainingMatrix extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TRAINING_MATRIX_SEQ_GENERATOR")

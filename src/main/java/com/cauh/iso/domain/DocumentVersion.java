@@ -6,6 +6,8 @@ import com.cauh.iso.domain.constant.DocumentStatus;
 import com.cauh.iso.utils.DateUtils;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.envers.AuditOverride;
+import org.hibernate.envers.Audited;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +27,8 @@ import java.util.List;
 @Slf4j
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
+@Audited
+@AuditOverride(forClass = BaseEntity.class)
 public class DocumentVersion extends BaseEntity implements Serializable {
 
     @Id

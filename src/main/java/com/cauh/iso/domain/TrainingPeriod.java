@@ -6,6 +6,8 @@ import com.cauh.iso.domain.constant.DocumentType;
 import com.cauh.iso.domain.constant.TrainingType;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.envers.AuditOverride;
+import org.hibernate.envers.Audited;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -26,6 +28,8 @@ import java.util.List;
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @SequenceGenerator(name = "TRAINING_PERIOD_SEQ_GENERATOR", sequenceName = "SEQ_TRAINING_PERIOD", initialValue = 1, allocationSize = 1)
+@Audited
+@AuditOverride(forClass = BaseEntity.class)
 public class TrainingPeriod extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 9199531710029094250L;
 
