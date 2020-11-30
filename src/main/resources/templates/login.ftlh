@@ -6,20 +6,35 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>CAUH ISO Management System</title>
 
+    <!--Premium Icons [ OPTIONAL ]-->
+    <link href="/static/premium/icon-sets/icons/line-icons/premium-line-icons.min.css" rel="stylesheet">
     <!-- Font Icon -->
     <link rel="stylesheet" href="/static/material-icon/css/material-design-iconic-font.min.css" type="text/css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" type="text/css">
+
+    <!--Bootstrap Stylesheet [ REQUIRED ]-->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap DatePicker -->
+    <link href="/static/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
+
     <!-- Main css -->
-<#--    <link rel="stylesheet" href="http://lms.dtnsm.com/default/login/css/style.css">-->
+    <#--    <link rel="stylesheet" href="http://lms.dtnsm.com/default/login/css/style.css">-->
     <!-- JS -->
     <script src="/static/js/jquery.min.js"></script>
+    <!--BootstrapJS [ RECOMMENDED ]-->
+    <script src="/static/js/bootstrap.min.js"></script>
+    <!--Bootstrap Validator -->
+    <script src="/static/plugins/bootstrap-validator/bootstrapValidator.js"></script>
+
+    <!-- Bootstrap DatePicker -->
+    <script src="/static/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
 
     <style>
         h1 {
             font-size: 2em;
             text-align: justify;
         }
-        .title-head{
+
+        .title-head {
             /*font-size: 35px;*/
             color: #2783D8;
         }
@@ -27,13 +42,15 @@
         /* @extend display-flex; */
         display-flex, .display-flex, .display-flex-center, .signup-content, .signin-content, .social-login, .socials {
             display: flex;
-            display: -webkit-flex; }
+            display: -webkit-flex;
+        }
 
         /* @extend list-type-ulli; */
         list-type-ulli, .socials {
             list-style-type: none;
             margin: 0;
-            padding: 0; }
+            padding: 0;
+        }
 
         /* poppins-300 - latin */
         @font-face {
@@ -43,7 +60,9 @@
             src: url("/static/material-icon/fonts/poppins/poppins-v5-latin-300.eot");
             /* IE9 Compat Modes */
             src: local("Poppins Light"), local("Poppins-Light"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-300.eot?#iefix") format("embedded-opentype"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-300.woff2") format("woff2"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-300.woff") format("woff"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-300.ttf") format("truetype"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-300.svg#Poppins") format("svg");
-            /* Legacy iOS */ }
+            /* Legacy iOS */
+        }
+
         /* poppins-300italic - latin */
         @font-face {
             font-family: 'Poppins';
@@ -52,7 +71,9 @@
             src: url("/static/material-icon/fonts/poppins/poppins-v5-latin-300italic.eot");
             /* IE9 Compat Modes */
             src: local("Poppins Light Italic"), local("Poppins-LightItalic"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-300italic.eot?#iefix") format("embedded-opentype"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-300italic.woff2") format("woff2"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-300italic.woff") format("woff"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-300italic.ttf") format("truetype"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-300italic.svg#Poppins") format("svg");
-            /* Legacy iOS */ }
+            /* Legacy iOS */
+        }
+
         /* poppins-regular - latin */
         @font-face {
             font-family: 'Poppins';
@@ -61,7 +82,9 @@
             src: url("/static/material-icon/fonts/poppins/poppins-v5-latin-regular.eot");
             /* IE9 Compat Modes */
             src: local("Poppins Regular"), local("Poppins-Regular"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-regular.eot?#iefix") format("embedded-opentype"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-regular.woff2") format("woff2"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-regular.woff") format("woff"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-regular.ttf") format("truetype"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-regular.svg#Poppins") format("svg");
-            /* Legacy iOS */ }
+            /* Legacy iOS */
+        }
+
         /* poppins-italic - latin */
         @font-face {
             font-family: 'Poppins';
@@ -70,7 +93,9 @@
             src: url("/static/material-icon/fonts/poppins/poppins-v5-latin-italic.eot");
             /* IE9 Compat Modes */
             src: local("Poppins Italic"), local("Poppins-Italic"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-italic.eot?#iefix") format("embedded-opentype"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-italic.woff2") format("woff2"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-italic.woff") format("woff"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-italic.ttf") format("truetype"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-italic.svg#Poppins") format("svg");
-            /* Legacy iOS */ }
+            /* Legacy iOS */
+        }
+
         /* poppins-500 - latin */
         @font-face {
             font-family: 'Poppins';
@@ -79,7 +104,9 @@
             src: url("/static/material-icon/fonts/poppins/poppins-v5-latin-500.eot");
             /* IE9 Compat Modes */
             src: local("Poppins Medium"), local("Poppins-Medium"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-500.eot?#iefix") format("embedded-opentype"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-500.woff2") format("woff2"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-500.woff") format("woff"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-500.ttf") format("truetype"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-500.svg#Poppins") format("svg");
-            /* Legacy iOS */ }
+            /* Legacy iOS */
+        }
+
         /* poppins-500italic - latin */
         @font-face {
             font-family: 'Poppins';
@@ -88,7 +115,9 @@
             src: url("/static/material-icon/fonts/poppins/poppins-v5-latin-500italic.eot");
             /* IE9 Compat Modes */
             src: local("Poppins Medium Italic"), local("Poppins-MediumItalic"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-500italic.eot?#iefix") format("embedded-opentype"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-500italic.woff2") format("woff2"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-500italic.woff") format("woff"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-500italic.ttf") format("truetype"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-500italic.svg#Poppins") format("svg");
-            /* Legacy iOS */ }
+            /* Legacy iOS */
+        }
+
         /* poppins-600 - latin */
         @font-face {
             font-family: 'Poppins';
@@ -97,7 +126,9 @@
             src: url("/static/material-icon/fonts/poppins/poppins-v5-latin-600.eot");
             /* IE9 Compat Modes */
             src: local("Poppins SemiBold"), local("Poppins-SemiBold"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-600.eot?#iefix") format("embedded-opentype"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-600.woff2") format("woff2"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-600.woff") format("woff"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-600.ttf") format("truetype"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-600.svg#Poppins") format("svg");
-            /* Legacy iOS */ }
+            /* Legacy iOS */
+        }
+
         /* poppins-700 - latin */
         @font-face {
             font-family: 'Poppins';
@@ -106,7 +137,9 @@
             src: url("/static/material-icon/fonts/poppins/poppins-v5-latin-700.eot");
             /* IE9 Compat Modes */
             src: local("Poppins Bold"), local("Poppins-Bold"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-700.eot?#iefix") format("embedded-opentype"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-700.woff2") format("woff2"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-700.woff") format("woff"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-700.ttf") format("truetype"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-700.svg#Poppins") format("svg");
-            /* Legacy iOS */ }
+            /* Legacy iOS */
+        }
+
         /* poppins-700italic - latin */
         @font-face {
             font-family: 'Poppins';
@@ -115,7 +148,9 @@
             src: url("/static/material-icon/fonts/poppins/poppins-v5-latin-700italic.eot");
             /* IE9 Compat Modes */
             src: local("Poppins Bold Italic"), local("Poppins-BoldItalic"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-700italic.eot?#iefix") format("embedded-opentype"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-700italic.woff2") format("woff2"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-700italic.woff") format("woff"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-700italic.ttf") format("truetype"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-700italic.svg#Poppins") format("svg");
-            /* Legacy iOS */ }
+            /* Legacy iOS */
+        }
+
         /* poppins-800 - latin */
         @font-face {
             font-family: 'Poppins';
@@ -124,7 +159,9 @@
             src: url("/static/material-icon/fonts/poppins/poppins-v5-latin-800.eot");
             /* IE9 Compat Modes */
             src: local("Poppins ExtraBold"), local("Poppins-ExtraBold"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-800.eot?#iefix") format("embedded-opentype"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-800.woff2") format("woff2"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-800.woff") format("woff"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-800.ttf") format("truetype"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-800.svg#Poppins") format("svg");
-            /* Legacy iOS */ }
+            /* Legacy iOS */
+        }
+
         /* poppins-800italic - latin */
         @font-face {
             font-family: 'Poppins';
@@ -133,7 +170,9 @@
             src: url("/static/material-icon/fonts/poppins/poppins-v5-latin-800italic.eot");
             /* IE9 Compat Modes */
             src: local("Poppins ExtraBold Italic"), local("Poppins-ExtraBoldItalic"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-800italic.eot?#iefix") format("embedded-opentype"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-800italic.woff2") format("woff2"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-800italic.woff") format("woff"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-800italic.ttf") format("truetype"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-800italic.svg#Poppins") format("svg");
-            /* Legacy iOS */ }
+            /* Legacy iOS */
+        }
+
         /* poppins-900 - latin */
         @font-face {
             font-family: 'Poppins';
@@ -142,7 +181,9 @@
             src: url("/static/material-icon/fonts/poppins/poppins-v5-latin-900.eot");
             /* IE9 Compat Modes */
             src: local("Poppins Black"), local("Poppins-Black"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-900.eot?#iefix") format("embedded-opentype"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-900.woff2") format("woff2"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-900.woff") format("woff"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-900.ttf") format("truetype"), url("/static/material-icon/fonts/poppins/poppins-v5-latin-900.svg#Poppins") format("svg");
-            /* Legacy iOS */ }
+            /* Legacy iOS */
+        }
+
         a:focus, a:active {
             text-decoration: none;
             outline: none;
@@ -150,7 +191,8 @@
             -moz-transition: all 300ms ease 0s;
             -webkit-transition: all 300ms ease 0s;
             -o-transition: all 300ms ease 0s;
-            -ms-transition: all 300ms ease 0s; }
+            -ms-transition: all 300ms ease 0s;
+        }
 
         input, select, textarea {
             outline: none;
@@ -158,7 +200,8 @@
             -moz-appearance: unset !important;
             -webkit-appearance: unset !important;
             -o-appearance: unset !important;
-            -ms-appearance: unset !important; }
+            -ms-appearance: unset !important;
+        }
 
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
             appearance: none !important;
@@ -166,7 +209,8 @@
             -webkit-appearance: none !important;
             -o-appearance: none !important;
             -ms-appearance: none !important;
-            margin: 0; }
+            margin: 0;
+        }
 
         input:focus, select:focus, textarea:focus {
             outline: none;
@@ -174,33 +218,41 @@
             -moz-box-shadow: none !important;
             -webkit-box-shadow: none !important;
             -o-box-shadow: none !important;
-            -ms-box-shadow: none !important; }
+            -ms-box-shadow: none !important;
+        }
 
         input[type=checkbox] {
             appearance: checkbox !important;
             -moz-appearance: checkbox !important;
             -webkit-appearance: checkbox !important;
             -o-appearance: checkbox !important;
-            -ms-appearance: checkbox !important; }
+            -ms-appearance: checkbox !important;
+        }
 
         input[type=radio] {
             appearance: radio !important;
             -moz-appearance: radio !important;
             -webkit-appearance: radio !important;
             -o-appearance: radio !important;
-            -ms-appearance: radio !important; }
+            -ms-appearance: radio !important;
+        }
+
+
 
         img {
             max-width: 100%;
-            height: auto; }
+            height: auto;
+        }
 
         figure {
-            margin: 0; }
+            margin: 0;
+        }
 
         p {
             margin-bottom: 0px;
             font-size: 15px;
-            color: #777; }
+            color: #777;
+        }
 
         h2 {
             /*line-height: 1.66;*/
@@ -215,10 +267,12 @@
 
         .main {
             background: #f8f8f8;
-            padding: 150px 0; }
+            padding: 150px 0;
+        }
 
         .clear {
-            clear: both; }
+            clear: both;
+        }
 
         body {
             font-size: 13px;
@@ -226,13 +280,14 @@
             color: #222;
             background: #f8f8f8;
             font-weight: 400;
-            font-family: Poppins; }
+            font-family: Poppins;
+        }
 
         .container {
             width: 900px;
             background: #fff;
             margin: 0 auto;
-            border: 1px solid RGBA(232,232,232, 0.6);
+            border: 1px solid RGBA(232, 232, 232, 0.6);
             box-shadow: 0px 15px 16.83px 0.17px rgba(0, 0, 0, 0.05);
             -moz-box-shadow: 0px 15px 16.83px 0.17px rgba(0, 0, 0, 0.05);
             -webkit-box-shadow: 0px 15px 16.83px 0.17px rgba(0, 0, 0, 0.05);
@@ -242,7 +297,8 @@
             -moz-border-radius: 20px;
             -webkit-border-radius: 20px;
             -o-border-radius: 20px;
-            -ms-border-radius: 20px; }
+            -ms-border-radius: 20px;
+        }
 
         .display-flex {
             justify-content: space-between;
@@ -254,7 +310,8 @@
             -moz-align-items: center;
             -webkit-align-items: center;
             -o-align-items: center;
-            -ms-align-items: center; }
+            -ms-align-items: center;
+        }
 
         .display-flex-center {
             justify-content: center;
@@ -266,7 +323,8 @@
             -moz-align-items: center;
             -webkit-align-items: center;
             -o-align-items: center;
-            -ms-align-items: center; }
+            -ms-align-items: center;
+        }
 
         .position-center {
             position: absolute;
@@ -276,34 +334,44 @@
             -moz-transform: translate(-50%, -50%);
             -webkit-transform: translate(-50%, -50%);
             -o-transform: translate(-50%, -50%);
-            -ms-transform: translate(-50%, -50%); }
+            -ms-transform: translate(-50%, -50%);
+        }
+
 
         .signup {
-            margin-bottom: 150px; }
+            margin-bottom: 150px;
+        }
 
         .signup-content {
-            padding: 75px 0; }
+            padding: 75px 0;
+        }
 
         .signup-form, .signup-image, .signin-form, .signin-image {
             width: 50%;
-            overflow: hidden; }
+            overflow: hidden;
+        }
 
-        .signup-form{
+        .signup-form {
             width: 70%;
-            overflow: hidden; }
+            overflow: hidden;
+        }
 
         .signup-image {
-            margin: 0 55px; }
+            margin: 0 55px;
+        }
 
         .form-title {
-            margin-bottom: 33px; }
+            margin-bottom: 33px;
+        }
 
         .signup-image {
-            margin-top: 45px; }
+            margin-top: 45px;
+        }
 
         figure {
             margin-bottom: 50px;
-            text-align: center; }
+            text-align: center;
+        }
 
         .form-submit {
             display: inline-block;
@@ -318,37 +386,58 @@
             -o-border-radius: 5px;
             -ms-border-radius: 5px;
             margin-top: 25px;
-            cursor: pointer; }
-        .form-submit:hover {
-            background: #4292dc; }
+            cursor: pointer;
+        }
 
-        #signin {
-            margin-top: 16px; }
+        .form-submit:hover {
+            background: #4292dc;
+        }
+
+        #signIn {
+            margin-top: 16px;
+            float:left;
+        }
+
+        #signUp{
+            margin-top: 16px;
+            float:right;
+        }
 
         .signup-image-link {
             font-size: 14px;
             color: #222;
             display: block;
-            text-align: center; }
+            text-align: center;
+        }
 
         .term-service {
             font-size: 13px;
-            color: #222; }
+            color: #222;
+        }
 
         .signup-form {
             margin-left: 75px;
             margin-right: 75px;
-            padding-left: 34px; }
+            padding-left: 34px;
+        }
+
+        #signup-form i {
+            margin-right: 15px;
+        }
 
         .register-form {
-            width: 100%; }
+            width: 100%;
+        }
 
         .form-group {
             position: relative;
             margin-bottom: 25px;
-            overflow: hidden; }
+            overflow: hidden;
+        }
+
         .form-group:last-child {
-            margin-bottom: 0px; }
+            margin-bottom: 0px;
+        }
 
         input {
             width: 100%;
@@ -357,37 +446,58 @@
             border-bottom: 1px solid #999;
             padding: 6px 30px;
             font-family: Poppins;
-            box-sizing: border-box; }
+            box-sizing: border-box;
+        }
+
         input::-webkit-input-placeholder {
-            color: #999; }
+            color: #999;
+        }
+
         input::-moz-placeholder {
-            color: #999; }
+            color: #999;
+        }
+
         input:-ms-input-placeholder {
-            color: #999; }
+            color: #999;
+        }
+
         input:-moz-placeholder {
-            color: #999; }
+            color: #999;
+        }
+
         input:focus {
-            border-bottom: 1px solid #222; }
+            border-bottom: 1px solid #222;
+        }
+
         input:focus::-webkit-input-placeholder {
-            color: #222; }
+            color: #222;
+        }
+
         input:focus::-moz-placeholder {
-            color: #222; }
+            color: #222;
+        }
+
         input:focus:-ms-input-placeholder {
-            color: #222; }
+            color: #222;
+        }
+
         input:focus:-moz-placeholder {
-            color: #222; }
+            color: #222;
+        }
 
         input[type=checkbox]:not(old) {
             width: 2em;
             margin: 0;
             padding: 0;
             font-size: 1em;
-            display: none; }
+            display: none;
+        }
 
         input[type=checkbox]:not(old) + label {
             display: inline-block;
             line-height: 1.5em;
-            margin-top: 6px; }
+            margin-top: 6px;
+        }
 
         input[type=checkbox]:not(old) + label > span {
             display: inline-block;
@@ -407,14 +517,16 @@
             background-image: -o-linear-gradient(white, white);
             background-image: -webkit-linear-gradient(white, white);
             background-image: linear-gradient(white, white);
-            vertical-align: bottom; }
+            vertical-align: bottom;
+        }
 
         input[type=checkbox]:not(old):checked + label > span {
             background-image: -moz-linear-gradient(white, white);
             background-image: -ms-linear-gradient(white, white);
             background-image: -o-linear-gradient(white, white);
             background-image: -webkit-linear-gradient(white, white);
-            background-image: linear-gradient(white, white); }
+            background-image: linear-gradient(white, white);
+        }
 
         input[type=checkbox]:not(old):checked + label > span:before {
             content: '\f26b';
@@ -424,11 +536,13 @@
             line-height: 1.2;
             text-align: center;
             font-family: 'Material-Design-Iconic-Font';
-            font-weight: bold; }
+            font-weight: bold;
+        }
 
         .agree-term {
             display: inline-block;
-            width: auto; }
+            width: auto;
+        }
 
         label {
             position: absolute;
@@ -439,10 +553,20 @@
             -webkit-transform: translateY(-50%);
             -o-transform: translateY(-50%);
             -ms-transform: translateY(-50%);
-            color: #222; }
+            color: #222;
+        }
+
+        label.signup-label {
+            transform: translateY(0%);
+            -moz-transform: translateY(0%);
+            -webkit-transform: translateY(0%);
+            -o-transform: translateY(0%);
+            -ms-transform: translateY(0%);
+        }
 
         .label-has-error {
-            top: 22%; }
+            top: 22%;
+        }
 
         label.error {
             position: relative;
@@ -450,7 +574,8 @@
             background-position-y: 3px;
             padding-left: 20px;
             display: block;
-            margin-top: 20px; }
+            margin-top: 20px;
+        }
 
         label.valid {
             display: block;
@@ -460,7 +585,9 @@
             margin-top: -6px;
             width: 20px;
             height: 20px;
-            background: transparent; }
+            background: transparent;
+        }
+
         label.valid:after {
             font-family: 'Material-Design-Iconic-Font';
             content: '\f269';
@@ -469,7 +596,8 @@
             position: absolute;
             /* right: 0; */
             font-size: 16px;
-            color: green; }
+            color: green;
+        }
 
         .label-agree-term {
             position: relative;
@@ -478,14 +606,17 @@
             -moz-transform: translateY(0);
             -webkit-transform: translateY(0);
             -o-transform: translateY(0);
-            -ms-transform: translateY(0); }
+            -ms-transform: translateY(0);
+        }
 
         .material-icons-name {
-            font-size: 18px; }
+            font-size: 18px;
+        }
 
         .signin-content {
             padding-top: 67px;
-            padding-bottom: 87px; }
+            padding-bottom: 87px;
+        }
 
         .social-login {
             align-items: center;
@@ -493,18 +624,26 @@
             -webkit-align-items: center;
             -o-align-items: center;
             -ms-align-items: center;
-            margin-top: 80px; }
+            margin-top: 80px;
+        }
 
         .social-label {
             display: inline-block;
-            margin-right: 15px; }
+            margin-right: 15px;
+        }
 
         .socials li {
-            padding: 5px; }
+            padding: 5px;
+        }
+
         .socials li:last-child {
-            margin-right: 0px; }
+            margin-right: 0px;
+        }
+
         .socials li a {
-            text-decoration: none; }
+            text-decoration: none;
+        }
+
         .socials li a i {
             width: 30px;
             height: 30px;
@@ -525,36 +664,50 @@
             -webkit-transition-property: transform;
             transition-property: transform;
             -webkit-transition-timing-function: ease-out;
-            transition-timing-function: ease-out; }
+            transition-timing-function: ease-out;
+        }
+
         .socials li:hover a i {
             -webkit-transform: scale(1.3) translateZ(0);
-            transform: scale(1.3) translateZ(0); }
+            transform: scale(1.3) translateZ(0);
+        }
 
         .zmdi-facebook {
-            background: #3b5998; }
+            background: #3b5998;
+        }
 
         .zmdi-twitter {
-            background: #1da0f2; }
+            background: #1da0f2;
+        }
 
         .zmdi-google {
-            background: #e72734; }
+            background: #e72734;
+        }
 
         .signin-form {
             margin-right: 90px;
-            margin-left: 80px; }
+            margin-left: 80px;
+        }
 
         .signin-image {
             margin-left: 110px;
             margin-right: 20px;
-            margin-top: 10px; }
+            margin-top: 10px;
+        }
 
         @media screen and (max-width: 1200px) {
             .container {
-                width: calc( 100% - 30px);
-                max-width: 100%; } }
+                width: calc(100% - 30px);
+                max-width: 100%;
+            }
+        }
+
         @media screen and (min-width: 1024px) {
             .container {
-                max-width: 1200px; } }
+                max-width: 1200px;
+            }
+        }
+
         @media screen and (max-width: 768px) {
             .signup-content, .signin-content {
                 flex-direction: column;
@@ -566,14 +719,16 @@
                 -moz-justify-content: center;
                 -webkit-justify-content: center;
                 -o-justify-content: center;
-                -ms-justify-content: center; }
+                -ms-justify-content: center;
+            }
 
             .signup-form {
                 margin-left: 0px;
                 margin-right: 0px;
                 padding-left: 0px;
                 /* box-sizing: border-box; */
-                padding: 0 30px; }
+                padding: 0 30px;
+            }
 
             .signin-image {
                 margin-left: 0px;
@@ -583,20 +738,24 @@
                 -moz-order: 2;
                 -webkit-order: 2;
                 -o-order: 2;
-                -ms-order: 2; }
+                -ms-order: 2;
+            }
 
             .signup-form, .signup-image, .signin-form, .signin-image {
-                width: auto; }
+                width: auto;
+            }
 
             .social-login {
                 justify-content: center;
                 -moz-justify-content: center;
                 -webkit-justify-content: center;
                 -o-justify-content: center;
-                -ms-justify-content: center; }
+                -ms-justify-content: center;
+            }
 
             .form-button {
-                text-align: center; }
+                text-align: center;
+            }
 
             .signin-form {
                 order: 1;
@@ -606,76 +765,104 @@
                 -ms-order: 1;
                 margin-right: 0px;
                 margin-left: 0px;
-                padding: 0 30px; }
+                padding: 0 30px;
+            }
 
             .form-title {
-                text-align: center; } }
+                text-align: center;
+            }
+        }
+
         @media screen and (max-width: 400px) {
             .social-login {
                 flex-direction: column;
                 -moz-flex-direction: column;
                 -webkit-flex-direction: column;
                 -o-flex-direction: column;
-                -ms-flex-direction: column; }
+                -ms-flex-direction: column;
+            }
 
             .social-label {
                 margin-right: 0px;
-                margin-bottom: 10px; } }
+                margin-bottom: 10px;
+            }
+        }
 
         /*# sourceMappingURL=style.css.map */
-
     </style>
+
     <script type="text/javascript">
-        $(document).ready(function(){
+        $(document).ready(function () {
             // 저장된 쿠키값을 가져와서 ID 칸에 넣어준다. 없으면 공백으로 들어감.
             var userInputId = getCookie("userInputId");
-            $("input[name='username']").val(userInputId);
+            $("#register-form input[name='username']").val(userInputId);
 
-            $("#username").keyup(function() {
-                if($(this).val().indexOf('@') != -1) {
+            $("register-form #username").keyup(function () {
+                if ($(this).val().indexOf('@') != -1) {
                     $("#div_pwd").hide();
                 } else {
                     $("#div_pwd").show();
                 }
             });
 
-            if($("#username").val()) {
-                $("#username").trigger("keyup");
+            if ($("#register-form #username").val()) {
+                $("#register-form #username").trigger("keyup");
             }
 
-            if($("input[name='username']").val() != ""){ // 그 전에 ID를 저장해서 처음 페이지 로딩 시, 입력 칸에 저장된 ID가 표시된 상태라면,
+            if ($("#register-form input[name='username']").val() != "") { // 그 전에 ID를 저장해서 처음 페이지 로딩 시, 입력 칸에 저장된 ID가 표시된 상태라면,
                 $("#form-checkbox").attr("checked", true); // ID 저장하기를 체크 상태로 두기.
             }
 
-            $("#form-checkbox").change(function(){ // 체크박스에 변화가 있다면,
-
-                if($("#form-checkbox").is(":checked")){ // ID 저장하기 체크했을 때,
+            $("#form-checkbox").change(function () { // 체크박스에 변화가 있다면,
+                if ($("#form-checkbox").is(":checked")) { // ID 저장하기 체크했을 때,
                     var userInputId = $("input[name='username']").val();
                     setCookie("userInputId", userInputId, 7); // 7일 동안 쿠키 보관
-                }else{ // ID 저장하기 체크 해제 시,
+                } else { // ID 저장하기 체크 해제 시,
                     deleteCookie("userInputId");
                 }
             });
 
             // ID 저장하기를 체크한 상태에서 ID를 입력하는 경우, 이럴 때도 쿠키 저장.
-            $("input[name='username']").keyup(function(){ // ID 입력 칸에 ID를 입력할 때,
-                if($("#form-checkbox").is(":checked")){ // ID 저장하기를 체크한 상태라면,
+            $("#register-form input[name='username']").keyup(function () { // ID 입력 칸에 ID를 입력할 때,
+                if ($("#form-checkbox").is(":checked")) { // ID 저장하기를 체크한 상태라면,
                     var userInputId = $("input[name='username']").val();
                     setCookie("userInputId", userInputId, 7); // 7일 동안 쿠키 보관
                 }
             });
 
-            $('#username').focus();
+            $('#register-form #username').focus();
+
+            //SignUp Validation Setting
+            signUpValidation();
+
+            $('#sign-up-modal').on("hide.bs.modal", function (event) {
+                console.log("modal Close");
+                //signup-form 내부의 input의 value를 초기화한다.
+                $("#signup-form input").val("");
+
+                //Validation 초기화
+                $("#signup-form").data('bootstrapValidator').resetForm();
+            });
+
+            $("#birthDate").datepicker({
+                format: "yyyy-mm-dd",
+                todayBtn: "linked",
+                clearBtn: true,
+                autoclose: true,
+                todayHighlight: true,
+            }).on('hide.bs.modal', function(e) {
+               e.stopPropagation(); //datepicker가 close될 때, sign-up-modal까지의 hide.bs.modal Event의 전파를 막음.
+            });
         });
 
-        function setCookie(cookieName, value, exdays){
+        function setCookie(cookieName, value, exdays) {
             var exdate = new Date();
             exdate.setDate(exdate.getDate() + exdays);
-            var cookieValue = escape(value) + ((exdays==null) ? "" : "; expires=" + exdate.toGMTString());
+            var cookieValue = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toGMTString());
             document.cookie = cookieName + "=" + cookieValue;
         }
 
-        function deleteCookie(cookieName){
+        function deleteCookie(cookieName) {
             var expireDate = new Date();
             expireDate.setDate(expireDate.getDate() - 1);
             document.cookie = cookieName + "= " + "; expires=" + expireDate.toGMTString();
@@ -686,13 +873,130 @@
             var cookieData = document.cookie;
             var start = cookieData.indexOf(cookieName);
             var cookieValue = '';
-            if(start != -1){
+            if (start != -1) {
                 start += cookieName.length;
                 var end = cookieData.indexOf(';', start);
-                if(end == -1)end = cookieData.length;
+                if (end == -1) end = cookieData.length;
                 cookieValue = cookieData.substring(start, end);
             }
             return unescape(cookieValue);
+        }
+
+        function signUpValidation() {
+            //Sign Up Setup
+            $("#signup-form").bootstrapValidator({
+                message: 'This value is not valid',
+                feedbackIcons: {
+                    valid: 'pli-yes text-success',
+                    invalid: 'pli-close',
+                    validating: 'pli-refresh'
+                },
+                fields: {
+                    username: {
+                        validators: {
+                            remote: {
+                                message: '> The id is already used',
+                                url: '/signUp/ajax/validation',
+                                type: 'POST',
+                                data: {
+                                    type : "username",
+                                },
+                                name: 'keyword' // 입력된 데이터 name을 keyword로 한다.
+                            },
+                            regexp: {
+                                regexp: /^[a-zA-Z\d*]{5,20}$/,
+                                message: '> The id length must 5 - 20 (alphabetical, number)'
+                            },
+                            notEmpty: {
+                                message: '> The id is required'
+                            }
+                        }
+                    },
+                    name: {
+                        validators: {
+                            notEmpty: {
+                                message: '> The name is required'
+                            }
+                        }
+                    },
+                    // engName: {
+                    //     message: '> The engName is not valid',
+                    //     validators: {
+                    //         notEmpty: {
+                    //             message: '> The engName is required'
+                    //         }
+                    //     }
+                    // },
+                    password: {
+                        validators: {
+                            notEmpty: {
+                                message: '> The password is required and can\'t be empty'
+                            },
+                            identical: {
+                                field: 'confirmPassword',
+                                message: '> The password and its P/W Confirm are not the same'
+                            },
+                            regexp: {
+                                //최소 8자, 대문자 하나 이상, 소문자 하나, 숫자 하나 및 특수문자 하나 이상
+                                regexp: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}/,
+                                message: '> The password can over than 8 length consist of upper/lower alphabetical, number, dot and special character'
+                            }
+                        }
+                    },
+                    confirmPassword: {
+                        validators: {
+                            notEmpty: {
+                                message: '> The P/W Confirm is required and can\'t be empty'
+                            },
+                            identical: {
+                                field: 'password',
+                                message: '> The password and its P/W Confirm are not the same'
+                            },
+                            regexp: {
+                                //최소 8자, 대문자 하나 이상, 소문자 하나, 숫자 하나 및 특수문자 하나 이상
+                                regexp: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}/,
+                                message: '> The password can over than 8 length consist of upper/lower alphabetical, number, dot and special character'
+                            }
+                        }
+                    },
+                    email: {
+                        validators: {
+                            remote: {
+                                message: '> The email is already used',
+                                url: '/signUp/ajax/validation',
+                                type: 'POST',
+                                data: {
+                                    type : "email",
+                                },
+                                name: 'keyword' // 입력된 데이터 name을 keyword로 한다.
+                            },
+                            notEmpty: {
+                                message: '> The email is required and can\'t be empty'
+                            },
+                            emailAddress: {
+                                message: '> Please enter a valid email address'
+                            }
+                        }
+                    },
+                    phone: {
+                      validators: {
+                          regexp:{
+                              regexp:/^[0-9]{3}[-]+[0-9]{4}[-]+[0-9]{4}$/,
+                              message:'> The phone number is not valid (000-0000-0000)'
+                          }
+                      }
+                    }
+                }
+            }).on('success.field.bv', function (e, data) {
+                // $(e.target)  --> The field element
+                // data.bv      --> The BootstrapValidator instance
+                // data.field   --> The field name
+                // data.element --> The field element
+                var $parent = data.element.parents('.form-group');
+
+                // Remove the has-success class
+                $parent.removeClass('has-success');
+            });
         }
     </script>
 </head>
@@ -704,12 +1008,14 @@
         <div class="container">
             <div class="signup-content">
                 <div class="signup-form" style="padding: 0">
-                    <a href="https://ch.cauhs.or.kr/" target="_blank"><img src="https://ch.cauhs.or.kr/images/main_re_logo.gif" style="height: 40px; padding-bottom: 10px" alt="KCSG"></a>
+                    <a href="https://ch.cauhs.or.kr/" target="_blank"><img
+                                src="https://ch.cauhs.or.kr/images/main_re_logo.gif"
+                                style="height: 40px; padding-bottom: 10px" alt="KCSG"></a>
                     <h2 class="form-title" style="padding-bottom: 5px">
 
-                            <span class="title-head" style="padding-top: 5px;">ISO</span>
-                            <span class="title-head">M</span>anagement
-                            <span class="title-head">S</span>ystem
+                        <span class="title-head" style="padding-top: 5px;">ISO</span>
+                        <span class="title-head">M</span>anagement
+                        <span class="title-head">S</span>ystem
                     </h2>
                     <form action="/login" method="POST" class="register-form" id="register-form" style="padding: 0">
                         <#if RequestParameters.sessionExpired?exists || RequestParameters.invalidSession?exists>
@@ -724,7 +1030,12 @@
                             <div class="alert alert-success">
                                 You have been logged out.
                             </div>
+                        <#elseif message?exists && type?exists>
+                            <div class="alert alert-${type}">
+                                ${message}
+                            </div>
                         </#if>
+
                         <div class="form-group">
                             <label for="username"><i class="zmdi zmdi-account material-icons-name"></i></label>
                             <input type="text" name="username" id="username" placeholder="User ID"/>
@@ -742,11 +1053,14 @@
                         <!--                                <input type="password" name="re_pass" id="re_pass" placeholder="Repeat your password"/>-->
                         <!--                            </div>-->
                         <div class="form-group">
-                            <input type="checkbox" name="agree-term" id="form-checkbox" class="agree-term" />
-                            <label for="form-checkbox" class="label-agree-term"><span><span></span></span>Saved ID</label>
+                            <input type="checkbox" name="agree-term" id="form-checkbox" class="agree-term"/>
+                            <label for="form-checkbox" class="label-agree-term"><span><span></span></span>Saved
+                                ID</label>
                         </div>
                         <div class="form-group form-button">
-                            <input type="submit" name="signup" id="signup" class="form-submit" value="Login"/>
+                            <input type="submit" name="signIn" id="signIn" class="form-submit" value="Login"/>
+                            <input type="button" name="signUp" id="signUp" class="form-submit" value="Sign Up"
+                                   data-toggle="modal" data-target="#sign-up-modal"/>
                         </div>
                     </form>
                 </div>
@@ -756,10 +1070,92 @@
             </div>
         </div>
     </section>
-
 </div>
 
+<!-- Sign Up Modal Start -->
+<div class="modal fade" id="sign-up-modal" role="dialog" tabindex="-1" aria-labelledby="sign-up-modal"
+     aria-hidden="true">
+    <div class="modal-dialog modal-fullsize">
+        <div class="modal-content">
+            <!--Modal header-->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
+                <h4 class="modal-title">Sign Up</h4>
+            </div>
+            <form action="/signUp" method="POST" class="register-form" id="signup-form">
+                <!--Modal body-->
+                <div class="modal-body">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-sm-3 signup-label control-label" for="username">ID* : </label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="text" name="username" id="username">
+                            </div>
+                        </div>
 
+                        <div class="form-group">
+                            <label class="col-sm-3 signup-label control-label" for="password">Password* : </label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="password" name="password" id="password"
+                                       data-bv-field="password">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 signup-label control-label" for="confirmPassword">P/W Confirm*
+                                : </label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="password" name="confirmPassword"
+                                       id="confirmPassword" data-bv-field="confirmPassword">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 signup-label control-label" for="name">Name(KOR)* : </label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="text" name="name" id="name">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 signup-label control-label" for="engName">Name(ENG) : </label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="text" name="engName" id="engName">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 signup-label control-label" for="email">E-mail* : </label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="email" name="email" id="email">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 signup-label control-label" for="email">phone : </label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="text" name="phone" id="phone">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 signup-label control-label" for="email">Birth Date : </label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="text" name="birthDate" id="birthDate">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Modal footer-->
+                <div class="modal-footer">
+                    <button class="btn btn-default" id="requestBtn" type="submit">Request</button>
+                    <button data-dismiss="modal" class="btn btn-default" id="closeBtn" type="button">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Sign Up Modal end -->
 
 </body><!-- This templates was made by Colorlib (https://colorlib.com) -->
 </html>

@@ -1,62 +1,129 @@
 package com.cauh.iso.controller;
 
 import com.cauh.common.entity.Account;
-import com.cauh.common.entity.Signature;
+import com.cauh.common.entity.constant.UserType;
 import com.cauh.common.repository.SignatureRepository;
 import com.cauh.common.repository.UserRepository;
-import com.cauh.common.security.annotation.CurrentUser;
 import com.cauh.common.security.authentication.CustomUsernamePasswordAuthenticationToken;
+import com.cauh.iso.component.CurrentUserComponent;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.xpath.operations.Bool;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
     private final UserRepository userRepository;
+
+    //현재 유저 정보를 담고 있는 Component Class
+    private final CurrentUserComponent currentUserComponent;
+
     private final SignatureRepository signatureRepository;
+
+    private List<Account> accounts = new ArrayList<>();
 
     @GetMapping("/user/profile")
     public String profile() {
         return "user/profile";
     }
 
-    @GetMapping("/user/signature")
-    public String signature(@CurrentUser Account user, Model model) {
-        Optional<Signature> optionalSignature = signatureRepository.findById(user.getUsername());
-        model.addAttribute("signature", optionalSignature.isPresent() ? optionalSignature.get() : new Signature());
+    @PostMapping("/signUp")
+    @Transactional
+    public String signUpRequest(Account account, RedirectAttributes attributes) {
+        log.info("@Sign Up Request : {}", account.getUsername());
 
-        return "user/signature";
+        Optional<Account> user = userRepository.findByUsername(account.getUsername());
+        if(user.isPresent()) {
+
+            attributes.addFlashAttribute("type", "danger");
+            attributes.addFlashAttribute("message", "Sign Up request was failed");
+        } else {
+            //TODO : 
+            account.setUserType(UserType.U);
+            account.setAccountNonLocked(true);
+            userRepository.save(account);
+
+            attributes.addFlashAttribute("type", "success");
+            attributes.addFlashAttribute("message", "Sign up request is success");
+        }
+        return "redirect:/login";
     }
 
-    @PostMapping("/user/signature")
-    public String updateSignature(@CurrentUser Account user, @RequestParam("base64signature") String base64signature, RedirectAttributes attributes) {
-        Optional<Account> optionalUser = userRepository.findById(user.getId());
-        if(optionalUser.isPresent()) {
-            Account u = optionalUser.get();
+//    @GetMapping("/user/signature")
+//    public String signature(@CurrentUser Account user, Model model) {
+//        Optional<Signature> optionalSignature = signatureRepository.findById(user.getUsername());
+//        model.addAttribute("signature", optionalSignature.isPresent() ? optionalSignature.get() : new Signature());
+//
+//        return "user/signature";
+//    }
+//
+//    @PostMapping("/user/signature")
+//    public String updateSignature(@CurrentUser Account user, @RequestParam("base64signature") String base64signature, RedirectAttributes attributes) {
+//        Optional<Account> optionalUser = userRepository.findById(user.getId());
+//        if(optionalUser.isPresent()) {
+//            Account u = optionalUser.get();
+//
+//            Signature signature = new Signature();
+//            signature.setBase64signature(base64signature);
+//            signature.setId(u.getUsername());
+//
+//            signatureRepository.save(signature);
+//
+//            user.setSignature(true);
+//            updateAuthentication(user);
+//        }
+//
+//        attributes.addFlashAttribute("message", "서명 정보가 등록 되었습니다.");
+//        return "redirect:/user/signature";
+//    }
 
-            Signature signature = new Signature();
-            signature.setBase64signature(base64signature);
-            signature.setId(u.getUsername());
+    //BootstrapValidate - remote.
+    @PostMapping("/signUp/ajax/validation")
+    @ResponseBody
+    public Map<String, Boolean> signUpUsernameValid(@RequestParam("type") String type,
+                                                    @RequestParam("keyword") String keyword) {
+        List<Account> currentUserAccountList = currentUserComponent.getCurrentUserList();
+        log.debug("Account List : {}", currentUserAccountList);
+        Map<String, Boolean> resultMap = new HashMap<>();
+        Boolean result = true;
 
-            signatureRepository.save(signature);
-
-            user.setSignature(true);
-            updateAuthentication(user);
+        if(type.equals("username")){
+            //내용이 중복되면 false 반환
+            for(Account account : currentUserAccountList){
+                if(!ObjectUtils.isEmpty(account.getUsername()) && account.getUsername().equals(keyword)){
+                    log.info("Validation Field : {}({})", type, keyword);
+                    result = false;
+                    break;
+                }
+            }
+        }else if(type.equals("email")) {
+            log.info("Data Type : {}({})", type, keyword);
+            //내용이 중복되면 false 반환
+            for(Account account : currentUserAccountList){
+                if(!ObjectUtils.isEmpty(account.getEmail()) && account.getEmail().equals(keyword)){
+                    log.info("Validation Field : {}({})", type, keyword);
+                    result = false;
+                    break;
+                }
+            }
         }
 
-        attributes.addFlashAttribute("message", "서명 정보가 등록 되었습니다.");
-        return "redirect:/user/signature";
+        resultMap.put("valid", result);
+        return resultMap;
     }
 
     public void updateAuthentication(Account userDetails) {

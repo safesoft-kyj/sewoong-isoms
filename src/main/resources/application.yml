@@ -20,6 +20,9 @@ logging:
 spring.jndi.ignore: true
 
 spring:
+  devtools:
+    livereload:
+      enabled: true
   main:
     banner-mode: console
     allow-bean-definition-overriding: true
@@ -65,6 +68,12 @@ spring:
     protocol: smtp
     username: safesoft.dev@gmail.com
     password: sa12fe30
+#    host: caumc.or.kr
+#    port: 587
+#    protocol: smtp
+#    username: ISOCAU@caumc.or.kr
+#    password: ISO14155cau
+
     default-encoding: UTF-8
     properties:
       mail:
