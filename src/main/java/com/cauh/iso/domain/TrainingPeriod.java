@@ -8,6 +8,7 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -28,8 +29,7 @@ import java.util.List;
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @SequenceGenerator(name = "TRAINING_PERIOD_SEQ_GENERATOR", sequenceName = "SEQ_TRAINING_PERIOD", initialValue = 1, allocationSize = 1)
-@Audited
-@AuditOverride(forClass = BaseEntity.class)
+@Audited(withModifiedFlag = true)
 public class TrainingPeriod extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 9199531710029094250L;
 
@@ -39,6 +39,7 @@ public class TrainingPeriod extends BaseEntity implements Serializable {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "document_version_id", referencedColumnName = "id")
+    @NotAudited
     private DocumentVersion documentVersion;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -59,9 +60,11 @@ public class TrainingPeriod extends BaseEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "retraining_user_id", referencedColumnName = "id")
+    @NotAudited
     private Account retrainingUser;
 
     @OneToMany(mappedBy = "trainingPeriod")
+    @NotAudited
     private List<TrainingLog> trainingLogs;
 
 

@@ -3,11 +3,14 @@ package com.cauh.common.service;
 import com.cauh.common.entity.Account;
 import com.cauh.common.mapper.DeptUserMapper;
 import com.cauh.common.repository.UserRepository;
+import com.cauh.common.security.authentication.InternalAccountAuthenticationException;
 import com.cauh.common.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -27,13 +30,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final DeptUserMapper deptUserMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    @Value("${gw.userTbl}")
-    private String gwUserTbl;
-
-    @Value("${gw.deptTbl}")
-    private String gwDeptTbl;
+//    private final DeptUserMapper deptUserMapper;
+//
+//    @Value("${gw.userTbl}")
+//    private String gwUserTbl;
+//
+//    @Value("${gw.deptTbl}")
+//    private String gwDeptTbl;
 
     @Override
     public Account loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -41,6 +46,27 @@ public class UserServiceImpl implements UserService {
         Optional<Account> optionalUser = userRepository.findByUsername(username);
         if(optionalUser.isPresent()) {
             return optionalUser.get();
+        }
+        throw new UsernameNotFoundException("[" + username + "] Username Not Found.");
+    }
+
+    @Override
+    public Account authenticate(String username, String password){
+        log.info("@UserService : Authenticate");
+        Optional<Account> accountOptional = userRepository.findByUsername(username);
+
+        if(accountOptional.isPresent())
+        {
+            log.info("@Authenticate ID 확인");
+            //비밀번호 Matching이 되지 않거나, Account 계정이 없는 경우 실패
+            Account account = accountOptional.get();
+
+            account.getPassword();
+
+            if(passwordEncoder.matches(password, account.getPassword())) {
+                return account;
+            }
+            throw new InternalAccountAuthenticationException("내부사용자 로그인에 실패하였습니다.");
         }
         throw new UsernameNotFoundException("[" + username + "] Username Not Found.");
     }

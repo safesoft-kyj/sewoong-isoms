@@ -1,6 +1,8 @@
 package com.cauh.iso;
 
 import com.cauh.common.component.CustomAuditorAware;
+import com.cauh.common.entity.Account;
+import com.cauh.iso.component.CurrentUserComponent;
 import com.cauh.iso.property.FileStorageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -18,6 +20,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
+
 //@Configuration
 @ComponentScan({"com.cauh"})
 @EnableTransactionManagement
@@ -34,6 +40,9 @@ public class ISOApplication {
 
     @Autowired
     private CustomAuditorAware auditorAware;
+
+    @Autowired
+    private CurrentUserComponent currentUserComponent;
 
     public static void main(String[] args) {
         SpringApplication.run(ISOApplication.class, args);

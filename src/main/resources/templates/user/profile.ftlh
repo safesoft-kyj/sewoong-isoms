@@ -10,9 +10,6 @@
         <li class="active">
             <a href="/user/profile">Profile</a>
         </li>
-        <li>
-            <a href="/user/signature">Signature</a>
-        </li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane fade active in">

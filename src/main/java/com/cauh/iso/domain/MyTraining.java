@@ -88,7 +88,7 @@ public class MyTraining implements Serializable {
             inDate = user.getIndate();
         }
 
-        Optional<SOPTrainingMatrix> optionalSOPTrainingMatrix = documentVersion.getTrainingMatrixList()
+        Optional<TrainingMatrix> optionalSOPTrainingMatrix = documentVersion.getTrainingMatrixList()
                 .stream()
                 .filter(t -> t.isTrainingAll()).findFirst();
 

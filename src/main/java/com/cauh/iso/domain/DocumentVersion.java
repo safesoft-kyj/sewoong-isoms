@@ -8,6 +8,7 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,14 +22,13 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "s_document_version", indexes = {
-        @Index(columnList = "document_id,version"),
+        @Index(columnList = "document_id, version"),
         @Index(columnList = "status")
 })
 @Slf4j
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
-@Audited
-@AuditOverride(forClass = BaseEntity.class)
+@Audited(withModifiedFlag = true)
 public class DocumentVersion extends BaseEntity implements Serializable {
 
     @Id
@@ -36,10 +36,12 @@ public class DocumentVersion extends BaseEntity implements Serializable {
     private String id;
 
     @OneToMany(mappedBy = "documentVersion")
-    private List<SOPTrainingMatrix> trainingMatrixList;
+    @NotAudited
+    private List<TrainingMatrix> trainingMatrixList;
 
     @ManyToOne
     @JoinColumn(name = "document_id", referencedColumnName = "id")
+    @NotAudited
     private Document document;
 
     @Column(name = "version", length = 5)

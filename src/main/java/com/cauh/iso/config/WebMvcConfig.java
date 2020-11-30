@@ -71,10 +71,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public ExternalCustomerCheckInterceptor externalCustomerCheckInterceptor() {
         return new ExternalCustomerCheckInterceptor();
     }
-    @Bean
-    public SignatureCheckInterceptor signatureCheckInterceptor() {
-        return new SignatureCheckInterceptor();
-    }
+
+//    @Bean
+//    public SignatureCheckInterceptor signatureCheckInterceptor() {
+//        return new SignatureCheckInterceptor();
+//    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -91,14 +92,16 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/please-enter-your-access-code",
                         "/agreement-to-collect-and-use-personal-information",
                         "/non-disclosure-agreement-for-sop");
-        registry.addInterceptor(signatureCheckInterceptor())
-                .addPathPatterns("/**")
-                .excludePathPatterns("/static/**", "/login", "/logout", "/error", "/expired", "/invalidSession", "/api/**", "/favicon.ico", "/ajax/**",
-                        "/denied",
-                        "/please-enter-your-access-code",
-                        "/agreement-to-collect-and-use-personal-information",
-                        "/non-disclosure-agreement-for-sop",
-                        "/user/signature");
+
+        //YSH : 2020-1124 - Signature 미사용으로 인한 Interceptor 비활성화.
+//        registry.addInterceptor(signatureCheckInterceptor())
+//                .addPathPatterns("/**")
+//                .excludePathPatterns("/static/**", "/login", "/logout", "/error", "/expired", "/invalidSession", "/api/**", "/favicon.ico", "/ajax/**",
+//                        "/denied",
+//                        "/please-enter-your-access-code",
+//                        "/agreement-to-collect-and-use-personal-information",
+//                        "/non-disclosure-agreement-for-sop",
+//                        "/user/signature");
     }
 
     @Bean

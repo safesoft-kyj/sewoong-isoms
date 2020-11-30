@@ -125,74 +125,56 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-//        try {
         String username = authentication.getName();
-
-        Account userDetails;
-
         CustomWebAuthenticationDetails customWebAuthenticationDetails = (CustomWebAuthenticationDetails) authentication.getDetails();
-
         Object credentials = authentication.getCredentials();
-//        log.debug("credentials : {}", credentials);
         boolean isInternalUser = username.indexOf("@") == -1;
-//        List<String> usernames = new ArrayList<>();
-//        usernames.add("mjlee");
-//        usernames.add("hjlee");
-
-
+        Account userDetails = null;
 
         if(isInternalUser) {
-            log.debug("==> 중앙대병원 내부사용자 로그인 : {}", username);
+            log.debug("==> 부사용자 로그인 : {}", username);
             String ip = ((CustomWebAuthenticationDetails) authentication.getDetails()).getClientIP();
             log.info("===> @username : {}, IP : {}", username, ip);
 
 //            boolean isInternal = ip.startsWith("192.168.21");
 //            boolean isVPN = ip.startsWith("10.212.134");
 //            boolean isAdmin = username.endsWith("#admin");
-
 //            log.info("==> isInternal : {}, isVPN : {}, isAdmin : {}", isInternal, isVPN, isAdmin);
+
+            boolean isAdmin = username.endsWith("#admin");
+
+            log.info("==> isAdmin : {}", isAdmin);
 //            if(!isInternal && !isVPN && !isAdmin) {
 //                log.error("접속을 허용하지 않는 IP[{}] 입니다.", ip);
 //                throw new GroupwareAuthenticationException("접속을 허용하지 않는 IP 입니다.");
 //            }
 
-            userDetails = userService.loadUserByUsername(username);
+            if(isAdmin && "admin!!".equals(credentials)) {
+                log.info("관리자 로그인({})", username);
+                username = username.substring(0, username.indexOf("#"));
+                userDetails = userService.loadUserByUsername(username);
+            }else {
+                userDetails = userService.authenticate(username, (String)credentials);
+            }
+
             preAuthenticationChecks(userDetails);
+
             userDetails.setUserType(UserType.U);
-            userDetails.setSignature(signatureRepository.findById(username).isPresent());
+
+            //userDetails.setSignature(signatureRepository.findById(username).isPresent());
 
             List<RoleAccount> roleAccounts = roleAccountRepository.findAllByAccount(userDetails);
             userDetails.setRoleAccounts(roleAccounts);
 
-            log.info("@User : {}", userDetails.getRoleAccounts());
-
-//            /**
-//             * 로그인 한 사용자의 Job Description 정보 설정
-//             */
-//            log.info("@User -> JobDescription : {}", userDetails.getJobDescriptions());
-//            QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
-//            BooleanBuilder builder = new BooleanBuilder();
-//            builder.and(qUserJobDescription.username.eq(username));
-//            builder.and(qUserJobDescription.status.in(JobDescriptionStatus.APPROVED));
-//            Iterable<UserJobDescription> iterable = userJobDescriptionRepository.findAll(builder);
-//            if(!ObjectUtils.isEmpty(iterable)) {
-//                userDetails.setJobDescriptions(StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList()));
-//                log.info("==> 사용자의 Job Assign Date 정보 설정");
-//                userDetails.setJobAssignDateMap(StreamSupport.stream(iterable.spliterator(), false)
-//                        .collect(Collectors.toMap(u -> u.getJobDescriptionVersion().getJobDescription().getId(), u -> u.getAssignDate())));
-//
-//                log.info("<== {} : JobAssignDateMap : {}", username, userDetails.getJobAssignDateMap());
-//            }
-
         } else {
             Optional<Account> optionalUser = externalCustomUserService.findByEmail(username);
-
             log.debug("==> 외부 사용자 로그인 : {}", username);
             if(optionalUser.isPresent() == false) {
                 throw new AccountExpiredException("자격 증명 확인에 실패 하였습니다.");
             }
 
             userDetails = optionalUser.get();
+            userDetails.setUserType(UserType.AUDITOR);
         }
 
 //        log.info("User Role => {}", userDetails.getRole());
@@ -287,7 +269,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
         /**
          * Job Description 의 Short Name 을 사용자의 권한(role) 로 설정한다.
          */
-        if(userDetails.getUserType() == UserType.U) {
+        if(userDetails.getUserType() == UserType.A){
+            authorities = AuthorityUtils.commaSeparatedStringToAuthorityList("ADMIN");
+        } else if(userDetails.getUserType() == UserType.U) {
 //            if (!ObjectUtils.isEmpty(userDetails.getJobDescriptions())) {
 //                String commaStringAuthorities = userDetails.getJobDescriptions().stream().map(jd -> jd.getJobDescriptionVersion().getJobDescription().getShortName()).collect(Collectors.joining(","));
 //                authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(commaStringAuthorities);
@@ -301,7 +285,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
                 authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(commaStringAuthorities);
                 log.debug("==> Username : {}, Role : {}", username, authorities);
             }
-
 
         } else if(userDetails.getUserType() == UserType.AUDITOR) {
             authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(UserType.AUDITOR.name());

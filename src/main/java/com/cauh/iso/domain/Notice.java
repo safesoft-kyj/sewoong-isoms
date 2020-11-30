@@ -23,7 +23,6 @@ import java.util.List;
 @ToString(of = {"id", "title"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Audited(withModifiedFlag = true)
-@AuditOverride(forClass = BaseEntity.class)
 //@Convert(attributeName = "topViewEndDate", converter = TimestampConverter.class)
 public class Notice extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 896163268708693720L;

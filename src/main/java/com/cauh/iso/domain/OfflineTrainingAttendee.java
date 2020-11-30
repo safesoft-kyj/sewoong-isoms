@@ -7,6 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.envers.AuditTable;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,6 +21,7 @@ import java.io.Serializable;
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @SequenceGenerator(name = "OFF_TRAINING_ATTENDEE_SEQ_GENERATOR", sequenceName = "SEQ_OFF_TRAINING_ATTENDEE", initialValue = 1, allocationSize = 1)
+@Audited(withModifiedFlag = true)
 public class OfflineTrainingAttendee extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 2445370839488735764L;
 

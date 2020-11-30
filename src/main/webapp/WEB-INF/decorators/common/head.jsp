@@ -17,14 +17,11 @@
 <!--Open Sans Font [ OPTIONAL ] -->
 <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;subset=latin" rel="stylesheet">
 
-
 <!--Bootstrap Stylesheet [ REQUIRED ]-->
 <link href="/static/css/bootstrap.min.css" rel="stylesheet">
 
-
 <!--Nifty Stylesheet [ REQUIRED ]-->
 <link href="/static/css/nifty.min.css" rel="stylesheet">
-
 
 <!--Premium Icons [ OPTIONAL ]-->
 <link href="/static/premium/icon-sets/icons/line-icons/premium-line-icons.min.css" rel="stylesheet">
@@ -286,8 +283,13 @@ Detailed information and more samples can be found in the document.
 <c:if test="${not empty message}">
     <script>
         $(document).ready(function () {
+            let type = 'info'
+            <c:if test="${not empty type}">
+            type = '${type}';
+            </c:if>
+
             $.niftyNoty({
-                type: 'info',
+                type: type,
                 container: 'floating',
                 // html: alert_content[alert_layout].type,
                 message: '${message}',

@@ -81,21 +81,6 @@
         </ul>
     </li>
     <li>
-        <a href="#" aria-expanded="false">
-            <i class="pli-check"></i>
-            <span class="menu-title">전자결재</span>
-            <i class="arrow"></i>
-        </a>
-        <!--Submenu-->
-        <ul class="collapse" aria-expanded="false">
-            <li><a href="/admin/approval">전체문서함</a></li>
-            <li><a href="/admin/approval/request">요청함</a></li>
-            <li><a href="/admin/approval/progress">진행함</a></li>
-            <li><a href="/admin/approval/approved">완료함</a></li>
-            <li><a href="/admin/approval/rejected">반려함</a></li>
-        </ul>
-    </li>
-    <li>
         <a href="/admin/authority" aria-expanded="false">
             <i class="pli-checked-user"></i>
             <span class="menu-title">User Management</span>

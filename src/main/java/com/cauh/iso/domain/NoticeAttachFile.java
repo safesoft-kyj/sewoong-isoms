@@ -18,7 +18,6 @@ import java.io.Serializable;
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Audited(withModifiedFlag = true)
-@AuditOverride(forClass = BaseEntity.class)
 public class NoticeAttachFile extends BaseEntity implements Serializable {
     private static final long serialVersionUID = -6940320014950482889L;
 

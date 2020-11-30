@@ -2,8 +2,11 @@ package com.cauh.iso.domain;
 
 
 import com.cauh.common.entity.BaseEntity;
+import com.cauh.iso.domain.constant.DocumentType;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.envers.AuditOverride;
+import org.hibernate.envers.Audited;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
@@ -17,6 +20,7 @@ import java.io.Serializable;
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @SequenceGenerator(name = "TRAINING_MATRIX_FILE_SEQ_GENERATOR", sequenceName = "SEQ_TRAINING_MATRIX_FILE", initialValue = 1, allocationSize = 1)
+@Audited(withModifiedFlag = true)
 public class TrainingMatrixFile extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = -6517035819947273041L;
@@ -36,6 +40,10 @@ public class TrainingMatrixFile extends BaseEntity implements Serializable {
     @Column(name = "file_type", columnDefinition = "nvarchar(255)", nullable = false)
     private String fileType;
 
+    @Column(name = "document_type")
+    @Enumerated(EnumType.STRING)
+    private DocumentType documentType;
+
     @Column(name = "file_size")
     private long fileSize;
 
@@ -43,11 +51,12 @@ public class TrainingMatrixFile extends BaseEntity implements Serializable {
     private MultipartFile uploadFile;
 
     @Builder
-    public TrainingMatrixFile(String title, String fileName, String originalFileName, String fileType, long fileSize) {
+    public TrainingMatrixFile(String title, String fileName, String originalFileName, String fileType, DocumentType documentType, long fileSize) {
         this.title = title;
         this.fileName = fileName;
         this.originalFileName = originalFileName;
         this.fileType = fileType;
+        this.documentType = documentType;
         this.fileSize = fileSize;
     }
 }

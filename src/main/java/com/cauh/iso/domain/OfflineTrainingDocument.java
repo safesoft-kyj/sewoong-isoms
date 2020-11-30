@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,6 +19,7 @@ import java.io.Serializable;
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id", "documentVersion"}, callSuper = false)
 @SequenceGenerator(name = "OFF_TRAINING_SOP_SEQ_GENERATOR", sequenceName = "SEQ_OFF_TRAINING_SOP", initialValue = 1, allocationSize = 1)
+@Audited(withModifiedFlag = true)
 public class OfflineTrainingDocument extends BaseEntity implements Serializable {
     private static final long serialVersionUID = -5898541634027846398L;
 

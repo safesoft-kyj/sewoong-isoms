@@ -104,7 +104,7 @@ public class AdminSOPController {
                     if(documentVersion.getTrainingMatrixList().stream().filter(d -> d.isTrainingAll()).count() > 0) {
                         documentVersion.setTrainingAll(true);
                     } else {
-                        List<String> ids = documentVersion.getTrainingMatrixList().stream().map(s -> Integer.toString(s.getJobDescription().getId())).collect(Collectors.toList());
+                        List<String> ids = documentVersion.getTrainingMatrixList().stream().map(s -> Long.toString(s.getRole().getId())).collect(Collectors.toList());
                         documentVersion.setJdIds(ids.toArray(new String[ids.size()]));
                     }
                 } else {

@@ -3,6 +3,7 @@ package com.cauh.iso;
 import com.cauh.common.entity.*;
 import com.cauh.common.repository.*;
 import com.cauh.common.service.UserService;
+import com.cauh.iso.component.CurrentUserComponent;
 import com.cauh.iso.domain.*;
 import com.cauh.iso.domain.constant.DocumentStatus;
 import com.cauh.iso.domain.constant.DocumentType;
@@ -43,12 +44,17 @@ public class InitializeDataRunner implements ApplicationRunner {
     private final TrainingPeriodRepository trainingPeriodRepository;
     private final JobDescriptionVersionRepository jobDescriptionVersionRepository;
 
+    private final CurrentUserComponent currentUserComponent;
+
 //    private final DeptUserMapper deptUserMapper;
     private final UserService userService;
 
     public void run(ApplicationArguments args) {
         log.info("springJpaDDLAuto => {}", springJpaDDLAuto);
         log.info("@Env : {}", activeProfile);
+
+        //현재 유저 Update
+        currentUserComponent.updateCurrentUserList();
 
         if("dev".equals(activeProfile) && !userService.findByUsername("admin").isPresent()) {
             //DEV 환경에서 시작 시, 초기 세팅
@@ -240,12 +246,12 @@ public class InitializeDataRunner implements ApplicationRunner {
     }
 
     public void addTrainingMatrix(DocumentVersion documentVersion) {
-        SOPTrainingMatrix sopTrainingMatrix = SOPTrainingMatrix.builder()
+        TrainingMatrix trainingMatrix = TrainingMatrix.builder()
                 .documentVersion(documentVersion)
                 .trainingAll(true)
                 .build();
 
-        sopTrainingMatrixRepository.save(sopTrainingMatrix);
+        sopTrainingMatrixRepository.save(trainingMatrix);
     }
 
 
