@@ -4,6 +4,7 @@
 <head>
     <title>eSOP > Authority Management > 사용자 관리</title>
     <script>
+        //Training 진행 여부
         $(document).ready(function() {
            $("button[name='trainingBtn']").click(function() {
                $.ajax({
@@ -32,6 +33,8 @@
                    }
                });
            });
+
+           //이메일 수신여부 확인
            $("button[name='receiveEmailBtn']").click(function() {
                $.ajax({
                    url:'/admin/authority/users/'+$(this).data("id")+'/receiveEmail',
@@ -131,11 +134,17 @@
                 <thead>
                 <tr class="bg-gray-light">
                     <th class="text-center" style="width:80px">No.</th>
+                    <th class="text-center">ID</th>
                     <th class="text-center">부서</th>
                     <th class="text-center">팀</th>
                     <th class="text-center">이름</th>
+                    <th class="text-center">생년월일</th>
+                    <th class="text-center">연락처</th>
+                    <th class="text-center">E-mail</th>
                     <th class="text-center">교육 진행</th>
                     <th class="text-center">이메일 수신</th>
+                    <th class="text-center">#Actions</th>
+                    <th class="text-center"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -143,11 +152,28 @@
                     <#list users.content as t>
                         <tr>
                             <td class="text-center">${(users.totalElements - (users.size * users.number)) - t?index}</td>
+                            <td class="text-center">${t.username}</td>
                             <td class="text-center">${t.orgDepart!''}</td>
                             <td class="text-center">${t.orgTeam!''}</td>
                             <td class="text-center">${t.name}</td>
+                            <td class="text-center">${t.birthDate?string('yyyy-MM-dd')}</td>
+                            <td class="text-center">${t.phone}</td>
+                            <td class="text-center">${t.email}</td>
                             <td class="text-center"><button class="btn btn-icon btn-${t.training?then('success', 'default')} btn-circle" data-id="${t.id}" name="trainingBtn" id="trainingBtn${t.id}"><i class="fa fa-check"></i></button></td>
                             <td class="text-center"><button class="btn btn-icon btn-${t.receiveEmail?then('success', 'default')} btn-circle" data-id="${t.id}" name="receiveEmailBtn" id="receiveEmailBtn${t.id}"><i class="fa fa-check"></i></button></td>
+                            <td class="text-center">
+                                <#if t.eanbled!true>
+                                    <form action="pwReset" method="POST">
+                                        <a href="/admin/authority/users/${t.id}" class="btn btn-icon btn-info">Edit</a>
+                                        <button class="btn btn-icon btn-danger">Password Reset</button>
+                                    </form>
+                                <#elseif t.enabled!false>
+                                    <form action="A" method="POST">
+                                        <button class="btn btn-icon btn-info">Accept</button>
+                                        <button class="btn btn-icon btn-danger">Reject</button>
+                                    </form>
+                                </#if>
+                            </td>
                         </tr>
                     </#list>
                 <#else>

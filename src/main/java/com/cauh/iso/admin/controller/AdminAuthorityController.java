@@ -124,6 +124,7 @@ public class AdminAuthorityController {
     }
 
 
+    //교육 진행 여부 설정 변경.
     @PutMapping("/authority/users/{id}/training")
     @ResponseBody
     public Map<String, String> setTraining(@PathVariable("id") Integer id) {

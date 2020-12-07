@@ -121,7 +121,6 @@ public class UserController {
                 }
             }
         }
-
         resultMap.put("valid", result);
         return resultMap;
     }
