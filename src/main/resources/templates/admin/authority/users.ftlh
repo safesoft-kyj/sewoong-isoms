@@ -2,7 +2,7 @@
 <#import "/spring.ftl" as spring />
 <html>
 <head>
-    <title>eSOP > Authority Management > 사용자 관리</title>
+    <title>ISO Management System > Authority Management > 사용자 관리</title>
     <script>
         //Training 진행 여부
         $(document).ready(function() {
@@ -162,23 +162,26 @@
                             <td class="text-center"><button class="btn btn-icon btn-${t.training?then('success', 'default')} btn-circle" data-id="${t.id}" name="trainingBtn" id="trainingBtn${t.id}"><i class="fa fa-check"></i></button></td>
                             <td class="text-center"><button class="btn btn-icon btn-${t.receiveEmail?then('success', 'default')} btn-circle" data-id="${t.id}" name="receiveEmailBtn" id="receiveEmailBtn${t.id}"><i class="fa fa-check"></i></button></td>
                             <td class="text-center">
-                                <#if t.eanbled!true>
+                                <#if t.userStatus?has_content && t.userStatus == 'ACTIVE'>
                                     <form action="pwReset" method="POST">
                                         <a href="/admin/authority/users/${t.id}" class="btn btn-icon btn-info">Edit</a>
                                         <button class="btn btn-icon btn-danger">Password Reset</button>
                                     </form>
-                                <#elseif t.enabled!false>
-                                    <form action="A" method="POST">
-                                        <button class="btn btn-icon btn-info">Accept</button>
-                                        <button class="btn btn-icon btn-danger">Reject</button>
+                                <#elseif t.userStatus?has_content && t.userStatus == 'SIGNUP_REQUEST'>
+                                    <form class="form-horizontal" method="POST">
+                                        <input name="id" type="hidden" value="${t.id}" />
+                                        <button class="btn btn-icon btn-info" name="result" value="accept">Accept</button>
+                                        <button class="btn btn-icon btn-danger" name="result" value="reject">Reject</button>
                                     </form>
+                                <#elseif t.userStatus?has_content && t.userStatus == 'RETIREE'>
+                                    <span class="badge badge-info text-2x">퇴사자</span>
                                 </#if>
                             </td>
                         </tr>
                     </#list>
                 <#else>
                     <tr>
-                        <td colspan="6" class="text-center">등록된 데이터가 없습니다.</td>
+                        <td colspan="11" class="text-center">등록된 데이터가 없습니다.</td>
                     </tr>
                 </#if>
                 </tbody>

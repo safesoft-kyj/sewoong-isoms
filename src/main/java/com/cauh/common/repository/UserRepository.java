@@ -1,6 +1,7 @@
 package com.cauh.common.repository;
 
 import com.cauh.common.entity.Account;
+import com.cauh.common.entity.constant.UserStatus;
 import com.cauh.common.entity.constant.UserType;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -16,6 +17,9 @@ public interface UserRepository extends PagingAndSortingRepository<Account, Inte
     Optional<Account> findByUsername(@Param("username") String username);
 
     List<Account> findAllByUserTypeAndEnabledOrderByNameAsc(UserType userType, boolean enabled);
+
+    //WHERE enabled = ? and user_status in (?, ?)
+    List<Account> findAllByEnabledAndUserStatusIn(boolean enabled, List<UserStatus> userStatus);
 
 //    Page<Account> findAllByUserTypeAndEnabled(UserType userType, boolean enabled, Pageable pageable);
 }

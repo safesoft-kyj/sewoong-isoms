@@ -40,7 +40,7 @@ public class InitializeDataRunner implements ApplicationRunner {
     private final DocumentRepository documentRepository;
     private final PasswordEncoder passwordEncoder;
     private final DocumentVersionRepository documentVersionRepository;
-    private final SOPTrainingMatrixRepository sopTrainingMatrixRepository;
+    private final TrainingMatrixRepository trainingMatrixRepository;
     private final TrainingPeriodRepository trainingPeriodRepository;
     private final JobDescriptionVersionRepository jobDescriptionVersionRepository;
 
@@ -251,7 +251,7 @@ public class InitializeDataRunner implements ApplicationRunner {
                 .trainingAll(true)
                 .build();
 
-        sopTrainingMatrixRepository.save(trainingMatrix);
+        trainingMatrixRepository.save(trainingMatrix);
     }
 
 

@@ -24,7 +24,6 @@
             <li><a href="/admin/SOP/management/retirement">Retirement SOP</a></li>
             <li><a href="/admin/sop/category">SOP Category</a></li>
         </ul>
-
     </li>
     <li>
         <a href="#" aria-expanded="false">
@@ -103,7 +102,7 @@
         <!--Submenu-->
         <ul class="collapse" aria-expanded="false">
             <li><a href="/admin/document/accessLog">System Access Log</a></li>
-            <li><a href="/admin/document/change-control">Change Control</a></li>
+            <li><a href="/admin/change-control">Change Control</a></li>
         </ul>
 
     </li>

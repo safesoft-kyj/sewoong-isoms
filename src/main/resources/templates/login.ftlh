@@ -24,7 +24,6 @@
     <script src="/static/js/bootstrap.min.js"></script>
     <!--Bootstrap Validator -->
     <script src="/static/plugins/bootstrap-validator/bootstrapValidator.js"></script>
-
     <!-- Bootstrap DatePicker -->
     <script src="/static/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
 

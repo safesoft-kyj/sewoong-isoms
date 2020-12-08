@@ -2,7 +2,7 @@
 <#import "/spring.ftl" as spring />
 <html>
 <head>
-    <title>eSOP > Authority Management > SOP 비공개 동의</title>
+    <title>ISO Management System > Authority Management > SOP 비공개 동의</title>
 </head>
 <body>
 

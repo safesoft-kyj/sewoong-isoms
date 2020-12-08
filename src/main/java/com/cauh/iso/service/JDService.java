@@ -4,10 +4,10 @@ import com.cauh.common.entity.JobDescription;
 import com.cauh.common.entity.Role;
 import com.cauh.common.repository.JobDescriptionRepository;
 import com.cauh.iso.domain.DocumentVersion;
-import com.cauh.iso.domain.QSOPTrainingMatrix;
+import com.cauh.iso.domain.QTrainingMatrix;
 import com.cauh.iso.domain.TrainingMatrix;
 import com.cauh.iso.domain.constant.DocumentType;
-import com.cauh.iso.repository.SOPTrainingMatrixRepository;
+import com.cauh.iso.repository.TrainingMatrixRepository;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,13 +27,13 @@ import java.util.stream.StreamSupport;
 @RequiredArgsConstructor
 public class JDService {
     private final JobDescriptionRepository jobDescriptionRepository;
-    private final SOPTrainingMatrixRepository sopTrainingMatrixRepository;
+    private final TrainingMatrixRepository trainingMatrixRepository;
 
     public void saveAll(DocumentVersion documentVersion, boolean isAllTraining, String[] jdIds) {
-        QSOPTrainingMatrix qsopTrainingMatrix = QSOPTrainingMatrix.sOPTrainingMatrix;
+        QTrainingMatrix qsopTrainingMatrix = QTrainingMatrix.trainingMatrix;
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qsopTrainingMatrix.documentVersion.id.eq(documentVersion.getId()));
-        Iterable<TrainingMatrix> sopTrainingMatrices = sopTrainingMatrixRepository.findAll(builder);
+        Iterable<TrainingMatrix> sopTrainingMatrices = trainingMatrixRepository.findAll(builder);
 
         if(documentVersion.getDocument().getType() == DocumentType.SOP) {
             if (isAllTraining == false) {
@@ -48,7 +48,7 @@ public class JDService {
                 List<TrainingMatrix> removeList = StreamSupport.stream(sopTrainingMatrices.spliterator(), false)
                         .filter(s -> s.isTrainingAll() == true || ObjectUtils.isEmpty(s.getRole()) == false && selectedIds.contains(Long.toString(s.getRole().getId())) == false)
                         .collect(Collectors.toList());
-                sopTrainingMatrixRepository.deleteAll(removeList);
+                trainingMatrixRepository.deleteAll(removeList);
 
                 List<String> newIds = selectedIds.stream().filter(id -> savedIds.contains(id) == false).collect(Collectors.toList());
                 log.info("=>신규 추가 JD ID(s) : {}", newIds);
@@ -57,7 +57,7 @@ public class JDService {
                     trainingMatrix.setDocumentVersion(documentVersion);
                     trainingMatrix.setRole(Role.builder().id(Long.parseLong(id)).build());
 
-                    sopTrainingMatrixRepository.save(trainingMatrix);
+                    trainingMatrixRepository.save(trainingMatrix);
                 }
             } else {
                 log.info(" => 기존에 지정된 JD 정보를 삭제한다. {}", documentVersion.getId());
@@ -68,7 +68,7 @@ public class JDService {
                 } else {
                     sopTrainingMatrices.forEach(matrix -> {
                         log.debug("=> matrix 삭제 : {}", matrix.getId());
-                        sopTrainingMatrixRepository.delete(matrix);
+                        trainingMatrixRepository.delete(matrix);
                     });
 //                sopTrainingMatrixRepository.deleteAll(sopTrainingMatrices);
                     log.info(" <= 기존에 지정된 JD 삭제 완료 : {}", documentVersion.getId());
@@ -77,7 +77,7 @@ public class JDService {
                     trainingMatrix.setDocumentVersion(documentVersion);
                     trainingMatrix.setTrainingAll(true);
 
-                    sopTrainingMatrixRepository.save(trainingMatrix);
+                    trainingMatrixRepository.save(trainingMatrix);
                 }
             }
         }

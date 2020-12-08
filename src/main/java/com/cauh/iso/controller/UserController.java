@@ -1,6 +1,7 @@
 package com.cauh.iso.controller;
 
 import com.cauh.common.entity.Account;
+import com.cauh.common.entity.constant.UserStatus;
 import com.cauh.common.entity.constant.UserType;
 import com.cauh.common.repository.SignatureRepository;
 import com.cauh.common.repository.UserRepository;
@@ -12,6 +13,7 @@ import org.apache.xpath.operations.Bool;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Controller
@@ -33,6 +36,8 @@ public class UserController {
     private final CurrentUserComponent currentUserComponent;
 
     private final SignatureRepository signatureRepository;
+
+    private final PasswordEncoder passwordEncoder;
 
     private List<Account> accounts = new ArrayList<>();
 
@@ -52,9 +57,27 @@ public class UserController {
             attributes.addFlashAttribute("type", "danger");
             attributes.addFlashAttribute("message", "Sign Up request was failed");
         } else {
-            //TODO : 
+            //userStatus를 통해 현재 유저 상태 설정 (SIGNUP_REQUEST)
             account.setUserType(UserType.U);
-            account.setAccountNonLocked(true);
+            account.setAccountNonLocked(false);
+            account.setEnabled(true);
+            account.setUserStatus(UserStatus.SIGNUP_REQUEST);
+            
+            //가입 시 계정 유효기한을 설정(가입시점 + D-14)
+            Date now = new Date();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(now);
+            calendar.add(Calendar.DATE, 14);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            account.setAccountExpiredDate(calendar.getTime());
+
+            //입력된 비밀번호 암호화
+            account.setPassword(passwordEncoder.encode(account.getPassword()));
+
+            //계정정보 저장
             userRepository.save(account);
 
             attributes.addFlashAttribute("type", "success");

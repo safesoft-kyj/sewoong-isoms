@@ -1,9 +1,6 @@
 package com.cauh.iso.repository;
 
-import com.cauh.common.entity.QAccount;
-import com.cauh.common.entity.Account;
-import com.cauh.common.entity.QUserJobDescription;
-import com.cauh.common.entity.UserJobDescription;
+import com.cauh.common.entity.*;
 import com.cauh.common.entity.constant.JobDescriptionStatus;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.iso.domain.*;
@@ -27,32 +24,32 @@ import org.springframework.util.StringUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.cauh.iso.domain.QSOPTrainingMatrix.sOPTrainingMatrix;
+import static com.cauh.iso.domain.QTrainingMatrix.trainingMatrix;
 import static com.querydsl.sql.SQLExpressions.min;
 
 @Slf4j
 @RequiredArgsConstructor
-public class SOPTrainingMatrixRepositoryImpl implements SOPTrainingMatrixRepositoryCustom {
+public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     private final UserRepository userRepository;
 
-    public Page<MyTrainingMatrix> getMyTrainingMatrix(Pageable pageable, List<UserJobDescription> userJobDescriptions) {
+    public Page<MyTrainingMatrix> getMyTrainingMatrix(Pageable pageable, List<RoleAccount> roleAccountList) {
 
         BooleanBuilder builder = new BooleanBuilder();
-        if(ObjectUtils.isEmpty(userJobDescriptions)) {
-            builder.and(sOPTrainingMatrix.trainingAll.eq(true));
+        if(ObjectUtils.isEmpty(roleAccountList)) {
+            builder.and(trainingMatrix.trainingAll.eq(true));
         } else {
-            List<Integer> jobDescriptionIds = userJobDescriptions.stream().map(d -> d.getJobDescriptionVersion().getJobDescription().getId()).collect(Collectors.toList());
-            builder.and(sOPTrainingMatrix.trainingAll.eq(true).or(sOPTrainingMatrix.jobDescription.id.in(jobDescriptionIds)));
+            List<Long> roleAccountIds = roleAccountList.stream().map(d -> d.getRole().getId()).collect(Collectors.toList());
+            builder.and(trainingMatrix.trainingAll.eq(true).or(trainingMatrix.role.id.in(roleAccountIds)));
         }
 
-        QueryResults<MyTrainingMatrix> results = queryFactory.selectDistinct(Projections.constructor(MyTrainingMatrix.class, sOPTrainingMatrix.documentVersion.document, sOPTrainingMatrix.documentVersion))
-                .from(sOPTrainingMatrix)
-                .where(sOPTrainingMatrix.documentVersion.document.type.eq(DocumentType.SOP))
-                .where(sOPTrainingMatrix.documentVersion.status.eq(DocumentStatus.EFFECTIVE))
+        QueryResults<MyTrainingMatrix> results = queryFactory.selectDistinct(Projections.constructor(MyTrainingMatrix.class, trainingMatrix.documentVersion.document, trainingMatrix.documentVersion))
+                .from(trainingMatrix)
+                .where(trainingMatrix.documentVersion.document.type.eq(DocumentType.SOP))
+                .where(trainingMatrix.documentVersion.status.eq(DocumentStatus.EFFECTIVE))
                 .where(builder)
-                .orderBy(sOPTrainingMatrix.documentVersion.document.docId.asc())
+                .orderBy(trainingMatrix.documentVersion.document.docId.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
@@ -60,15 +57,15 @@ public class SOPTrainingMatrixRepositoryImpl implements SOPTrainingMatrixReposit
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 
-    public List<MyTrainingMatrix> getMyTrainingMatrix(List<UserJobDescription> userJobDescriptions) {
-        if(!ObjectUtils.isEmpty(userJobDescriptions)) {
-            List<Integer> jobDescriptionIds = userJobDescriptions.stream().map(d -> d.getJobDescriptionVersion().getJobDescription().getId()).collect(Collectors.toList());
-            List<MyTrainingMatrix> results = queryFactory.selectDistinct(Projections.constructor(MyTrainingMatrix.class, sOPTrainingMatrix.documentVersion.document, sOPTrainingMatrix.documentVersion))
-                    .from(sOPTrainingMatrix)
-                    .where(sOPTrainingMatrix.documentVersion.document.type.eq(DocumentType.SOP))
-                    .where(sOPTrainingMatrix.documentVersion.status.eq(DocumentStatus.EFFECTIVE))
-                    .where(sOPTrainingMatrix.trainingAll.eq(true).or(sOPTrainingMatrix.jobDescription.id.in(jobDescriptionIds)))
-                    .orderBy(sOPTrainingMatrix.documentVersion.document.docId.asc())
+    public List<MyTrainingMatrix> getMyTrainingMatrix(List<RoleAccount> roleAccountList) {
+        if(!ObjectUtils.isEmpty(roleAccountList)) {
+            List<Long> roleAccountIds = roleAccountList.stream().map(d -> d.getRole().getId()).collect(Collectors.toList());
+            List<MyTrainingMatrix> results = queryFactory.selectDistinct(Projections.constructor(MyTrainingMatrix.class, trainingMatrix.documentVersion.document, trainingMatrix.documentVersion))
+                    .from(trainingMatrix)
+                    .where(trainingMatrix.documentVersion.document.type.eq(DocumentType.SOP))
+                    .where(trainingMatrix.documentVersion.status.eq(DocumentStatus.EFFECTIVE))
+                    .where(trainingMatrix.trainingAll.eq(true).or(trainingMatrix.role.id.in(roleAccountIds)))
+                    .orderBy(trainingMatrix.documentVersion.document.docId.asc())
                     .fetch();
 
             return results;
@@ -95,19 +92,21 @@ public class SOPTrainingMatrixRepositoryImpl implements SOPTrainingMatrixReposit
             BooleanBuilder builder = new BooleanBuilder();
 
             if (requirement == TrainingRequirement.mandatory) {
-                builder.and(sOPTrainingMatrix.trainingAll.eq(true));
+                builder.and(trainingMatrix.trainingAll.eq(true));
                 if(ObjectUtils.isEmpty(jobDescriptionIds) == false) {
-                    builder.or(sOPTrainingMatrix.jobDescription.id.in(jobDescriptionIds));
+                    //수정 필요
+//                    builder.or(trainingMatrix.jobDescription.id.in(jobDescriptionIds));
                 }
             } else {//optional
                 BooleanBuilder optionalBuilder = new BooleanBuilder();
-                optionalBuilder.and(sOPTrainingMatrix.trainingAll.eq(true));
+                optionalBuilder.and(trainingMatrix.trainingAll.eq(true));
                 if(ObjectUtils.isEmpty(jobDescriptionIds) == false) {
-                    optionalBuilder.or(sOPTrainingMatrix.jobDescription.id.in(jobDescriptionIds));
+                    //수정 필요
+//                    optionalBuilder.or(trainingMatrix.jobDescription.id.in(jobDescriptionIds));
                 }
-                builder.and(sOPTrainingMatrix.documentVersion.id.notIn(
-                        JPAExpressions.selectDistinct(sOPTrainingMatrix.documentVersion.id)
-                                .from(sOPTrainingMatrix)
+                builder.and(trainingMatrix.documentVersion.id.notIn(
+                        JPAExpressions.selectDistinct(trainingMatrix.documentVersion.id)
+                                .from(trainingMatrix)
                                 .where(optionalBuilder)
                         )
                 );
@@ -115,27 +114,27 @@ public class SOPTrainingMatrixRepositoryImpl implements SOPTrainingMatrixReposit
 
             QueryResults<MyTraining> results = queryFactory
                     .selectDistinct(Projections.constructor(MyTraining.class,
-                            sOPTrainingMatrix.documentVersion.document,
-                            sOPTrainingMatrix.documentVersion,
+                            trainingMatrix.documentVersion.document,
+                            trainingMatrix.documentVersion,
                             qTrainingPeriod,
                             qTrainingLog,
                             qTrainingPeriod.startDate,
                             qTrainingPeriod.endDate)
                     )
-                    .from(sOPTrainingMatrix)
+                    .from(trainingMatrix)
                     .where(builder)
                     .join(qTrainingPeriod)
-                    .on(sOPTrainingMatrix.documentVersion.id.eq(qTrainingPeriod.documentVersion.id)
+                    .on(trainingMatrix.documentVersion.id.eq(qTrainingPeriod.documentVersion.id)
                             .and(qTrainingPeriod.trainingType.eq(TrainingType.SELF))
                             .and(qTrainingPeriod.startDate.loe(new Date()))
-                            .or(sOPTrainingMatrix.documentVersion.id.eq(qTrainingPeriod.documentVersion.id)
+                            .or(trainingMatrix.documentVersion.id.eq(qTrainingPeriod.documentVersion.id)
                                     .and(qTrainingPeriod.trainingType.eq(TrainingType.REFRESH))
                                     .and(qTrainingPeriod.startDate.goe(user.getIndate())))
                     )
                     .leftJoin(qTrainingLog).on(qTrainingPeriod.id.eq(qTrainingLog.trainingPeriod.id).and(qTrainingLog.user.id.eq(user.getId())).and(qTrainingLog.reportStatus.ne(DeviationReportStatus.REJECTED)))
-                    .where(sOPTrainingMatrix.documentVersion.document.type.eq(DocumentType.SOP))
-                    .where(sOPTrainingMatrix.documentVersion.status.in(DocumentStatus.EFFECTIVE, DocumentStatus.APPROVED))
-                    .where(sOPTrainingMatrix.documentVersion.id.notIn(
+                    .where(trainingMatrix.documentVersion.document.type.eq(DocumentType.SOP))
+                    .where(trainingMatrix.documentVersion.status.in(DocumentStatus.EFFECTIVE, DocumentStatus.APPROVED))
+                    .where(trainingMatrix.documentVersion.id.notIn(
                             JPAExpressions.selectDistinct(qDocumentVersion.parentVersion.id)
                                     .from(qDocumentVersion)
                                     .where(qDocumentVersion.document.type.eq(DocumentType.SOP)
@@ -211,17 +210,17 @@ public class SOPTrainingMatrixRepositoryImpl implements SOPTrainingMatrixReposit
         ))
         .from(qUser)
 //        .leftJoin(qUserJobDescription).on(qUser.username.eq(qUserJobDescription.username).and(qUserJobDescription.status.in(statusList)))
-//        .join(sOPTrainingMatrix).on(sOPTrainingMatrix.trainingAll.eq(true).or(qUserJobDescription.jobDescriptionVersion.jobDescription.id.eq(sOPTrainingMatrix.jobDescription.id)))
+//        .join(trainingMatrix).on(trainingMatrix.trainingAll.eq(true).or(qUserJobDescription.jobDescriptionVersion.jobDescription.id.eq(trainingMatrix.jobDescription.id)))
 
-//                .join(sOPTrainingMatrix)
-//                .on(sOPTrainingMatrix.id.in(JPAExpressions.select(SQLExpressions.max(sOPTrainingMatrix.id))
-//                        .from(sOPTrainingMatrix)
-//                        .where(sOPTrainingMatrix.trainingAll.eq(true).or(sOPTrainingMatrix.jobDescription.id.in(JPAExpressions
+//                .join(trainingMatrix)
+//                .on(trainingMatrix.id.in(JPAExpressions.select(SQLExpressions.max(trainingMatrix.id))
+//                        .from(trainingMatrix)
+//                        .where(trainingMatrix.trainingAll.eq(true).or(trainingMatrix.jobDescription.id.in(JPAExpressions
 //                                .select(qUserJobDescription.jobDescriptionVersion.jobDescription.id)
 //                                .from(qUserJobDescription)
 //                                .where(qUserJobDescription.username.eq(qUser.username))
 ////                                .where(qUserJobDescription.username.in(employees))
-//                        ))).groupBy(sOPTrainingMatrix.documentVersion.id)
+//                        ))).groupBy(trainingMatrix.documentVersion.id)
 //                ))
                 .join(qUserMatrix).on(qUser.id.eq(qUserMatrix.userId))
                 .join(qTrainingPeriod).on(qUserMatrix.trainingPeriodId.eq(qTrainingPeriod.id))
@@ -272,13 +271,14 @@ public class SOPTrainingMatrixRepositoryImpl implements SOPTrainingMatrixReposit
             if(!docId.toUpperCase().startsWith("SOP-")) {
                 docId = "SOP-" + docId;
             }
-            builder.and(sOPTrainingMatrix.documentVersion.document.docId.like(docId.toUpperCase() + "%"));
+            builder.and(trainingMatrix.documentVersion.document.docId.like(docId.toUpperCase() + "%"));
         }
 
+        //TODO:: 20201201 - 수정필요
         JPAQuery<MyTraining> jpaQuery = queryFactory.selectDistinct(Projections.constructor(MyTraining.class,
                     qUser,
-                    sOPTrainingMatrix.documentVersion.document,
-                    sOPTrainingMatrix.documentVersion,
+                trainingMatrix.documentVersion.document,
+                trainingMatrix.documentVersion,
                     qTrainingPeriod,
                     qTrainingLog,
                     qTrainingPeriod.startDate,
@@ -288,12 +288,12 @@ public class SOPTrainingMatrixRepositoryImpl implements SOPTrainingMatrixReposit
                 ))
                 .from(qUser)
                 .leftJoin(qUserJobDescription).on(qUser.username.eq(qUserJobDescription.username).and(qUserJobDescription.status.in(statusList)))
-                .leftJoin(sOPTrainingMatrix).on(sOPTrainingMatrix.trainingAll.eq(true).or(qUserJobDescription.jobDescriptionVersion.jobDescription.id.eq(sOPTrainingMatrix.jobDescription.id)))
-                .join(qDocumentVersion).on(sOPTrainingMatrix.documentVersion.id.eq(qDocumentVersion.id).and(docStatus))
+//                .leftJoin(trainingMatrix).on(trainingMatrix.trainingAll.eq(true).or(qUserJobDescription.jobDescriptionVersion.jobDescription.id.eq(trainingMatrix.jobDescription.id)))
+                .join(qDocumentVersion).on(trainingMatrix.documentVersion.id.eq(qDocumentVersion.id).and(docStatus))
                 .join(qTrainingPeriod).on(qTrainingPeriod.documentVersion.id.eq(qDocumentVersion.id))
 //                        .and(qTrainingPeriod.trainingType.eq(TrainingType.SELF))
 //                        .and(qTrainingPeriod.startDate.loe(new Date()))
-//                        .or(sOPTrainingMatrix.documentVersion.id.eq(qTrainingPeriod.documentVersion.id)
+//                        .or(trainingMatrix.documentVersion.id.eq(qTrainingPeriod.documentVersion.id)
 //                                .and(qTrainingPeriod.trainingType.eq(TrainingType.REFRESH))
 //                                .and(qTrainingPeriod.startDate.goe(qUser.inDate))))
 
@@ -305,7 +305,7 @@ public class SOPTrainingMatrixRepositoryImpl implements SOPTrainingMatrixReposit
                 .leftJoin(qTrainingLog).on(qTrainingLog.trainingPeriod.id.eq(qTrainingPeriod.id).and(qTrainingLog.user.id.eq(qUser.id)))
                 .where(qUser.training.eq(true))
                 .where(builder)
-                .orderBy(sOPTrainingMatrix.documentVersion.effectiveDate.desc());
+                .orderBy(trainingMatrix.documentVersion.effectiveDate.desc());
 
         return jpaQuery;
     }

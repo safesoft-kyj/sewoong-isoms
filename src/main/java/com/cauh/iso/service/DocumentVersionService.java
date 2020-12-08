@@ -10,7 +10,7 @@ import com.cauh.iso.domain.constant.NoticeStatus;
 import com.cauh.iso.domain.report.RetirementDocument;
 import com.cauh.iso.repository.DocumentRepository;
 import com.cauh.iso.repository.DocumentVersionRepository;
-import com.cauh.iso.repository.SOPTrainingMatrixRepository;
+import com.cauh.iso.repository.TrainingMatrixRepository;
 import com.cauh.iso.security.annotation.IsAllowedRD;
 import com.cauh.iso.security.annotation.IsAllowedSOP;
 import com.cauh.iso.utils.DateUtils;
@@ -43,7 +43,7 @@ public class DocumentVersionService {
     private final MailService mailService;
     private final NoticeService noticeService;
     private final TrainingPeriodService trainingPeriodService;
-    private final SOPTrainingMatrixRepository sopTrainingMatrixRepository;
+    private final TrainingMatrixRepository trainingMatrixRepository;
     private final UserRepository userRepository;
     private final RetirementDocumentService retirementDocumentService;
 
@@ -527,7 +527,7 @@ public class DocumentVersionService {
         int[] diffArr = {0, 2, 6, 9};
         iterable.forEach(user -> {
             log.info("@SOP 트레이닝 이메일 알림을 전송한다.");
-            List<MyTraining> trainingList = sopTrainingMatrixRepository.getDownloadTrainingList(null, null, user.getId(), null, null);
+            List<MyTraining> trainingList = trainingMatrixRepository.getDownloadTrainingList(null, null, user.getId(), null, null);
 
             for(int compareDiff : diffArr) {
                 log.info("@Diff : {}", compareDiff);

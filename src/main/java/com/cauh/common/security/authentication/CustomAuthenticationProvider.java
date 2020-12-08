@@ -2,10 +2,7 @@ package com.cauh.common.security.authentication;
 
 
 import com.cauh.common.entity.Account;
-import com.cauh.common.entity.QUserJobDescription;
 import com.cauh.common.entity.RoleAccount;
-import com.cauh.common.entity.UserJobDescription;
-import com.cauh.common.entity.constant.JobDescriptionStatus;
 import com.cauh.common.entity.constant.UserType;
 import com.cauh.common.repository.RoleAccountRepository;
 import com.cauh.common.repository.RoleRepository;
@@ -15,7 +12,6 @@ import com.cauh.common.service.CustomUserDetailsService;
 import com.cauh.common.service.ExternalCustomUserService;
 import com.cauh.common.service.UserService;
 import com.cauh.common.utils.DateUtils;
-import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +32,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * Created by Dt&amp;SanoMedics <br>

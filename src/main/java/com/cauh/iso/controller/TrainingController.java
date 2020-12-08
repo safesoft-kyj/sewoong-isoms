@@ -10,7 +10,7 @@ import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.annotation.CurrentUser;
 import com.cauh.iso.domain.*;
 import com.cauh.iso.domain.constant.*;
-import com.cauh.iso.repository.SOPTrainingMatrixRepository;
+import com.cauh.iso.repository.TrainingMatrixRepository;
 import com.cauh.iso.repository.TrainingTestLogRepository;
 import com.cauh.iso.service.*;
 import com.cauh.iso.utils.DateUtils;
@@ -59,7 +59,7 @@ import java.util.stream.StreamSupport;
 @SessionAttributes({"quiz", "sopMap", "userMap", "offlineTraining", "trainingLogs"})
 public class TrainingController {
     private final DocumentVersionService documentVersionService;
-    private final SOPTrainingMatrixRepository sopTrainingMatrixRepository;
+    private final TrainingMatrixRepository trainingMatrixRepository;
     private final TrainingPeriodService trainingPeriodService;
     private final TrainingLogService trainingLogService;
     private final TrainingLogReportService trainingLogReportService;
@@ -88,7 +88,7 @@ public class TrainingController {
 //            return "redirect:/notice";
 //        }
 
-        Page<MyTrainingMatrix> sopTrainingMatrices = sopTrainingMatrixRepository.getMyTrainingMatrix(pageable, user.getJobDescriptions());
+        Page<MyTrainingMatrix> sopTrainingMatrices = trainingMatrixRepository.getMyTrainingMatrix(pageable, user.getRoleAccounts());
         model.addAttribute("trainingMatrix", sopTrainingMatrices);
         model.addAttribute("userJobDescriptions", user.getJobDescriptions());
 
@@ -99,7 +99,7 @@ public class TrainingController {
 
     @GetMapping("/training/{requirement}-training")
     public String training(@PathVariable("requirement") TrainingRequirement requirement, @PageableDefault(size = 25) Pageable pageable, @CurrentUser Account user, Model model) {
-        Page<MyTraining> sopTrainingMatrices = sopTrainingMatrixRepository.getMyTraining(requirement, pageable, user);
+        Page<MyTraining> sopTrainingMatrices = trainingMatrixRepository.getMyTraining(requirement, pageable, user);
         model.addAttribute("trainingMatrix", sopTrainingMatrices);
         model.addAttribute("requirement", requirement);
 
@@ -585,7 +585,7 @@ public class TrainingController {
             @RequestParam(value = "docId", required = false) String docId,
             HttpServletResponse response) throws Exception {
 
-        List<MyTraining> trainingList = sopTrainingMatrixRepository.getDownloadTrainingList(user.getTeamDept(), teamCode, userId, docId, user);
+        List<MyTraining> trainingList = trainingMatrixRepository.getDownloadTrainingList(user.getTeamDept(), teamCode, userId, docId, user);
         InputStream is = IndexReportService.class.getResourceAsStream("trainingLog.xlsx");
         Context context = new Context();
         context.putVar("trainings", trainingList);

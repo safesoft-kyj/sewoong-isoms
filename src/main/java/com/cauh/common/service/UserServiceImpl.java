@@ -1,10 +1,12 @@
 package com.cauh.common.service;
 
 import com.cauh.common.entity.Account;
+import com.cauh.common.entity.constant.UserStatus;
 import com.cauh.common.mapper.DeptUserMapper;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.authentication.InternalAccountAuthenticationException;
 import com.cauh.common.utils.DateUtils;
+import com.cauh.iso.component.CurrentUserComponent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,9 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -31,6 +31,9 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    //현재 유저정보를 가지고있는 Component
+    private final CurrentUserComponent currentUserComponent;
 
 //    private final DeptUserMapper deptUserMapper;
 //
@@ -106,8 +109,33 @@ public class UserServiceImpl implements UserService {
 //                log.warn("@@ 사용자 : {}, 사번 : {} 오류 ", username, userMap.get("empNo"));
 //            }
 //        }
-
 //        userDisabled(usernames);//비활성화 처리
+    }
+
+
+    /**
+     * Account Refresh 기능
+     */
+    @Override
+    public void refresh(){
+        List<UserStatus> userStatusList = new ArrayList<>();
+        userStatusList.add(UserStatus.SIGNUP_REQUEST);
+        userStatusList.add(UserStatus.ACTIVE);
+
+        //enabled 가 true이거나 회원가입 신청 / 활성화된 계정 대상으로 refresh 진행.
+        List<Account> accountList = userRepository.findAllByEnabledAndUserStatusIn(true, userStatusList);
+        for(Account account : accountList) {
+            //오늘날짜 기준, 계정 유효기한이 경과한 경우
+            if(!DateUtils.isFutureDate(account.getAccountExpiredDate())) {
+                log.debug("Account Refrsh=== 계정 유효기한 경과 : {}", account.getUsername());
+                account.setUserStatus(UserStatus.INACTIVE);
+                account.setEnabled(false);
+                userRepository.save(account);
+            }
+        }
+
+        //User List 업데이트
+        currentUserComponent.updateCurrentUserList();
     }
 
 //    private Account updateUserInfo(String username) {

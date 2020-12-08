@@ -2,6 +2,7 @@ package com.cauh.iso.admin.controller;
 
 import com.cauh.common.entity.QAccount;
 import com.cauh.common.entity.Account;
+import com.cauh.common.entity.RoleAccount;
 import com.cauh.common.entity.constant.UserType;
 import com.cauh.common.mapper.DeptUserMapper;
 import com.cauh.common.repository.UserRepository;
@@ -13,6 +14,7 @@ import com.cauh.iso.domain.report.QExternalCustomer;
 import com.cauh.iso.repository.ExternalCustomerRepository;
 import com.cauh.iso.service.AgreementPersonalInformationService;
 import com.cauh.iso.service.NonDisclosureAgreementService;
+import com.cauh.iso.validator.UserEditValidator;
 import com.cauh.iso.xdocreport.AgreementReportService;
 import com.cauh.iso.xdocreport.NonDisclosureAgreementReportService;
 import com.querydsl.core.BooleanBuilder;
@@ -24,14 +26,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -46,6 +50,7 @@ public class AdminAuthorityController {
     private final AgreementReportService agreementReportService;
     private final NonDisclosureAgreementReportService nonDisclosureAgreementReportService;
     private final UserRepository userRepository;
+    private final UserEditValidator userEditValidator;
     private final DeptUserMapper deptUserMapper;
     private final UserService userService;
     private final ExternalCustomerRepository externalCustomerRepository;
@@ -114,14 +119,89 @@ public class AdminAuthorityController {
         return "admin/authority/users";
     }
 
-    @PostMapping("/authority/users/sync")
+    /**
+     *
+     * @param actionCmd
+     * @param id
+     * @param attributes
+     * @return
+     */
+    @PostMapping("/authority/users")
+    public String userSignUpAction(
+            @RequestParam(value = "result", required = false ) String actionCmd,
+            @RequestParam("id") Integer id, RedirectAttributes attributes){
+        log.info("Action : {}", actionCmd);
+
+        //SignUp Agree
+        //TODO:: Logic 수정 필요. (직무배정 및 ROLE 부여가 추가가 되는지 확인)
+        if(!StringUtils.isEmpty(actionCmd)) {
+            if(actionCmd.equals("accept")) {
+                log.info("동의");
+
+                Optional<Account> optionalAccount = userRepository.findById(id);
+                if(!optionalAccount.isPresent()) {
+                    attributes.addFlashAttribute("message", "User 정보가 잘못되었습니다.");
+                    return "redirect:/admin/authority/users";
+                }
+
+
+            }else if(actionCmd.equals("reject")){
+                log.info("거절");
+            }
+        }
+        return "redirect:/admin/authority/users";
+    }
+
+    @GetMapping("/authority/users/{id}")
+    public String usersEdit(@PathVariable("id") Integer id, Model model, RedirectAttributes attributes) {
+        log.info("ID : {}", id);
+        Optional<Account> optionalAccount = userRepository.findById(id);
+
+        if(!optionalAccount.isPresent()) {
+            attributes.addFlashAttribute("message", "존재하지 않는 유저 정보입니다.");
+            return "redirect:/admin/authority/users";
+        }
+        Account account = optionalAccount.get();
+        List<RoleAccount> roleAccountList = account.getRoleAccounts();
+        String[] strRoles = new String[20];
+        int idx = 0;
+
+        for(RoleAccount roleAccount : roleAccountList){
+            strRoles[idx++] =  roleAccount.getRole().getName();
+        }
+
+        log.info("{}'s role : {}", account.getUsername(), account.getRoles());
+
+        //User Edit
+        model.addAttribute("account", account);
+        model.addAttribute("roles", strRoles);
+        return "admin/authority/edit";
+    }
+
+    @PostMapping("/authority/users/{id}")
     @Transactional
-    public String sync(RedirectAttributes attributes) {
-        userService.sync();
-        attributes.addFlashAttribute("message", "조직도 정보가 업데이트 되었습니다.");
+    public String usersEditAction(@PathVariable("{id}") String id, Account account, RedirectAttributes redirectAttributes, BindingResult result) {
+
+        //TODO :: 유저정보 수정 작업 필요.
+        userEditValidator.validate(account, result);
+
+        if(result.hasErrors()) {
+            return "admin/authority/edit";
+        }
+
+
 
         return "redirect:/admin/authority/users";
     }
+
+//    @PostMapping("/authority/users/sync")
+//    @Transactional
+//    public String sync(RedirectAttributes attributes) {
+//        userService.sync();
+//        attributes.addFlashAttribute("message", "조직도 정보가 업데이트 되었습니다.");
+//
+//        return "redirect:/admin/authority/users";
+//    }
 
 
     //교육 진행 여부 설정 변경.

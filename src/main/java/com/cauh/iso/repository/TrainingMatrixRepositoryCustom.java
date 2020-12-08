@@ -1,6 +1,7 @@
 package com.cauh.iso.repository;
 
 import com.cauh.common.entity.Account;
+import com.cauh.common.entity.RoleAccount;
 import com.cauh.common.entity.UserJobDescription;
 import com.cauh.iso.domain.MyTraining;
 import com.cauh.iso.domain.MyTrainingMatrix;
@@ -11,10 +12,14 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-public interface SOPTrainingMatrixRepositoryCustom {
-    Page<MyTrainingMatrix> getMyTrainingMatrix(Pageable pageable, List<UserJobDescription> userJobDescriptions);
+public interface TrainingMatrixRepositoryCustom {
+//    Page<MyTrainingMatrix> getMyTrainingMatrix(Pageable pageable, List<UserJobDescription> userJobDescriptions);
+//
+//    List<MyTrainingMatrix> getMyTrainingMatrix(List<UserJobDescription> userJobDescriptions);
 
-    List<MyTrainingMatrix> getMyTrainingMatrix(List<UserJobDescription> userJobDescriptions);
+    Page<MyTrainingMatrix> getMyTrainingMatrix(Pageable pageable, List<RoleAccount> roleAccountList);
+
+    List<MyTrainingMatrix> getMyTrainingMatrix(List<RoleAccount> roleAccountList);
 
     Page<MyTraining> getMyTraining(TrainingRequirement requirement, Pageable pageable, Account user);
 

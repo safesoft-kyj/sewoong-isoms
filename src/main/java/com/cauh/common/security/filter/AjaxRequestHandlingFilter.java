@@ -22,6 +22,7 @@ public class AjaxRequestHandlingFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
 
+        //Ajax Filter 예외 URI 선별
         List<String> permitURIList = new ArrayList<>();
         permitURIList.add("/signUp/ajax/validation");
 

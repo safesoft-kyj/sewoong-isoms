@@ -2,7 +2,7 @@
 spring:
   devtools:
     livereload:
-      enabled: false
+      enabled: true
   freemarker:
     cache: false
   jpa:

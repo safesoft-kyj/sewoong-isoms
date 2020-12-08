@@ -2,7 +2,7 @@
 <#import "/common/pagination.ftl" as pagination />
 <html>
 <head>
-    <title>e-SOP > Admin > Acess Log</title>
+    <title>ISO-MS > Admin > Change Control</title>
 
 </head>
 <body>
@@ -13,7 +13,6 @@
     <!--Data Table-->
     <!--===================================================-->
     <div class="panel-body">
-        <@pagination.bind accessLog/>
         <div class="table-responsive">
             <table class="table table-striped">
                 <thead>
@@ -30,8 +29,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                <#if accessLog.content?has_content>
-                    <#list accessLog.content as access>
+                <#if changeLog?has_content>
+                    <#list changeLog as access>
                         <tr>
                             <td class="text-center">${(accessLog.totalElements - (accessLog.size * accessLog.number)) - access?index}
                             <td class="text-center"><span class="label label-${(access.documentVersion.document.type == 'SOP')?then('purple', 'mint')} label-table">${access.documentVersion.document.type.name()}</span></td>
@@ -52,7 +51,6 @@
             </table>
 
         </div>
-        <@pagination.default/>
 
         <#--        <nav style="float:left;">-->
         <#---->

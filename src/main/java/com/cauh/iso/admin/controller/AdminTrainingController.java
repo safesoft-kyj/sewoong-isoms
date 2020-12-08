@@ -7,8 +7,7 @@ import com.cauh.iso.domain.*;
 import com.cauh.iso.domain.constant.DocumentStatus;
 import com.cauh.iso.domain.constant.DocumentType;
 import com.cauh.iso.domain.constant.TrainingType;
-import com.cauh.iso.repository.OfflineTrainingRepository;
-import com.cauh.iso.repository.SOPTrainingMatrixRepository;
+import com.cauh.iso.repository.TrainingMatrixRepository;
 import com.cauh.iso.service.DocumentVersionService;
 import com.cauh.iso.service.OfflineTrainingService;
 import com.cauh.iso.service.TrainingMatrixService;
@@ -57,7 +56,7 @@ public class AdminTrainingController {
     private final TrainingPeriodValidator trainingPeriodValidator;
     private final DeptUserMapper deptUserMapper;
     private final UserRepository userRepository;
-    private final SOPTrainingMatrixRepository sopTrainingMatrixRepository;
+    private final TrainingMatrixRepository trainingMatrixRepository;
 
     @Value("${gw.userTbl}")
     private String gwUserTbl;
@@ -212,7 +211,7 @@ public class AdminTrainingController {
         QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
 
         docStatus.and(qDocumentVersion.status.in(DocumentStatus.APPROVED, DocumentStatus.EFFECTIVE));
-        model.addAttribute("trainingLog", sopTrainingMatrixRepository.getTrainingList(deptCode, teamCode, userId, docId, null, pageable, docStatus));
+        model.addAttribute("trainingLog", trainingMatrixRepository.getTrainingList(deptCode, teamCode, userId, docId, null, pageable, docStatus));
         return "training/teamDeptTrainingLog2";
     }
 
@@ -224,7 +223,7 @@ public class AdminTrainingController {
                                               @RequestParam(value = "userId", required = false) Integer userId,
                                               @RequestParam(value = "docId", required = false) String docId,
                                               HttpServletResponse response) throws Exception {
-        List<MyTraining> trainingList = sopTrainingMatrixRepository.getDownloadTrainingList(deptCode, teamCode, userId, docId, null);
+        List<MyTraining> trainingList = trainingMatrixRepository.getDownloadTrainingList(deptCode, teamCode, userId, docId, null);
         InputStream is = null;
         if(documentType == DocumentType.ISO){
             //TODO :: 수정 필요.

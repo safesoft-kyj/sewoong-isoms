@@ -25,12 +25,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 //@Configuration
+@SpringBootApplication
 @ComponentScan({"com.cauh"})
-@EnableTransactionManagement
 @EnableJpaRepositories(value = {"com.cauh.common.repository", "com.cauh.iso.repository"},
         repositoryFactoryBeanClass = EnversRevisionRepositoryFactoryBean.class)
 @EntityScan({"com.cauh.common.domain", "com.cauh.iso.domain", "com.cauh.common.entity"})
-@SpringBootApplication
+@EnableTransactionManagement
 @EnableJpaAuditing(auditorAwareRef = "auditorAware", modifyOnCreate = false)
 @EnableConfigurationProperties({
         FileStorageProperties.class

@@ -9,7 +9,7 @@ import com.cauh.iso.domain.*;
 import com.cauh.iso.domain.constant.*;
 import com.cauh.iso.domain.report.*;
 import com.cauh.iso.repository.DocumentVersionRepository;
-import com.cauh.iso.repository.SOPTrainingMatrixRepository;
+import com.cauh.iso.repository.TrainingMatrixRepository;
 import com.cauh.iso.service.ApprovalService;
 import com.cauh.iso.service.CategoryService;
 import com.cauh.iso.service.DocumentVersionService;
@@ -43,7 +43,7 @@ import java.util.stream.StreamSupport;
 @Slf4j
 @SessionAttributes({"sopMap", "rdMap", "approval", "lineType", "purposeOfDisclosureMap", "documentAccessMap", "currentSopCategoryMap", "supersededSopCategoryMap", "categoryList", "userMap"})
 public class ApprovalController {
-    private final SOPTrainingMatrixRepository sopTrainingMatrixRepository;
+    private final TrainingMatrixRepository trainingMatrixRepository;
     private final ApprovalValidator approvalValidator;
     private final ApprovalService approvalService;
     private final DocumentVersionService documentVersionService;
@@ -380,7 +380,7 @@ public class ApprovalController {
             }
         }
 
-        List<MyTrainingMatrix> myTrainingMatrices = sopTrainingMatrixRepository.getMyTrainingMatrix(user.getJobDescriptions());
+        List<MyTrainingMatrix> myTrainingMatrices = trainingMatrixRepository.getMyTrainingMatrix(user.getRoleAccounts());
         if(StringUtils.isEmpty(sopId)) {
             model.addAttribute("sopMap", myTrainingMatrices.stream().collect(Collectors.toMap(m -> m.getDocumentVersion().getId(), m -> m.getDocument().getDocId() + " " + m.getDocument().getTitle() + " v" + m.getDocumentVersion().getVersion())));
         } else {
@@ -395,7 +395,7 @@ public class ApprovalController {
         if (ObjectUtils.isEmpty(approval.getId()) && !approval.isRenew()) {
             approval.setSopWaiverApprovalForm(new SOPWaiverApprovalForm());
         }
-        List<MyTrainingMatrix> myTrainingMatrices = sopTrainingMatrixRepository.getMyTrainingMatrix(user.getJobDescriptions());
+        List<MyTrainingMatrix> myTrainingMatrices = trainingMatrixRepository.getMyTrainingMatrix(user.getRoleAccounts());
         model.addAttribute("sopMap", myTrainingMatrices.stream().collect(Collectors.toMap(m -> m.getDocumentVersion().getId(), m -> m.getDocument().getDocId() + " " + m.getDocument().getTitle() + " v" + m.getDocumentVersion().getVersion())));
     }
 
@@ -429,7 +429,7 @@ public class ApprovalController {
                         .collect(Collectors.joining(",")).split(","));
             }
         }
-        List<MyTrainingMatrix> myTrainingMatrices = sopTrainingMatrixRepository.getMyTrainingMatrix(user.getJobDescriptions());
+        List<MyTrainingMatrix> myTrainingMatrices = trainingMatrixRepository.getMyTrainingMatrix(user.getRoleAccounts());
         Map<String, String> sopMap = myTrainingMatrices.stream().collect(Collectors.toMap(m -> m.getDocumentVersion().getId(), m -> m.getDocument().getDocId() + "/" + m.getDocument().getTitle() + "/" + m.getDocumentVersion().getVersion()));
 
         List<List<Document>> rdLists = myTrainingMatrices.stream()

@@ -4,5 +4,5 @@ import com.cauh.iso.domain.TrainingMatrix;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
-public interface SOPTrainingMatrixRepository extends JpaRepository<TrainingMatrix, Integer>, QuerydslPredicateExecutor<TrainingMatrix>, SOPTrainingMatrixRepositoryCustom {
+public interface TrainingMatrixRepository extends JpaRepository<TrainingMatrix, Integer>, QuerydslPredicateExecutor<TrainingMatrix>, TrainingMatrixRepositoryCustom {
 }

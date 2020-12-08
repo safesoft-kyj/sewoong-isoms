@@ -2,7 +2,7 @@
 <#import "/spring.ftl" as spring />
 <html>
 <head>
-    <title>eSOP > Authority Management > 개인정보 활용동의 이력</title>
+    <title>ISO Management System > Authority Management > 개인정보 활용동의 이력</title>
 </head>
 <body>
 
