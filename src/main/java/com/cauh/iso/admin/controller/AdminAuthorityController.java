@@ -3,6 +3,7 @@ package com.cauh.iso.admin.controller;
 import com.cauh.common.entity.QAccount;
 import com.cauh.common.entity.Account;
 import com.cauh.common.entity.RoleAccount;
+import com.cauh.common.entity.constant.UserStatus;
 import com.cauh.common.entity.constant.UserType;
 import com.cauh.common.mapper.DeptUserMapper;
 import com.cauh.common.repository.UserRepository;
@@ -34,10 +35,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.*;
 
 @Controller
 @RequestMapping("/admin")
@@ -130,7 +129,15 @@ public class AdminAuthorityController {
     public String userSignUpAction(
             @RequestParam(value = "result", required = false ) String actionCmd,
             @RequestParam("id") Integer id, RedirectAttributes attributes){
-        log.info("Action : {}", actionCmd);
+        log.info("Action : {}, User id : {}", actionCmd, id);
+        Optional<Account> optionalAccount = userRepository.findById(id);
+
+        if(!optionalAccount.isPresent()) {
+            attributes.addFlashAttribute("message", "User 정보가 잘못되었습니다.");
+            return "redirect:/admin/authority/users";
+        }
+
+        Account account = optionalAccount.get();
 
         //SignUp Agree
         //TODO:: Logic 수정 필요. (직무배정 및 ROLE 부여가 추가가 되는지 확인)
@@ -138,15 +145,20 @@ public class AdminAuthorityController {
             if(actionCmd.equals("accept")) {
                 log.info("동의");
 
-                Optional<Account> optionalAccount = userRepository.findById(id);
-                if(!optionalAccount.isPresent()) {
-                    attributes.addFlashAttribute("message", "User 정보가 잘못되었습니다.");
-                    return "redirect:/admin/authority/users";
-                }
-
 
             }else if(actionCmd.equals("reject")){
                 log.info("거절");
+
+                //계정 유효기간 현재 시간 기준 지정
+                //계정 상태 INACTIVE 지정 / Enabled 변수 false로 설정.
+                account.setAccountExpiredDate(new Date());
+                account.setUserStatus(UserStatus.INACTIVE);
+                account.setEnabled(false);
+                userService.saveOrUpdate(account);
+
+                String message = "[" + account.getUsername() + "] 가입 요청이 거정되었습니다.";
+                attributes.addFlashAttribute("message", message);
+                return "redirect:/admin/authority/users";
             }
         }
         return "redirect:/admin/authority/users";

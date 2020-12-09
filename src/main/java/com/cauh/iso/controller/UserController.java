@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 @Controller
@@ -64,15 +65,19 @@ public class UserController {
             account.setUserStatus(UserStatus.SIGNUP_REQUEST);
             
             //가입 시 계정 유효기한을 설정(가입시점 + D-14)
-            Date now = new Date();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(now);
-            calendar.add(Calendar.DATE, 14);
-            calendar.set(Calendar.HOUR_OF_DAY, 0);
-            calendar.set(Calendar.MINUTE, 0);
-            calendar.set(Calendar.SECOND, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
-            account.setAccountExpiredDate(calendar.getTime());
+            LocalDate localDate = LocalDate.now().plusDays(14);
+            Date DDay_14 = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+//            Date now = new Date();
+//            Calendar calendar = Calendar.getInstance();
+//            calendar.setTime(now);
+//            calendar.add(Calendar.DATE, 14);
+//            calendar.set(Calendar.HOUR_OF_DAY, 0);
+//            calendar.set(Calendar.MINUTE, 0);
+//            calendar.set(Calendar.SECOND, 0);
+//            calendar.set(Calendar.MILLISECOND, 0);
+
+            account.setAccountExpiredDate(DDay_14);
 
             //입력된 비밀번호 암호화
             account.setPassword(passwordEncoder.encode(account.getPassword()));
