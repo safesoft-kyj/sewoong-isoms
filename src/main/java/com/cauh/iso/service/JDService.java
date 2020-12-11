@@ -41,12 +41,12 @@ public class JDService {
                 List<String> selectedIds = Arrays.asList(jdIds);
                 //저장된 JD..
                 List<String> savedIds = StreamSupport.stream(sopTrainingMatrices.spliterator(), false)
-                        .filter(s -> s.isTrainingAll() == false && ObjectUtils.isEmpty(s.getRole()) == false)
-                        .map(s -> Long.toString(s.getRole().getId()))
+                        .filter(s -> s.isTrainingAll() == false && ObjectUtils.isEmpty(s.getJobDescription()) == false)
+                        .map(s -> Long.toString(s.getJobDescription().getId()))
                         .collect(Collectors.toList());
 
                 List<TrainingMatrix> removeList = StreamSupport.stream(sopTrainingMatrices.spliterator(), false)
-                        .filter(s -> s.isTrainingAll() == true || ObjectUtils.isEmpty(s.getRole()) == false && selectedIds.contains(Long.toString(s.getRole().getId())) == false)
+                        .filter(s -> s.isTrainingAll() == true || ObjectUtils.isEmpty(s.getJobDescription()) == false && selectedIds.contains(Long.toString(s.getJobDescription().getId())) == false)
                         .collect(Collectors.toList());
                 trainingMatrixRepository.deleteAll(removeList);
 
@@ -55,7 +55,7 @@ public class JDService {
                 for (String id : newIds) {
                     TrainingMatrix trainingMatrix = new TrainingMatrix();
                     trainingMatrix.setDocumentVersion(documentVersion);
-                    trainingMatrix.setRole(Role.builder().id(Long.parseLong(id)).build());
+                    trainingMatrix.setJobDescription(JobDescription.builder().id(Integer.parseInt(id)).build());
 
                     trainingMatrixRepository.save(trainingMatrix);
                 }

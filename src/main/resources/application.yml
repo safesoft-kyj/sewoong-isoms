@@ -44,13 +44,13 @@ spring:
 #      use-key-prefix: false
   jpa:
     open-in-view: true
-#    properties:
-#      org:
-#        hibernate:
-#          envers:
-#            audit_table_suffix: _history
-#            modified_flag_suffix: _changed
-#            store_data_at_delete: true
+    properties:
+      org:
+        hibernate:
+          envers:
+            audit_table_suffix: _audit
+            modified_flag_suffix: _changed
+            store_data_at_delete: true
   servlet:
     multipart:
       enabled: true

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Where;
+import org.hibernate.envers.NotAudited;
 import org.springframework.util.ObjectUtils;
 
 import javax.persistence.*;
@@ -63,11 +64,11 @@ public class SopRdRequestForm extends BaseEntity implements Serializable {
     @Column(name = "requested_by_comments", columnDefinition = "nvarchar(200)")
     private String requestedByComments;
 
-    @OneToMany(mappedBy = "sopRdRequestForm", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "sopRdRequestForm")
     @Where(clause = "document_type='SOP'")
     private List<SopRdRevisionDoc> sopRevisionDocs = new ArrayList<>();
 
-    @OneToMany(mappedBy = "sopRdRequestForm", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "sopRdRequestForm")
     @Where(clause = "document_type='RD'")
     private List<SopRdRevisionDoc> rdRevisionDocs = new ArrayList<>();
 

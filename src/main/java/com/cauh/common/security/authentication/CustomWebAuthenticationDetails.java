@@ -23,7 +23,7 @@ public class CustomWebAuthenticationDetails extends WebAuthenticationDetails imp
 
     public CustomWebAuthenticationDetails(HttpServletRequest request) {
         super(request);
-        this.userType = UserType.valueOf(ServletRequestUtils.getStringParameter(request, "userType", "U"));
+        this.userType = UserType.valueOf(ServletRequestUtils.getStringParameter(request, "userType", "USER"));
         this.forceLogin = ServletRequestUtils.getBooleanParameter(request, "forceLogin", false);
         this.clientIP = getClientIP(request);
     }

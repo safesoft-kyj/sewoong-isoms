@@ -89,14 +89,14 @@ public class ApprovalService {
                         .lineType(ApprovalLineType.requester)
                         .status(ApprovalStatus.approved)
                         .base64signature(signatureRepository.findById(user.getUsername()).get().getBase64signature())
-                        .displayName(user.getName() + (StringUtils.isEmpty(user.getComPosition()) ? "" : "(" + user.getComPosition() + ")"))
+                        .displayName(user.getName() + (StringUtils.isEmpty(user.getPosition()) ? "" : "(" + user.getPosition() + ")"))
                         .build());
             } else {
                 approval.getApprovalLines().set(0, ApprovalLine.builder().username(user.getUsername())
                         .lineType(ApprovalLineType.requester)
                         .status(ApprovalStatus.approved)
                         .base64signature(signatureRepository.findById(user.getUsername()).get().getBase64signature())
-                        .displayName(user.getName() + (StringUtils.isEmpty(user.getComPosition()) ? "" : "(" + user.getComPosition() + ")"))
+                        .displayName(user.getName() + (StringUtils.isEmpty(user.getPosition()) ? "" : "(" + user.getPosition() + ")"))
                         .build());
             }
 

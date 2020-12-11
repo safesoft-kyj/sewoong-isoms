@@ -33,7 +33,7 @@ spring:
   flyway:
     locations: classpath:/db/migration/local
     baseline-on-migrate: true
-    enabled: true
+    enabled: false
     encoding: UTF-8
     table: flyway_sop_schema_history
   datasource:

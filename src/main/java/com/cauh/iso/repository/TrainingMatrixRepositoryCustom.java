@@ -1,6 +1,7 @@
 package com.cauh.iso.repository;
 
 import com.cauh.common.entity.Account;
+import com.cauh.common.entity.JobDescription;
 import com.cauh.common.entity.RoleAccount;
 import com.cauh.common.entity.UserJobDescription;
 import com.cauh.iso.domain.MyTraining;
@@ -17,9 +18,9 @@ public interface TrainingMatrixRepositoryCustom {
 //
 //    List<MyTrainingMatrix> getMyTrainingMatrix(List<UserJobDescription> userJobDescriptions);
 
-    Page<MyTrainingMatrix> getMyTrainingMatrix(Pageable pageable, List<RoleAccount> roleAccountList);
+    Page<MyTrainingMatrix> getMyTrainingMatrix(Pageable pageable, List<UserJobDescription> userJobDescriptions);
 
-    List<MyTrainingMatrix> getMyTrainingMatrix(List<RoleAccount> roleAccountList);
+    List<MyTrainingMatrix> getMyTrainingMatrix(List<UserJobDescription> userJobDescriptions);
 
     Page<MyTraining> getMyTraining(TrainingRequirement requirement, Pageable pageable, Account user);
 

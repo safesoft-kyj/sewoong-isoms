@@ -3,6 +3,7 @@ package com.cauh.iso.admin.controller;
 import com.cauh.common.entity.QAccount;
 import com.cauh.common.entity.Account;
 import com.cauh.common.entity.RoleAccount;
+import com.cauh.common.entity.UserJobDescription;
 import com.cauh.common.entity.constant.UserType;
 import com.cauh.common.mapper.DeptUserMapper;
 import com.cauh.common.repository.UserRepository;
@@ -114,7 +115,7 @@ public class AdminAuthorityController {
         }
 
         builder.and(qUser.enabled.eq(true));
-        builder.and(qUser.userType.eq(UserType.U));
+        builder.and(qUser.userType.eq(UserType.USER));
         model.addAttribute("users", userRepository.findAll(builder, pageable));
         return "admin/authority/users";
     }
@@ -162,19 +163,12 @@ public class AdminAuthorityController {
             return "redirect:/admin/authority/users";
         }
         Account account = optionalAccount.get();
-        List<RoleAccount> roleAccountList = account.getRoleAccounts();
-        String[] strRoles = new String[20];
-        int idx = 0;
+        List<UserJobDescription> userJobDescriptions = account.getUserJobDescriptions();
 
-        for(RoleAccount roleAccount : roleAccountList){
-            strRoles[idx++] =  roleAccount.getRole().getName();
-        }
-
-        log.info("{}'s role : {}", account.getUsername(), account.getRoles());
+        log.info("{}'s JobDescription : {}", account.getUsername(), account.getUserJobDescriptions());
 
         //User Edit
         model.addAttribute("account", account);
-        model.addAttribute("roles", strRoles);
         return "admin/authority/edit";
     }
 

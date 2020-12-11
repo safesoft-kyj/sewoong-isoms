@@ -20,7 +20,7 @@ public class SignatureCheckInterceptor extends HandlerInterceptorAdapter {
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account user = (Account)authentication.getPrincipal();
-        if(user.getUserType() == UserType.U && user.isSignature() == false) {
+        if(user.getUserType() == UserType.USER && user.isSignature() == false) {
 //            modelAndView.getModel().put("message", "서명을 등록해 주세요.");
             modelAndView.setViewName("redirect:/user/signature");
         }

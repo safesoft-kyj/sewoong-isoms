@@ -19,14 +19,14 @@ public class UserJobDescriptionService {
     public String getUserShortJobD(String username) {
         QUserJobDescription qJob = QUserJobDescription.userJobDescription;
         BooleanBuilder builder = new BooleanBuilder();
-        builder.and(qJob.username.eq(username));
+        builder.and(qJob.user.username.eq(username));
         builder.and(qJob.status.eq(JobDescriptionStatus.APPROVED));
         Iterable<UserJobDescription> userJobs = userJobDescriptionRepository.findAll(builder);
         if(ObjectUtils.isEmpty(userJobs)) {
             return "";
         } else {
             return StreamSupport.stream(userJobs.spliterator(), false)
-                    .map(x -> x.getJobDescriptionVersion().getJobDescription().getShortName())
+                    .map(x -> x.getJobDescription().getShortName())
                     .collect(Collectors.joining(","));
         }
     }

@@ -91,7 +91,7 @@
 
                 <!--Notification dropdown-->
                 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                <c:if test="${user.userType == 'U'}">
+                <c:if test="${user.userType == 'USER'}">
 <%--                <li class="dropdown">--%>
 <%--                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">--%>
 <%--                        <i class="pli-bell icon-lg"></i>--%>
@@ -268,7 +268,7 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right panel-default">
                         <ul class="head-list">
-                            <c:if test="${user.userType eq 'U'}">
+                            <c:if test="${user.userType eq 'USER'}">
                             <li>
                                 <a href="/user/profile" data-toggle="modal"><i class="pli-male icon-lg icon-fw"></i> Profile</a>
                             </li>

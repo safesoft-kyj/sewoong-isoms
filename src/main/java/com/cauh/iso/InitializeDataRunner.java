@@ -1,6 +1,7 @@
 package com.cauh.iso;
 
 import com.cauh.common.entity.*;
+import com.cauh.common.entity.constant.JobDescriptionStatus;
 import com.cauh.common.repository.*;
 import com.cauh.common.service.UserService;
 import com.cauh.iso.component.CurrentUserComponent;
@@ -9,6 +10,7 @@ import com.cauh.iso.domain.constant.DocumentStatus;
 import com.cauh.iso.domain.constant.DocumentType;
 import com.cauh.iso.domain.constant.TrainingType;
 import com.cauh.iso.repository.*;
+import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +20,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.UUID;
 
 @Component
@@ -58,9 +60,13 @@ public class InitializeDataRunner implements ApplicationRunner {
 
         if("dev".equals(activeProfile) && !userService.findByUsername("admin").isPresent()) {
             //DEV 환경에서 시작 시, 초기 세팅
-            Role savedRole = addRole(1L, "ADMIN", "관리자");
+            //Role savedRole = addRole(1L, "ADMIN", "관리자");
+            JobDescription jobDescription = addJobDescription(1, "ADMIN", "관리자");
+            log.info("JD : {}", jobDescription);
+
             Account savedAccount = addUser(1, "admin", "admin", "관리자", "Administrator", true, "AD001");
-            addRoleUser(1L, savedRole, savedAccount);
+            UserJobDescription userJobDescription = addUserJobDescription(1, savedAccount, jobDescription);
+            log.info("User JDs : {}", userJobDescription);
         }
 
 //        userService.sync();
@@ -175,12 +181,12 @@ public class InitializeDataRunner implements ApplicationRunner {
                 user.setEngName(engName);
                 user.setAccountNonLocked(true);
                 user.setPassword(passwordEncoder.encode("admin"));
-                user.setOrgDepart("개발사업본부");
-                user.setOrgTeam("SI팀");
-//                .password(password)//"$2a$10$OC7F674J9iuP0q6Oh7X4WOFrazK1FdpuHJcEq4CQPXFKTuxTdLqYO"
+                user.setDeptName("개발사업본부");
+                user.setTeamName("SI팀");
+                user.setIndate(new Date());
                 user.setEnabled(true);
                 user.setAdmin(admin);
-                user.setComNum(empNo);
+                user.setEmpNo(empNo);
 
         return userRepository.save(user);
     }
@@ -213,25 +219,26 @@ public class InitializeDataRunner implements ApplicationRunner {
         return jobDescriptionVersionRepository.save(jobDescriptionVersion);
     }
 
-//    public UserJobDescription addUserJobDescription(Integer id, Account user, JobDescriptionVersion jobDescriptionVersion) {
-//        QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
-//        BooleanBuilder builder = new BooleanBuilder();
-//        builder.and(qUserJobDescription.username.eq(user.getUsername()).and(qUserJobDescription.jobDescriptionVersion.id.eq(jobDescriptionVersion.getId())));
-//        boolean isPresent = userJobDescriptionRepository.findOne(builder).isPresent();
-//        log.debug("UserJobDescription [{}], JD-id : {}, isPresent : {}", user.getUsername(), jobDescriptionVersion.getId(), isPresent);
-//        if(isPresent == false) {
-//            UserJobDescription userJd = new UserJobDescription();
-//            userJd.setId(id);
-//            userJd.setUsername(user.getUsername());
-//            userJd.setJobDescriptionVersion(jobDescriptionVersion);
-//            userJd.setAssignDate(user.getIndate());
-//
-//            log.debug(" ==> insert : {}", userJd);
-//            return userJobDescriptionRepository.save(userJd);
-//        } else {
-//            return null;
-//        }
-//    }
+    public UserJobDescription addUserJobDescription(Integer id, Account user, JobDescription jobDescription) {
+        QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qUserJobDescription.user.username.eq(user.getUsername()).and(qUserJobDescription.id.eq(jobDescription.getId())));
+        boolean isPresent = userJobDescriptionRepository.findOne(builder).isPresent();
+        log.debug("UserJobDescription [{}], JD-id : {}, isPresent : {}", user.getUsername(), jobDescription.getId(), isPresent);
+        if(isPresent == false) {
+            UserJobDescription userJd = new UserJobDescription();
+            userJd.setId(id);
+            userJd.setUser(user);
+            userJd.setJobDescription(jobDescription);
+            userJd.setAssignDate(user.getIndate());
+            userJd.setStatus(JobDescriptionStatus.APPROVED);
+
+            log.info(" ==> insert : {}", userJd);
+            return userJobDescriptionRepository.save(userJd);
+        } else {
+            return null;
+        }
+    }
 
 
     public TrainingPeriod addTrainingPeriod(DocumentVersion documentVersion, java.util.Date startDate, java.util.Date endDate, TrainingType trainingType) {

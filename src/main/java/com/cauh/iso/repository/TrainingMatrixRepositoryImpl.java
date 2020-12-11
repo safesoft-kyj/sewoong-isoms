@@ -34,14 +34,14 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
 
     private final UserRepository userRepository;
 
-    public Page<MyTrainingMatrix> getMyTrainingMatrix(Pageable pageable, List<RoleAccount> roleAccountList) {
+    public Page<MyTrainingMatrix> getMyTrainingMatrix(Pageable pageable, List<UserJobDescription> userJobDescriptions) {
 
         BooleanBuilder builder = new BooleanBuilder();
-        if(ObjectUtils.isEmpty(roleAccountList)) {
+        if(ObjectUtils.isEmpty(userJobDescriptions)) {
             builder.and(trainingMatrix.trainingAll.eq(true));
         } else {
-            List<Long> roleAccountIds = roleAccountList.stream().map(d -> d.getRole().getId()).collect(Collectors.toList());
-            builder.and(trainingMatrix.trainingAll.eq(true).or(trainingMatrix.role.id.in(roleAccountIds)));
+            List<Integer> roleAccountIds = userJobDescriptions.stream().map(d -> d.getJobDescription().getId()).collect(Collectors.toList());
+            builder.and(trainingMatrix.trainingAll.eq(true).or(trainingMatrix.jobDescription.id.in(roleAccountIds)));
         }
 
         QueryResults<MyTrainingMatrix> results = queryFactory.selectDistinct(Projections.constructor(MyTrainingMatrix.class, trainingMatrix.documentVersion.document, trainingMatrix.documentVersion))
@@ -57,14 +57,14 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 
-    public List<MyTrainingMatrix> getMyTrainingMatrix(List<RoleAccount> roleAccountList) {
-        if(!ObjectUtils.isEmpty(roleAccountList)) {
-            List<Long> roleAccountIds = roleAccountList.stream().map(d -> d.getRole().getId()).collect(Collectors.toList());
+    public List<MyTrainingMatrix> getMyTrainingMatrix(List<UserJobDescription> userJobDescriptions) {
+        if(!ObjectUtils.isEmpty(userJobDescriptions)) {
+            List<Integer> jobDescriptionIds = userJobDescriptions.stream().map(d -> d.getJobDescription().getId()).collect(Collectors.toList());
             List<MyTrainingMatrix> results = queryFactory.selectDistinct(Projections.constructor(MyTrainingMatrix.class, trainingMatrix.documentVersion.document, trainingMatrix.documentVersion))
                     .from(trainingMatrix)
                     .where(trainingMatrix.documentVersion.document.type.eq(DocumentType.SOP))
                     .where(trainingMatrix.documentVersion.status.eq(DocumentStatus.EFFECTIVE))
-                    .where(trainingMatrix.trainingAll.eq(true).or(trainingMatrix.role.id.in(roleAccountIds)))
+                    .where(trainingMatrix.trainingAll.eq(true).or(trainingMatrix.jobDescription.id.in(jobDescriptionIds)))
                     .orderBy(trainingMatrix.documentVersion.document.docId.asc())
                     .fetch();
 
@@ -78,7 +78,7 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
         if(requirement == TrainingRequirement.optional) {
             List<Integer> jobDescriptionIds = new ArrayList<>();
             if(ObjectUtils.isEmpty(user.getJobDescriptions()) == false) {
-                jobDescriptionIds.addAll(user.getJobDescriptions().stream().map(d -> d.getJobDescriptionVersion().getJobDescription().getId()).collect(Collectors.toList()));
+                jobDescriptionIds.addAll(user.getJobDescriptions().stream().map(d -> d.getJobDescription().getId()).collect(Collectors.toList()));
             }
             /**
              * Case 확인
@@ -177,7 +177,7 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qUser.enabled.eq(true));
         builder.and(qUser.indate.isNotNull());
-        builder.and(qUser.comNum.isNotNull());
+        builder.and(qUser.empNo.isNotNull());
 //        if(ObjectUtils.isEmpty(loginUser) == false) builder.and(qUser.id.ne(loginUser.getId()));
         if (!StringUtils.isEmpty(deptCode)) {
             builder.and(qUser.deptCode.eq(deptCode));
@@ -206,7 +206,7 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
                 qTrainingPeriod.startDate,
                 qTrainingPeriod.endDate,
                 ExpressionUtils.as(JPAExpressions.select(min(qUserJobDescription.assignDate))
-                        .from(qUserJobDescription).where(qUserJobDescription.username.eq(qUser.username).and(qUserJobDescription.status.eq(JobDescriptionStatus.APPROVED))), "assignDate")
+                        .from(qUserJobDescription).where(qUserJobDescription.user.username.eq(qUser.username).and(qUserJobDescription.status.eq(JobDescriptionStatus.APPROVED))), "assignDate")
         ))
         .from(qUser)
 //        .leftJoin(qUserJobDescription).on(qUser.username.eq(qUserJobDescription.username).and(qUserJobDescription.status.in(statusList)))
@@ -254,7 +254,7 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qUser.enabled.eq(true));
         builder.and(qUser.indate.isNotNull());
-        builder.and(qUser.comNum.isNotNull());
+        builder.and(qUser.empNo.isNotNull());
         if(ObjectUtils.isEmpty(loginUser) == false) builder.and(qUser.id.ne(loginUser.getId()));
         if (!StringUtils.isEmpty(deptCode)) {
             builder.and(qUser.deptCode.eq(deptCode));
@@ -284,10 +284,10 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
                     qTrainingPeriod.startDate,
                     qTrainingPeriod.endDate,
                     ExpressionUtils.as(JPAExpressions.select(min(qUserJobDescription.assignDate))
-                    .from(qUserJobDescription).where(qUserJobDescription.username.eq(qUser.username).and(qUserJobDescription.status.eq(JobDescriptionStatus.APPROVED))), "assignDate")
+                    .from(qUserJobDescription).where(qUserJobDescription.user.username.eq(qUser.username).and(qUserJobDescription.status.eq(JobDescriptionStatus.APPROVED))), "assignDate")
                 ))
                 .from(qUser)
-                .leftJoin(qUserJobDescription).on(qUser.username.eq(qUserJobDescription.username).and(qUserJobDescription.status.in(statusList)))
+                .leftJoin(qUserJobDescription).on(qUser.username.eq(qUserJobDescription.user.username).and(qUserJobDescription.status.in(statusList)))
 //                .leftJoin(trainingMatrix).on(trainingMatrix.trainingAll.eq(true).or(qUserJobDescription.jobDescriptionVersion.jobDescription.id.eq(trainingMatrix.jobDescription.id)))
                 .join(qDocumentVersion).on(trainingMatrix.documentVersion.id.eq(qDocumentVersion.id).and(docStatus))
                 .join(qTrainingPeriod).on(qTrainingPeriod.documentVersion.id.eq(qDocumentVersion.id))

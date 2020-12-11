@@ -63,8 +63,8 @@ public class ExternalCustomerUserServiceImpl implements ExternalCustomUserServic
                 user.setUsername(email);
                 user.setAccountNonLocked(true);
                 user.setUserType(UserType.AUDITOR);
-                user.setOrgDepart(sopDisclosureRequestForm.getCompanyNameOrInstituteName());
-                user.setOrgTeam(sopDisclosureRequestForm.getCompanyNameOrInstituteName());
+                user.setDeptName(sopDisclosureRequestForm.getCompanyNameOrInstituteName());
+                user.setTeamName(sopDisclosureRequestForm.getCompanyNameOrInstituteName());
                 user.setEmail(email);
                 user.setAccessCode(randomNo);
                 user.setAgreementCollectUse(optionalAgreementPersonalInformation.isPresent());
@@ -75,17 +75,17 @@ public class ExternalCustomerUserServiceImpl implements ExternalCustomUserServic
                 user.setDisclosureEndDate(sopDisclosureRequestForm.getRequestEndDate());
 
                 List<String> sopIds = sopDisclosureRequestForm.getRequestedDocumentSOPs().stream().map(s -> s.getDocumentVersion().getId()).collect(Collectors.toList());
-                Map<String, String> allowedRDMap = sopDisclosureRequestForm.getRequestedDocumentRDs().stream()
+                Map<String, String> allowedRFMap = sopDisclosureRequestForm.getRequestedDocumentRDs().stream()
                         .map(s -> s.getDocumentVersion())
                         .distinct()
                         .collect(Collectors.toMap(s -> s.getId(), s -> s.getDocument().getSop().getId()));
-                log.debug("==> allowedRDMap : {}", allowedRDMap);
+                log.debug("==> allowedRDMap : {}", allowedRFMap);
                 if (ObjectUtils.isEmpty(sopIds) == false) {
                     user.getAllowedSOP().addAll(sopIds);
                 }
 
-                if (ObjectUtils.isEmpty(allowedRDMap) == false) {
-                    user.getAllowedRDMap().putAll(allowedRDMap);
+                if (ObjectUtils.isEmpty(allowedRFMap) == false) {
+                    user.getAllowedRFMap().putAll(allowedRFMap);
                 }
 
                 if(!ObjectUtils.isEmpty(sopDisclosureRequestForm.getDisclosureDigitalBinders())) {
@@ -93,7 +93,7 @@ public class ExternalCustomerUserServiceImpl implements ExternalCustomUserServic
                 }
 
                 log.info("@@ Allowed SOP[{}]", user.getAllowedSOP());
-                log.info("@@ Allowed RD Maps(rdId, sopId)[{}]", user.getAllowedRDMap());
+                log.info("@@ Allowed RD Maps(rdId, sopId)[{}]", user.getAllowedRFMap());
                 log.info("@@ Allowed DB Users : {}", user.getDisclosureUsers());
 
                 HashMap<String, Object> model = new HashMap<>();

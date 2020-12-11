@@ -94,11 +94,11 @@ public class OfflineTrainingService {
 //            OfflineTraining offlineTraining = findById(id).get();
             QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
             BooleanBuilder aBuilder = new BooleanBuilder();
-            aBuilder.and(qUserJobDescription.jobDescriptionVersion.jobDescription.shortName.in(Arrays.asList(receiveEmailRole.split(","))));
+            aBuilder.and(qUserJobDescription.jobDescription.shortName.in(Arrays.asList(receiveEmailRole.split(","))));
 
             Iterable<UserJobDescription> userJobDescriptions = userJobDescriptionRepository.findAll(aBuilder);
             List<String> toUserList = StreamSupport.stream(userJobDescriptions.spliterator(), false)
-                    .map(UserJobDescription::getUsername)
+                    .map(u -> u.getUser().getUsername())
                     .distinct()
                     .collect(Collectors.toList());
             QAccount qUser = QAccount.account;
@@ -173,9 +173,9 @@ public class OfflineTrainingService {
                 trainingLog.setTrainingTime((int)time);
                 trainingLog.setUser(attendee.getAccount());
 
-                log.debug("=> EmpNo : {} Training 이력 추가 : {}", attendee.getAccount().getComNum(), doc.getDocumentVersion().getId());
+                log.debug("=> EmpNo : {} Training 이력 추가 : {}", attendee.getAccount().getEmpNo(), doc.getDocumentVersion().getId());
                 TrainingLog savedTrainingLog = trainingLogService.saveOrUpdate(trainingLog, null);
-                log.info("<== Offline Training Log : {}, savedTrainingLog Id : {}", attendee.getAccount().getComNum(), savedTrainingLog.getId());
+                log.info("<== Offline Training Log : {}, savedTrainingLog Id : {}", attendee.getAccount().getEmpNo(), savedTrainingLog.getId());
             }
         }
 

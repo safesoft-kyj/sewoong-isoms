@@ -104,13 +104,13 @@ public class SOPController {
                 .sorted(Comparator.comparing(d -> d.getDocument().getDocId()))
                 .collect(toList());
 
-            if(!ObjectUtils.isEmpty(filteredList) && StringUtils.isEmpty(categoryId)) {
-                model.addAttribute("categoryList", filteredList.stream()
-                        .map(v -> v.getDocument().getCategory())
-                        .distinct()
-                        .sorted(Comparator.comparing((Category::getShortName)))
-                        .collect(toList()));
-            }
+        if (!ObjectUtils.isEmpty(filteredList) && StringUtils.isEmpty(categoryId)) {
+            model.addAttribute("categoryList", filteredList.stream()
+                    .map(v -> v.getDocument().getCategory())
+                    .distinct()
+                    .sorted(Comparator.comparing((Category::getShortName)))
+                    .collect(toList()));
+        }
 
 //        }
 //            /**
@@ -118,7 +118,7 @@ public class SOPController {
 //             */
 //            log.debug("@sopList : {}", sopList);
 //            if(StringUtils.isEmpty(categoryId)) {
-        if(user.getUserType() == UserType.U) {
+        if(user.getUserType() == UserType.USER) {
             if (!StringUtils.isEmpty(sopId)) {
                 BooleanBuilder rdBuilder = documentVersionService.getMainRFPredicate(status, Arrays.asList(sopId));
                 log.debug("@RD 조회 조건 : {}", rdBuilder);

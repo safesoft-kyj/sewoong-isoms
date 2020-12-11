@@ -5,14 +5,9 @@ import com.cauh.common.entity.constant.UserStatus;
 import com.cauh.common.entity.constant.UserType;
 import com.cauh.common.repository.SignatureRepository;
 import com.cauh.common.repository.UserRepository;
-import com.cauh.common.security.authentication.CustomUsernamePasswordAuthenticationToken;
 import com.cauh.iso.component.CurrentUserComponent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.xpath.operations.Bool;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDate;
 import java.util.*;
 
 @Controller
@@ -58,7 +52,7 @@ public class UserController {
             attributes.addFlashAttribute("message", "Sign Up request was failed");
         } else {
             //userStatus를 통해 현재 유저 상태 설정 (SIGNUP_REQUEST)
-            account.setUserType(UserType.U);
+            account.setUserType(UserType.USER);
             account.setAccountNonLocked(false);
             account.setEnabled(true);
             account.setUserStatus(UserStatus.SIGNUP_REQUEST);
@@ -146,12 +140,5 @@ public class UserController {
         }
         resultMap.put("valid", result);
         return resultMap;
-    }
-
-    public void updateAuthentication(Account userDetails) {
-        Collection authorities = userDetails.getSopAuthorities();
-        Authentication authentication = new CustomUsernamePasswordAuthenticationToken(userDetails, null, authorities);
-        SecurityContext context = SecurityContextHolder.getContext();
-        context.setAuthentication(authentication);
     }
 }

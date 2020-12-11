@@ -18,8 +18,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Entity
 @Table(name = "s_training_matrix",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"document_version_id", "role_id"}),
-        indexes = @Index(columnList = "training_all,role_id")
+        uniqueConstraints = @UniqueConstraint(columnNames = {"document_version_id", "job_description_id"}),
+        indexes = @Index(columnList = "training_all, job_description_id")
 )
 @Slf4j
 @ToString(of = {"id"})
@@ -47,15 +47,15 @@ public class TrainingMatrix extends BaseEntity implements Serializable {
 //    private JobDescription jobDescription;
 
     @ManyToOne
-    @JoinColumn(name="role_id", referencedColumnName = "id")
+    @JoinColumn(name="job_description_id", referencedColumnName = "id")
     @NotAudited
-    private Role role;
+    private JobDescription jobDescription;
 
 
     @Builder
-    public TrainingMatrix(DocumentVersion documentVersion, boolean trainingAll, Role role) {
+    public TrainingMatrix(DocumentVersion documentVersion, boolean trainingAll, JobDescription jobDescription) {
         this.documentVersion = documentVersion;
         this.trainingAll = trainingAll;
-        this.role = role;
+        this.jobDescription = jobDescription;
     }
 }

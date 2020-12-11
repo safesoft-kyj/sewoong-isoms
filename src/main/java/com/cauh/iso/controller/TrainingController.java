@@ -88,9 +88,9 @@ public class TrainingController {
 //            return "redirect:/notice";
 //        }
 
-        Page<MyTrainingMatrix> sopTrainingMatrices = trainingMatrixRepository.getMyTrainingMatrix(pageable, user.getRoleAccounts());
+        Page<MyTrainingMatrix> sopTrainingMatrices = trainingMatrixRepository.getMyTrainingMatrix(pageable, user.getUserJobDescriptions());
         model.addAttribute("trainingMatrix", sopTrainingMatrices);
-        model.addAttribute("userJobDescriptions", user.getJobDescriptions());
+        model.addAttribute("userJobDescriptions", user.getUserJobDescriptions());
 
         return "training/myTrainingMatrix";
     }
@@ -301,7 +301,7 @@ public class TrainingController {
 
         QAccount qUser = QAccount.account;
         BooleanBuilder userBuilder = new BooleanBuilder();
-        userBuilder.and(qUser.comNum.isNotNull());
+        userBuilder.and(qUser.empNo.isNotNull());
         userBuilder.and(qUser.training.eq(true));
         userBuilder.and(qUser.enabled.eq(true));
         Iterable<Account> users = userRepository.findAll(userBuilder, qUser.name.asc());
@@ -350,7 +350,7 @@ public class TrainingController {
         }
 
         offlineTraining.setStatus(OfflineTrainingStatus.SUBMITTED);
-        offlineTraining.setEmpNo(user.getComNum());
+        offlineTraining.setEmpNo(user.getEmpNo());
         offlineTrainingService.save(offlineTraining);
 
         offlineTrainingService.sendSubmittedEmail(user, offlineTraining);
@@ -386,7 +386,7 @@ public class TrainingController {
                 String empNo = headerTable.getRow(1).getCell(3).getText();
                 log.debug("@Employee No : {}", empNo);
 
-                if(!empNo.equals(user.getComNum())) {
+                if(!empNo.equals(user.getEmpNo())) {
                     log.warn("로그인한 사용자의 트레이닝 로그 파일 Emp No가 다름.");
 
                     attributes.addFlashAttribute("message", "Training Log 파일의 사번과 로그인한 사용자의 사번이 다릅니다.");

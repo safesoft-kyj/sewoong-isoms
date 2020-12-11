@@ -12,10 +12,9 @@
 <sec:authorize access="isAuthenticated()">
     <div id="mainnav-profile" class="mainnav-profile">
         <div class="profile-wrap text-center">
-            <sec:authentication property="principal.orgDepart" var="deptName"/>
-            <sec:authentication property="principal.orgTeam" var="teamName"/>
-            <sec:authentication property="principal.commaAuthorities" var="authorities"/>
-                <%--    <sec:authentication property="principal.commaJobTitle" var="jobTitle"/>--%>
+            <sec:authentication property="principal.deptName" var="deptName"/>
+            <sec:authentication property="principal.teamName" var="teamName"/>
+            <sec:authentication property="principal.commaJobTitle" var="authorities"/>
             <p class="mnp-name"><sec:authentication property="principal.name"/></p>
             <c:if test="${not empty deptName or not empty teamName}">
                 <p class="text-sm">

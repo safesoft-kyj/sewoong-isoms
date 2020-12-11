@@ -152,14 +152,12 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
                 userDetails = userService.authenticate(username, (String)credentials);
             }
 
+            /**
+             * LOGIN USER의 JOB Description 설정
+             */
             preAuthenticationChecks(userDetails);
-
-            userDetails.setUserType(UserType.U);
-
-            //userDetails.setSignature(signatureRepository.findById(username).isPresent());
-
-            List<RoleAccount> roleAccounts = roleAccountRepository.findAllByAccount(userDetails);
-            userDetails.setRoleAccounts(roleAccounts);
+            userDetails.setUserType(UserType.USER);
+            log.info("@@@@@@User -> JobDescription : {}", userDetails.getUserJobDescriptions());
 
         } else {
             Optional<Account> optionalUser = externalCustomUserService.findByEmail(username);
@@ -264,28 +262,19 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
         /**
          * Job Description 의 Short Name 을 사용자의 권한(role) 로 설정한다.
          */
-        if(userDetails.getUserType() == UserType.A){
-            authorities = AuthorityUtils.commaSeparatedStringToAuthorityList("ADMIN");
-        } else if(userDetails.getUserType() == UserType.U) {
-//            if (!ObjectUtils.isEmpty(userDetails.getJobDescriptions())) {
-//                String commaStringAuthorities = userDetails.getJobDescriptions().stream().map(jd -> jd.getJobDescriptionVersion().getJobDescription().getShortName()).collect(Collectors.joining(","));
-//                authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(commaStringAuthorities);
-//
-//                log.debug("==> Username : {}, Role : {}", username, authorities);
-//            }
-
-            //Role-Account를 이용하여 Authorities 구성.
-            if (!ObjectUtils.isEmpty(userDetails.getRoleAccounts())) {
-                String commaStringAuthorities = userDetails.getRoleAccounts().stream().map(jd -> jd.getRole().getName()).collect(Collectors.joining(","));
+        if (userDetails.getUserType() == UserType.USER) {
+            if (!ObjectUtils.isEmpty(userDetails.getUserJobDescriptions())) {
+                String commaStringAuthorities = userDetails.getUserJobDescriptions().stream().map(jd -> jd.getJobDescription().getShortName()).collect(Collectors.joining(","));
                 authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(commaStringAuthorities);
+
                 log.debug("==> Username : {}, Role : {}", username, authorities);
             }
-
-        } else if(userDetails.getUserType() == UserType.AUDITOR) {
+        } else if (userDetails.getUserType() == UserType.AUDITOR) {
             authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(UserType.AUDITOR.name());
         }
+
         userDetails.setLoginDate(new Date());
-        userDetails.setSopAuthorities(authorities);
+
         /**
          * UserDetails 정보에 AccessLogId 설정
          */

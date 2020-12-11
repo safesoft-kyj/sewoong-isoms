@@ -380,7 +380,7 @@ public class ApprovalController {
             }
         }
 
-        List<MyTrainingMatrix> myTrainingMatrices = trainingMatrixRepository.getMyTrainingMatrix(user.getRoleAccounts());
+        List<MyTrainingMatrix> myTrainingMatrices = trainingMatrixRepository.getMyTrainingMatrix(user.getUserJobDescriptions());
         if(StringUtils.isEmpty(sopId)) {
             model.addAttribute("sopMap", myTrainingMatrices.stream().collect(Collectors.toMap(m -> m.getDocumentVersion().getId(), m -> m.getDocument().getDocId() + " " + m.getDocument().getTitle() + " v" + m.getDocumentVersion().getVersion())));
         } else {
@@ -395,7 +395,7 @@ public class ApprovalController {
         if (ObjectUtils.isEmpty(approval.getId()) && !approval.isRenew()) {
             approval.setSopWaiverApprovalForm(new SOPWaiverApprovalForm());
         }
-        List<MyTrainingMatrix> myTrainingMatrices = trainingMatrixRepository.getMyTrainingMatrix(user.getRoleAccounts());
+        List<MyTrainingMatrix> myTrainingMatrices = trainingMatrixRepository.getMyTrainingMatrix(user.getUserJobDescriptions());
         model.addAttribute("sopMap", myTrainingMatrices.stream().collect(Collectors.toMap(m -> m.getDocumentVersion().getId(), m -> m.getDocument().getDocId() + " " + m.getDocument().getTitle() + " v" + m.getDocumentVersion().getVersion())));
     }
 
@@ -405,14 +405,14 @@ public class ApprovalController {
             approval.getSopRdRequestForm().setNameOfRequester(user.getEngName());
 
             String teamDept = "";
-            if(!StringUtils.isEmpty(user.getOrgTeam())) {
-                teamDept = user.getOrgTeam();
+            if(!StringUtils.isEmpty(user.getTeamName())) {
+                teamDept = user.getTeamName();
             }
-            if(!StringUtils.isEmpty(user.getOrgDepart())) {
-                if(!StringUtils.isEmpty(user.getOrgDepart())) {
+            if(!StringUtils.isEmpty(user.getDeptName())) {
+                if(!StringUtils.isEmpty(user.getDeptName())) {
                     teamDept += "/";
                 }
-                teamDept += user.getOrgDepart();
+                teamDept += user.getDeptName();
             }
             approval.getSopRdRequestForm().setNameOfTeamDept(teamDept);
         } else {
@@ -429,7 +429,7 @@ public class ApprovalController {
                         .collect(Collectors.joining(",")).split(","));
             }
         }
-        List<MyTrainingMatrix> myTrainingMatrices = trainingMatrixRepository.getMyTrainingMatrix(user.getRoleAccounts());
+        List<MyTrainingMatrix> myTrainingMatrices = trainingMatrixRepository.getMyTrainingMatrix(user.getUserJobDescriptions());
         Map<String, String> sopMap = myTrainingMatrices.stream().collect(Collectors.toMap(m -> m.getDocumentVersion().getId(), m -> m.getDocument().getDocId() + "/" + m.getDocument().getTitle() + "/" + m.getDocumentVersion().getVersion()));
 
         List<List<Document>> rdLists = myTrainingMatrices.stream()
@@ -470,7 +470,7 @@ public class ApprovalController {
     private void sopDisclosureRequestForm(Approval approval, Account user, Model model) {
         QAccount qUser = QAccount.account;
         BooleanBuilder userBuilder = new BooleanBuilder();
-        userBuilder.and(qUser.comNum.isNotNull());
+        userBuilder.and(qUser.empNo.isNotNull());
         userBuilder.and(qUser.training.eq(true));
         userBuilder.and(qUser.enabled.eq(true));
         Iterable<Account> users = userRepository.findAll(userBuilder, qUser.name.asc());
@@ -484,14 +484,14 @@ public class ApprovalController {
             approval.getSopDisclosureRequestForm().setNameOfRequester(user.getEngName());
 
             String teamDept = "";
-            if(!StringUtils.isEmpty(user.getOrgTeam())) {
-                teamDept = user.getOrgTeam();
+            if(!StringUtils.isEmpty(user.getTeamName())) {
+                teamDept = user.getTeamName();
             }
-            if(!StringUtils.isEmpty(user.getOrgDepart())) {
-                if(!StringUtils.isEmpty(user.getOrgDepart())) {
+            if(!StringUtils.isEmpty(user.getDeptName())) {
+                if(!StringUtils.isEmpty(user.getDeptName())) {
                     teamDept += "/";
                 }
-                teamDept += user.getOrgDepart();
+                teamDept += user.getDeptName();
             }
             approval.getSopDisclosureRequestForm().setTeamDept(teamDept);
         } else {

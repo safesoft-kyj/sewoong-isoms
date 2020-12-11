@@ -41,7 +41,7 @@ public class OrganizationController {
 
         param.put("state", "1");
 //        List<Map<String, String>> allUsers = deptUserMapper.getAllUsers(param);
-        List<Account> accounts = userRepository.findAllByUserTypeAndEnabledOrderByNameAsc(UserType.U, true);
+        List<Account> accounts = userRepository.findAllByUserTypeAndEnabledOrderByNameAsc(UserType.USER, true);
         List<JsTreeNode> jsTreeNodes = new ArrayList<>();
         String mainCode = "DTNSM";
         JsTreeNode rootNode = new JsTreeNode(mainCode, "KCSG(" + accounts.size() + ")");
@@ -68,8 +68,8 @@ public class OrganizationController {
 
 //            JsTreeNode deptNode = new JsTreeNode(deptCode, u.get("deptName"), deptCode, u.get("deptName"), teamCode, u.get("teamName"), u.get("empNo"), username, JsTreeIcon.dept);
 //            JsTreeNode teamNode = new JsTreeNode(teamCode, u.get("teamName"), deptCode, u.get("deptName"), teamCode, u.get("teamName"), u.get("empNo"), username, JsTreeIcon.team);
-            JsTreeNode userNode = new JsTreeNode(u.getComNum(), StringUtils.isEmpty(u.getComPosition()) ? u.getName() : u.getName() + "(" + u.getComPosition() + ")", "DEPT_CODE", u.getOrgDepart(), "TEAM_CODE",
-                    u.getOrgTeam(), u.getComNum(), u.getUsername(),
+            JsTreeNode userNode = new JsTreeNode(u.getEmpNo(), StringUtils.isEmpty(u.getPosition()) ? u.getName() : u.getName() + "(" + u.getPosition() + ")", "DEPT_CODE", u.getDeptName(), "TEAM_CODE",
+                    u.getTeamName(), u.getEmpNo(), u.getUsername(),
                     JsTreeIcon.user_male);
 //            if(lev == 0) {
                 log.trace("KCSG - 사용자 추가 : {}", u.getName());

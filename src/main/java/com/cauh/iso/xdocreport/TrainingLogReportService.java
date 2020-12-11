@@ -78,7 +78,7 @@ public class TrainingLogReportService {
 //            context.put("date", new DateTool());
 //            context.put("locale", Locale.ENGLISH);
 
-            log.debug("@User : {} 서명 이미지 설정...", user.getComNum());
+            log.debug("@User : {} 서명 이미지 설정...", user.getEmpNo());
 //            IImageProvider sign = new FileImageProvider(new File(fileUploadDir + File.separator + user.getSignImg()));
 //            context.put("sign", sign);
 
@@ -90,7 +90,7 @@ public class TrainingLogReportService {
 //            Options options = Options.getTo(ConverterTypeTo.PDF).via(ConverterTypeVia.XWPF);
             String fileName = user.getUsername() + "_sop_"+ System.currentTimeMillis() + ".docx";
 
-            log.debug("@User : {} Word 파일 생성...", user.getComNum());
+            log.debug("@User : {} Word 파일 생성...", user.getEmpNo());
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             InputStream in = TrainingLogReportService.class.getResourceAsStream("trainingLog_01.docx");
             TrainingLogDTO dto = new TrainingLogDTO();
@@ -143,7 +143,7 @@ public class TrainingLogReportService {
             trainingRecordRepository.save(trainingRecord);
 
 
-            log.debug("@User : {} Employee Training Log 생성! -- Completed.", user.getComNum());
+            log.debug("@User : {} Employee Training Log 생성! -- Completed.", user.getEmpNo());
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        } catch (XDocReportException e) {
