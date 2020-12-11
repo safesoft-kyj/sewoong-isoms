@@ -59,7 +59,7 @@ public class UserController {
             attributes.addFlashAttribute("message", "Sign Up request was failed");
         } else {
             //userStatus를 통해 현재 유저 상태 설정 (SIGNUP_REQUEST)
-            account.setUserType(UserType.U);
+            account.setUserType(UserType.USER);
             account.setAccountNonLocked(false);
             account.setEnabled(true);
             account.setUserStatus(UserStatus.SIGNUP_REQUEST);
