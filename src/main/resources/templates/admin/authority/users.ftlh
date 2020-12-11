@@ -62,6 +62,14 @@
                    }
                });
            });
+
+           //거절 버튼 입력 시
+           $("#rejectBtn").click(function(e){
+               let username = $(this).data("value");
+               if(!confirm("유저 [" + username + "]의 회원가입 신청을 거절합니다. 계속 진행하시겠습니까?")) {
+                   e.preventDefault();
+               }
+           })
         });
     </script>
 </head>
@@ -170,8 +178,8 @@
                                 <#elseif t.userStatus?has_content && t.userStatus == 'SIGNUP_REQUEST'>
                                     <form class="form-horizontal" method="POST">
                                         <input name="id" type="hidden" value="${t.id}" />
-                                        <button class="btn btn-icon btn-info" name="result" value="accept">Accept</button>
-                                        <button class="btn btn-icon btn-danger" name="result" value="reject">Reject</button>
+                                        <button class="btn btn-icon btn-info" id="acceptBtn" data-value="${t.username}" name="result" value="accept">Accept</button>
+                                        <button class="btn btn-icon btn-danger" id="rejectBtn" data-value="${t.username}" name="result" value="reject">Reject</button>
                                     </form>
                                 <#elseif t.userStatus?has_content && t.userStatus == 'RETIREE'>
                                     <span class="badge badge-info text-2x">퇴사자</span>
