@@ -54,7 +54,7 @@
                         <#if user.orgDepart?has_content>${user.orgDepart}</#if><#if user.orgTeam?has_content><#if user.orgDepart?has_content>/</#if>${user.orgTeam}</#if>
                     </td>
                     <th class="bg-gray-light">Employee No.:</th>
-                    <td class="text-primary">${user.comNum}</td>
+                    <td class="text-primary">${user.empNo}</td>
                 </tr>
                 </tbody>
             </table>

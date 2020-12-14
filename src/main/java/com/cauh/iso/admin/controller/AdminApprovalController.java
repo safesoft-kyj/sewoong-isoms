@@ -5,7 +5,7 @@ import com.cauh.iso.domain.Approval;
 import com.cauh.iso.domain.constant.ApprovalStatus;
 import com.cauh.iso.domain.constant.ReportType;
 import com.cauh.iso.service.ApprovalService;
-import com.cauh.iso.service.UserJobDescriptionService;
+import com.cauh.iso.admin.service.UserJobDescriptionService;
 import com.cauh.iso.xdocreport.SOPDisclosureRequestFormService;
 import com.cauh.iso.xdocreport.*;
 import lombok.RequiredArgsConstructor;

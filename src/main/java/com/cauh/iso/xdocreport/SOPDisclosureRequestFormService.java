@@ -4,7 +4,7 @@ import com.cauh.iso.component.DocumentAssembly;
 import com.cauh.iso.domain.ApprovalLine;
 import com.cauh.iso.domain.constant.ApprovalLineType;
 import com.cauh.iso.domain.report.SOPDisclosureRequestForm;
-import com.cauh.iso.service.UserJobDescriptionService;
+import com.cauh.iso.admin.service.UserJobDescriptionService;
 import com.cauh.iso.utils.DateUtils;
 import com.cauh.iso.xdocreport.dto.ApprovalLineDTO;
 import com.cauh.iso.xdocreport.dto.SOPDisclosureRequestFormDTO;

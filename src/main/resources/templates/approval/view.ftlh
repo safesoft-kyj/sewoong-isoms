@@ -35,7 +35,6 @@
             <div class="row">
                 <div class="col-xs-12">
 
-
                     <div  class="panel form-horizontal form-padding">
                         <div class="panel-heading">
                             <h3 class="panel-title">${approvalView.type.label}</h3>

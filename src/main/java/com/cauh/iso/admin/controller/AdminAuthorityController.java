@@ -35,6 +35,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 @Controller
@@ -143,18 +145,27 @@ public class AdminAuthorityController {
             if(actionCmd.equals("accept")) {
                 log.info("동의");
 
+                //계정 유효기간 설정
+                LocalDate accountExpiredDate = LocalDate.of(9999, 12, 31);
+                account.setAccountExpiredDate(Date.from(accountExpiredDate.atStartOfDay(ZoneId.systemDefault()).toInstant())); //9999-12-31 설정
+                account.setUserStatus(UserStatus.ACTIVE);
+                account.setEnabled(true);
+                Account savedUser = userService.saveOrUpdate(account);
+
+                String message = "[" + savedUser + "] 가입 요청이 수락되었습니다.";
+                attributes.addFlashAttribute("message", message);
 
             }else if(actionCmd.equals("reject")){
                 log.info("거절");
 
-                //계정 유효기간 현재 시간 기준 지정
+                //계정 유효기간 만료로 처리 (현재 시간 입력)
                 //계정 상태 INACTIVE 지정 / Enabled 변수 false로 설정.
                 account.setAccountExpiredDate(new Date());
                 account.setUserStatus(UserStatus.INACTIVE);
                 account.setEnabled(false);
-                userService.saveOrUpdate(account);
+                Account savedUser = userService.saveOrUpdate(account);
 
-                String message = "[" + account.getUsername() + "] 가입 요청이 거정되었습니다.";
+                String message = "[" + savedUser.getUsername() + "] 가입 요청이 거절되었습니다.";
                 attributes.addFlashAttribute("message", message);
                 return "redirect:/admin/authority/users";
             }

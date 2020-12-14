@@ -43,7 +43,7 @@
                     <#list userJobDescriptions as jd>
                         <th class="text-center">
 <#--                            <span class="text-sm">${jd.jobDescription.title}</span><br/>-->
-                            ${jd.jobDescriptionVersion.jobDescription.shortName}
+                            ${jd.jobDescription.shortName}
                         </th>
                     </#list>
                     <#else>
