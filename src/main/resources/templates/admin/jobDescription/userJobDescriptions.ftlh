@@ -10,7 +10,7 @@
             <a href="/admin/jobDescription">직무 관리</a>
         </li>
         <li class="active">
-            <a href="/admin/user/jobDescription">사용자별 직무 관리</a>
+            <a href="/admin/jobDescription/user">사용자별 직무 관리</a>
         </li>
     </ul>
     <div class="tab-content">

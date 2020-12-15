@@ -2,7 +2,7 @@
 <#import "/spring.ftl" as spring />
 <html>
 <head>
-    <title>e-SOP > User Management > 직무 관리</title>
+    <title>ISO-MS > User Management > 직무 관리</title>
 </head>
 <body>
 <div class="tab-base">
@@ -11,7 +11,7 @@
             <a href="/admin/jobDescription">직무 관리</a>
         </li>
         <li>
-            <a href="/admin/user/jobDescription">사용자별 직무 관리</a>
+            <a href="/admin/jobDescription/user">사용자별 직무 관리</a>
         </li>
     </ul>
     <div class="tab-content">

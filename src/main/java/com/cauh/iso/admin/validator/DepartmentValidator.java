@@ -27,15 +27,22 @@ public class DepartmentValidator implements Validator {
         Department department = (Department)o;
 
         if(StringUtils.isEmpty(department.getName())){
-            errors.rejectValue("department.name", "message.empty", "필수 입력값입니다.");
+            errors.rejectValue("name", "message.empty", "필수 입력값입니다.");
         }
 
         if(!ObjectUtils.isEmpty(department.getId())){
-            Integer childDepartmentCount = departmentRepository.countAllByParentDepartmentAndIsYn(department, "N");
+            Integer childDepartmentCount = departmentRepository.countAllByParentDepartmentAndIsYn(department, "Y");
             log.info("Count : {}", childDepartmentCount);
             if(department.getIsYn().equals("N") && childDepartmentCount > 0) {
-                errors.rejectValue("department.isYn", "message.disable.departments", "하위 부서가 있는 부서는 비활성화 할 수 없습니다.");
+                errors.rejectValue("isYn", "message.invalid_departments", "하위 부서가 있는 부서는 비활성화 할 수 없습니다.");
             }
         }
+
+        if(!ObjectUtils.isEmpty(department.getParentDepartment())){
+            if(department.getParentDepartment().getIsYn().equals("N") && department.getIsYn().equals("Y")){
+                errors.rejectValue("isYn", "message.invalid.departments", "상위 부서가 비활성화 상태입니다.");
+            }
+        }
+
     }
 }

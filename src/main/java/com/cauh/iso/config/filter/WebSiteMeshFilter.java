@@ -17,6 +17,7 @@ public class WebSiteMeshFilter extends ConfigurableSiteMeshFilter {
                 .addExcludedPath("/javadoc/*")
                 .addExcludedPath("/brochures/*")
                 .addExcludedPath("/api/*")
+                .addExcludedPath("/signUp")
                 .addExcludedPath("/login")
                 .addExcludedPath("/viewer/*")
                 .addExcludedPath("/ajax/*")

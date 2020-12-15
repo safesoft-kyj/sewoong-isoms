@@ -87,7 +87,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         registry.addInterceptor(externalCustomerCheckInterceptor())
                 .addPathPatterns("/**")
-                .excludePathPatterns("/static/**", "/login", "/logout", "/error", "/expired", "/invalidSession", "/api/**", "/favicon.ico", "/ajax/**",
+                .excludePathPatterns("/static/**", "/signUp", "/login", "/logout", "/error", "/expired", "/invalidSession", "/api/**", "/favicon.ico", "/ajax/**",
                         "/denied",
                         "/please-enter-your-access-code",
                         "/agreement-to-collect-and-use-personal-information",

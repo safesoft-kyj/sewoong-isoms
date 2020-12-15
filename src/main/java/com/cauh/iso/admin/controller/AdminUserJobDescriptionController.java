@@ -38,7 +38,7 @@ public class AdminUserJobDescriptionController {
     private final UserJobDescriptionService userJobDescriptionService;
     private final UserJobDescriptionValidator userJobDescriptionValidator;
 
-    @GetMapping("/user/jobDescription")
+    @GetMapping("/jobDescription/user")
     public String userJobDescription(
             @PageableDefault(size = 15, sort = {"lev", "teamCode", "name"},
             direction = Sort.Direction.ASC) Pageable pageable, Model model) {
@@ -49,7 +49,7 @@ public class AdminUserJobDescriptionController {
         return "admin/jobDescription/userJobDescriptions";
     }
 
-    @GetMapping("/user/jobDescription/{username}")
+    @GetMapping("/jobDescription/user/{username}")
     public String getUserJobDescription(@PathVariable("username") String username, Model model) {
         List<JobDescription> jobDescriptionList = jobDescriptionService.getJobDescriptionList();
         Map<String, String> jdMap = jobDescriptionList.stream()
@@ -59,7 +59,7 @@ public class AdminUserJobDescriptionController {
         return "admin/jobDescription/userJobDescription";
     }
 
-    @PostMapping("/user/jobDescription/{username}")
+    @PostMapping("/jobDescription/user/{username}")
     public String getUserJobDescription(@PathVariable("username") String username,
                                         @ModelAttribute("user") Account user, BindingResult result,
                                         SessionStatus status, HttpServletRequest request) throws Exception {
@@ -87,7 +87,7 @@ public class AdminUserJobDescriptionController {
 
         userJobDescriptionService.saveAll(user);
         status.setComplete();
-        return "redirect:/admin/user/jobDescription";
+        return "redirect:/admin/jobDescription/user";
     }
 
 }
