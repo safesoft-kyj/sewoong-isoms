@@ -1,8 +1,11 @@
 package com.cauh.common.service;
 
 import com.cauh.common.entity.Account;
+import com.cauh.common.entity.JobDescription;
+import com.cauh.common.entity.UserJobDescription;
 import com.cauh.common.entity.constant.UserStatus;
 import com.cauh.common.mapper.DeptUserMapper;
+import com.cauh.common.repository.UserJobDescriptionRepository;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.authentication.InternalAccountAuthenticationException;
 import com.cauh.common.utils.DateUtils;
@@ -11,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,6 +22,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Created by Dt&amp;SanoMedics <br>
@@ -30,6 +35,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final UserJobDescriptionRepository userJobDescriptionRepository;
     private final PasswordEncoder passwordEncoder;
 
     //현재 유저정보를 가지고있는 Component

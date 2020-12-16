@@ -913,7 +913,7 @@
                         </div>
                         <div class="form-group form-button">
                             <input type="submit" name="signIn" id="signIn" class="form-submit" value="Login"/>
-                            <a href="/signUp" id="signUp" class="form-submit">Sign Up</a>
+                            <input type="button" id="signUp" onclick="location.href='/signUp'" class="form-submit" value="Sign Up" />
                         </div>
                     </form>
                 </div>

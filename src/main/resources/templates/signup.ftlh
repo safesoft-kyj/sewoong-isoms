@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
+<#import "/spring.ftl" as spring />
+<html>
 <head>
     <meta charset="UTF-8">
     <title>CAUH ISO Management System > Sign Up</title>
@@ -13,6 +13,8 @@
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap DatePicker -->
     <link href="/static/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
+    <!-- select2 -->
+    <link href="/static/plugins/select2/css/select2.min.css" rel="stylesheet">
 
     <!-- Main css -->
     <#--    <link rel="stylesheet" href="http://lms.dtnsm.com/default/login/css/style.css">-->
@@ -24,16 +26,11 @@
     <script src="/static/plugins/bootstrap-validator/bootstrapValidator.js"></script>
     <!-- Bootstrap DatePicker -->
     <script src="/static/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+    <!-- select2 -->
+    <script src="/static/plugins/select2/js/select2.min.js"></script>
 
     <style>
-        .panel{
-            position:absolute;
-            top:10%;
-            left:30%;
-            border: solid 1px gray;
-        }
-
-        .form-group{
+        .form-group {
             margin-bottom: 10px;
         }
 
@@ -48,6 +45,7 @@
             $("#birthDate").datepicker({
                 format: "yyyy-mm-dd",
                 todayBtn: "linked",
+                endDate: new Date(),
                 clearBtn: true,
                 autoclose: true,
                 todayHighlight: true,
@@ -56,6 +54,7 @@
             });
 
 
+            $('#jdIds').select2({allowClear: true});
         })
 
         function signUpValidation() {
@@ -180,69 +179,97 @@
 <!-- Sign Up Page -->
 <div class="panel">
     <!--Modal header-->
-    <div class="panel-heading">
+    <div class="panel-heading breadcrumb">
         <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
-        <h4 class="modal-title">Sign Up</h4>
+        <h4 class="breadcrumb bg-mint">Sign Up</h4>
     </div>
     <form action="/signUp" method="POST" class="register-form" id="signup-form">
         <!--Modal body-->
         <div class="panel-body">
-            <div class="form-group">
-                <label class="col-sm-3 signup-label control-label" for="username">ID* : </label>
-                <div class="col-sm-9">
-                    <input class="form-control" type="text" name="username" id="username">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="control-label" for="username">ID* : </label>
+                        <@spring.formInput "account.username" "class='form-control'" />
+                    </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label class="col-sm-3 signup-label control-label" for="password">Password* : </label>
-                <div class="col-sm-9">
-                    <input class="form-control" type="password" name="password" id="password"
-                           data-bv-field="password">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="control-label" for="password">Password* : </label>
+                        <@spring.formInput "account.password" "class='form-control'" "password" />
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="control-label" for="confirmPassword">P/W Confirm* : </label>
+                        <input class="form-control" type="password" name="confirmPassword" id="confirmPassword">
+                    </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label class="col-sm-3 signup-label control-label" for="confirmPassword">P/W Confirm*
-                    : </label>
-                <div class="col-sm-9">
-                    <input class="form-control" type="password" name="confirmPassword"
-                           id="confirmPassword" data-bv-field="confirmPassword">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="control-label" for="name">Name(KOR)* : </label>
+                        <@spring.formInput "account.name" "class='form-control'" />
+                        <@spring.showErrors "" "color:red;"/>
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="control-label" for="engName">Name(ENG) : </label>
+                        <@spring.formInput "account.engName" "class='form-control'" />
+                    </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label class="col-sm-3 signup-label control-label" for="name">Name(KOR)* : </label>
-                <div class="col-sm-9">
-                    <input class="form-control" type="text" name="name" id="name">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="control-label" for="email">Birth Date : </label>
+                        <@spring.formInput "account.birthDate" "class='form-control'" />
+                        <@spring.showErrors "" "color:red;"/>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="control-label" for="email">phone : </label>
+                        <@spring.formInput "account.phone" "class='form-control'" />
+                        <@spring.showErrors "" "color:red;"/>
+                    </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label class="col-sm-3 signup-label control-label" for="engName">Name(ENG) : </label>
-                <div class="col-sm-9">
-                    <input class="form-control" type="text" name="engName" id="engName">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="control-label" for="email">E-mail* : </label>
+                        <@spring.formInput "account.email" "class='form-control'" "email"/>
+                        <@spring.showErrors "" "color:red;"/>
+                    </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label class="col-sm-3 signup-label control-label" for="email">E-mail* : </label>
-                <div class="col-sm-9">
-                    <input class="form-control" type="email" name="email" id="email">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="control-label" >Department* : </label>
+                        <@spring.formSingleSelect "account.department" departmentMap "class='form-control'"/>
+                        <@spring.showErrors "" "color:red;"/>
+                    </div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label class="col-sm-3 signup-label control-label" for="email">phone : </label>
-                <div class="col-sm-9">
-                    <input class="form-control" type="text" name="phone" id="phone">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-3 signup-label control-label" for="email">Birth Date : </label>
-                <div class="col-sm-9">
-                    <input class="form-control" type="text" name="birthDate" id="birthDate">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="control-label" >Job Descriptions* : </label>
+                        <@spring.formMultiSelect "account.jdIds" jobDescriptionMap "class='form-control'"/>
+                        <@spring.showErrors "" "color:red;"/>
+                    </div>
                 </div>
             </div>
         </div>

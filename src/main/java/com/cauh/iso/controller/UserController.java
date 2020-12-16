@@ -6,7 +6,9 @@ import com.cauh.common.entity.constant.UserType;
 import com.cauh.common.repository.SignatureRepository;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.authentication.CustomUsernamePasswordAuthenticationToken;
+import com.cauh.iso.admin.service.DepartmentService;
 import com.cauh.iso.component.CurrentUserComponent;
+import com.cauh.iso.service.JDService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.xpath.operations.Bool;
@@ -18,10 +20,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
@@ -36,8 +36,9 @@ public class UserController {
 
     //현재 유저 정보를 담고 있는 Component Class
     private final CurrentUserComponent currentUserComponent;
-
     private final SignatureRepository signatureRepository;
+    private final JDService jdService;
+    private final DepartmentService departmentService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -50,13 +51,20 @@ public class UserController {
 
     @GetMapping("/signUp")
     public String signUp(Model model) {
-        log.info("@Signup");
+        model.addAttribute("account", new Account());
+        model.addAttribute("jobDescriptionMap", jdService.getJDMap());
+        model.addAttribute("departmentMap", departmentService.getDeptMap());
+
+        log.info("Depts : {}", departmentService.getDeptMap());
+        log.info("JDs : {}", jdService.getJDMap());
+
         return "/signup";
     }
 
     @PostMapping("/signUp")
     @Transactional
-    public String signUpRequest(Account account, RedirectAttributes attributes) {
+    public String signUpRequest(@ModelAttribute("account")Account account,
+                                RedirectAttributes attributes, BindingResult result) {
         log.info("@Sign Up Request : {}", account.getUsername());
 
         Optional<Account> user = userRepository.findByUsername(account.getUsername());

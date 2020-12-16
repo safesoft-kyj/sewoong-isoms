@@ -26,6 +26,7 @@ public class AjaxRequestHandlingFilter implements Filter {
         List<String> permitURIList = new ArrayList<>();
         permitURIList.add("/signUp/ajax/validation");
 
+
         try {
             HttpServletResponse resp = (HttpServletResponse) response;
             String ajaxHeader = ((HttpServletRequest) request).getHeader("X-Requested-With");
@@ -36,6 +37,7 @@ public class AjaxRequestHandlingFilter implements Filter {
                 log.debug("XMLHttpRequest[{}] username={}", ((HttpServletRequest) request).getRequestURI(), authentication.getName());
                 //permitURIList에 포함되어있는 경우, Ajax를 예외적으로 사용 가능함
                 Boolean isPermit = permitURIList.contains(((HttpServletRequest) request).getRequestURI());
+                //log.info("uri : {}", ((HttpServletRequest) request).getRequestURI());
 
                 //YSH :: 회원가입 양식의 validation link는 예외적으로 anonymous User에서 ajax를 사용하게 처리.
                 if(!isPermit && "anonymousUser".equals(authentication.getName())) {

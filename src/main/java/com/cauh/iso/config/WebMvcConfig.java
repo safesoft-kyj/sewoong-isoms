@@ -55,7 +55,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry
                 .addResourceHandler("/static/**", "/favicon.ico")
                 .addResourceLocations("classpath:/resources/");
-
     }
 
     @Bean
@@ -87,7 +86,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         registry.addInterceptor(externalCustomerCheckInterceptor())
                 .addPathPatterns("/**")
-                .excludePathPatterns("/static/**", "/signUp", "/login", "/logout", "/error", "/expired", "/invalidSession", "/api/**", "/favicon.ico", "/ajax/**",
+                .excludePathPatterns("/static/**", "/login", "/logout", "/error", "/expired", "/invalidSession", "/api/**", "/favicon.ico", "/ajax/**",
                         "/denied",
                         "/please-enter-your-access-code",
                         "/agreement-to-collect-and-use-personal-information",

@@ -7,6 +7,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Optional;
+import java.util.TreeMap;
 
 /**
  * Created by Dt&amp;SanoMedics <br>
@@ -24,7 +25,6 @@ public interface UserService {
     Account saveOrUpdate(Account user);
 
     Optional<Account> findByUsername(String username);
-
 
     void sync();
 
