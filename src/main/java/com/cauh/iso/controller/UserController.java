@@ -1,17 +1,15 @@
 package com.cauh.iso.controller;
 
 import com.cauh.common.entity.Account;
-import com.cauh.common.entity.constant.UserStatus;
-import com.cauh.common.entity.constant.UserType;
 import com.cauh.common.repository.SignatureRepository;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.authentication.CustomUsernamePasswordAuthenticationToken;
+import com.cauh.common.service.UserService;
 import com.cauh.iso.admin.service.DepartmentService;
 import com.cauh.iso.component.CurrentUserComponent;
 import com.cauh.iso.service.JDService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.xpath.operations.Bool;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,8 +22,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
 
 @Controller
@@ -38,6 +34,7 @@ public class UserController {
     private final CurrentUserComponent currentUserComponent;
     private final SignatureRepository signatureRepository;
     private final JDService jdService;
+    private final UserService userService;
     private final DepartmentService departmentService;
 
     private final PasswordEncoder passwordEncoder;
@@ -55,9 +52,6 @@ public class UserController {
         model.addAttribute("jobDescriptionMap", jdService.getJDMap());
         model.addAttribute("departmentMap", departmentService.getDeptMap());
 
-        log.info("Depts : {}", departmentService.getDeptMap());
-        log.info("JDs : {}", jdService.getJDMap());
-
         return "/signup";
     }
 
@@ -73,32 +67,9 @@ public class UserController {
             attributes.addFlashAttribute("type", "danger");
             attributes.addFlashAttribute("message", "Sign Up request was failed");
         } else {
-            //userStatus를 통해 현재 유저 상태 설정 (SIGNUP_REQUEST)
-            account.setUserType(UserType.USER);
-            account.setAccountNonLocked(false);
-            account.setEnabled(true);
-            account.setUserStatus(UserStatus.SIGNUP_REQUEST);
-            
-            //가입 시 계정 유효기한을 설정(가입시점 + D-14)
-            LocalDate localDate = LocalDate.now().plusDays(14);
-            Date DDay_14 = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-
-//            Date now = new Date();
-//            Calendar calendar = Calendar.getInstance();
-//            calendar.setTime(now);
-//            calendar.add(Calendar.DATE, 14);
-//            calendar.set(Calendar.HOUR_OF_DAY, 0);
-//            calendar.set(Calendar.MINUTE, 0);
-//            calendar.set(Calendar.SECOND, 0);
-//            calendar.set(Calendar.MILLISECOND, 0);
-
-            account.setAccountExpiredDate(DDay_14);
-
-            //입력된 비밀번호 암호화
-            account.setPassword(passwordEncoder.encode(account.getPassword()));
-
+            Account signUpAccount = userService.signUpRequest(account);
             //계정정보 저장
-            userRepository.save(account);
+            userRepository.save(signUpAccount);
 
             attributes.addFlashAttribute("type", "success");
             attributes.addFlashAttribute("message", "Sign up request is success");
@@ -175,3 +146,4 @@ public class UserController {
         context.setAuthentication(authentication);
     }
 }
+

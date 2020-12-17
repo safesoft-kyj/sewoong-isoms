@@ -34,7 +34,7 @@ public class DepartmentValidator implements Validator {
             Integer childDepartmentCount = departmentRepository.countAllByParentDepartmentAndIsYn(department, "Y");
             log.info("Count : {}", childDepartmentCount);
             if(department.getIsYn().equals("N") && childDepartmentCount > 0) {
-                errors.rejectValue("isYn", "message.invalid_departments", "하위 부서가 있는 부서는 비활성화 할 수 없습니다.");
+                errors.rejectValue("isYn", "message.invalid_departments", "하위 부서가 사용중인 부서는 비활성화 할 수 없습니다.");
             }
         }
 

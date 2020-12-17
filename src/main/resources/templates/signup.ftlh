@@ -54,7 +54,7 @@
             });
 
 
-            $('#jdIds').select2({allowClear: true});
+            $('#jdIds').select2({width : '100%'});
         })
 
         function signUpValidation() {
@@ -160,6 +160,13 @@
                                 message: '> The phone number is not valid (000-0000-0000)'
                             }
                         }
+                    },
+                    jdIds: {
+                        validators: {
+                            notEmpty: {
+                                message: '> The job descriptions are required and can\'t be empty'
+                            }
+                        }
                     }
                 }
             }).on('success.field.bv', function (e, data) {
@@ -176,110 +183,109 @@
     </script>
 </head>
 <body class="main" style="background-color: white">
-<!-- Sign Up Page -->
-<div class="panel">
-    <!--Modal header-->
-    <div class="panel-heading breadcrumb">
-        <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
-        <h4 class="breadcrumb bg-mint">Sign Up</h4>
+<div class="container">
+    <!-- Sign Up Page -->
+    <div class="panel panel-success">
+        <!--Modal header-->
+        <div class="panel-heading">
+            <h4 class="panel-title">ISO Management System > Sign Up</h4>
+        </div>
+        <form action="/signUp" method="POST" class="register-form" id="signup-form">
+            <!--Modal body-->
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="control-label" for="username">ID* : </label>
+                            <@spring.formInput "account.username" "class='form-control'" />
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="control-label" for="email">E-mail* : </label>
+                            <@spring.formInput "account.email" "class='form-control'" "email"/>
+                            <@spring.showErrors "" "color:red;"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="control-label" for="password">Password* : </label>
+                            <@spring.formInput "account.password" "class='form-control'" "password" />
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="control-label" for="confirmPassword">P/W Confirm* : </label>
+                            <input class="form-control" type="password" name="confirmPassword" id="confirmPassword">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="control-label" for="name">Name(KOR)* : </label>
+                            <@spring.formInput "account.name" "class='form-control'" />
+                            <@spring.showErrors "" "color:red;"/>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="control-label" for="engName">Name(ENG) : </label>
+                            <@spring.formInput "account.engName" "class='form-control'" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="control-label" for="email">Birth Date : </label>
+                            <@spring.formInput "account.birthDate" "class='form-control'" />
+                            <@spring.showErrors "" "color:red;"/>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="control-label" for="email">phone : </label>
+                            <@spring.formInput "account.phone" "class='form-control'" />
+                            <@spring.showErrors "" "color:red;"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="control-label">Department* : </label>
+                            <@spring.formSingleSelect "account.department" departmentMap "class='form-control'"/>
+                            <@spring.showErrors "" "color:red;"/>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="control-label">Job Descriptions* : </label>
+                            <@spring.formMultiSelect "account.jdIds" jobDescriptionMap "class='form-control'"/>
+                            <@spring.showErrors "" "color:red;"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Modal footer-->
+            <div class="panel-footer">
+                <button class="btn btn-default" id="requestBtn" type="submit"><i class="pli-yes"></i>Request</button>
+                <a data-dismiss="modal" class="btn btn-default" href="/login"><i class="pli-arrow-left-2"></i> Back</a>
+            </div>
+        </form>
     </div>
-    <form action="/signUp" method="POST" class="register-form" id="signup-form">
-        <!--Modal body-->
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="form-group">
-                        <label class="control-label" for="username">ID* : </label>
-                        <@spring.formInput "account.username" "class='form-control'" />
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="control-label" for="password">Password* : </label>
-                        <@spring.formInput "account.password" "class='form-control'" "password" />
-                    </div>
-                </div>
-
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="control-label" for="confirmPassword">P/W Confirm* : </label>
-                        <input class="form-control" type="password" name="confirmPassword" id="confirmPassword">
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="control-label" for="name">Name(KOR)* : </label>
-                        <@spring.formInput "account.name" "class='form-control'" />
-                        <@spring.showErrors "" "color:red;"/>
-                    </div>
-                </div>
-
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="control-label" for="engName">Name(ENG) : </label>
-                        <@spring.formInput "account.engName" "class='form-control'" />
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="control-label" for="email">Birth Date : </label>
-                        <@spring.formInput "account.birthDate" "class='form-control'" />
-                        <@spring.showErrors "" "color:red;"/>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="control-label" for="email">phone : </label>
-                        <@spring.formInput "account.phone" "class='form-control'" />
-                        <@spring.showErrors "" "color:red;"/>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="form-group">
-                        <label class="control-label" for="email">E-mail* : </label>
-                        <@spring.formInput "account.email" "class='form-control'" "email"/>
-                        <@spring.showErrors "" "color:red;"/>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="control-label" >Department* : </label>
-                        <@spring.formSingleSelect "account.department" departmentMap "class='form-control'"/>
-                        <@spring.showErrors "" "color:red;"/>
-                    </div>
-                </div>
-
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="control-label" >Job Descriptions* : </label>
-                        <@spring.formMultiSelect "account.jdIds" jobDescriptionMap "class='form-control'"/>
-                        <@spring.showErrors "" "color:red;"/>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--Modal footer-->
-        <div class="panel-footer">
-            <button class="btn btn-default" id="requestBtn" type="submit"><i class="pli-yes"></i>Request</button>
-            <a data-dismiss="modal" class="btn btn-default" href="/login"><i class="pli-arrow-left-2"></i> Back</a>
-        </div>
-    </form>
+    <!-- Sign Up Page -->
 </div>
-<!-- Sign Up Page -->
 </body>
 </html>

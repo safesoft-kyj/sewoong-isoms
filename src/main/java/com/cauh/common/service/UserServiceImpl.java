@@ -1,9 +1,12 @@
 package com.cauh.common.service;
 
 import com.cauh.common.entity.Account;
+import com.cauh.common.entity.Department;
 import com.cauh.common.entity.JobDescription;
 import com.cauh.common.entity.UserJobDescription;
+import com.cauh.common.entity.constant.JobDescriptionStatus;
 import com.cauh.common.entity.constant.UserStatus;
+import com.cauh.common.entity.constant.UserType;
 import com.cauh.common.mapper.DeptUserMapper;
 import com.cauh.common.repository.UserJobDescriptionRepository;
 import com.cauh.common.repository.UserRepository;
@@ -20,6 +23,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -93,6 +98,73 @@ public class UserServiceImpl implements UserService {
     @Override
     public Account saveOrUpdate(Account user) {
         return userRepository.save(user);
+    }
+
+    @Override
+    public Account signUpRequest(Account account) {
+        log.info("@SignUp Request");
+
+        //userStatus를 통해 현재 유저 상태 설정 (SIGNUP_REQUEST)
+        account.setUserType(UserType.USER);
+        account.setAccountNonLocked(false);
+        account.setEnabled(true);
+        account.setUserStatus(UserStatus.SIGNUP_REQUEST);
+
+        //입력된 비밀번호 암호화
+        account.setPassword(passwordEncoder.encode(account.getPassword()));
+
+        //가입 시 계정 유효기한을 설정(가입시점 + D-14)
+        LocalDate localDate = LocalDate.now().plusDays(14);
+        Date DDay_14 = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        account.setAccountExpiredDate(DDay_14);
+
+        //부서입력
+        if(!ObjectUtils.isEmpty(account.getDepartment())) {
+            Department department = account.getDepartment();
+
+            //상위 부서가 존재할 경우
+            if(!ObjectUtils.isEmpty(department.getParentDepartment())) {
+                account.setDeptName(department.getParentDepartment().getName());
+                account.setTeamName(department.getName());
+            } else { //상위 부서가 없을 경우
+                account.setDeptName(department.getName());
+            }
+        }
+
+        if(!ObjectUtils.isEmpty(account.getJdIds())){
+            //selectedIds 목록 추가
+            List<String> selectedIds = Arrays.asList(account.getJdIds());
+            for(String id : selectedIds) {
+                UserJobDescription userJobDescription = new UserJobDescription();
+                userJobDescription.setJobDescription(JobDescription.builder().id(Integer.parseInt(id)).build());
+                userJobDescription.setUser(account);
+                userJobDescription.setStatus(JobDescriptionStatus.APPROVED);
+
+                userJobDescriptionRepository.save(userJobDescription);
+            }
+        }
+
+
+        return account;
+    }
+
+    @Override
+    public Account signUpAccept(Account account) {
+
+        LocalDate accountExpiredDate = LocalDate.of(9999, 12, 31);
+        account.setAccountExpiredDate(Date.from(accountExpiredDate.atStartOfDay(ZoneId.systemDefault()).toInstant())); //9999-12-31 설정
+        account.setUserStatus(UserStatus.ACTIVE);
+        account.setEnabled(true);
+
+        List<UserJobDescription> userJobDescriptions = account.getUserJobDescriptions();
+
+        //직무 배정 오늘날짜 기준으로 배정
+        for(UserJobDescription userJobDescription : userJobDescriptions) {
+            LocalDate now = LocalDate.now();
+            userJobDescription.setAssignDate(Date.from(now.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        }
+
+        return null;
     }
 
     @Override

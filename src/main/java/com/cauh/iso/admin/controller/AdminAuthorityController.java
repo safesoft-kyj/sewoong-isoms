@@ -14,6 +14,7 @@ import com.cauh.iso.domain.constant.ApprovalStatus;
 import com.cauh.iso.domain.report.QExternalCustomer;
 import com.cauh.iso.repository.ExternalCustomerRepository;
 import com.cauh.iso.service.AgreementPersonalInformationService;
+import com.cauh.iso.service.JDService;
 import com.cauh.iso.service.NonDisclosureAgreementService;
 import com.cauh.iso.validator.UserEditValidator;
 import com.cauh.iso.xdocreport.AgreementReportService;
@@ -53,6 +54,7 @@ public class AdminAuthorityController {
     private final UserEditValidator userEditValidator;
     private final DeptUserMapper deptUserMapper;
     private final UserService userService;
+    private final JDService jdService;
     private final ExternalCustomerRepository externalCustomerRepository;
 
     @Value("${gw.userTbl}")
@@ -115,6 +117,9 @@ public class AdminAuthorityController {
 
         builder.and(qUser.enabled.eq(true));
         builder.and(qUser.userType.eq(UserType.USER));
+
+        model.addAttribute("account", new Account());
+        model.addAttribute("jobDescriptionMap", jdService.getJDMap());
         model.addAttribute("users", userRepository.findAll(builder, pageable));
         return "admin/authority/users";
     }
@@ -146,10 +151,8 @@ public class AdminAuthorityController {
                 log.info("동의");
 
                 //계정 유효기간 설정
-                LocalDate accountExpiredDate = LocalDate.of(9999, 12, 31);
-                account.setAccountExpiredDate(Date.from(accountExpiredDate.atStartOfDay(ZoneId.systemDefault()).toInstant())); //9999-12-31 설정
-                account.setUserStatus(UserStatus.ACTIVE);
-                account.setEnabled(true);
+                Account acceptUser = userService.signUpAccept(account);
+
                 Account savedUser = userService.saveOrUpdate(account);
 
                 String message = "[" + savedUser + "] 가입 요청이 수락되었습니다.";

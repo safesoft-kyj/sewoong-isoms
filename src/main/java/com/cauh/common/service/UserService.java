@@ -25,6 +25,12 @@ public interface UserService {
     Account saveOrUpdate(Account user);
 
     Optional<Account> findByUsername(String username);
+    
+    //회원가입 신청 시 절차
+    Account signUpRequest(Account account);
+
+    //회원가입 수락
+    Account signUpAccept(Account account);
 
     void sync();
 

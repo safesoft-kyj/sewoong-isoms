@@ -4,6 +4,7 @@ import com.cauh.common.entity.Account;
 import com.cauh.common.entity.JobDescription;
 import com.cauh.common.entity.QAccount;
 import com.cauh.common.entity.UserJobDescription;
+import com.cauh.common.entity.constant.UserStatus;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.iso.admin.service.UserJobDescriptionService;
 import com.cauh.iso.admin.validator.UserJobDescriptionValidator;
@@ -45,6 +46,7 @@ public class AdminUserJobDescriptionController {
         QAccount qAccount = QAccount.account;
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qAccount.enabled.eq(true));
+        builder.and(qAccount.userStatus.eq(UserStatus.ACTIVE));
         model.addAttribute("userJobDescriptions", userRepository.findAll(builder, pageable));
         return "admin/jobDescription/userJobDescriptions";
     }

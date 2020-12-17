@@ -3,73 +3,102 @@
 <html>
 <head>
     <title>ISO Management System > Authority Management > 사용자 관리</title>
+
+    <!-- select2 -->
+    <link href="/static/plugins/select2/css/select2.min.css" rel="stylesheet">
+    <!-- select2 -->
+    <script src="/static/plugins/select2/js/select2.min.js"></script>
+
+    <style>
+        .select2-container--open {
+            z-index: 9999999
+        }
+    </style>
+
     <script>
         //Training 진행 여부
-        $(document).ready(function() {
-           $("button[name='trainingBtn']").click(function() {
-               $.ajax({
-                   url:'/admin/authority/users/'+$(this).data("id")+'/training',
-                   method:'post',
-                   data:{"_method":"put",r:Math.random()},
-                   success:function(res) {
-                       if(res.result == 'success') {
-                           $("#trainingBtn" + res.id).removeClass('btn-' + (res.className == 'default' ? 'success' : 'default'));
-                           $("#trainingBtn" + res.id).addClass('btn-' + res.className);
+        $(document).ready(function () {
+            $("button[name='trainingBtn']").click(function () {
+                $.ajax({
+                    url: '/admin/authority/users/' + $(this).data("id") + '/training',
+                    method: 'post',
+                    data: {"_method": "put", r: Math.random()},
+                    success: function (res) {
+                        if (res.result == 'success') {
+                            $("#trainingBtn" + res.id).removeClass('btn-' + (res.className == 'default' ? 'success' : 'default'));
+                            $("#trainingBtn" + res.id).addClass('btn-' + res.className);
 
-                           $.niftyNoty({
-                               type: 'info',
-                               container: 'floating',
-                               message:'['+res.name+'] 교육 진행 상태가 변경 되었습니다.',
-                               closeBtn: true,
-                               floating: {
-                                   position: 'top-right',
-                                   animationIn: 'fadeInUp',
-                                   animationOut: 'fadeOut'
-                               },
-                               focus: true,
-                               timer: 1000
-                           });
-                       }
-                   }
-               });
-           });
+                            $.niftyNoty({
+                                type: 'info',
+                                container: 'floating',
+                                message: '[' + res.name + '] 교육 진행 상태가 변경 되었습니다.',
+                                closeBtn: true,
+                                floating: {
+                                    position: 'top-right',
+                                    animationIn: 'fadeInUp',
+                                    animationOut: 'fadeOut'
+                                },
+                                focus: true,
+                                timer: 1000
+                            });
+                        }
+                    }
+                });
+            });
 
-           //이메일 수신여부 확인
-           $("button[name='receiveEmailBtn']").click(function() {
-               $.ajax({
-                   url:'/admin/authority/users/'+$(this).data("id")+'/receiveEmail',
-                   method:'post',
-                   data:{"_method":"put",r:Math.random()},
-                   success:function(res) {
-                       if(res.result == 'success') {
-                           $("#receiveEmailBtn" + res.id).removeClass('btn-' + (res.className == 'default' ? 'success' : 'default'));
-                           $("#receiveEmailBtn" + res.id).addClass('btn-' + res.className);
+            //이메일 수신여부 확인
+            $("button[name='receiveEmailBtn']").click(function () {
+                $.ajax({
+                    url: '/admin/authority/users/' + $(this).data("id") + '/receiveEmail',
+                    method: 'post',
+                    data: {"_method": "put", r: Math.random()},
+                    success: function (res) {
+                        if (res.result == 'success') {
+                            $("#receiveEmailBtn" + res.id).removeClass('btn-' + (res.className == 'default' ? 'success' : 'default'));
+                            $("#receiveEmailBtn" + res.id).addClass('btn-' + res.className);
 
-                           $.niftyNoty({
-                               type: 'info',
-                               container: 'floating',
-                               message:'['+res.name+'] 이메일 수신 상태가 변경 되었습니다.',
-                               closeBtn: true,
-                               floating: {
-                                   position: 'top-right',
-                                   animationIn: 'fadeInUp',
-                                   animationOut: 'fadeOut'
-                               },
-                               focus: true,
-                               timer: 1000
-                           });
-                       }
-                   }
-               });
-           });
+                            $.niftyNoty({
+                                type: 'info',
+                                container: 'floating',
+                                message: '[' + res.name + '] 이메일 수신 상태가 변경 되었습니다.',
+                                closeBtn: true,
+                                floating: {
+                                    position: 'top-right',
+                                    animationIn: 'fadeInUp',
+                                    animationOut: 'fadeOut'
+                                },
+                                focus: true,
+                                timer: 1000
+                            });
+                        }
+                    }
+                });
+            });
 
-           //거절 버튼 입력 시
-           $("#rejectBtn").click(function(e){
-               let username = $(this).data("value");
-               if(!confirm("유저 [" + username + "]의 회원가입 신청을 거절합니다. 계속 진행하시겠습니까?")) {
-                   e.preventDefault();
-               }
-           })
+            $("#acceptBtn").click(function (e) {
+                let username = $(this).data("value");
+                let JDList = $(this).data("jds").split(',');
+
+                $("#accept-modal #userId").val(username);
+                $("#accept-modal .userTitle").html("[" + username + "]'s Job Description");
+
+                // $("#userJDs").html("");
+                // $.each(JDList, function (idx, item) {
+                //     $("#userJDs").append("<span class='label label-info text-lg'>" + item + "</span>");
+                //     if (idx != (JDList.length - 1)) {
+                //         $("#userJDs").append("&nbsp;");
+                //     }
+                // })
+            });
+            //거절 버튼 입력 시
+            $("#rejectBtn").click(function (e) {
+                let username = $(this).data("value");
+                if (!confirm("유저 [" + username + "]의 회원가입 신청을 거절합니다. 계속 진행하시겠습니까?")) {
+                    e.preventDefault();
+                }
+            });
+
+            $('#jdIds').select2({width: '100%'});
         });
     </script>
 </head>
@@ -141,8 +170,8 @@
             <table class="table table-hover table-bordered">
                 <thead>
                 <tr class="bg-gray-light">
-                    <th class="text-center" style="width:80px">No.</th>
-                    <th class="text-center">ID</th>
+                    <th class="text-center middle" style="width:80px">No.</th>
+                    <th class="text-center middle">ID</th>
                     <th class="text-center">부서</th>
                     <th class="text-center">팀</th>
                     <th class="text-center">이름</th>
@@ -152,7 +181,6 @@
                     <th class="text-center">교육 진행</th>
                     <th class="text-center">이메일 수신</th>
                     <th class="text-center">#Actions</th>
-                    <th class="text-center"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -161,14 +189,26 @@
                         <tr>
                             <td class="text-center">${(users.totalElements - (users.size * users.number)) - t?index}</td>
                             <td class="text-center">${t.username}</td>
-                            <td class="text-center">${t.orgDepart!''}</td>
-                            <td class="text-center">${t.orgTeam!''}</td>
+                            <td class="text-center">${t.deptName!''}</td>
+                            <td class="text-center">${t.teamName!''}</td>
                             <td class="text-center">${t.name}</td>
                             <td class="text-center">${t.birthDate?string('yyyy-MM-dd')}</td>
                             <td class="text-center">${t.phone}</td>
                             <td class="text-center">${t.email}</td>
-                            <td class="text-center"><button class="btn btn-icon btn-${t.training?then('success', 'default')} btn-circle" data-id="${t.id}" name="trainingBtn" id="trainingBtn${t.id}"><i class="fa fa-check"></i></button></td>
-                            <td class="text-center"><button class="btn btn-icon btn-${t.receiveEmail?then('success', 'default')} btn-circle" data-id="${t.id}" name="receiveEmailBtn" id="receiveEmailBtn${t.id}"><i class="fa fa-check"></i></button></td>
+                            <td class="text-center">
+                                <#if t.userStatus?has_content && t.userStatus == 'ACTIVE'>
+                                    <button class="btn btn-icon btn-${t.training?then('success', 'default')} btn-circle" data-id="${t.id}" name="trainingBtn" id="trainingBtn${t.id}"><i class="fa fa-check"></i></button>
+                                <#else>
+                                    -
+                                </#if>
+                            </td>
+                            <td class="text-center">
+                                <#if t.userStatus?has_content && t.userStatus == 'ACTIVE'>
+                                    <button class="btn btn-icon btn-${t.receiveEmail?then('success', 'default')} btn-circle" data-id="${t.id}" name="receiveEmailBtn" id="receiveEmailBtn${t.id}"><i class="fa fa-check"></i></button>
+                                <#else>
+                                    -
+                                </#if>
+                            </td>
                             <td class="text-center">
                                 <#if t.userStatus?has_content && t.userStatus == 'ACTIVE'>
                                     <form action="pwReset" method="POST">
@@ -178,7 +218,7 @@
                                 <#elseif t.userStatus?has_content && t.userStatus == 'SIGNUP_REQUEST'>
                                     <form class="form-horizontal" method="POST">
                                         <input name="id" type="hidden" value="${t.id}" />
-                                        <button class="btn btn-icon btn-info" id="acceptBtn" data-value="${t.username}" name="result" value="accept">Accept</button>
+                                        <button class="btn btn-icon btn-info" type="button" id="acceptBtn" data-toggle="modal" data-value="${t.username}" data-jds="${t.commaJobTitle}" data-target="#accept-modal">Accept</button>
                                         <button class="btn btn-icon btn-danger" id="rejectBtn" data-value="${t.username}" name="result" value="reject">Reject</button>
                                     </form>
                                 <#elseif t.userStatus?has_content && t.userStatus == 'RETIREE'>
@@ -199,6 +239,48 @@
     </div>
     <!--===================================================-->
     <!--End Data Table-->
+
+    <!-- Final Accept Modal -->
+    <div class="modal fade" id="accept-modal" role="dialog" tabindex="-1" aria-labelledby="accept-modal"
+         aria-hidden="true">
+        <div class="modal-dialog modal-fullsize">
+            <div class="modal-content">
+                <!--Modal header-->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
+                    <h4 class="modal-title">Accept Check</h4>
+                </div>
+                <form class="form-horizontal" method="POST">
+                    <input name="id" id="userId" type="hidden" />
+                    <!--Modal body-->
+                    <div class="modal-body">
+                        <div class="panel panel-bordered-primary panel-primary">
+                            <div class="panel-heading">
+                                <h4 class="text-light userTitle" style="margin:0 0; padding:7px 0 0 7px;"></h4>
+                            </div>
+                            <div class="panel-body">
+                                <div id="userJDs" class="row">
+                                    <span class="label label-info text-lg">Test 1</span>
+                                    <@spring.formMultiSelect "account.jdIds" jobDescriptionMap "class='form-control'" />
+<#--                                    <select multiple="true" id="jdIds" name="jdIds" class="form-control">-->
+<#--                                        <option value="1" selected>ADMIN</option>-->
+<#--                                        <option value="2" selected>QA</option>-->
+<#--                                    </select>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Modal footer-->
+                    <div class="modal-footer">
+                        <button class="btn btn-icon btn-info" name="result" value="accept">Accept</button>
+                        <button data-dismiss="modal" class="btn btn-default" id="closeBtn" type="button">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- End Final Accept Modal-->
+
 </div><!-- end panel-->
 </body>
 </html>
