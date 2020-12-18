@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -45,6 +46,14 @@ public class DepartmentService {
         sortedDeptMap.putAll(deptMap);
 
         return sortedDeptMap;
+    }
+
+    public List<Department> getParentDepartment(){
+        return departmentRepository.findAllByParentDepartmentIsNull();
+    }
+
+    public List<Department> getChildDepartment(Department department){
+        return departmentRepository.findAllByParentDepartment(department);
     }
 
 }

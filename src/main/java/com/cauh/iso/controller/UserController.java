@@ -1,6 +1,7 @@
 package com.cauh.iso.controller;
 
 import com.cauh.common.entity.Account;
+import com.cauh.common.entity.Department;
 import com.cauh.common.repository.SignatureRepository;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.authentication.CustomUsernamePasswordAuthenticationToken;
@@ -22,6 +23,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.net.URLEncoder;
 import java.util.*;
 
 @Controller
@@ -50,7 +52,7 @@ public class UserController {
     public String signUp(Model model) {
         model.addAttribute("account", new Account());
         model.addAttribute("jobDescriptionMap", jdService.getJDMap());
-        model.addAttribute("departmentMap", departmentService.getDeptMap());
+        model.addAttribute("departments", departmentService.getParentDepartment());
 
         return "/signup";
     }
@@ -104,6 +106,28 @@ public class UserController {
 //        attributes.addFlashAttribute("message", "서명 정보가 등록 되었습니다.");
 //        return "redirect:/user/signature";
 //    }
+
+    /**
+     * Department 설정
+     * @param id
+     * @return
+     */
+    @PostMapping(value = "/signUp/ajax/department", produces = "application/text;charset=utf8")
+    @ResponseBody
+    public String getchildDepartments(@RequestParam("id") Integer id){
+        StringBuffer sb = new StringBuffer();
+        List<Department> departmentList = departmentService.getChildDepartment(new Department(id));
+
+        if(departmentList.size() > 0){
+            sb.append("<option value='department'>----------</option>");
+        }
+        for(Department department : departmentList) {
+            sb.append("<option value='").append(department.getId()).append("'>");
+            sb.append(department.getName()).append("</option>");
+        }
+
+        return sb.toString();
+    }
 
     //BootstrapValidate - remote.
     @PostMapping("/signUp/ajax/validation")

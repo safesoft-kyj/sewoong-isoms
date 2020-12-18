@@ -8,6 +8,7 @@ import com.cauh.common.entity.constant.UserType;
 import com.cauh.common.mapper.DeptUserMapper;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.common.service.UserService;
+import com.cauh.iso.admin.service.DepartmentService;
 import com.cauh.iso.domain.AgreementPersonalInformation;
 import com.cauh.iso.domain.NonDisclosureAgreement;
 import com.cauh.iso.domain.constant.ApprovalStatus;
@@ -55,6 +56,7 @@ public class AdminAuthorityController {
     private final DeptUserMapper deptUserMapper;
     private final UserService userService;
     private final JDService jdService;
+    private final DepartmentService departmentService;
     private final ExternalCustomerRepository externalCustomerRepository;
 
     @Value("${gw.userTbl}")
@@ -119,6 +121,7 @@ public class AdminAuthorityController {
         builder.and(qUser.userType.eq(UserType.USER));
 
         model.addAttribute("account", new Account());
+        model.addAttribute("departments", departmentService.getParentDepartment());
         model.addAttribute("jobDescriptionMap", jdService.getJDMap());
         model.addAttribute("users", userRepository.findAll(builder, pageable));
         return "admin/authority/users";

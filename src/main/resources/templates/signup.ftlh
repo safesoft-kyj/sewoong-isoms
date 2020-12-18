@@ -2,6 +2,8 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>CAUH ISO Management System > Sign Up</title>
 
     <!--Premium Icons [ OPTIONAL ]-->
@@ -53,9 +55,48 @@
                 e.stopPropagation(); //datepicker가 close될 때, sign-up-modal까지의 hide.bs.modal Event의 전파를 막음.
             });
 
-
+            //JD select2 Setting
             $('#jdIds').select2({width : '100%'});
+
+            //초기 화면 전환시 세팅
+            departmentSelect($("#deptSelect").val());
+
+            $("#deptSelect").change(function(){
+                departmentSelect($(this).val());
+            })
+
+            $("#teamSelect").change(function(){
+                let res = $(this).val();
+
+                if(res == 'department') {
+                    $("#department").val($("#deptSelect").val());
+                }else {
+                    $("#department").val(res);
+                }
+            })
         })
+
+
+        function departmentSelect(value) {
+            $("#department").val(value);
+
+            $.ajax({
+                url: "/signUp/ajax/department",
+                method: 'post',
+                data: {id: value},
+                success: function (data) {
+                    let teamSelect = $("#teamSelect");
+
+                    if(data != '') {
+                        teamSelect.attr("disabled", false);
+                        teamSelect.html(data);
+                    } else {
+                        teamSelect.attr("disabled", true);
+                        teamSelect.html(data);
+                    }
+                }
+            });
+        }
 
         function signUpValidation() {
             //Sign Up Setup
@@ -253,7 +294,7 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label class="control-label" for="email">phone : </label>
+                            <label class="control-label" for="phone">phone : </label>
                             <@spring.formInput "account.phone" "class='form-control'" />
                             <@spring.showErrors "" "color:red;"/>
                         </div>
@@ -261,14 +302,22 @@
                 </div>
 
                 <div class="row">
+                    <@spring.formHiddenInput "account.department" "class='form-control'"/>
                     <div class="col-sm-6">
+                        <label class="control-label">Department / Team* : </label>
                         <div class="form-group">
-                            <label class="control-label">Department* : </label>
-                            <@spring.formSingleSelect "account.department" departmentMap "class='form-control'"/>
-                            <@spring.showErrors "" "color:red;"/>
+                            <div class="col-sm-6" style="padding-left: 0px">
+                                <select id="deptSelect" class="form-control">
+                                    <#list departments  as d>
+                                        <option value="${d.id}">${d.name}</option>
+                                    </#list>
+                                </select>
+                            </div>
+                            <div class="col-sm-6" style="padding-right: 0px">
+                                <select id="teamSelect" class="form-control" disabled></select>
+                            </div>
                         </div>
                     </div>
-
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label class="control-label">Job Descriptions* : </label>

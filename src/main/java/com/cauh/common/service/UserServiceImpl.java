@@ -102,8 +102,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Account signUpRequest(Account account) {
-        log.info("@SignUp Request");
-
         //userStatus를 통해 현재 유저 상태 설정 (SIGNUP_REQUEST)
         account.setUserType(UserType.USER);
         account.setAccountNonLocked(false);

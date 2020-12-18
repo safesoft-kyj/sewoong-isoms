@@ -18,6 +18,7 @@
     <script>
         //Training 진행 여부
         $(document).ready(function () {
+
             $("button[name='trainingBtn']").click(function () {
                 $.ajax({
                     url: '/admin/authority/users/' + $(this).data("id") + '/training',
@@ -78,18 +79,37 @@
             $("#acceptBtn").click(function (e) {
                 let username = $(this).data("value");
                 let JDList = $(this).data("jds").split(',');
+                let pid = $(this).data("pdeptid");
+                let id = $(this).data("deptid");
 
                 $("#accept-modal #userId").val(username);
-                $("#accept-modal .userTitle").html("[" + username + "]'s Job Description");
+                $("#accept-modal .userTitle").html("[" + username + "]'s Information");
 
-                // $("#userJDs").html("");
-                // $.each(JDList, function (idx, item) {
-                //     $("#userJDs").append("<span class='label label-info text-lg'>" + item + "</span>");
-                //     if (idx != (JDList.length - 1)) {
-                //         $("#userJDs").append("&nbsp;");
-                //     }
-                // })
+                //Job Description Setting
+                $("#jdIds").val(JDList).trigger("change");
+
+                if(pid != ''){ //pid가 있는 경우,
+                    $("#deptSelect").val(pid).trigger("change");
+                    $("#teamSelect").val(id).trigger("change");
+                } else { //pid가 없는 경우
+                    $("#deptSelect").val(id).trigger("change");
+                }
             });
+
+            $("#deptSelect").change(function(){
+                departmentSelect($(this).val());
+            })
+
+            $("#teamSelect").change(function(){
+                let res = $(this).val();
+
+                if(res == 'department') {
+                    $("#department").val($("#deptSelect").val());
+                }else {
+                    $("#department").val(res);
+                }
+            })
+
             //거절 버튼 입력 시
             $("#rejectBtn").click(function (e) {
                 let username = $(this).data("value");
@@ -100,6 +120,28 @@
 
             $('#jdIds').select2({width: '100%'});
         });
+
+        function departmentSelect(value) {
+            $("#department").val(value);
+            $.ajax({
+                url: "/signUp/ajax/department",
+                method: 'post',
+                data: {id: value},
+                async: false,
+                success: function (data) {
+                    let teamSelect = $("#teamSelect");
+
+                    if(data != '') {
+                        teamSelect.attr("disabled", false);
+                        teamSelect.html(data);
+                    } else {
+                        teamSelect.attr("disabled", true);
+                        teamSelect.html(data);
+                    }
+                }
+            });
+        }
+
     </script>
 </head>
 <body>
@@ -218,7 +260,7 @@
                                 <#elseif t.userStatus?has_content && t.userStatus == 'SIGNUP_REQUEST'>
                                     <form class="form-horizontal" method="POST">
                                         <input name="id" type="hidden" value="${t.id}" />
-                                        <button class="btn btn-icon btn-info" type="button" id="acceptBtn" data-toggle="modal" data-value="${t.username}" data-jds="${t.commaJobTitle}" data-target="#accept-modal">Accept</button>
+                                        <button class="btn btn-icon btn-info" type="button" id="acceptBtn" data-toggle="modal" data-value="${t.username}" data-jds="${t.commaJobIds}" data-pdeptid="${t.department.parentDepartment.id!''}" data-deptid="${t.department.id}" data-target="#accept-modal">Accept</button>
                                         <button class="btn btn-icon btn-danger" id="rejectBtn" data-value="${t.username}" name="result" value="reject">Reject</button>
                                     </form>
                                 <#elseif t.userStatus?has_content && t.userStatus == 'RETIREE'>
@@ -259,13 +301,25 @@
                                 <h4 class="text-light userTitle" style="margin:0 0; padding:7px 0 0 7px;"></h4>
                             </div>
                             <div class="panel-body">
-                                <div id="userJDs" class="row">
-                                    <span class="label label-info text-lg">Test 1</span>
+                                <div class="row">
+                                    <@spring.formHiddenInput "account.department" "class='form-control'"/>
+                                    <label class="control-label">Department / Team* : </label>
+                                    <div class="form-group">
+                                        <div class="col-sm-6" style="padding-left: 0px">
+                                            <select id="deptSelect" class="form-control">
+                                                <#list departments as d>
+                                                    <option value="${d.id}">${d.name}</option>
+                                                </#list>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-6" style="padding-right: 0px">
+                                            <select id="teamSelect" class="form-control" disabled></select>
+                                        </div>
+                                    </div>
+                                    <label class="control-label">Job Descriptions</label>
+                                    <div class="form-group">
                                     <@spring.formMultiSelect "account.jdIds" jobDescriptionMap "class='form-control'" />
-<#--                                    <select multiple="true" id="jdIds" name="jdIds" class="form-control">-->
-<#--                                        <option value="1" selected>ADMIN</option>-->
-<#--                                        <option value="2" selected>QA</option>-->
-<#--                                    </select>-->
+                                    </div>
                                 </div>
                             </div>
                         </div>

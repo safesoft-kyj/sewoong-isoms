@@ -25,6 +25,7 @@ public class AjaxRequestHandlingFilter implements Filter {
         //Ajax Filter 예외 URI 선별
         List<String> permitURIList = new ArrayList<>();
         permitURIList.add("/signUp/ajax/validation");
+        permitURIList.add("/signUp/ajax/department");
 
 
         try {
