@@ -2,13 +2,16 @@
 <@security.authentication property="principal" var="user"/>
 <html>
 <head>
-    <title>eSOP > User > Profile</title>
+    <title>CAUH ISO Management System > User > Profile</title>
 </head>
 <body>
 <div class="tab-base">
     <ul class="nav nav-tabs">
         <li class="active">
             <a href="/user/profile">Profile</a>
+        </li>
+        <li>
+            <a href="/user/profile/role-changed">Profile</a>
         </li>
     </ul>
     <div class="tab-content">
@@ -25,13 +28,13 @@
                 <div class="form-group">
                     <label class="col-md-3 control-label">Team</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control" value="${user.orgTeam!''}" readonly="readonly">
+                        <input type="text" class="form-control" value="${user.teamName!''}" readonly="readonly">
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-md-3 control-label">Department</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control" value="${user.orgDepart!''}" readonly="readonly">
+                        <input type="text" class="form-control" value="${user.deptName!''}" readonly="readonly">
                     </div>
                 </div>
                 <div class="form-group">

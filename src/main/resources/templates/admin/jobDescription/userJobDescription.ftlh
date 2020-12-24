@@ -69,7 +69,7 @@
                     </tbody>
                 </table>
                 <div class="text-right">
-                    <a class="btn btn-default" href="/admin/user/jobDescription"><i class="fa fa-chevron-left"></i> 뒤로</a>
+                    <a class="btn btn-default" href="/admin/jobDescription/user"><i class="fa fa-chevron-left"></i> 뒤로</a>
                     <button class="btn btn-success"><i class="fa fa-check"></i> 저장</button>
                 </div>
             </div>

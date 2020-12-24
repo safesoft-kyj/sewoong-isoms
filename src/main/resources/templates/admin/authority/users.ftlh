@@ -76,7 +76,24 @@
                 });
             });
 
-            $("#acceptBtn").click(function (e) {
+            $("#deptSelect").change(function(){
+                departmentSelect($(this).val());
+            })
+
+            $("#teamSelect").change(function(){
+                let res = $(this).val();
+
+                if(res == 'department') {
+                    $("#department").val($("#deptSelect").val());
+                }else {
+                    $("#department").val(res);
+                }
+            })
+
+            $(document).on("click", "#acceptBtn", function (e) {
+
+                console.log("TEST");
+
                 let username = $(this).data("value");
                 let JDList = $(this).data("jds").split(',');
                 let pid = $(this).data("pdeptid");
@@ -96,22 +113,8 @@
                 }
             });
 
-            $("#deptSelect").change(function(){
-                departmentSelect($(this).val());
-            })
-
-            $("#teamSelect").change(function(){
-                let res = $(this).val();
-
-                if(res == 'department') {
-                    $("#department").val($("#deptSelect").val());
-                }else {
-                    $("#department").val(res);
-                }
-            })
-
             //거절 버튼 입력 시
-            $("#rejectBtn").click(function (e) {
+            $(document).on("click", "#rejectBtn", function (e) {
                 let username = $(this).data("value");
                 if (!confirm("유저 [" + username + "]의 회원가입 신청을 거절합니다. 계속 진행하시겠습니까?")) {
                     e.preventDefault();
@@ -212,8 +215,8 @@
             <table class="table table-hover table-bordered">
                 <thead>
                 <tr class="bg-gray-light">
-                    <th class="text-center middle" style="width:80px">No.</th>
-                    <th class="text-center middle">ID</th>
+                    <th class="text-center" style="width:80px">No.</th>
+                    <th class="text-center">ID</th>
                     <th class="text-center">부서</th>
                     <th class="text-center">팀</th>
                     <th class="text-center">이름</th>
@@ -229,14 +232,14 @@
                 <#if users.content?has_content>
                     <#list users.content as t>
                         <tr>
-                            <td class="text-center">${(users.totalElements - (users.size * users.number)) - t?index}</td>
-                            <td class="text-center">${t.username}</td>
-                            <td class="text-center">${t.deptName!''}</td>
-                            <td class="text-center">${t.teamName!''}</td>
-                            <td class="text-center">${t.name}</td>
-                            <td class="text-center">${t.birthDate?string('yyyy-MM-dd')}</td>
-                            <td class="text-center">${t.phone}</td>
-                            <td class="text-center">${t.email}</td>
+                            <td class="text-center" style="vertical-align: middle;">${(users.totalElements - (users.size * users.number)) - t?index}</td>
+                            <td class="text-center" style="vertical-align: middle;">${t.username}</td>
+                            <td class="text-center" style="vertical-align: middle;">${t.deptName!''}</td>
+                            <td class="text-center" style="vertical-align: middle;">${t.teamName!''}</td>
+                            <td class="text-center" style="vertical-align: middle;">${t.name}</td>
+                            <td class="text-center" style="vertical-align: middle;">${t.birthDate?string('yyyy-MM-dd')}</td>
+                            <td class="text-center" style="vertical-align: middle;">${t.phone}</td>
+                            <td class="text-center" style="vertical-align: middle;">${t.email}</td>
                             <td class="text-center">
                                 <#if t.userStatus?has_content && t.userStatus == 'ACTIVE'>
                                     <button class="btn btn-icon btn-${t.training?then('success', 'default')} btn-circle" data-id="${t.id}" name="trainingBtn" id="trainingBtn${t.id}"><i class="fa fa-check"></i></button>

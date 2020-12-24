@@ -18,6 +18,7 @@ import java.io.Serializable;
 @SequenceGenerator(name = "TRAINING_TEST_LOG_SEQ_GENERATOR", sequenceName = "SEQ_TRAINING_TEST_LOG", initialValue = 1, allocationSize = 1)
 public class TrainingTestLog extends BaseEntity implements Serializable {
     private static final long serialVersionUID = -8701587768958983931L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TRAINING_TEST_LOG_SEQ_GENERATOR")
     private Integer id;

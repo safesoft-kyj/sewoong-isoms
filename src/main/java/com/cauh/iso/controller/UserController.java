@@ -2,8 +2,10 @@ package com.cauh.iso.controller;
 
 import com.cauh.common.entity.Account;
 import com.cauh.common.entity.Department;
+import com.cauh.common.entity.Signature;
 import com.cauh.common.repository.SignatureRepository;
 import com.cauh.common.repository.UserRepository;
+import com.cauh.common.security.annotation.CurrentUser;
 import com.cauh.common.security.authentication.CustomUsernamePasswordAuthenticationToken;
 import com.cauh.common.service.UserService;
 import com.cauh.iso.admin.service.DepartmentService;
@@ -48,12 +50,19 @@ public class UserController {
         return "user/profile";
     }
 
+    @GetMapping("/user/profile/role-changed")
+    public String roleChanged(Model model){
+
+
+
+        return "user/profile";
+    }
+
     @GetMapping("/signUp")
     public String signUp(Model model) {
         model.addAttribute("account", new Account());
         model.addAttribute("jobDescriptionMap", jdService.getJDMap());
         model.addAttribute("departments", departmentService.getParentDepartment());
-
         return "/signup";
     }
 
@@ -79,33 +88,33 @@ public class UserController {
         return "redirect:/login";
     }
 
-//    @GetMapping("/user/signature")
-//    public String signature(@CurrentUser Account user, Model model) {
-//        Optional<Signature> optionalSignature = signatureRepository.findById(user.getUsername());
-//        model.addAttribute("signature", optionalSignature.isPresent() ? optionalSignature.get() : new Signature());
-//
-//        return "user/signature";
-//    }
-//
-//    @PostMapping("/user/signature")
-//    public String updateSignature(@CurrentUser Account user, @RequestParam("base64signature") String base64signature, RedirectAttributes attributes) {
-//        Optional<Account> optionalUser = userRepository.findById(user.getId());
-//        if(optionalUser.isPresent()) {
-//            Account u = optionalUser.get();
-//
-//            Signature signature = new Signature();
-//            signature.setBase64signature(base64signature);
-//            signature.setId(u.getUsername());
-//
-//            signatureRepository.save(signature);
-//
-//            user.setSignature(true);
-//            updateAuthentication(user);
-//        }
-//
-//        attributes.addFlashAttribute("message", "서명 정보가 등록 되었습니다.");
-//        return "redirect:/user/signature";
-//    }
+    @GetMapping("/user/signature")
+    public String signature(@CurrentUser Account user, Model model) {
+        Optional<Signature> optionalSignature = signatureRepository.findById(user.getUsername());
+        model.addAttribute("signature", optionalSignature.isPresent() ? optionalSignature.get() : new Signature());
+
+        return "user/signature";
+    }
+
+    @PostMapping("/user/signature")
+    public String updateSignature(@CurrentUser Account user, @RequestParam("base64signature") String base64signature, RedirectAttributes attributes) {
+        Optional<Account> optionalUser = userRepository.findById(user.getId());
+        if(optionalUser.isPresent()) {
+            Account u = optionalUser.get();
+
+            Signature signature = new Signature();
+            signature.setBase64signature(base64signature);
+            signature.setId(u.getUsername());
+
+            signatureRepository.save(signature);
+
+            user.setSignature(true);
+            updateAuthentication(user);
+        }
+
+        attributes.addFlashAttribute("message", "서명 정보가 등록 되었습니다.");
+        return "redirect:/user/signature";
+    }
 
     /**
      * Department 설정
