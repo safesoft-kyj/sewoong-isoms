@@ -1,13 +1,12 @@
 package com.cauh.common.service;
 
-import com.cauh.common.entity.Account;
-import com.cauh.common.entity.Department;
-import com.cauh.common.entity.JobDescription;
-import com.cauh.common.entity.UserJobDescription;
+import com.cauh.common.entity.*;
 import com.cauh.common.entity.constant.JobDescriptionStatus;
 import com.cauh.common.entity.constant.UserStatus;
 import com.cauh.common.entity.constant.UserType;
 import com.cauh.common.mapper.DeptUserMapper;
+import com.cauh.common.repository.DepartmentRepository;
+import com.cauh.common.repository.UserJobDescriptionChangeLogRepository;
 import com.cauh.common.repository.UserJobDescriptionRepository;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.authentication.InternalAccountAuthenticationException;
@@ -42,9 +41,12 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserJobDescriptionRepository userJobDescriptionRepository;
     private final PasswordEncoder passwordEncoder;
+    private final DepartmentRepository departmentRepository;
 
     //현재 유저정보를 가지고있는 Component
     private final CurrentUserComponent currentUserComponent;
+
+    private final UserJobDescriptionChangeLogRepository userJobDescriptionChangeLogRepository;
 
 //    private final DeptUserMapper deptUserMapper;
 //
@@ -142,27 +144,95 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-
         return account;
     }
 
     @Override
     public Account signUpAccept(Account account) {
-
+        //가입 수락 - 계정 기한 설정
         LocalDate accountExpiredDate = LocalDate.of(9999, 12, 31);
         account.setAccountExpiredDate(Date.from(accountExpiredDate.atStartOfDay(ZoneId.systemDefault()).toInstant())); //9999-12-31 설정
+        //가입 수락 - 비밀번호 기한 설정
+        LocalDate credentialExpiredDate = LocalDate.now().plusDays(90); // + 90일
+        account.setCredentialsExpiredDate(Date.from(credentialExpiredDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
         account.setUserStatus(UserStatus.ACTIVE);
         account.setEnabled(true);
 
-        List<UserJobDescription> userJobDescriptions = account.getUserJobDescriptions();
+        //부서입력
+        if(!ObjectUtils.isEmpty(account.getDepartment())) {
+            Department department = account.getDepartment();
 
-        //직무 배정 오늘날짜 기준으로 배정
-        for(UserJobDescription userJobDescription : userJobDescriptions) {
-            LocalDate now = LocalDate.now();
-            userJobDescription.setAssignDate(Date.from(now.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            //상위 부서가 존재할 경우
+            if(!ObjectUtils.isEmpty(department.getParentDepartment())) {
+                account.setDeptName(department.getParentDepartment().getName());
+                account.setTeamName(department.getName());
+            } else { //상위 부서가 없을 경우
+                account.setDeptName(department.getName());
+            }
         }
 
-        return null;
+        //JD 재입력
+        if(!ObjectUtils.isEmpty(account.getJdIds())){
+            List<String> selectedIds = Arrays.asList(account.getJdIds());
+
+
+            List<UserJobDescription> newUserJobDescriptions = new ArrayList<>();
+            List<UserJobDescription> userJobDescriptions = account.getUserJobDescriptions();
+            List<String> currentJdIds = userJobDescriptions.stream().map(jd -> Integer.toString(jd.getJobDescription().getId())).collect(Collectors.toList());
+            LocalDate now = LocalDate.now();
+
+            //새로이 선택된 값에 중복되거나 기존에 겹치는 값 설정.
+            for(UserJobDescription userJobDescription : userJobDescriptions){
+                //사라진 값 -> userDescription 삭제
+                if(!selectedIds.contains(Integer.toString(userJobDescription.getJobDescription().getId()))){
+                    userJobDescriptionRepository.delete(userJobDescription);
+                }else { //기존에 유지되는 값 - AssginDate 설정
+                    userJobDescription.setAssignDate(Date.from(now.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                    UserJobDescription savedUserJobDescription = userJobDescriptionRepository.save(userJobDescription);
+                    newUserJobDescriptions.add(savedUserJobDescription);
+                }
+            }
+
+            //새로 선택된 UserJobDescription 선택
+            for(String id : selectedIds) {
+                if(!currentJdIds.contains(id)){ //기존 JDIds에 없는 Case 생성
+                    UserJobDescription userJobDescription = new UserJobDescription();
+                    userJobDescription.setJobDescription(JobDescription.builder().id(Integer.parseInt(id)).build());
+                    userJobDescription.setUser(account);
+                    userJobDescription.setStatus(JobDescriptionStatus.APPROVED);
+                    userJobDescription.setAssignDate(Date.from(now.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                    UserJobDescription savedUserJobDescription = userJobDescriptionRepository.save(userJobDescription);
+                    newUserJobDescriptions.add(savedUserJobDescription);
+                }
+            }
+
+            //수락과 동시에 UserJobDescription에 대한 Change Log 기록
+            for(UserJobDescription userJobDescription : newUserJobDescriptions){
+                UserJobDescriptionChangeLog userJobDescriptionChangeLog = UserJobDescriptionChangeLog.builder()
+                                                                        .user(account)
+                                                                        .userJobDescription(userJobDescription)
+                                                                        .requestDate(Date.from(now.atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                                                                        .reason("신규 가입")
+                                                                        .build();
+                userJobDescriptionChangeLogRepository.save(userJobDescriptionChangeLog);
+            }
+        }
+
+        //Account 저장 시, UserJobDescription 저장데이터 제거
+        account.setUserJobDescriptions(null);
+
+        return account;
+    }
+
+
+    public Account signUpReject(Account account) {
+        //계정 유효기간 만료로 처리 (현재 시간 입력)
+        //계정 상태 INACTIVE 지정 / Enabled 변수 false로 설정.
+        account.setAccountExpiredDate(new Date());
+        account.setUserStatus(UserStatus.INACTIVE);
+        account.setEnabled(false);
+
+        return account;
     }
 
     @Override

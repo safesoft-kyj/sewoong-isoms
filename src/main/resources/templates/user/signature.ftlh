@@ -63,6 +63,9 @@
         <li class="active">
             <a href="/user/signature">Signature</a>
         </li>
+        <li>
+            <a href="/user/profile/role-changed">Role</a>
+        </li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane fade active in">

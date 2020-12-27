@@ -1,9 +1,8 @@
 package com.cauh.iso.admin.controller;
 
-import com.cauh.common.entity.QAccount;
 import com.cauh.common.entity.Account;
-import com.cauh.common.entity.RoleAccount;
-import com.cauh.common.entity.constant.UserStatus;
+import com.cauh.common.entity.Department;
+import com.cauh.common.entity.QAccount;
 import com.cauh.common.entity.constant.UserType;
 import com.cauh.common.mapper.DeptUserMapper;
 import com.cauh.common.repository.UserRepository;
@@ -30,6 +29,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -37,9 +37,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin")
@@ -137,9 +137,11 @@ public class AdminAuthorityController {
     @PostMapping("/authority/users")
     public String userSignUpAction(
             @RequestParam(value = "result", required = false ) String actionCmd,
-            @RequestParam("id") Integer id, RedirectAttributes attributes){
-        log.info("Action : {}, User id : {}", actionCmd, id);
-        Optional<Account> optionalAccount = userRepository.findById(id);
+            @RequestParam(value = "department", required = false) Integer departmentId,
+            @RequestParam(value = "jdIds", required = false) String[] jdIds,
+            @RequestParam("username") String username, RedirectAttributes attributes){
+        log.info("Action : {}, User id : {}", actionCmd, username);
+        Optional<Account> optionalAccount = userRepository.findByUsername(username);
 
         if(!optionalAccount.isPresent()) {
             attributes.addFlashAttribute("message", "User 정보가 잘못되었습니다.");
@@ -147,33 +149,38 @@ public class AdminAuthorityController {
         }
         Account account = optionalAccount.get();
 
-        //SignUp Agree
-        //TODO:: Logic 수정 필요. (직무배정 및 ROLE 부여가 추가가 되는지 확인)
+        //SignUp Accept / Reject
         if(!StringUtils.isEmpty(actionCmd)) {
             if(actionCmd.equals("accept")) {
-                log.info("동의");
+                log.debug("동의 : {}", account.getUsername());
+
+                if(!ObjectUtils.isEmpty(departmentId)) {
+                    account.setDepartment(departmentService.getDepartmentById(departmentId));
+                    log.info("AC Dept : {}", account.getDepartment());
+                }
+
+                if(!ObjectUtils.isEmpty(jdIds)){
+                    account.setJdIds(jdIds);
+                    log.info("JD IDs : {}", jdIds);
+                }
 
                 //계정 유효기간 설정
                 Account acceptUser = userService.signUpAccept(account);
 
-                Account savedUser = userService.saveOrUpdate(account);
+                log.info("User's JD : {}", acceptUser.getUserJobDescriptions());
+
+                Account savedUser = userService.saveOrUpdate(acceptUser);
 
                 String message = "[" + savedUser + "] 가입 요청이 수락되었습니다.";
                 attributes.addFlashAttribute("message", message);
 
             }else if(actionCmd.equals("reject")){
-                log.info("거절");
-
-                //계정 유효기간 만료로 처리 (현재 시간 입력)
-                //계정 상태 INACTIVE 지정 / Enabled 변수 false로 설정.
-                account.setAccountExpiredDate(new Date());
-                account.setUserStatus(UserStatus.INACTIVE);
-                account.setEnabled(false);
-                Account savedUser = userService.saveOrUpdate(account);
+                log.debug("거절 : {}", account.getUsername());
+                Account rejectUser = userService.signUpReject(account);
+                Account savedUser = userService.saveOrUpdate(rejectUser);
 
                 String message = "[" + savedUser.getUsername() + "] 가입 요청이 거절되었습니다.";
                 attributes.addFlashAttribute("message", message);
-                return "redirect:/admin/authority/users";
             }
         }
         return "redirect:/admin/authority/users";

@@ -113,7 +113,7 @@
                             <td class="text-center">
                                 <@spring.formCheckbox "jobDescription.enabled" "checked"/>
                                 <@spring.showErrors "" "color:red;"/></td>
-                            <td class="text-center">
+                            <td>
                                 <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-check"></i> 저장</button>
                                 <a class="btn btn-sm btn-warning" href="?action=list"><i class="fa fa-times"></i> 취소</a>
                             </td>

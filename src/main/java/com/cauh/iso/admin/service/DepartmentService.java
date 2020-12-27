@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -36,6 +37,11 @@ public class DepartmentService {
     public void saveAll(Department department) {
         Department savedDepartment = departmentRepository.save(department);
         log.info("저장된 Department : {}", savedDepartment);
+    }
+
+    public Department getDepartmentById(Integer id){
+        Optional<Department> departmentOptional = departmentRepository.findById(id);
+        return departmentOptional.isPresent()?departmentOptional.get():null;
     }
 
     public TreeMap<String, String> getDeptMap(){

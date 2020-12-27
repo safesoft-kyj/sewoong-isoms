@@ -95,11 +95,11 @@
                 console.log("TEST");
 
                 let username = $(this).data("value");
-                let JDList = $(this).data("jds").split(',');
+                let JDList = String($(this).data("jds")).indexOf(",")!=-1?$(this).data("jds").split(','):$(this).data("jds");
                 let pid = $(this).data("pdeptid");
                 let id = $(this).data("deptid");
 
-                $("#accept-modal #userId").val(username);
+                $("#accept-modal #username").val(username);
                 $("#accept-modal .userTitle").html("[" + username + "]'s Information");
 
                 //Job Description Setting
@@ -263,7 +263,8 @@
                                 <#elseif t.userStatus?has_content && t.userStatus == 'SIGNUP_REQUEST'>
                                     <form class="form-horizontal" method="POST">
                                         <input name="id" type="hidden" value="${t.id}" />
-                                        <button class="btn btn-icon btn-info" type="button" id="acceptBtn" data-toggle="modal" data-value="${t.username}" data-jds="${t.commaJobIds}" data-pdeptid="${t.department.parentDepartment.id!''}" data-deptid="${t.department.id}" data-target="#accept-modal">Accept</button>
+                                        <button class="btn btn-icon btn-info" type="button" id="acceptBtn" data-toggle="modal" data-value="${t.username}" data-jds="${t.commaJobIds}"
+                                                data-pdeptid="<#if t.department.parentDepartment?has_content>${t.department.parentDepartment.id}</#if>" data-deptid="${t.department.id!''}" data-target="#accept-modal">Accept</button>
                                         <button class="btn btn-icon btn-danger" id="rejectBtn" data-value="${t.username}" name="result" value="reject">Reject</button>
                                     </form>
                                 <#elseif t.userStatus?has_content && t.userStatus == 'RETIREE'>
@@ -296,7 +297,7 @@
                     <h4 class="modal-title">Accept Check</h4>
                 </div>
                 <form class="form-horizontal" method="POST">
-                    <input name="id" id="userId" type="hidden" />
+                    <input name="username" id="username" type="hidden" />
                     <!--Modal body-->
                     <div class="modal-body">
                         <div class="panel panel-bordered-primary panel-primary">
