@@ -21,6 +21,7 @@ public class WebSiteMeshFilter extends ConfigurableSiteMeshFilter {
                 .addExcludedPath("/login")
                 .addExcludedPath("/viewer/*")
                 .addExcludedPath("/ajax/*")
+                .addExcludedPath("/static/**")
                 .addExcludedPath("/favicon.ico");
     }
 }

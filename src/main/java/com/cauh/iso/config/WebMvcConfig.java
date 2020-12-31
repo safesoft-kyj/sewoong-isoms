@@ -63,6 +63,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
         WebSiteMeshFilter siteMeshFilter = new WebSiteMeshFilter();
         filterRegistrationBean.setFilter(siteMeshFilter);
+
+
         return filterRegistrationBean;
     }
 

@@ -1,11 +1,10 @@
 package com.cauh.iso.domain;
 
 import com.cauh.common.entity.BaseEntity;
-import com.cauh.iso.domain.constant.NoticeStatus;
+import com.cauh.iso.domain.constant.PostStatus;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.envers.AuditMappedBy;
-import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -46,7 +45,7 @@ public class Notice extends BaseEntity implements Serializable {
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private NoticeStatus noticeStatus;
+    private PostStatus postStatus;
 
     @OneToMany(mappedBy = "notice")
     @AuditMappedBy(mappedBy = "notice")
@@ -56,10 +55,10 @@ public class Notice extends BaseEntity implements Serializable {
     private List<String> removeFiles;
 
     @Builder
-    public Notice(String title, String content, Date topViewEndDate, NoticeStatus noticeStatus) {
+    public Notice(String title, String content, Date topViewEndDate, PostStatus postStatus) {
         this.title = title;
         this.content = content;
         this.topViewEndDate = topViewEndDate;
-        this.noticeStatus = noticeStatus;
+        this.postStatus = postStatus;
     }
 }

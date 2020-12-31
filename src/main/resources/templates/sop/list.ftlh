@@ -237,8 +237,6 @@
                 <h4 class="modal-title">RD Viewer</h4>
             </div>
 
-
-
             <!--Modal body-->
             <div class="modal-body">
                 <div class="table-responsive">

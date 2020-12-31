@@ -114,8 +114,8 @@ public class DocumentVersionValidator implements Validator {
                 }
             }
         } else {
-            log.debug(" ==> RD check");
-            if((StringUtils.isEmpty(documentVersion.getRdEngOriginalFileName()) && StringUtils.isEmpty(documentVersion.getRdKorOriginalFileName()))
+            log.debug(" ==> RF check");
+            if((StringUtils.isEmpty(documentVersion.getRfEngOriginalFileName()) && StringUtils.isEmpty(documentVersion.getRfKorOriginalFileName()))
                     || documentVersion.getAction() == SOPAction.revision) {
                 if ((ObjectUtils.isEmpty(documentVersion.getUploadRdEngFile()) || documentVersion.getUploadRdEngFile().isEmpty()) &&
                         (ObjectUtils.isEmpty(documentVersion.getUploadRdKorFile()) || documentVersion.getUploadRdKorFile().isEmpty())) {

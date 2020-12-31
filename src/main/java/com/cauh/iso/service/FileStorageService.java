@@ -55,6 +55,8 @@ public class FileStorageService {
 
             // Copy file to the target location (Replacing existing file with the same name)
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
+            log.info("PATH : {}", targetLocation);
+
 //            System.out.println("targetLocation : " + targetLocation.toString());
             file.transferTo(targetLocation);
 //            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
@@ -80,7 +82,7 @@ public class FileStorageService {
                 BufferedImage bim = pdfRenderer.renderImageWithDPI(i, 300, ImageType.RGB);
 
                 // 이미지로 만든다.
-                log.debug("SOP image 생성 : {}", targetLocation.toString());
+                log.debug("SOP/ISO image 생성 : {}", targetLocation.toString());
                 ImageIOUtil.writeImage(bim, targetLocation.toString() , 300);
 
                 //저장 완료된 이미지를 list에 추가한다.

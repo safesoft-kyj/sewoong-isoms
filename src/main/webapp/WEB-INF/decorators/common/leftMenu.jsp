@@ -37,7 +37,18 @@
         <!--Submenu-->
         <ul class="collapse" aria-expanded="true">
             <li><a href="/notice">공지사항</a></li>
-            <li><a href="/iso/certification">인증현황</a></li>
+            <li><a href="/certifications">인증현황</a></li>
+        </ul>
+    </li>
+    <li>
+        <a href="/document" aria-expanded="false">
+            <i class="pli-folder-binder"></i>
+            <span class="menu-title">ISO</span>
+            <i class="arrow"></i>
+        </a>
+        <!--Submenu-->
+        <ul class="collapse" aria-expanded="false">
+            <li><a href="/iso-14155">ISO 14155</a></li>
         </ul>
     </li>
     <li>

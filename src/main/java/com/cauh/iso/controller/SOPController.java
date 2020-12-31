@@ -178,11 +178,11 @@ public class SOPController {
         Resource resource;
         String orgFileName;
         if("kor".equals(lang)) {
-            resource = fileStorageService.loadFileAsResource(documentVersion.getRdKorFileName());
-            orgFileName = documentVersion.getRdKorOriginalFileName();
+            resource = fileStorageService.loadFileAsResource(documentVersion.getRfKorFileName());
+            orgFileName = documentVersion.getRfKorOriginalFileName();
         } else if("eng".equals(lang)) {
-            resource = fileStorageService.loadFileAsResource(documentVersion.getRdEngFileName());
-            orgFileName = documentVersion.getRdEngOriginalFileName();
+            resource = fileStorageService.loadFileAsResource(documentVersion.getRfEngFileName());
+            orgFileName = documentVersion.getRfEngOriginalFileName();
         } else {
             throw new RuntimeException("지원하지 않은 언어[" + lang + "] 입니다.");
         }
@@ -212,11 +212,11 @@ public class SOPController {
         documentAccessLogService.save(documentVersion, DocumentAccessType.VIEWER);
 
         if("kor".equals(lang)) {
-            Resource resource = fileStorageService.loadFileAsResource(documentVersion.getRdKorFileName());
-            documentViewer.toHTML(documentVersion.getRdKorExt(), resource.getInputStream(), response.getOutputStream());
+            Resource resource = fileStorageService.loadFileAsResource(documentVersion.getRfKorFileName());
+            documentViewer.toHTML(documentVersion.getRfKorExt(), resource.getInputStream(), response.getOutputStream());
         } else if("eng".equals(lang)) {
-            Resource resource = fileStorageService.loadFileAsResource(documentVersion.getRdEngFileName());
-            documentViewer.toHTML(documentVersion.getRdEngExt(), resource.getInputStream(), response.getOutputStream());
+            Resource resource = fileStorageService.loadFileAsResource(documentVersion.getRfEngFileName());
+            documentViewer.toHTML(documentVersion.getRfEngExt(), resource.getInputStream(), response.getOutputStream());
         } else {
             throw new RuntimeException("지원하지 않는 언어["+lang+"] 파일 입니다.");
         }

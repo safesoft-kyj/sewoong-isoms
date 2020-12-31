@@ -199,6 +199,8 @@ public class AdminAuthorityController {
 
         //User Edit
         model.addAttribute("account", account);
+        model.addAttribute("departments", departmentService.getParentDepartment());
+
         return "admin/authority/edit";
     }
 

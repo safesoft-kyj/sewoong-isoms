@@ -4,7 +4,6 @@ import com.cauh.common.entity.*;
 import com.cauh.common.entity.constant.JobDescriptionStatus;
 import com.cauh.common.entity.constant.UserStatus;
 import com.cauh.common.entity.constant.UserType;
-import com.cauh.common.mapper.DeptUserMapper;
 import com.cauh.common.repository.DepartmentRepository;
 import com.cauh.common.repository.UserJobDescriptionChangeLogRepository;
 import com.cauh.common.repository.UserJobDescriptionRepository;
@@ -14,9 +13,6 @@ import com.cauh.common.utils.DateUtils;
 import com.cauh.iso.component.CurrentUserComponent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,7 +22,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * Created by Dt&amp;SanoMedics <br>
@@ -149,6 +144,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Account signUpAccept(Account account) {
+        //가입 수락 - 가입 날짜 설정
+        account.setIndate(new Date());
         //가입 수락 - 계정 기한 설정
         LocalDate accountExpiredDate = LocalDate.of(9999, 12, 31);
         account.setAccountExpiredDate(Date.from(accountExpiredDate.atStartOfDay(ZoneId.systemDefault()).toInstant())); //9999-12-31 설정
@@ -171,13 +168,17 @@ public class UserServiceImpl implements UserService {
             }
         }
 
+
         //JD 재입력
         if(!ObjectUtils.isEmpty(account.getJdIds())){
             List<String> selectedIds = Arrays.asList(account.getJdIds());
-
-
             List<UserJobDescription> newUserJobDescriptions = new ArrayList<>();
             List<UserJobDescription> userJobDescriptions = account.getUserJobDescriptions();
+
+            //변경 전
+            String prevRole = userJobDescriptions.stream().map(d -> d.getJobDescription().getShortName()).collect(Collectors.joining(","));
+            log.info("Prev : {}", prevRole);
+
             List<String> currentJdIds = userJobDescriptions.stream().map(jd -> Integer.toString(jd.getJobDescription().getId())).collect(Collectors.toList());
             LocalDate now = LocalDate.now();
 
@@ -206,16 +207,18 @@ public class UserServiceImpl implements UserService {
                 }
             }
 
-            //수락과 동시에 UserJobDescription에 대한 Change Log 기록
-            for(UserJobDescription userJobDescription : newUserJobDescriptions){
-                UserJobDescriptionChangeLog userJobDescriptionChangeLog = UserJobDescriptionChangeLog.builder()
-                                                                        .user(account)
-                                                                        .userJobDescription(userJobDescription)
-                                                                        .requestDate(Date.from(now.atStartOfDay(ZoneId.systemDefault()).toInstant()))
-                                                                        .reason("신규 가입")
-                                                                        .build();
-                userJobDescriptionChangeLogRepository.save(userJobDescriptionChangeLog);
-            }
+            //변경 후
+            String nextRole = newUserJobDescriptions.stream().map(d -> d.getJobDescription().getShortName()).collect(Collectors.joining(","));
+            log.info("Next : {}", nextRole);
+
+            UserJobDescriptionChangeLog userJobDescriptionChangeLog = UserJobDescriptionChangeLog.builder()
+                    .user(account)
+                    .requestDate(Date.from(now.atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                    .prevJobDescription(prevRole)
+                    .nextJobDescription(nextRole)
+                    .reason("신규 가입")
+                    .build();
+            userJobDescriptionChangeLogRepository.save(userJobDescriptionChangeLog);
         }
 
         //Account 저장 시, UserJobDescription 저장데이터 제거

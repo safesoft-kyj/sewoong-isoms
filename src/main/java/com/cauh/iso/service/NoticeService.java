@@ -3,7 +3,7 @@ package com.cauh.iso.service;
 import com.cauh.iso.domain.Mail;
 import com.cauh.iso.domain.Notice;
 import com.cauh.iso.domain.NoticeAttachFile;
-import com.cauh.iso.domain.constant.NoticeStatus;
+import com.cauh.iso.domain.constant.PostStatus;
 import com.cauh.iso.repository.NoticeAttacheFileRepository;
 import com.cauh.iso.repository.NoticeRepository;
 import com.querydsl.core.types.Predicate;
@@ -97,7 +97,7 @@ public class NoticeService {
             mailService.sendMail(mail);
         }
 
-        notice.setNoticeStatus(NoticeStatus.SENT);
+        notice.setPostStatus(PostStatus.SENT);
         noticeRepository.save(notice);
     }
 }

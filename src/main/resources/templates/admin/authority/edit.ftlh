@@ -13,8 +13,49 @@
         $(document).ready(function() {
             $("#birthDate").datepicker({format:'yyyy-mm-dd', autoclose:true, clearBtn:true, todayBtn: "linked", todayHighlight: true});
 
-            $("#roles").select2({allowClear: true});
+
+            //초기 화면 전환시 세팅
+            departmentSelect($("#deptSelect").val());
+
+            $("#teamSelect").change(function(){
+                let res = $(this).val();
+
+                if(res == 'department') {
+                    $("#department").val($("#deptSelect").val());
+                }else {
+                    $("#department").val(res);
+                }
+            })
+
+            //JD select2 Setting
+            let jds = "${account.commaJobIds}";
+            let JDList = String(jds).indexOf(",")!=-1?jds.split(','):jds;
+            $('#jdIds').select2({width : '100%'});
+            $("#jdIds").val(JDList).trigger("change");
+
         });
+
+        function departmentSelect(value) {
+            $("#department").val(value);
+
+            $.ajax({
+                url: "/signUp/ajax/department",
+                method: 'post',
+                data: {id: value},
+                success: function (data) {
+                    let teamSelect = $("#teamSelect");
+
+                    if(data != '') {
+                        teamSelect.attr("disabled", false);
+                        teamSelect.html(data);
+                    } else {
+                        teamSelect.attr("disabled", true);
+                        teamSelect.html(data);
+                    }
+                }
+            });
+        }
+
     </script>
 </head>
 <body>
@@ -37,45 +78,46 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">부서</label>
+                <label class="col-sm-3 control-label">부서/팀</label>
                 <div class="col-sm-9">
-                    <@spring.formInput "account.orgDepart" accountDeaprtment "class='form-control'"/>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">팀</label>
-                <div class="col-sm-9">
-                    <@spring.formInput "account.orgTeam" accountTeam "class='form-control'"/>
+                    <@spring.formHiddenInput "account.department" "class='form-control'"/>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <div class="col-sm-6" style="padding-left: 0px">
+                                <select id="deptSelect" class="form-control">
+                                    <#list departments  as d>
+                                        <option value="${d.id}">${d.name}</option>
+                                    </#list>
+                                </select>
+                            </div>
+                            <div class="col-sm-6" style="padding-right: 0px">
+                                <select id="teamSelect" class="form-control" disabled></select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">생년월일</label>
                 <div class="col-sm-9">
-                    <@spring.formInput "account.birthDate" birthDate "class='form-control'"/>
+                    <@spring.formInput "account.birthDate" "class='form-control'"/>
                     <@spring.showErrors "" "color:red;"/>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">연락처</label>
                 <div class="col-sm-9">
-                    <@spring.formInput "account.phone" phone "class='form-control'"/>
+                    <@spring.formInput "account.phone" "class='form-control'"/>
                     <@spring.showErrors "" "color:red;"/>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">email</label>
                 <div class="col-sm-9">
-                    <@spring.formInput "account.email" email "class='form-control'"/>
+                    <@spring.formInput "account.email" "class='form-control'"/>
                     <@spring.showErrors "" "color:red;"/>
                 </div>
             </div>
-<#--            <div class="form-group">-->
-<#--                <label class="col-sm-3 control-label">ROLE</label>-->
-<#--                <div class="col-sm-9">-->
-<#--                    <@spring.formMultiSelect "roles" "class='form-control'"/>-->
-<#--                    <@spring.showErrors "" "color:red;"/>-->
-<#--                </div>-->
-<#--            </div>-->
         </div>
         <div class="panel-footer text-right">
             <a class="btn btn-link" href="/admin/authority/users"><i class="fa fa-times"></i> 취소</a>

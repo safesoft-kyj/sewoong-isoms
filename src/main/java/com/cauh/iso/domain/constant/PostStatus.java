@@ -1,5 +1,5 @@
 package com.cauh.iso.domain.constant;
 
-public enum NoticeStatus {
+public enum PostStatus {
     NONE, SENT
 }

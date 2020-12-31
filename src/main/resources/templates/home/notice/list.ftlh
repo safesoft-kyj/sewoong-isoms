@@ -270,7 +270,7 @@
                         <td class="text-center"><span class="text-muted">${notice.createdDate?string('yyyy-MM-dd')}</span></td>
                         <td class="text-center">${notice.createdBy?default('System')}</td>
 <#--                        <td class="text-center">-->
-<#--                            <#if notice.noticeStatus == 'NONE'>-->
+<#--                            <#if notice.postStatus == 'NONE'>-->
 <#--                                --->
 <#--                            <#else>-->
 <#--                                <span class="label label-info">Sent</span>-->
@@ -291,7 +291,7 @@
                     <td class="text-center"><span class="text-muted">${notice.createdDate?string('yyyy-MM-dd')}</span></td>
                     <td class="text-center">${notice.createdBy?default('System')}</td>
 <#--                    <td class="text-center">-->
-<#--                <#if notice.noticeStatus == 'NONE'>-->
+<#--                <#if notice.postStatus == 'NONE'>-->
 <#--                    --->
 <#--                <#else>-->
 <#--                    <span class="label label-info">Sent</span>-->

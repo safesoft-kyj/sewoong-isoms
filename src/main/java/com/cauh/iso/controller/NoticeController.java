@@ -7,7 +7,7 @@ import com.cauh.iso.domain.NoticeAttachFile;
 import com.cauh.iso.domain.QNotice;
 import com.cauh.iso.domain.TrainingMatrixFile;
 import com.cauh.iso.domain.constant.ApprovalLineType;
-import com.cauh.iso.domain.constant.NoticeStatus;
+import com.cauh.iso.domain.constant.PostStatus;
 import com.cauh.iso.repository.ApprovalLineRepository;
 import com.cauh.iso.security.annotation.IsAdmin;
 import com.cauh.iso.service.FileStorageService;
@@ -98,7 +98,7 @@ public class NoticeController {
             return "home/notice/edit";
         }
 
-        notice.setNoticeStatus(NoticeStatus.NONE);
+        notice.setPostStatus(PostStatus.NONE);
 
 //        if(ObjectUtils.isEmpty(uploadingFiles) == false) {
 //            for(MultipartFile uploadedFile : uploadingFiles) {

@@ -3,6 +3,7 @@ package com.cauh.iso.component;
 import com.groupdocs.conversion.config.ConversionConfig;
 import com.groupdocs.conversion.handler.ConversionHandler;
 import com.groupdocs.conversion.handler.ConvertedDocument;
+import com.groupdocs.conversion.options.load.PdfLoadOptions;
 import com.groupdocs.conversion.options.load.SpreadsheetLoadOptions;
 import com.groupdocs.conversion.options.save.ImageSaveOptions;
 import com.groupdocs.conversion.options.save.MarkupSaveOptions;
@@ -59,6 +60,14 @@ public class DocumentViewer {
         }
     }
 
+    protected boolean isPdf(String ext) {
+        if("pdf".equalsIgnoreCase(ext)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void toHTML(String ext, InputStream is, OutputStream os) {
 
         ConvertedDocument convertedDocumentPath;
@@ -84,10 +93,7 @@ public class DocumentViewer {
             ConvertedDocument convertedDocument = conversionHandler.convert(new ByteArrayInputStream(out.toByteArray()), markupSaveOption);
             convertedDocument.save(outputStream);
         } else {
-
             convertedDocumentPath = conversionHandler.convert(is, markupSaveOption);
-
-
             convertedDocumentPath.save(outputStream);
         }
         log.debug("Converted file path is: {}", convertedDocumentPath.getFileType());

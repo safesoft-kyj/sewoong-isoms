@@ -38,7 +38,6 @@ public class DocumentService {
         return documentRepository.findAll(builder, Sort.by(Sort.Direction.ASC, "docId"));
     }
 
-
     public TreeMap<String, String> getSortedMap(DocumentStatus status) {
         Map<String, String> sopMap = StreamSupport.stream(findAll(getPredicate(status, null, null)).spliterator(), false)
                 .collect(Collectors.toMap(d -> d.getDocId(), d -> "[" + d.getDocId() + "] " + d.getTitle()));

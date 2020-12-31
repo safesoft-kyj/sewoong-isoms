@@ -6,7 +6,6 @@ import com.cauh.iso.domain.constant.DocumentStatus;
 import com.cauh.iso.utils.DateUtils;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -124,7 +123,34 @@ public class DocumentVersion extends BaseEntity implements Serializable {
     @Transient
     private String[] jdIds;
 
-    /** sop file **/
+//    /** ISO Option **/
+//    @Column(name = "title", columnDefinition = "nvarchar(255)")
+//    private String title;
+//
+//    @Column(name = "content", columnDefinition = "nvarchar(MAX)")
+//    private String content;
+//
+////    @Column(name = "deleted")
+////    private boolean deleted;
+//
+//    @Column(name = "top_view_end_date")
+//    @DateTimeFormat(pattern = "yyyy-MM-dd")
+//    private Date topViewEndDate;
+//
+//    @Column(name = "status")
+//    @Enumerated(EnumType.STRING)
+//    private NoticeStatus noticeStatus;
+//
+//    @OneToMany(mappedBy = "notice")
+//    @AuditMappedBy(mappedBy = "notice")
+//    private List<NoticeAttachFile> attachFiles;
+//
+//    @Transient
+//    private List<String> removeFiles;
+//    /** ISO Option end **/
+
+
+    /** sop / iso file **/
     @Column(name = "file_name", columnDefinition = "nvarchar(255)")
     private String fileName;
 
@@ -144,39 +170,39 @@ public class DocumentVersion extends BaseEntity implements Serializable {
     private Integer totalPage;
     /** sop file end **/
 
-    /** rd eng file **/
+    /** rf eng file **/
     @Column(name = "rd_eng_file_name", columnDefinition = "nvarchar(255)")
-    private String rdEngFileName;
+    private String rfEngFileName;
 
     @Column(name = "rd_eng_original_file_name", columnDefinition = "nvarchar(255)")
-    private String rdEngOriginalFileName;
+    private String rfEngOriginalFileName;
 
     @Column(name = "rd_eng_file_type", columnDefinition = "nvarchar(255)")
-    private String rdEngFileType;
+    private String rfEngFileType;
 
     @Column(name = "rd_eng_file_size")
-    private long rdEngFileSize;
+    private long rfEngFileSize;
 
-    @Column(name = "rd_eng_ext", length = 5)
-    private String rdEngExt;
-    /** sop file end **/
+    @Column(name = "rf_eng_ext", length = 5)
+    private String rfEngExt;
+    /** rf file end **/
 
-    /** rd kor file **/
-    @Column(name = "rd_kor_file_name", columnDefinition = "nvarchar(255)")
-    private String rdKorFileName;
+    /** rf kor file **/
+    @Column(name = "rf_kor_file_name", columnDefinition = "nvarchar(255)")
+    private String rfKorFileName;
 
-    @Column(name = "rd_kor_original_file_name", columnDefinition = "nvarchar(255)")
-    private String rdKorOriginalFileName;
+    @Column(name = "rf_kor_original_file_name", columnDefinition = "nvarchar(255)")
+    private String rfKorOriginalFileName;
 
-    @Column(name = "rd_kor_file_type", columnDefinition = "nvarchar(255)")
-    private String rdKorFileType;
+    @Column(name = "rf_kor_file_type", columnDefinition = "nvarchar(255)")
+    private String rfKorFileType;
 
-    @Column(name = "rd_kor_file_size")
-    private long rdKorFileSize;
+    @Column(name = "rf_kor_file_size")
+    private long rfKorFileSize;
 
-    @Column(name = "rd_kor_ext", length = 5)
-    private String rdKorExt;
-    /** sop file end **/
+    @Column(name = "rf_kor_ext", length = 5)
+    private String rfKorExt;
+    /** rf file end **/
 
     @Builder
     public DocumentVersion(String id, Document document, String fileName, String originalFileName, String fileType, long fileSize, Integer totalPage, String version,

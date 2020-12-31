@@ -6,7 +6,7 @@ import com.cauh.common.repository.UserRepository;
 import com.cauh.iso.domain.*;
 import com.cauh.iso.domain.constant.DocumentStatus;
 import com.cauh.iso.domain.constant.DocumentType;
-import com.cauh.iso.domain.constant.NoticeStatus;
+import com.cauh.iso.domain.constant.PostStatus;
 import com.cauh.iso.domain.report.RetirementDocument;
 import com.cauh.iso.repository.DocumentRepository;
 import com.cauh.iso.repository.DocumentVersionRepository;
@@ -202,22 +202,22 @@ public class DocumentVersionService {
             String fileName = fileStorageService.storeFile(documentVersion.getUploadRdKorFile(), documentVersion.getId()+"_KOR");
             String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
 
-            documentVersion.setRdKorFileName(fileName);
-            documentVersion.setRdKorOriginalFileName(documentVersion.getUploadRdKorFile().getOriginalFilename());
-            documentVersion.setRdKorFileType(documentVersion.getUploadRdKorFile().getContentType());
-            documentVersion.setRdKorFileSize(documentVersion.getUploadRdKorFile().getSize());
-            documentVersion.setRdKorExt(ext);
+            documentVersion.setRfKorFileName(fileName);
+            documentVersion.setRfKorOriginalFileName(documentVersion.getUploadRdKorFile().getOriginalFilename());
+            documentVersion.setRfKorFileType(documentVersion.getUploadRdKorFile().getContentType());
+            documentVersion.setRfKorFileSize(documentVersion.getUploadRdKorFile().getSize());
+            documentVersion.setRfKorExt(ext);
         }
         //RD(ENG)
         if(!ObjectUtils.isEmpty(documentVersion.getUploadRdEngFile()) && !documentVersion.getUploadRdEngFile().isEmpty()) {
             String fileName = fileStorageService.storeFile(documentVersion.getUploadRdEngFile(), documentVersion.getId()+"_ENG");
             String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
 
-            documentVersion.setRdEngFileName(fileName);
-            documentVersion.setRdEngOriginalFileName(documentVersion.getUploadRdEngFile().getOriginalFilename());
-            documentVersion.setRdEngFileType(documentVersion.getUploadRdEngFile().getContentType());
-            documentVersion.setRdEngFileSize(documentVersion.getUploadRdEngFile().getSize());
-            documentVersion.setRdEngExt(ext);
+            documentVersion.setRfEngFileName(fileName);
+            documentVersion.setRfEngOriginalFileName(documentVersion.getUploadRdEngFile().getOriginalFilename());
+            documentVersion.setRfEngFileType(documentVersion.getUploadRdEngFile().getContentType());
+            documentVersion.setRfEngFileSize(documentVersion.getUploadRdEngFile().getSize());
+            documentVersion.setRfEngExt(ext);
         }
 
 
@@ -438,7 +438,7 @@ public class DocumentVersionService {
             Notice notice = Notice.builder()
                     .title(subject)
                     .content(mailService.processTemplate("sop-effective-body.ftlh", model, null))
-                    .noticeStatus(NoticeStatus.NONE)
+                    .postStatus(PostStatus.NONE)
                     .build();
 
 
@@ -458,7 +458,7 @@ public class DocumentVersionService {
                 Notice sopNotice = Notice.builder()
                         .title("Current SOP List("+ DateUtils.format(new Date(), "yyyy.MM.dd") +"일자)")
                         .content(mailService.processTemplate("sop-index-notice.ftlh", model, null))
-                        .noticeStatus(NoticeStatus.NONE)
+                        .postStatus(PostStatus.NONE)
                         .topViewEndDate(DateUtils.addDay(new Date(), 10))
                         .build();
 
@@ -473,7 +473,7 @@ public class DocumentVersionService {
                 Notice sopNotice = Notice.builder()
                         .title("Current RD List("+ DateUtils.format(new Date(), "yyyy.MM.dd") +"일자)")
                         .content(mailService.processTemplate("rd-index-notice.ftlh", model, null))
-                        .noticeStatus(NoticeStatus.NONE)
+                        .postStatus(PostStatus.NONE)
                         .topViewEndDate(DateUtils.addDay(new Date(), 10))
                         .build();
 

@@ -115,17 +115,17 @@ public class AdminSOPController {
                 if(!ObjectUtils.isEmpty(action)) {
                     if (action == SOPAction.revision) {
                         log.info("==> revision : {} 기존 파일정보 초기화", id);
-                        documentVersion.setRdEngOriginalFileName(null);
-                        documentVersion.setRdEngExt(null);
-                        documentVersion.setRdEngFileName(null);
-                        documentVersion.setRdEngFileSize(0);
-                        documentVersion.setRdEngFileType(null);
+                        documentVersion.setRfEngOriginalFileName(null);
+                        documentVersion.setRfEngExt(null);
+                        documentVersion.setRfEngFileName(null);
+                        documentVersion.setRfEngFileSize(0);
+                        documentVersion.setRfEngFileType(null);
 
-                        documentVersion.setRdKorOriginalFileName(null);
-                        documentVersion.setRdKorExt(null);
-                        documentVersion.setRdKorFileName(null);
-                        documentVersion.setRdKorFileSize(0);
-                        documentVersion.setRdKorFileType(null);
+                        documentVersion.setRfKorOriginalFileName(null);
+                        documentVersion.setRfKorExt(null);
+                        documentVersion.setRfKorFileName(null);
+                        documentVersion.setRfKorFileSize(0);
+                        documentVersion.setRfKorFileType(null);
                     }
                 }
             }
