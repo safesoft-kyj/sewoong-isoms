@@ -7,20 +7,19 @@
 <body>
 <div class="tab-base">
     <ul class="nav nav-tabs">
-        <li class="active">
+        <li>
             <a href="/user/profile">Profile</a>
         </li>
         <li>
             <a href="/user/signature">Signature</a>
         </li>
-        <li>
+        <li class="active">
             <a href="/user/profile/role">Role</a>
         </li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane fade active in">
             <form class="form-horizontal form-padding" method="post" id="signForm">
-
                 <!--Static-->
                 <div class="form-group">
                     <label class="col-md-3 control-label">Name</label>

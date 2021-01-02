@@ -64,7 +64,7 @@
             <a href="/user/signature">Signature</a>
         </li>
         <li>
-            <a href="/user/profile/role-changed">Role</a>
+            <a href="/user/profile/role">Role</a>
         </li>
     </ul>
     <div class="tab-content">

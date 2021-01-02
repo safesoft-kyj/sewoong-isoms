@@ -34,7 +34,7 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
 
     private final UserRepository userRepository;
 
-    public Page<MyTrainingMatrix> getMyTrainingMatrix(Pageable pageable, List<UserJobDescription> userJobDescriptions) {
+    public Page<MyTrainingMatrix> getMyTrainingMatrix(Pageable pageable, DocumentType documentType, List<UserJobDescription> userJobDescriptions) {
 
         BooleanBuilder builder = new BooleanBuilder();
         if(ObjectUtils.isEmpty(userJobDescriptions)) {
@@ -46,7 +46,7 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
 
         QueryResults<MyTrainingMatrix> results = queryFactory.selectDistinct(Projections.constructor(MyTrainingMatrix.class, trainingMatrix.documentVersion.document, trainingMatrix.documentVersion))
                 .from(trainingMatrix)
-                .where(trainingMatrix.documentVersion.document.type.eq(DocumentType.SOP))
+                .where(trainingMatrix.documentVersion.document.type.eq(/*DocumentType.SOP*/documentType))
                 .where(trainingMatrix.documentVersion.status.eq(DocumentStatus.EFFECTIVE))
                 .where(builder)
                 .orderBy(trainingMatrix.documentVersion.document.docId.asc())
@@ -74,7 +74,7 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
         }
     }
 
-    public Page<MyTraining> getMyTraining(TrainingRequirement requirement, Pageable pageable, Account user) {
+    public Page<MyTraining> getMyTraining(TrainingRequirement requirement, DocumentType documentType, Pageable pageable, Account user) {
         if(requirement == TrainingRequirement.optional) {
             List<Integer> jobDescriptionIds = new ArrayList<>();
             if(ObjectUtils.isEmpty(user.getJobDescriptions()) == false) {
@@ -132,7 +132,7 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
                                     .and(qTrainingPeriod.startDate.goe(user.getIndate())))
                     )
                     .leftJoin(qTrainingLog).on(qTrainingPeriod.id.eq(qTrainingLog.trainingPeriod.id).and(qTrainingLog.user.id.eq(user.getId())).and(qTrainingLog.reportStatus.ne(DeviationReportStatus.REJECTED)))
-                    .where(trainingMatrix.documentVersion.document.type.eq(DocumentType.SOP))
+                    .where(trainingMatrix.documentVersion.document.type.eq(/*DocumentType.SOP*/documentType))
                     .where(trainingMatrix.documentVersion.status.in(DocumentStatus.EFFECTIVE, DocumentStatus.APPROVED))
                     .where(trainingMatrix.documentVersion.id.notIn(
                             JPAExpressions.selectDistinct(qDocumentVersion.parentVersion.id)
@@ -206,7 +206,9 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
                 qTrainingPeriod.startDate,
                 qTrainingPeriod.endDate,
                 ExpressionUtils.as(JPAExpressions.select(min(qUserJobDescription.assignDate))
-                        .from(qUserJobDescription).where(qUserJobDescription.user.username.eq(qUser.username).and(qUserJobDescription.status.eq(JobDescriptionStatus.APPROVED))), "assignDate")
+                        .from(qUserJobDescription)
+                        .where(qUserJobDescription.user.username.eq(qUser.username)
+                        .and(qUserJobDescription.status.eq(JobDescriptionStatus.APPROVED))), "assignDate")
         ))
         .from(qUser)
 //        .leftJoin(qUserJobDescription).on(qUser.username.eq(qUserJobDescription.username).and(qUserJobDescription.status.in(statusList)))

@@ -6,8 +6,7 @@
 <mapper namespace="com.dtnsm.common.mapper.DeptUserMapper">
     <select id="findAllDept" resultType="map">
         select
-            org_code deptCode,
-			org_depart deptName
+			dept_name deptName
         from ${gwDeptTbl}
         where p_org_code is null
         order by org_order asc
@@ -15,8 +14,7 @@
 
     <select id="findByDeptTeam" resultType="map" parameterType="map">
         select
-            org_code teamCode,
-            org_depart teamName
+            team_name teamName
         from ${gwDeptTbl}
         where p_org_code = #{deptCode}
         order by org_depart asc

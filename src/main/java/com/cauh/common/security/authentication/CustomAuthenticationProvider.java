@@ -25,6 +25,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetailsChecker;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.ObjectUtils;
 
@@ -113,7 +114,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
             throw e;
         } catch (AccountExpiredException e) {
             throw e;
-            } catch (CredentialsExpiredException e) {
+        } catch (CredentialsExpiredException e) {
+            throw e;
+        } catch (UsernameNotFoundException e) {
             throw e;
         }
     }
@@ -127,7 +130,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
         Account userDetails = null;
 
         if(isInternalUser) {
-            log.debug("==> 부사용자 로그인 : {}", username);
+            log.debug("==> 내부사용자 로그인 : {}", username);
             String ip = ((CustomWebAuthenticationDetails) authentication.getDetails()).getClientIP();
             log.info("===> @username : {}, IP : {}", username, ip);
 

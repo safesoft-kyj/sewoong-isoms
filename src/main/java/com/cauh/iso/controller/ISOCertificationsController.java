@@ -7,6 +7,7 @@ import com.cauh.iso.domain.ISOCertification;
 import com.cauh.iso.domain.ISOCertificationAttachFile;
 import com.cauh.iso.domain.QISOCertification;
 import com.cauh.iso.domain.constant.PostStatus;
+import com.cauh.iso.exception.MyFileNotFoundException;
 import com.cauh.iso.security.annotation.IsAdmin;
 import com.cauh.iso.service.FileStorageService;
 import com.cauh.iso.service.ISOCertificationService;
@@ -128,13 +129,16 @@ public class ISOCertificationsController {
         ISOCertification savedISOCertification = isoCertificationService.save(isoCertification, uploadingFiles);
         sessionStatus.setComplete();
 
-        if(ObjectUtils.isEmpty(certId)) {
-            attributes.addFlashAttribute("message", "ISO Certification이 저장 되었습니다.");
-            return "redirect:/certifications/" + savedISOCertification.getId()  + (StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString());
-        } else {
-            attributes.addFlashAttribute("message", "ISO Certification이 수정 되었습니다.");
-            return "redirect:/certifications/{certId}" + (StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString());
-        }
+//        if(ObjectUtils.isEmpty(certId)) {
+//            attributes.addFlashAttribute("message", "ISO Certification이 저장 되었습니다.");
+//            return "redirect:/certifications/" + savedISOCertification.getId()  + (StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString());
+//        } else {
+//            attributes.addFlashAttribute("message", "ISO Certification이 수정 되었습니다.");
+//            return "redirect:/certifications/{certId}" + (StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString());
+//        }
+
+        attributes.addFlashAttribute("message", "ISO Certification이 저장 되었습니다.");
+        return "redirect:/certifications/";
     }
 
     @GetMapping("/certifications/{id}/downloadFile/{attachFileId:.+}")
@@ -194,11 +198,9 @@ public class ISOCertificationsController {
 
         if(isoCertificationOptional.isPresent()) {
             ISOCertification isoCertification = isoCertificationOptional.get();
-
-            //1번째 파일
-            ISOCertificationAttachFile isoCertificationAttachFile = isoCertification.getAttachFiles().get(0);
-
-            if(!ObjectUtils.isEmpty(isoCertificationAttachFile)) {
+            if(!ObjectUtils.isEmpty(isoCertification.getAttachFiles())) {
+                //1번째 파일
+                ISOCertificationAttachFile isoCertificationAttachFile = isoCertification.getAttachFiles().get(0);
                 Resource resource = fileStorageService.loadFileAsResource(isoCertificationAttachFile.getFileName());
 
                 // Try to determine file's content type
@@ -224,6 +226,25 @@ public class ISOCertificationsController {
         } else {
             return ResponseEntity.of(Optional.empty());
         }
+    }
+
+    @GetMapping("/ajax/certifications/isFile/{certId}")
+    @ResponseBody
+    public Boolean IsCertFile(@PathVariable("certId") Integer certId){
+        Optional<ISOCertification> isoCertificationOptional = isoCertificationService.getCertification(certId);
+        if(isoCertificationOptional.isPresent()){
+            ISOCertification isoCertification = isoCertificationOptional.get();
+            if(!ObjectUtils.isEmpty(isoCertification.getAttachFiles())){
+                try{
+                    Resource resource = fileStorageService.loadFileAsResource(isoCertification.getAttachFiles().get(0).getFileName());
+                } catch(MyFileNotFoundException e){
+                    log.info("File is Not Found");
+                    return false;
+                }
+                return true;
+            }
+        }
+        return false;
     }
 }
 

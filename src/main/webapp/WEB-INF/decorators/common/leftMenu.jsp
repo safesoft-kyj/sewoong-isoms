@@ -52,6 +52,24 @@
         </ul>
     </li>
     <li>
+        <a href="#" aria-expanded="false">
+            <i class="pli-university"></i>
+            <span class="menu-title">ISO Training</span>
+            <i class="arrow"></i>
+        </a>
+        <!--Submenu-->
+        <ul class="collapse" aria-expanded="false">
+            <li><a href="/training/ISO/my-training-matrix">My Training Matrix</a></li>
+            <li><a href="/training/ISO/mandatory-training">My Training</a></li>
+            <li><a href="/training/ISO/optional-training">Optional Training</a></li>
+            <li><a href="/training/ISO/offline-training">Off-line Training</a></li>
+            <li><a href="/training/ISO/trainingLog">Training Log(ISO)</a></li>
+            <c:if test="${user.teamManager == true || user.deptManager == true}">
+                <li><a href="/training/ISO/teamDeptTrainingLog2">Employee Training Log</a></li>
+            </c:if>
+        </ul>
+    </li>
+    <li>
         <a href="/document" aria-expanded="false">
             <i class="pli-folder-binder"></i>
             <span class="menu-title">SOP</span>
@@ -67,57 +85,57 @@
     <li>
         <a href="#" aria-expanded="false">
             <i class="pli-university"></i>
-            <span class="menu-title">Training</span>
+            <span class="menu-title">SOP Training</span>
             <i class="arrow"></i>
         </a>
         <!--Submenu-->
         <ul class="collapse" aria-expanded="false">
-            <li><a href="/training/my-training-matrix">My Training Matrix</a></li>
-            <li><a href="/training/mandatory-training">My Training</a></li>
-            <li><a href="/training/optional-training">Optional Training</a></li>
-            <li><a href="/training/offline-training">Off-line Training</a></li>
-            <li><a href="/training/trainingLog">Training Log(SOP)</a></li>
+            <li><a href="/training/SOP/my-training-matrix">My Training Matrix</a></li>
+            <li><a href="/training/SOP/mandatory-training">My Training</a></li>
+            <li><a href="/training/SOP/optional-training">Optional Training</a></li>
+            <li><a href="/training/SOP/offline-training">Off-line Training</a></li>
+            <li><a href="/training/SOP/trainingLog">Training Log(SOP)</a></li>
             <c:if test="${user.teamManager == true || user.deptManager == true}">
-            <li><a href="/training/teamDeptTrainingLog2">Employee Training Log</a></li>
+                <li><a href="/training/SOP/teamDeptTrainingLog2">Employee Training Log</a></li>
             </c:if>
         </ul>
     </li>
 
-    <li>
-        <a href="/approval" aria-expanded="false">
-            <i class="pli-check"></i>
-            <span class="menu-title">전자결재</span>
-            <i class="arrow"></i>
-        </a>
-        <!--Submenu-->
-        <ul class="collapse" aria-expanded="false">
-            <li>
-                <a href="/approval/box/requester" aria-expanded="false">기안함</a>
-            </li>
-            <li>
-                <a href="/approval/box/reviewer" aria-expanded="false">검토함</a>
-            </li>
-            <li>
-                <a href="/approval/box/approver" aria-expanded="false">승인함</a>
-            </li>
-            </li>
-        </ul>
-    </li>
-
 <%--    <li>--%>
-<%--        <a href="xx#xxx" aria-expanded="false">--%>
-<%--            <i class="pli-box-with-folders"></i>--%>
-<%--            <span class="menu-title">Digital Binder</span>--%>
+<%--        <a href="/approval" aria-expanded="false">--%>
+<%--            <i class="pli-check"></i>--%>
+<%--            <span class="menu-title">전자결재</span>--%>
 <%--            <i class="arrow"></i>--%>
 <%--        </a>--%>
 <%--        <!--Submenu-->--%>
 <%--        <ul class="collapse" aria-expanded="false">--%>
-<%--            <li><a href="#">CV</a></li>--%>
-<%--            <li><a href="#">JD</a></li>--%>
-<%--            <li><a href="#">Employee Training Log(TM)</a></li>--%>
-<%--            <li><a href="#">Employee Training Log(SOP)</a></li>--%>
-<%--            <li><a href="#">Certificates</a></li>--%>
+<%--            <li>--%>
+<%--                <a href="/approval/box/requester" aria-expanded="false">기안함</a>--%>
+<%--            </li>--%>
+<%--            <li>--%>
+<%--                <a href="/approval/box/reviewer" aria-expanded="false">검토함</a>--%>
+<%--            </li>--%>
+<%--            <li>--%>
+<%--                <a href="/approval/box/approver" aria-expanded="false">승인함</a>--%>
+<%--            </li>--%>
+<%--            </li>--%>
 <%--        </ul>--%>
 <%--    </li>--%>
+
+    <%--    <li>--%>
+    <%--        <a href="xx#xxx" aria-expanded="false">--%>
+    <%--            <i class="pli-box-with-folders"></i>--%>
+    <%--            <span class="menu-title">Digital Binder</span>--%>
+    <%--            <i class="arrow"></i>--%>
+    <%--        </a>--%>
+    <%--        <!--Submenu-->--%>
+    <%--        <ul class="collapse" aria-expanded="false">--%>
+    <%--            <li><a href="#">CV</a></li>--%>
+    <%--            <li><a href="#">JD</a></li>--%>
+    <%--            <li><a href="#">Employee Training Log(TM)</a></li>--%>
+    <%--            <li><a href="#">Employee Training Log(SOP)</a></li>--%>
+    <%--            <li><a href="#">Certificates</a></li>--%>
+    <%--        </ul>--%>
+    <%--    </li>--%>
 
 </ul>

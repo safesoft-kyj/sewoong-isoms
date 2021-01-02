@@ -3,6 +3,7 @@ package com.cauh.iso.controller;
 import com.cauh.common.entity.Account;
 import com.cauh.common.entity.Department;
 import com.cauh.common.entity.Signature;
+import com.cauh.common.entity.UserJobDescriptionChangeLog;
 import com.cauh.common.repository.SignatureRepository;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.annotation.CurrentUser;
@@ -11,6 +12,7 @@ import com.cauh.common.service.UserService;
 import com.cauh.iso.admin.service.DepartmentService;
 import com.cauh.iso.component.CurrentUserComponent;
 import com.cauh.iso.service.JDService;
+import com.cauh.iso.service.UserJobDescriptionChangerLogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -40,6 +42,7 @@ public class UserController {
     private final JDService jdService;
     private final UserService userService;
     private final DepartmentService departmentService;
+    private final UserJobDescriptionChangerLogService userJobDescriptionChangerLogService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -50,12 +53,12 @@ public class UserController {
         return "user/profile";
     }
 
-    @GetMapping("/user/profile/role-changed")
-    public String roleChanged(Model model){
+    @GetMapping("/user/profile/role")
+    public String roleChanged(@CurrentUser Account user, Model model){
+        model.addAttribute("currentRoles", user.getUserJobDescriptions());
+        model.addAttribute("roleList", userJobDescriptionChangerLogService.getUserChangeLog(user));
 
-
-
-        return "user/profile";
+        return "user/role";
     }
 
     @GetMapping("/signUp")

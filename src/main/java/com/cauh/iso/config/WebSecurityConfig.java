@@ -4,6 +4,7 @@ import com.cauh.common.config.ClassPathTldsLoader;
 import com.cauh.common.security.authentication.CustomAuthenticationProvider;
 import com.cauh.common.security.authentication.CustomWebAuthenticationDetailsSource;
 import com.cauh.common.security.filter.AjaxRequestHandlingFilter;
+import com.cauh.common.security.handler.CustomLoginFailureHandler;
 import com.cauh.common.security.vote.CustomWebAccessDecisionVoter;
 import com.cauh.common.service.CustomUserDetailsService;
 import com.cauh.iso.security.CustomAccessDeniedHandler;
@@ -24,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +71,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .authenticationDetailsSource(webAuthenticationDetailsSource())
                 .loginPage("/login").permitAll()
-                .failureUrl("/login?error=0")
+                //.failureUrl("/login?error=0")
+                .failureHandler(loginFailureHandler())
                 .defaultSuccessUrl("/", true)
 //                .successHandler(successHandler())
                 .and()
@@ -230,6 +233,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //        logoutSuccessHandler.setDefaultTargetUrl("/login?logout");
 //        return logoutSuccessHandler;
 //    }
+
+    @Bean
+    public AuthenticationFailureHandler loginFailureHandler(){
+        CustomLoginFailureHandler loginFailureHandler = new CustomLoginFailureHandler();
+        return loginFailureHandler;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

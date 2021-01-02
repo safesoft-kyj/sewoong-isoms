@@ -14,31 +14,19 @@
     <style>
         .modal-dialog.modal-fullsize {
             width: 80%;
-            height: 550px;
+            height: 800px;
             margin: 3px;
             padding: 0;
         }
 
-        .modal-content.modal-fullsize {
-            height: auto;
-            min-height: 550px;
-            border-radius: 0;
-        }
-
-        .pdfobject-container{
-            /*margin-top:50px;*/
-            /*margin-left:50px;*/
-            /*width: 600px;*/
-            height: 530px;
-        }
-
-        .pdfobject {
-            border: 1px solid #666;
+        #certification-html {
+            height: 700px;
         }
     </style>
+    <!--Bootbox Modals [ OPTIONAL ]-->
+    <script src="/static/plugins/bootbox/bootbox.min.js"></script>
 </head>
 <body>
-
 <div class="panel">
     <!--Data Table-->
     <!--===================================================-->
@@ -83,8 +71,7 @@
                     <th class="text-center" style="width:160px;">인증일자</i> </th>
                     <th class="text-center" style="width:160px;">등록일</th>
                     <th class="text-center" style="width:140px">작성자</th>
-                    <#--                    <th class="text-center" style="width:120px">인증일자</th>-->
-                    <#--                    <th class="text-center" style="width:120px">#actions</th>-->
+                    <th class="text-center" style="width:180px">#actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -92,9 +79,7 @@
                     <#list certificationList.content as certification>
                         <tr>
                             <td class="text-center">${(certificationList.totalElements - (certificationList.size * certificationList.number)) - certification?index}</td>
-                            <td><a class="btn-link"
-                                   href="/certifications/${certification.id}<@pagination.getQueryString/>">${certification.title}</a>
-                            </td>
+                            <td>${certification.title}</td>
                             <td class="text-center"><a href="#certification-modal" data-toggle="modal"
                                                        data-id="${certification.id}" data-lang="eng"
                                                        class="btn-link">${certification.certDate?string('yyyy-MM-dd')}</a>
@@ -102,16 +87,22 @@
                             <td class="text-center"><span
                                         class="text-muted">${certification.createdDate?string('yyyy-MM-dd')}</span></td>
                             <td class="text-center">${certification.createdBy?default('System')}</td>
-                            <#--                    <td class="text-center">-->
-                            <#--                <#if notice.postStatus == 'NONE'>-->
-                            <#--                    --->
-                            <#--                <#else>-->
-                            <#--                    <span class="label label-info">Sent</span>-->
-                            <#--                </#if>-->
-                            <#--                    </td>-->
-                            <#--                    <td class="text-center">-->
-                            <#--                        <a href="/notice/${notice.id}/edit" class="btn-link">edit</a>-->
-                            <#--                    </td>-->
+<#--                            <td class="text-center">-->
+<#--                                <#if notice.postStatus == 'NONE'>-->
+<#--                                    --->
+<#--                                <#else>-->
+<#--                                    <span class="label label-info">Sent</span>-->
+<#--                                </#if>-->
+<#--                            </td>-->
+                            <@security.authorize access="hasAnyAuthority('ADMIN')">
+                            <td class="text-center">
+                                <a href="/certifications/${certification.id}/edit" class="btn btn-mint"><i class="pli-edit"></i> 수정</a>
+                                <button class="btn btn-danger" id="removeBtn"><i class="pli-trash icon-lg"></i> 삭제</button>
+                                <form id="removeForm" action="/certifications/${certification.id}" method="post">
+                                    <input type="hidden" name="_method" value="delete">
+                                </form>
+                            </td>
+                            </@security.authorize>
                         </tr>
                     </#list>
                 <#else>
@@ -134,57 +125,54 @@
 
 <script>
     $(document).ready(function () {
+
+        $(document).on('click', "#removeBtn", function() {
+            bootbox.confirm("정말로 삭제 하시겠습니까?", function (result) {
+                if (result) {
+                    $("#removeForm").submit();
+                } else {
+                    // $.niftyNoty({
+                    //     type: 'danger',
+                    //     icon: 'pli-cross icon-2x',
+                    //     message: 'User declined dialog.',
+                    //     container: 'floating',
+                    //     timer: 5000
+                    // });
+                }
+            });
+        });
+
         $('#certification-modal').on('show.bs.modal', function (event) {
             $("#certification-html").html('<string>내용을 불러오는 중입니다...</string>');
             var button = $(event.relatedTarget); // Button that triggered the modal
             var certId = button.data('id');
 
-            // $.ajax({
-            //     url: '/certifications/view/' + certId,
-            //     method: 'get',
-            //     data: {r: Math.random()},
-            //     success: function (res) {
-            //         $("#certification-html").html(res);
-            //     }
-            // });
+            $.ajax({
+                url: '/ajax/certifications/isFile/' + certId,
+                method: 'get',
+                data: {r: Math.random()},
+                success: function (isFile) {
+                    if(isFile) { // File이 있으면
+                        var options = {
+                            height: "800",
+                            page: '1',
+                            pdfOpenParams: {
+                                view: 'FitV',
+                                pagemode: 'thumbs',
+                                search: 'lorem ipsum'
+                            },
+                            forcePDFJS: true, // 강제로 PDF Viewer를 실행시키는 옵션
+                            PDFJS_URL: "/static/js/pdfjs/web/viewer.html" //PDF.js의 PDF viewer를 viewer로 지정.
+                        };
 
-            var options = {
-                height: "720",
-                page: '1',
-                pdfOpenParams: {
-                    view: 'FitV',
-                    pagemode: 'thumbs',
-                    search: 'lorem ipsum'
-                },
-                forcePDFJS: true, // 강제로 PDF Viewer를 실행시키는 옵션
-                PDFJS_URL: "/static/js/pdfjs/web/viewer.html" //PDF.js의 PDF viewer를 viewer로 지정.
-            };
-
-            //제일 처음 열리는 pdf파일 경로 설정.
-            PDFObject.embed("/certifications/download/" + certId , "#certification-html", options);
+                        //제일 처음 열리는 pdf파일 경로 설정.
+                        PDFObject.embed("/certifications/download/" + certId , "#certification-html", options);
+                    } else { // File이 없으면 첨부 파일 없다고 메세지 띄우기
+                        $("#certification-html").html("첨부된 인증 파일이 존재하지 않습니다.");
+                    }
+                }
+            });
         });
-
-        // $('#matrix-modal').on('show.bs.modal', function (event) {
-        //     var button = $(event.relatedTarget); // Button that triggered the modal
-        //     var title = button.data('title'); // Extract info from data-* attributes
-        //     var modal = $(this);
-        //     modal.find('.modal-title').text(title);
-        //     // var options = {
-        //     //     pdfOpenParams: { toolbar: '0', statusbar: '0', messages: '0', scrollbar: '1', view:'FitH'}
-        //     // };
-        //
-        //     // var $container = $("#pdfViewer");
-        //     $("#pdfViewer").html("문서를 불러오는 중입니다...");
-        //     $.ajax({
-        //         url: "/ajax/common/viewTrainingMatrix",
-        //         method: "GET",
-        //         data: {r: Math.random()},
-        //         dataType: "html"
-        //     }).done(function (response) {
-        //         $("#pdfViewer").html(response);
-        //     });
-        //     // PDFObject.embed("/common/download/trainingMatrix", $container, options);
-        // });
     });
 </script>
 <!-- Certification Viewer -->

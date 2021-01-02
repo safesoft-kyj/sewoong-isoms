@@ -38,4 +38,10 @@ public interface UserService {
     void sync();
 
     void refresh();
+
+
+    //Login Failure Handler Method
+    void countFailure(String username);
+    void lockedUser(String username);
+    Integer checkFailureCount(String username);
 }

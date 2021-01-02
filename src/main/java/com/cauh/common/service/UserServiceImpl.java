@@ -9,6 +9,7 @@ import com.cauh.common.repository.UserJobDescriptionChangeLogRepository;
 import com.cauh.common.repository.UserJobDescriptionRepository;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.authentication.InternalAccountAuthenticationException;
+import com.cauh.common.security.authentication.SignUpRequestedAccountException;
 import com.cauh.common.utils.DateUtils;
 import com.cauh.iso.component.CurrentUserComponent;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import javax.security.auth.login.AccountExpiredException;
+import javax.security.auth.login.AccountLockedException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -52,7 +55,7 @@ public class UserServiceImpl implements UserService {
 //    private String gwDeptTbl;
 
     @Override
-    public Account loadUserByUsername(String username) throws UsernameNotFoundException {
+    public Account loadUserByUsername(String username) throws UsernameNotFoundException{
 //        User user = authenticationMapper.loadUserByUsername(username);
         Optional<Account> optionalUser = userRepository.findByUsername(username);
         if(optionalUser.isPresent()) {
@@ -72,12 +75,17 @@ public class UserServiceImpl implements UserService {
             //비밀번호 Matching이 되지 않거나, Account 계정이 없는 경우 실패
             Account account = accountOptional.get();
 
-            account.getPassword();
-
-            if(passwordEncoder.matches(password, account.getPassword())) {
-                return account;
+            if(account.getUserStatus() == UserStatus.ACTIVE) {
+                account.getPassword();
+                if(passwordEncoder.matches(password, account.getPassword())) {
+                    return account;
+                }
+                throw new InternalAccountAuthenticationException("내부사용자 로그인에 실패하였습니다.");
+            } else if (account.getUserStatus() == UserStatus.SIGNUP_REQUEST) {
+                throw new SignUpRequestedAccountException("가입 신청중인 사용자입니다.");
+            } else if (ObjectUtils.isEmpty(account.getUserStatus())){
+                throw new InternalAccountAuthenticationException("내부사용자 로그인에 실패하였습니다.");
             }
-            throw new InternalAccountAuthenticationException("내부사용자 로그인에 실패하였습니다.");
         }
         throw new UsernameNotFoundException("[" + username + "] Username Not Found.");
     }
@@ -101,7 +109,7 @@ public class UserServiceImpl implements UserService {
     public Account signUpRequest(Account account) {
         //userStatus를 통해 현재 유저 상태 설정 (SIGNUP_REQUEST)
         account.setUserType(UserType.USER);
-        account.setAccountNonLocked(false);
+        account.setAccountNonLocked(true);
         account.setEnabled(true);
         account.setUserStatus(UserStatus.SIGNUP_REQUEST);
 
@@ -287,48 +295,29 @@ public class UserServiceImpl implements UserService {
         currentUserComponent.updateCurrentUserList();
     }
 
-//    private Account updateUserInfo(String username) {
-//        Map<String, String> param = new HashMap<>();
-//        param.put("gwUserTbl", gwUserTbl);
-//        param.put("gwDeptTbl", gwDeptTbl);
-//        param.put("username", username);
-//        Account userDetails;
-//        Account deptUser = deptUserMapper.findByUsername(param);
-//        if(ObjectUtils.isEmpty(deptUser)) {
-//            log.error(" *** 그룹웨어 사용자 연동 테이블을 확인해 주세요. ***");
-//            throw new RuntimeException(" *** 그룹웨어 사용자 연동 테이블을 확인해 주세요. ***");
-//        }
-//
-//        Optional<Account> optionalUser = findByUsername(username);
-//        if(optionalUser.isPresent()) {
-//            log.info("==> 기존 사용자 정보 업데이트 : {} **", username);
-//            userDetails = optionalUser.get();
-//            userDetails.setEmail(deptUser.getEmail());
-//            userDetails.setEmpNo(deptUser.getEmpNo());
-//            userDetails.setEngName(deptUser.getEngName());
-//            userDetails.setKorName(deptUser.getKorName());
-//            userDetails.setDeptName(deptUser.getDeptName());
-//            userDetails.setTeamName(deptUser.getTeamName());
-//            userDetails.setDeptCode(deptUser.getDeptCode());
-//            userDetails.setTeamCode(deptUser.getTeamCode());
-//            userDetails.setLev(deptUser.getLev());
-//            userDetails.setDuty(deptUser.getDuty());
-//            userDetails.setPosition(deptUser.getPosition());
-//            userDetails.setEnabled(deptUser.isEnabled());
-//            userDetails.setAccountNonLocked(deptUser.isEnabled());
-//        } else {
-//            log.info("==> 신규 사용자 정보 등록 : {} **", username);
-//            userDetails = deptUser;
-//            userDetails.setAccountNonLocked(deptUser.isEnabled());
-////            userDetails.setEnabled(true);
-//        }
-//        if(StringUtils.isEmpty(deptUser.getStrInDate()) == false) {
-//            userDetails.setInDate(DateUtils.toDate(deptUser.getStrInDate(), "yyyy-MM-dd"));
-//        } else if(!StringUtils.isEmpty(deptUser.getEmpNo())) {
-//            userDetails.setInDate(toDate(userDetails.getEmpNo()));//입사일자를 사번에서 가져와 설정한다.
-//        }
-//        return saveOrUpdate(userDetails);
-//    }
+    @Override
+    public void countFailure(String username) {
+        Optional<Account> account = userRepository.findByUsername(username);
+        if(account.isPresent()){
+            account.get().setLoginFailCnt(account.get().getLoginFailCnt()+1);
+            userRepository.save(account.get());
+        }
+    }
+
+    @Override
+    public void lockedUser(String username) {
+        Optional<Account> account = userRepository.findByUsername(username);
+        if(account.isPresent()){
+            account.get().setAccountNonLocked(false);
+            userRepository.save(account.get());
+        }
+    }
+
+    @Override
+    public Integer checkFailureCount(String username) {
+        return null;
+    }
+
 
     protected void userDisabled(List<String> activeUsernames) {
         log.debug("=> 비활성화 처리 할 계정 정보 확인 ***********");

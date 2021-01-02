@@ -81,14 +81,14 @@ public class TrainingController {
 
 //    private final SOPTrainingMatrixRepositoryImpl sopTrainingMatrixRepositoryImpl;
 
-    @GetMapping("/training/my-training-matrix")
-    public String myTrainingMatrix(@PageableDefault(size = 300) Pageable pageable, @CurrentUser Account user, Model model, RedirectAttributes attributes) {
+    @GetMapping("/training/{documentType}/my-training-matrix")
+    public String myTrainingMatrix(@PageableDefault(size = 300) Pageable pageable, @CurrentUser Account user, @PathVariable("documentType") DocumentType documentType, Model model, RedirectAttributes attributes) {
 //        if(ObjectUtils.isEmpty(user.getJobDescriptions())) {
 //            attributes.addFlashAttribute("message", "JD가 지정 되어 있지 않습니다. 관리자에게 문의 하세요.");
 //            return "redirect:/notice";
 //        }
 
-        Page<MyTrainingMatrix> sopTrainingMatrices = trainingMatrixRepository.getMyTrainingMatrix(pageable, user.getUserJobDescriptions());
+        Page<MyTrainingMatrix> sopTrainingMatrices = trainingMatrixRepository.getMyTrainingMatrix(pageable, documentType, user.getUserJobDescriptions());
         model.addAttribute("trainingMatrix", sopTrainingMatrices);
         model.addAttribute("userJobDescriptions", user.getUserJobDescriptions());
 
@@ -97,17 +97,18 @@ public class TrainingController {
 
 
 
-    @GetMapping("/training/{requirement}-training")
-    public String training(@PathVariable("requirement") TrainingRequirement requirement, @PageableDefault(size = 25) Pageable pageable, @CurrentUser Account user, Model model) {
-        Page<MyTraining> sopTrainingMatrices = trainingMatrixRepository.getMyTraining(requirement, pageable, user);
+    @GetMapping("/training/{documentType}/{requirement}-training")
+    public String training(@PathVariable("requirement") TrainingRequirement requirement, @PageableDefault(size = 25) Pageable pageable, @CurrentUser Account user, @PathVariable("documentType") DocumentType documentType, Model model) {
+        Page<MyTraining> sopTrainingMatrices = trainingMatrixRepository.getMyTraining(requirement, documentType, pageable, user);
         model.addAttribute("trainingMatrix", sopTrainingMatrices);
         model.addAttribute("requirement", requirement);
 
         return "training/trainingList";
     }
 
-    @PostMapping("/training/{requirement}-training")
-    public String saveTrainingLog(@PathVariable("requirement") TrainingRequirement requirement,
+    @PostMapping("/training/{documentType}/{requirement}-training")
+    public String saveTrainingLog(@PathVariable("documentType") DocumentType documentType,
+                                  @PathVariable("requirement") TrainingRequirement requirement,
                                   @RequestParam("docVersionId") String docVersionId,
                                 @RequestParam("progressPercent") double progressPercent,
                                 @RequestParam("trainingPeriodId") Integer trainingPeriodId,
@@ -134,7 +135,7 @@ public class TrainingController {
         trainingLog.setProgressPercent(progressPercent);
         trainingLog.setTrainingTime(trainingTime);
 //        trainingLog.setType(TrainingType.SELF);
-        trainingLog.setStatus(progressPercent >= 100 ? (!StringUtils.isEmpty(documentVersion) ? TrainingStatus.TRAINING_COMPLETED : TrainingStatus.COMPLETED) : TrainingStatus.PROGRESS);
+        trainingLog.setStatus(progressPercent >= 100 ? (!StringUtils.isEmpty(documentVersion.getQuiz()) ? TrainingStatus.TRAINING_COMPLETED : TrainingStatus.COMPLETED) : TrainingStatus.PROGRESS);
 
         TrainingLog savedTrainingLog = trainingLogService.saveOrUpdate(trainingLog, null);
         log.debug("=> SavedTrainingLog Id : {}", savedTrainingLog.getId());
@@ -221,7 +222,7 @@ public class TrainingController {
         return "training/testLog";
     }
 
-    @GetMapping("/training/mandatory-training/completed")
+    @GetMapping("/training/{documentType}/mandatory-training/completed")
     public String completedTraining() {//@PageableDefault(size = 15, sort = {"completeDate"}, direction = Sort.Direction.DESC) Pageable pageable, @CurrentUser Account user, Model model
 //        QTrainingLog qTrainingLog = QTrainingLog.trainingLog;
 //        BooleanBuilder builder = new BooleanBuilder();
@@ -232,13 +233,14 @@ public class TrainingController {
         return "training/completedTraining";
     }
 
-    @GetMapping("/ajax/training/mandatory-training/completed")
+    @GetMapping("/ajax/training/{documentType}/mandatory-training/completed")
     @ResponseBody
-    public List<TrainingLogDTO> ajaxCompletedTraining(@CurrentUser Account user) {
+    public List<TrainingLogDTO> ajaxCompletedTraining(@CurrentUser Account user, @PathVariable("documentType") DocumentType documentType) {
         QTrainingLog qTrainingLog = QTrainingLog.trainingLog;
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qTrainingLog.user.id.eq(user.getId()));
         builder.and(qTrainingLog.status.eq(TrainingStatus.COMPLETED));
+        builder.and(qTrainingLog.documentVersion.document.type.eq(documentType));
 
         Iterable<TrainingLog> trainingLogs = trainingLogService.findAll(builder, qTrainingLog.completeDate.desc());
         List<TrainingLog> trainingLogList = StreamSupport.stream(trainingLogs.spliterator(), false)
@@ -266,29 +268,33 @@ public class TrainingController {
      * 재교육(Re-training) 신청
      * @return
      */
-    @PostMapping("/training/mandatory-training/completed")
-    public String requestReTraining(@RequestParam("id") Integer id, @CurrentUser Account user, RedirectAttributes attributes) {
+    @PostMapping("/training/{documentType}/mandatory-training/completed")
+    public String requestReTraining(@PathVariable("documentType") DocumentType documentType, @RequestParam("id") Integer id, @CurrentUser Account user, RedirectAttributes attributes) {
         boolean result = trainingService.requestReTraining(id, user);
+
         if(result) {
             attributes.addFlashAttribute("message", "Re-Training 신청이 완료 되었습니다.");
-            return "redirect:/training/mandatory-training";
+            return "redirect:/training/{documentType}/mandatory-training";
         } else {
             attributes.addFlashAttribute("message", "요청한 정보가 존재하지 않습니다.");
-            return "redirect:/training/mandatory-training/completed";
+            return "redirect:/training/{documentType}/mandatory-training/completed";
         }
     }
 
-    @GetMapping("/training/offline-training")
-    public String offlineTraining(@PageableDefault(size = 25, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable, @CurrentUser Account user, Model model) {
+    @GetMapping("/training/{documentType}/offline-training")
+    public String offlineTraining(@PageableDefault(size = 25, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable, @CurrentUser Account user,
+                                  @PathVariable("documentType") DocumentType documentType, Model model) {
+
         QOfflineTrainingAttendee qOfflineTrainingAttendee = QOfflineTrainingAttendee.offlineTrainingAttendee;
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qOfflineTrainingAttendee.account.id.in(user.getId()));
+        builder.and(qOfflineTrainingAttendee.offlineTraining.documentType.eq(documentType));
 
         model.addAttribute("offlineTraining", offlineTrainingAttendeeService.findAll(builder, pageable));
         return "training/offline/list";
     }
 
-    @GetMapping("/training/offline-training/request")
+    @GetMapping("/training/{documentType}/offline-training/request")
     public String offlineTrainingRequest(Model model) {
         model.addAttribute("offlineTraining", new OfflineTraining());
 
@@ -311,14 +317,14 @@ public class TrainingController {
         return "training/offline/request";
     }
 
-    @GetMapping("/training/offline-training/{id}")
+    @GetMapping("/training/{documentType}/offline-training/{id}")
     public String offlineTrainingRequest(@PathVariable("id") Integer id, Model model) {
         model.addAttribute("offlineTraining", offlineTrainingService.findById(id).get());
 
         return "training/offline/view";
     }
 
-    @PutMapping("/training/offline-training/request")
+    @PutMapping("/training/{documentType}/offline-training/request")
     public String offlineTrainingRequest(@ModelAttribute("offlineTraining") OfflineTraining offlineTraining,
                                          @RequestParam(value = "selectedId", required = false) String selectedId,
                                          @RequestParam(value = "deselectedId", required = false) String deselectedId
@@ -341,7 +347,7 @@ public class TrainingController {
     }
 
 
-    @PostMapping("/training/offline-training/request")
+    @PostMapping("/training/{documentType}/offline-training/request")
     public String offlineTrainingRequest(@ModelAttribute("offlineTraining") OfflineTraining offlineTraining, BindingResult result, SessionStatus status, RedirectAttributes attributes, @CurrentUser Account user) {
         offlineTrainingValidator.validate(offlineTraining, result);
 
@@ -358,18 +364,26 @@ public class TrainingController {
         return "redirect:/training/offline-training";
     }
 
-    @GetMapping("/training/trainingLog")
-    public String trainingLog(@PageableDefault(size = 15, sort = {"completeDate"}, direction = Sort.Direction.DESC) Pageable pageable, @CurrentUser Account user, Model model) {
+    @GetMapping("/training/{documentType}/trainingLog")
+    public String trainingLog(@PageableDefault(size = 15, sort = {"completeDate"}, direction = Sort.Direction.DESC) Pageable pageable,
+                              @CurrentUser Account user, @PathVariable("documentType") DocumentType documentType, Model model) {
         QTrainingLog qTrainingLog = QTrainingLog.trainingLog;
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qTrainingLog.user.id.eq(user.getId()));
         builder.and(qTrainingLog.status.eq(TrainingStatus.COMPLETED));
 
+        if(documentType == DocumentType.SOP) { //SOP 인 경우 - SOP / RF 둘다
+            builder.and(qTrainingLog.documentVersion.document.type.ne(DocumentType.ISO));
+        } else { //ISO인 경우 - ISO만
+            builder.and(qTrainingLog.documentVersion.document.type.eq(DocumentType.ISO));
+        }
+
+
         model.addAttribute("trainingLog", trainingLogService.findAll(builder, pageable));
         return "training/trainingLog";
     }
 
-    @PostMapping("/training/trainingLog")
+    @PostMapping("/training/{documentType}/trainingLog")
     public String uploadTrainingLog(@RequestParam("file") MultipartFile multipartFile, RedirectAttributes attributes,
                                     @CurrentUser Account user, Model model) throws Exception {
         XWPFDocument doc = new XWPFDocument(multipartFile.getInputStream());
@@ -476,7 +490,7 @@ public class TrainingController {
         return "redirect:/training/trainingLog";
     }
 
-    @PutMapping("/training/trainingLog")
+    @PutMapping("/training/{documentType}/trainingLog")
     @Transactional
     public String importTrainingLog(@ModelAttribute("trainingLogs") List<TrainingLog> trainingLogs, SessionStatus status, RedirectAttributes attributes,
                                     @CurrentUser Account user) {
@@ -487,7 +501,7 @@ public class TrainingController {
         return "redirect:/training/trainingLog";
     }
 
-    @GetMapping("/training/teamDeptTrainingLog")
+    @GetMapping("/training/{documentType}/teamDeptTrainingLog")
     @PreAuthorize("authentication.principal.lev eq 1 or authentication.principal.teamManager eq true")
     public String teamDeptTrainingLog(@PageableDefault(size = 25) Pageable pageable,
                                       @CurrentUser Account user,
@@ -532,7 +546,7 @@ public class TrainingController {
         return "training/teamDeptTrainingLog";
     }
 
-    @GetMapping("/training/teamDeptTrainingLog2")
+    @GetMapping("/training/{documentType}/teamDeptTrainingLog2")
     @PreAuthorize("authentication.principal.lev eq 1 or authentication.principal.teamManager eq true")
     public String teamDeptTrainingLog2(@PageableDefault(size = 25) Pageable pageable,
                                       @CurrentUser Account user,
@@ -575,15 +589,18 @@ public class TrainingController {
         return "training/teamDeptTrainingLog2";
     }
 
-    @PostMapping("/training/teamDeptTrainingLog2")
+    @PostMapping("/training/{documentType}/teamDeptTrainingLog2")
     @Transactional(readOnly = true)
     @PreAuthorize("authentication.principal.lev eq 1 or authentication.principal.teamManager eq true")
     public void downloadTeamDeptTrainingLog(
+            @PathVariable("documentType") DocumentType documentType,
             @CurrentUser Account user,
             @RequestParam(value = "teamCode", required = false) String teamCode,
             @RequestParam(value = "userId", required = false) Integer userId,
             @RequestParam(value = "docId", required = false) String docId,
             HttpServletResponse response) throws Exception {
+
+        //TODO : DocumentType에 관련하여 변경작업 필요
 
         List<MyTraining> trainingList = trainingMatrixRepository.getDownloadTrainingList(user.getTeamDept(), teamCode, userId, docId, user);
         InputStream is = IndexReportService.class.getResourceAsStream("trainingLog.xlsx");
@@ -610,14 +627,14 @@ public class TrainingController {
 //        }
 //    }
 
-    @PostMapping("/training/trainingLog/publish")
+    @PostMapping("/training/{documentType}/trainingLog/publish")
     public String publishTrainingLog(@CurrentUser Account user, RedirectAttributes attributes) throws Exception {
         Optional<TrainingRecord> optionalTrainingRecord = trainingRecordRepository.findTop1ByUsernameOrderByIdDesc(user.getUsername());
         if(optionalTrainingRecord.isPresent()) {
             TrainingRecord trainingRecord = optionalTrainingRecord.get();
             if(TrainingRecordStatus.REVIEW == trainingRecord.getStatus()) {
                 attributes.addFlashAttribute("message", "현재 검토 진행 중 입니다. 완료 후 배포 가능 합니다.");
-                return "redirect:/training/trainingLog";
+                return "redirect:/training/{documentType}/trainingLog";
             } else {
                 generateTrainingLog(user, trainingRecord.getStatus() == TrainingRecordStatus.REVIEWED ? null : trainingRecord.getId());
             }
@@ -626,7 +643,7 @@ public class TrainingController {
         }
 
         attributes.addFlashAttribute("message", "Training Log 배포 완료 되었습니다.");
-        return "redirect:/training/trainingLog";
+        return "redirect:/training/{documentType}/trainingLog";
     }
 
     private void generateTrainingLog(Account user, Integer trainingRecordId) throws Exception {

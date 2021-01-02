@@ -37,9 +37,6 @@ public class ISOCertification extends BaseEntity implements Serializable {
     @Column(name = "title", columnDefinition = "nvarchar(255)", nullable = false)
     private String title;
 
-    @Column(name = "content", columnDefinition = "nvarchar(MAX)", nullable = false)
-    private String content;
-
     @Column(name = "cert_date")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date certDate; //인증 일자.

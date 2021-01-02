@@ -877,9 +877,32 @@
                                 Your session has expired.
                             </div>
                         <#elseif RequestParameters.error?exists>
-                            <div class="alert alert-danger">
-                                Invalid username and password.
-                            </div>
+                            <#if RequestParameters.error=='locked'>
+                                <div class="alert alert-danger">
+                                    This account was locked.
+                                </div>
+                            <#elseif RequestParameters.error=='disabled'>
+                                <div class="alert alert-danger">
+                                    This account was disabled.
+                                </div>
+                            <#elseif RequestParameters.error=='accountExpired'>
+                                <div class="alert alert-danger">
+                                    This account was expired
+                                </div>
+                            <#elseif RequestParameters.error=='credentialExpired'>
+                                <div class="alert alert-danger">
+                                    This account's credential was expired
+                                </div>
+                            <#-- UsernameNotFound & BadCredentials -->
+                            <#elseif RequestParameters.error=='signup'>
+                                <div class="alert alert-warning">
+                                    This account is in the process of sign up requested
+                                </div>
+                            <#else>
+                                <div class="alert alert-danger">
+                                    Invalid username and password.
+                                </div>
+                            </#if>
                         <#elseif RequestParameters.logout?exists>
                             <div class="alert alert-success">
                                 You have been logged out.
