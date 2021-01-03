@@ -33,6 +33,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
@@ -45,6 +46,7 @@ import java.util.Optional;
 @RequestMapping("/admin")
 @RequiredArgsConstructor
 @Slf4j
+@SessionAttributes({"account"})
 public class AdminAuthorityController {
     private final AgreementPersonalInformationService agreementPersonalInformationService;
     private final NonDisclosureAgreementService nonDisclosureAgreementService;
@@ -206,16 +208,30 @@ public class AdminAuthorityController {
 
     @PostMapping("/authority/users/{id}")
     @Transactional
-    public String usersEditAction(@PathVariable("{id}") String id, Account account, RedirectAttributes redirectAttributes, BindingResult result) {
+    public String usersEditAction(@ModelAttribute("account")Account account, Model model, SessionStatus sessionStatus, RedirectAttributes attributes, BindingResult result) {
 
         //TODO :: 유저정보 수정 작업 필요.
         userEditValidator.validate(account, result);
 
         if(result.hasErrors()) {
+            log.debug("User Edit Errors : {}==========", result.getAllErrors());
+            model.addAttribute("departments", departmentService.getParentDepartment());
+
             return "admin/authority/edit";
         }
 
-
+        if(!ObjectUtils.isEmpty(account.getDepartment())) {
+            Department department = account.getDepartment();
+            if(!ObjectUtils.isEmpty(department.getParentDepartment())) {
+                account.setDeptName(department.getParentDepartment().getName());
+                account.setTeamName(department.getName());
+            }else {
+                account.setDeptName(department.getName());
+            }
+        }
+        userService.saveOrUpdate(account);
+        attributes.addFlashAttribute("message", "[" + account.getUsername() + "]의 정보가 수정되었습니다.");
+        sessionStatus.setComplete();
 
         return "redirect:/admin/authority/users";
     }

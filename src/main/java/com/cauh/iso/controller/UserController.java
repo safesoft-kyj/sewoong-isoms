@@ -27,6 +27,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.*;
@@ -89,16 +90,17 @@ public class UserController {
     @PostMapping({"/user/profile/role/new", "user/profile/role/edit"})
     @Transactional
     public String roleRequest(@CurrentUser Account user, @ModelAttribute("userJobDescriptionChangeLog") UserJobDescriptionChangeLog userJobDescriptionChangeLog,
-                              Model model, RedirectAttributes attributes, BindingResult result) {
+                              Model model, SessionStatus sessionStatus, RedirectAttributes attributes, BindingResult result) {
         userJobDescriptionChangeLogValidator.validate(userJobDescriptionChangeLog, result);
         if(result.hasErrors()) {
             log.debug("--- Role Change Request Validate ---\n{}", result.getAllErrors());
             model.addAttribute("jobDescriptionMap", jdService.getJDMap());
             return "user/role_edit";
         }
-        
+
         userJobDescriptionChangeLog.setRequestDate(new Date());
         userJobDescriptionChangeLogService.saveChangeLog(userJobDescriptionChangeLog);
+        sessionStatus.setComplete();
 
         return "redirect:/user/profile/role";
     }

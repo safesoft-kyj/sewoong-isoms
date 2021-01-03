@@ -29,11 +29,11 @@ public class UserEditValidator implements Validator {
         String strBirthDate = df.format(account.getBirthDate());
 
         if(ObjectUtils.isEmpty(account.getPhone())){
-            errors.rejectValue("account.phone", "message.phone.isEmpty", "연락처가 입력되지 않았습니다.");
+            errors.rejectValue("phone", "message.phone.isEmpty", "연락처가 입력되지 않았습니다.");
         }else if(ObjectUtils.isEmpty(strBirthDate)){
-            errors.rejectValue("account.birthDate", "message.birthDate.isEmpty", "생년월일이 입력되지 않았습니다.");
+            errors.rejectValue("birthDate", "message.birthDate.isEmpty", "생년월일이 입력되지 않았습니다.");
         }else if(StringUtils.isEmpty(account.getEmail())){
-            errors.rejectValue("account.email", "message.email.isEmpty", "이메일이 입력되지 않았습니다.");
+            errors.rejectValue("email", "message.email.isEmpty", "이메일이 입력되지 않았습니다.");
         }
     }
 }

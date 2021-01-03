@@ -28,7 +28,7 @@
 <link href="/static/premium/icon-sets/icons/solid-icons/premium-solid-icons.min.css" rel="stylesheet">
 
 <!-- No Print -->
-<link href="/static/css/no_print.css" rel="stylesheet">
+<%--<link href="/static/css/no_print.css" rel="stylesheet">--%>
 
 <!--JAVASCRIPT-->
 <!--=================================================-->

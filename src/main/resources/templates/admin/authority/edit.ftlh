@@ -17,6 +17,18 @@
             //초기 화면 전환시 세팅
             departmentSelect($("#deptSelect").val());
 
+            let exists = false;
+            $("#teamSelect option").each(function(){
+                if (this.value == '${account.department.id}') {
+                    exists = true;
+                }
+            })
+
+            if(exists){
+                $("#teamSelect").val(${account.department.id});
+                $("#department").val(${account.department.id});
+            }
+
             $("#teamSelect").change(function(){
                 let res = $(this).val();
 
@@ -42,6 +54,7 @@
                 url: "/signUp/ajax/department",
                 method: 'post',
                 data: {id: value},
+                async: false,
                 success: function (data) {
                     let teamSelect = $("#teamSelect");
 
@@ -64,6 +77,7 @@
         <h3 class="panel-title">내부 사용자 수정</h3>
     </div>
     <form class="form-horizontal" method="post" enctype="multipart/form-data" id="documentForm">
+        <@spring.formHiddenInput "account.id" />
         <div class="panel-body">
             <div class="form-group">
                 <label class="col-sm-3 control-label">ID</label>
@@ -85,7 +99,7 @@
                         <div class="form-group">
                             <div class="col-sm-6" style="padding-left: 0px">
                                 <select id="deptSelect" class="form-control">
-                                    <#list departments  as d>
+                                    <#list departments as d>
                                         <option value="${d.id}">${d.name}</option>
                                     </#list>
                                 </select>
