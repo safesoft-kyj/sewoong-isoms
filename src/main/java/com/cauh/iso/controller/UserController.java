@@ -8,9 +8,8 @@ import com.cauh.common.security.authentication.CustomUsernamePasswordAuthenticat
 import com.cauh.common.service.UserService;
 import com.cauh.iso.admin.service.DepartmentService;
 import com.cauh.iso.component.CurrentUserComponent;
-import com.cauh.iso.domain.DocumentVersion;
 import com.cauh.iso.service.JDService;
-import com.cauh.iso.service.UserJobDescriptionChangerLogService;
+import com.cauh.iso.service.UserJobDescriptionChangeLogService;
 import com.cauh.iso.validator.UserJobDescriptionChangeLogValidator;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.net.URLEncoder;
 import java.util.*;
 
 @Controller
@@ -46,7 +44,7 @@ public class UserController {
     private final JDService jdService;
     private final UserService userService;
     private final DepartmentService departmentService;
-    private final UserJobDescriptionChangerLogService userJobDescriptionChangerLogService;
+    private final UserJobDescriptionChangeLogService userJobDescriptionChangeLogService;
     private final UserJobDescriptionChangeLogValidator userJobDescriptionChangeLogValidator;
 
     private final PasswordEncoder passwordEncoder;
@@ -66,7 +64,7 @@ public class UserController {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         booleanBuilder.and(qUserJobDescriptionChangeLog.user.eq(user));
 
-        model.addAttribute("roleList", userJobDescriptionChangerLogService.getUserChangeLog(booleanBuilder, pageable));
+        model.addAttribute("roleList", userJobDescriptionChangeLogService.getUserChangeLog(booleanBuilder, pageable));
 
         return "user/role";
     }
@@ -92,15 +90,15 @@ public class UserController {
     @Transactional
     public String roleRequest(@CurrentUser Account user, @ModelAttribute("userJobDescriptionChangeLog") UserJobDescriptionChangeLog userJobDescriptionChangeLog,
                               Model model, RedirectAttributes attributes, BindingResult result) {
-
         userJobDescriptionChangeLogValidator.validate(userJobDescriptionChangeLog, result);
         if(result.hasErrors()) {
             log.debug("--- Role Change Request Validate ---\n{}", result.getAllErrors());
             model.addAttribute("jobDescriptionMap", jdService.getJDMap());
             return "user/role_edit";
         }
-
-        //TODO :: 작업 필요.
+        
+        userJobDescriptionChangeLog.setRequestDate(new Date());
+        userJobDescriptionChangeLogService.saveChangeLog(userJobDescriptionChangeLog);
 
         return "redirect:/user/profile/role";
     }

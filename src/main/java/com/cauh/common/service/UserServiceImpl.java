@@ -229,7 +229,8 @@ public class UserServiceImpl implements UserService {
 
             UserJobDescriptionChangeLog userJobDescriptionChangeLog = UserJobDescriptionChangeLog.builder()
                     .user(account)
-                    .requestDate(Date.from(now.atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                    .requestDate(new Date())
+                    .assignDate(Date.from(now.atStartOfDay(ZoneId.systemDefault()).toInstant()))
                     .prevJobDescription(prevRole)
                     .nextJobDescription(nextRole)
                     .reason("신규 가입")
@@ -240,7 +241,6 @@ public class UserServiceImpl implements UserService {
 
         //Account 저장 시, UserJobDescription 저장데이터 제거
         account.setUserJobDescriptions(null);
-
         return account;
     }
 

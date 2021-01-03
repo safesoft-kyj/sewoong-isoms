@@ -16,7 +16,7 @@ import java.util.Optional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserJobDescriptionChangerLogService {
+public class UserJobDescriptionChangeLogService {
 
     private final UserJobDescriptionChangeLogRepository userJobDescriptionChangeLogRepository;
 
@@ -24,5 +24,8 @@ public class UserJobDescriptionChangerLogService {
         return userJobDescriptionChangeLogRepository.findAll(predicate, pageable);
     }
 
+    public UserJobDescriptionChangeLog saveChangeLog(UserJobDescriptionChangeLog userJobDescriptionChangeLog) {
+        return userJobDescriptionChangeLogRepository.save(userJobDescriptionChangeLog);
+    }
 
 }
