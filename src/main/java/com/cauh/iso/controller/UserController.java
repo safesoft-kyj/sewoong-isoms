@@ -1,9 +1,6 @@
 package com.cauh.iso.controller;
 
-import com.cauh.common.entity.Account;
-import com.cauh.common.entity.Department;
-import com.cauh.common.entity.Signature;
-import com.cauh.common.entity.UserJobDescriptionChangeLog;
+import com.cauh.common.entity.*;
 import com.cauh.common.repository.SignatureRepository;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.annotation.CurrentUser;
@@ -11,10 +8,16 @@ import com.cauh.common.security.authentication.CustomUsernamePasswordAuthenticat
 import com.cauh.common.service.UserService;
 import com.cauh.iso.admin.service.DepartmentService;
 import com.cauh.iso.component.CurrentUserComponent;
+import com.cauh.iso.domain.DocumentVersion;
 import com.cauh.iso.service.JDService;
 import com.cauh.iso.service.UserJobDescriptionChangerLogService;
+import com.cauh.iso.validator.UserJobDescriptionChangeLogValidator;
+import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,6 +36,7 @@ import java.util.*;
 @Controller
 @RequiredArgsConstructor
 @Slf4j
+@SessionAttributes({"userJobDescriptionChangeLog"})
 public class UserController {
     private final UserRepository userRepository;
 
@@ -43,6 +47,7 @@ public class UserController {
     private final UserService userService;
     private final DepartmentService departmentService;
     private final UserJobDescriptionChangerLogService userJobDescriptionChangerLogService;
+    private final UserJobDescriptionChangeLogValidator userJobDescriptionChangeLogValidator;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -54,12 +59,52 @@ public class UserController {
     }
 
     @GetMapping("/user/profile/role")
-    public String roleChanged(@CurrentUser Account user, Model model){
+    public String roleChanged(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable, @CurrentUser Account user, Model model){
+        QUserJobDescriptionChangeLog qUserJobDescriptionChangeLog = QUserJobDescriptionChangeLog.userJobDescriptionChangeLog;
+
         model.addAttribute("currentRoles", user.getUserJobDescriptions());
-        model.addAttribute("roleList", userJobDescriptionChangerLogService.getUserChangeLog(user));
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        booleanBuilder.and(qUserJobDescriptionChangeLog.user.eq(user));
+
+        model.addAttribute("roleList", userJobDescriptionChangerLogService.getUserChangeLog(booleanBuilder, pageable));
 
         return "user/role";
     }
+
+    @GetMapping("/user/profile/role/new")
+    public String roleRequestNew(@CurrentUser Account user, Model model) {
+        UserJobDescriptionChangeLog userJobDescriptionChangeLog = UserJobDescriptionChangeLog.builder().prevJobDescription(user.getCommaJobTitle()).build();
+        model.addAttribute("userJobDescriptionChangeLog", userJobDescriptionChangeLog);
+        model.addAttribute("jobDescriptionMap", jdService.getJDMap());
+
+        return "user/role_edit";
+    }
+
+    @GetMapping("/user/profile/role/edit")
+    public String roleRequestEdit(@ModelAttribute("userJobDescriptionChangeLog") UserJobDescriptionChangeLog userJobDescriptionChangeLog, Model model){
+        model.addAttribute("userJobDescriptionChangeLog", userJobDescriptionChangeLog);
+        model.addAttribute("jobDescriptionMap", jdService.getJDMap());
+
+        return "user/role_edit";
+    }
+
+    @PostMapping({"/user/profile/role/new", "user/profile/role/edit"})
+    @Transactional
+    public String roleRequest(@CurrentUser Account user, @ModelAttribute("userJobDescriptionChangeLog") UserJobDescriptionChangeLog userJobDescriptionChangeLog,
+                              Model model, RedirectAttributes attributes, BindingResult result) {
+
+        userJobDescriptionChangeLogValidator.validate(userJobDescriptionChangeLog, result);
+        if(result.hasErrors()) {
+            log.debug("--- Role Change Request Validate ---\n{}", result.getAllErrors());
+            model.addAttribute("jobDescriptionMap", jdService.getJDMap());
+            return "user/role_edit";
+        }
+
+        //TODO :: 작업 필요.
+
+        return "redirect:/user/profile/role";
+    }
+
 
     @GetMapping("/signUp")
     public String signUp(Model model) {

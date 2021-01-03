@@ -22,7 +22,7 @@ public class AdminJobDescriptionController {
     private final JobDescriptionService jobDescriptionService;
     private final JobDescriptionValidator jobDescriptionValidator;
 
-    @GetMapping("/jobDescription")
+    @GetMapping("/role")
     public String jobDescription(@RequestParam(value = "action", defaultValue = "list") String action,
                                  @RequestParam(value = "id", required = false) Integer id, Model model) {
         QJobDescription qJobDescription = QJobDescription.jobDescription;
@@ -43,7 +43,7 @@ public class AdminJobDescriptionController {
         return "admin/jobDescription/list";
     }
 
-    @PostMapping("/jobDescription")
+    @PostMapping("/role")
     public String editJobDescription(@RequestParam(value = "action", defaultValue = "list") String action,
                                      @RequestParam(value = "id", required = false) Integer id,
                                      @ModelAttribute("jobDescription") JobDescription jobDescription, BindingResult result,
@@ -58,7 +58,7 @@ public class AdminJobDescriptionController {
 
         jobDescriptionService.save(jobDescription);
         status.setComplete();
-        attributes.addFlashAttribute("message", "직무 정보가 등록 되었습니다.");
-        return "redirect:/admin/jobDescription";
+        attributes.addFlashAttribute("message", "ROLE 정보가 등록 되었습니다.");
+        return "redirect:/admin/role";
     }
 }

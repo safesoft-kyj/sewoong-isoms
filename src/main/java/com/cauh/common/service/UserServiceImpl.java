@@ -2,6 +2,7 @@ package com.cauh.common.service;
 
 import com.cauh.common.entity.*;
 import com.cauh.common.entity.constant.JobDescriptionStatus;
+import com.cauh.common.entity.constant.RoleStatus;
 import com.cauh.common.entity.constant.UserStatus;
 import com.cauh.common.entity.constant.UserType;
 import com.cauh.common.repository.DepartmentRepository;
@@ -11,7 +12,9 @@ import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.authentication.InternalAccountAuthenticationException;
 import com.cauh.common.security.authentication.SignUpRequestedAccountException;
 import com.cauh.common.utils.DateUtils;
+import com.cauh.iso.admin.service.UserJobDescriptionService;
 import com.cauh.iso.component.CurrentUserComponent;
+import com.cauh.iso.service.JobDescriptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -45,6 +48,7 @@ public class UserServiceImpl implements UserService {
     private final CurrentUserComponent currentUserComponent;
 
     private final UserJobDescriptionChangeLogRepository userJobDescriptionChangeLogRepository;
+    private final JobDescriptionService jobDescriptionService;
 
 //    private final DeptUserMapper deptUserMapper;
 //
@@ -202,6 +206,8 @@ public class UserServiceImpl implements UserService {
                 }
             }
 
+            List<String> nextRoleList = new ArrayList<>();
+
             //새로 선택된 UserJobDescription 선택
             for(String id : selectedIds) {
                 if(!currentJdIds.contains(id)){ //기존 JDIds에 없는 Case 생성
@@ -213,10 +219,12 @@ public class UserServiceImpl implements UserService {
                     UserJobDescription savedUserJobDescription = userJobDescriptionRepository.save(userJobDescription);
                     newUserJobDescriptions.add(savedUserJobDescription);
                 }
+
+                nextRoleList.add(jobDescriptionService.findById(Integer.parseInt(id)).getShortName());
             }
 
             //변경 후
-            String nextRole = newUserJobDescriptions.stream().map(d -> d.getJobDescription().getShortName()).collect(Collectors.joining(","));
+            String nextRole = nextRoleList.stream().map(d -> d).collect(Collectors.joining(","));
             log.info("Next : {}", nextRole);
 
             UserJobDescriptionChangeLog userJobDescriptionChangeLog = UserJobDescriptionChangeLog.builder()
@@ -225,6 +233,7 @@ public class UserServiceImpl implements UserService {
                     .prevJobDescription(prevRole)
                     .nextJobDescription(nextRole)
                     .reason("신규 가입")
+                    .roleStatus(RoleStatus.APPROVED)
                     .build();
             userJobDescriptionChangeLogRepository.save(userJobDescriptionChangeLog);
         }

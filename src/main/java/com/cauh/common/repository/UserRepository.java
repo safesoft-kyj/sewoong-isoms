@@ -25,5 +25,7 @@ public interface UserRepository extends PagingAndSortingRepository<Account, Inte
     List<Account> findAllByDepartment(Department department);
     Integer countAllByDepartment(Department department);
 
+    long countByUserStatus(UserStatus userStatus);
+
 //    Page<Account> findAllByUserTypeAndEnabled(UserType userType, boolean enabled, Pageable pageable);
 }

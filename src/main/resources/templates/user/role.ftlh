@@ -1,4 +1,5 @@
 <#assign security=JspTaglibs["http://www.springframework.org/security/tags"] />
+<#import "/common/pagination.ftl" as pagination />
 <@security.authentication property="principal" var="user"/>
 <html>
 <head>
@@ -19,33 +20,63 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane fade active in">
-            <form class="form-horizontal form-padding" method="post" id="signForm">
-                <!--Static-->
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Name</label>
-                    <div class="col-md-9">
-                        <input type="text" class="form-control" value="${user.engName!''}" readonly="readonly">
+            <div class="pad-btm form-inline">
+                <div class="row">
+                    <div class="col-sm-6 table-toolbar-left">
+                        <a class="btn btn-primary" href="javascript:goToURL('/user/profile/role/new')"><i class="pli-pencil"></i> ROLE 변경 신청</a>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Team</label>
-                    <div class="col-md-9">
-                        <input type="text" class="form-control" value="${user.teamName!''}" readonly="readonly">
-                    </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Current Roles</label>
+                <div>
+                    <input type="text" class="form-control" value="${user.commaJobTitle!''}" readonly="readonly">
                 </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Department</label>
-                    <div class="col-md-9">
-                        <input type="text" class="form-control" value="${user.deptName!''}" readonly="readonly">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Email</label>
-                    <div class="col-md-9">
-                        <input type="text" class="form-control" value="${user.email!''}" readonly="readonly">
-                    </div>
-                </div>
-            </form>
+            </div>
+            <@pagination.bind roleList/>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th class="text-center" style="width: 70px">No.</th>
+                        <th class="text-center">변경 전</th>
+                        <th class="text-center">변경 후</th>
+                        <th class="text-center">요청 일자</th>
+                        <th class="text-center">Role 배정 일자</th>
+                        <th class="text-center">사유</th>
+                        <th class="text-center">상태</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <#if roleList.content?has_content>
+                        <#list roleList.content as role>
+                            <tr>
+                                <td class="text-center">${(roleList.totalElements - (roleList.size * roleList.number)) - role?index}</td>
+                                <td class="text-center"><span class="label label-warning">${role.prevJobDescription}</span></td>
+                                <td class="text-center"><span class="label label-purple">${role.nextJobDescription}</span></td>
+                                <td class="text-center">${role.requestDate?string("yyyy-MM-dd")}</td>
+                                <td class="text-center">${role.assignDate?has_content?then(role.assignDate?string("yyyy-MM-dd"), '')}</td>
+                                <td class="text-center">${role.reason}</td>
+                                <td class="text-center">
+                                    <#if role.roleStatus == 'APPROVED'>
+                                        <span class="label label-info">${role.roleStatus}</span>
+                                    <#elseif role.roleStatus == 'REQUESTED'>
+                                        <span class="label label-primary">${role.roleStatus}</span>
+                                    <#elseif role.roleStatus == 'REJECTED'>
+                                        <span class="label label-danger">${role.roleStatus}</span>
+                                    </#if>
+                                </td>
+                            </tr>
+                        </#list>
+                    <#else>
+                        <tr>
+                            <td colspan="6" class="text-center">ROLE 변경 이력이 없습니다.</td>
+                        </tr>
+                    </#if>
+                    </tbody>
+                </table>
+            </div>
+            <@pagination.default/>
         </div>
     </div>
 </div>

@@ -2,6 +2,7 @@ package com.cauh.iso;
 
 import com.cauh.common.entity.*;
 import com.cauh.common.entity.constant.JobDescriptionStatus;
+import com.cauh.common.entity.constant.UserStatus;
 import com.cauh.common.repository.*;
 import com.cauh.common.service.UserService;
 import com.cauh.iso.component.CurrentUserComponent;
@@ -185,6 +186,7 @@ public class InitializeDataRunner implements ApplicationRunner {
                 user.setTeamName("SI팀");
                 user.setIndate(new Date());
                 user.setEnabled(true);
+                user.setUserStatus(UserStatus.ACTIVE);
                 user.setAdmin(admin);
                 user.setEmpNo(empNo);
 

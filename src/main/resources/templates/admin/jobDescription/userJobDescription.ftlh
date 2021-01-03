@@ -2,7 +2,7 @@
 <#import "/spring.ftl" as spring />
 <html>
 <head>
-    <title>Admin > User Management > 사용자별 직무 관리</title>
+    <title>Admin > User Management > 사용자별 ROLE 관리</title>
     <link href="/static/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
     <script src="/static/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
     <script>
@@ -15,7 +15,7 @@
 
 <div class="panel">
     <div class="panel-heading">
-        <h3 class="panel-title">사용자별 직무 관리</h3>
+        <h3 class="panel-title">사용자별 ROLE 관리</h3>
     </div>
     <!--===================================================-->
     <div class="panel-body">
@@ -69,7 +69,7 @@
                     </tbody>
                 </table>
                 <div class="text-right">
-                    <a class="btn btn-default" href="/admin/jobDescription/user"><i class="fa fa-chevron-left"></i> 뒤로</a>
+                    <a class="btn btn-default" href="/admin/role/user"><i class="fa fa-chevron-left"></i> 뒤로</a>
                     <button class="btn btn-success"><i class="fa fa-check"></i> 저장</button>
                 </div>
             </div>

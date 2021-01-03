@@ -91,15 +91,13 @@
             })
 
             $(document).on("click", "#acceptBtn", function (e) {
-
-                console.log("TEST");
-
+                let id = $(this).data("id");
                 let username = $(this).data("value");
                 let JDList = String($(this).data("jds")).indexOf(",")!=-1?$(this).data("jds").split(','):$(this).data("jds");
                 let pid = $(this).data("pdeptid");
-                let id = $(this).data("deptid");
+                let deptId = $(this).data("deptid");
 
-                $("#accept-modal #username").val(username);
+                $("#accept-modal #userId").val(id);
                 $("#accept-modal .userTitle").html("[" + username + "]'s Information");
 
                 //Job Description Setting
@@ -107,9 +105,9 @@
 
                 if(pid != ''){ //pid가 있는 경우,
                     $("#deptSelect").val(pid).trigger("change");
-                    $("#teamSelect").val(id).trigger("change");
+                    $("#teamSelect").val(deptId).trigger("change");
                 } else { //pid가 없는 경우
-                    $("#deptSelect").val(id).trigger("change");
+                    $("#deptSelect").val(deptId).trigger("change");
                 }
             });
 
@@ -263,7 +261,7 @@
                                 <#elseif t.userStatus?has_content && t.userStatus == 'SIGNUP_REQUEST'>
                                     <form class="form-horizontal" method="POST">
                                         <input name="id" type="hidden" value="${t.id}" />
-                                        <button class="btn btn-icon btn-info" type="button" id="acceptBtn" data-toggle="modal" data-value="${t.username}" data-jds="${t.commaJobIds}"
+                                        <button class="btn btn-icon btn-info" type="button" id="acceptBtn" data-toggle="modal" data-id="${t.id}" data-value="${t.username}" data-jds="${t.commaJobIds}"
                                                 data-pdeptid="<#if t.department.parentDepartment?has_content>${t.department.parentDepartment.id}</#if>" data-deptid="${t.department.id!''}" data-target="#accept-modal">Accept</button>
                                         <button class="btn btn-icon btn-danger" id="rejectBtn" data-value="${t.username}" name="result" value="reject">Reject</button>
                                     </form>
@@ -297,7 +295,7 @@
                     <h4 class="modal-title">Accept Check</h4>
                 </div>
                 <form class="form-horizontal" method="POST">
-                    <input name="username" id="username" type="hidden" />
+                    <input name="id" id="userId" type="hidden" />
                     <!--Modal body-->
                     <div class="modal-body">
                         <div class="panel panel-bordered-primary panel-primary">

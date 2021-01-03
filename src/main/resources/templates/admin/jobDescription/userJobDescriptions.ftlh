@@ -1,22 +1,22 @@
 <#import "/common/pagination.ftl" as pagination />
 <html>
 <head>
-    <title>Admin > User Management > 사용자별 직무 관리</title>
+    <title>Admin > User Management > 사용자별 ROLE 관리</title>
 </head>
 <body>
 <div class="tab-base">
     <ul class="nav nav-tabs">
         <li>
-            <a href="/admin/jobDescription">직무 관리</a>
+            <a href="/admin/role">ROLE 관리</a>
         </li>
         <li class="active">
-            <a href="/admin/jobDescription/user">사용자별 직무 관리</a>
+            <a href="/admin/role/user">사용자별 ROLE 관리</a>
         </li>
     </ul>
     <div class="tab-content">
 <div class="panel">
     <#--    <div class="panel-heading">-->
-    <#--        <h3 class="panel-title">사용자별 직무 관리</h3>-->
+    <#--        <h3 class="panel-title">사용자별 ROLE 관리</h3>-->
     <#--    </div>-->
     <#--    <div class="pad-btm form-inline">-->
     <#--        <div class="row">-->
@@ -64,7 +64,7 @@
                                 <#else><small class="text-danger"><i class="fa fa-exclamation-circle"></i> 직무 정보가 없습니다.</small></#if>
                             </td>
                             <td>
-                                <a href="/admin/jobDescription/user/${t.username}" class="btn btn-sm btn-info"><i class="fa fa-pencil"></i> 직무 정보 수정</a>
+                                <a href="/admin/role/user/${t.username}" class="btn btn-sm btn-info"><i class="fa fa-pencil"></i> 직무 정보 수정</a>
                             </td>
                         </tr>
                     </#list>

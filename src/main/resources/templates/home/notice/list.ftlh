@@ -1,8 +1,9 @@
 <#assign security=JspTaglibs["http://www.springframework.org/security/tags"] />
 <#import "/common/pagination.ftl" as pagination />
+<@security.authentication property="principal" var="user"/>
 <html>
 <head>
-    <title>e-SOP > 공지사항</title>
+    <title>CAUH ISO Management System > 공지사항</title>
 <#--    <script src="/static/plugins/jstree/jstree.min.js"></script>-->
 <#--    <link href="/static/plugins/jstree/themes/default/style.min.css" rel="stylesheet">-->
 
@@ -134,6 +135,14 @@
             <strong><i class="pli-bell"></i> 전자결재</strong> 승인이 필요한 요청 <a href="/approval/box/approver/request" class="alert-link">${approvalCount}건</a> 있습니다.
         </div>
         </#if>
+        <@security.authorize access="hasAnyAuthority('ADMIN')">
+        <#if signUpRequestCount gt 0>
+            <div class="alert alert-purple">
+                <button class="close" data-dismiss="alert"><i class="pci-cross pci-circle"></i></button>
+                <strong><i class="pli-bell"></i> 회원가입</strong> 승인이 필요한 요청 <a href="/admin/authority/users" class="alert-link">${signUpRequestCount!'0'}건</a> 있습니다.
+            </div>
+        </#if>
+        </@security.authorize>
         <div class="pad-btm form-inline">
             <div class="row">
 

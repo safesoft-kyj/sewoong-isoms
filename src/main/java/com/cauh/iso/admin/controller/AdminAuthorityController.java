@@ -139,9 +139,9 @@ public class AdminAuthorityController {
             @RequestParam(value = "result", required = false ) String actionCmd,
             @RequestParam(value = "department", required = false) Integer departmentId,
             @RequestParam(value = "jdIds", required = false) String[] jdIds,
-            @RequestParam("username") String username, RedirectAttributes attributes){
-        log.info("Action : {}, User id : {}", actionCmd, username);
-        Optional<Account> optionalAccount = userRepository.findByUsername(username);
+            @RequestParam("id") Integer id, RedirectAttributes attributes){
+        log.info("Action : {}, User id : {}", actionCmd, id);
+        Optional<Account> optionalAccount = userRepository.findById(id);
 
         if(!optionalAccount.isPresent()) {
             attributes.addFlashAttribute("message", "User 정보가 잘못되었습니다.");
@@ -171,7 +171,7 @@ public class AdminAuthorityController {
 
                 Account savedUser = userService.saveOrUpdate(acceptUser);
 
-                String message = "[" + savedUser + "] 가입 요청이 수락되었습니다.";
+                String message = "[" + savedUser.getUsername() + "] 가입 요청이 수락되었습니다.";
                 attributes.addFlashAttribute("message", message);
 
             }else if(actionCmd.equals("reject")){

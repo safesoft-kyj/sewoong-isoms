@@ -2,16 +2,16 @@
 <#import "/spring.ftl" as spring />
 <html>
 <head>
-    <title>ISO-MS > User Management > 직무 관리</title>
+    <title>ISO-MS > User Management > ROLE 관리</title>
 </head>
 <body>
 <div class="tab-base">
     <ul class="nav nav-tabs">
         <li class="active">
-            <a href="/admin/jobDescription">직무 관리</a>
+            <a href="/admin/role">ROLE 관리</a>
         </li>
         <li>
-            <a href="/admin/jobDescription/user">사용자별 직무 관리</a>
+            <a href="/admin/role/user">사용자별 ROLE 관리</a>
         </li>
     </ul>
     <div class="tab-content">
@@ -26,7 +26,7 @@
         <div class="pad-btm form-inline">
             <div class="row">
                 <div class="col-sm-6 table-toolbar-left">
-                    <a class="btn btn-primary" href="/admin/jobDescription?action=new#edit0"><i class="pli-pencil"></i> 직무 추가</a>
+                    <a class="btn btn-primary" href="/admin/role?action=new#edit0"><i class="pli-pencil"></i> 직무 추가</a>
                 </div>
                 <div class="col-sm-6 table-toolbar-right">
                     <#--                    <div class="form-group">-->
@@ -39,7 +39,7 @@
             </div>
         </div>
         <div class="table-responsive">
-            <form name="f" method="post" action="/admin/jobDescription">
+            <form name="f" method="post" action="/admin/role">
                 <input type="hidden" name="action" value="${action}">
                 <table class="table table-striped">
                     <thead>
@@ -98,7 +98,7 @@
                         </#list>
                     <#else>
                         <tr>
-                            <td colspan="5" class="text-center">등록된 직무 정보가 없습니다.</td>
+                            <td colspan="5" class="text-center">등록된 ROLE 정보가 없습니다.</td>
                         </tr>
                     </#if>
                     <#if action == "new">

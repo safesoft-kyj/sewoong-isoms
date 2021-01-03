@@ -1,6 +1,9 @@
 package com.cauh.iso.controller;
 
 import com.cauh.common.entity.Account;
+import com.cauh.common.entity.QAccount;
+import com.cauh.common.entity.constant.UserStatus;
+import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.annotation.CurrentUser;
 import com.cauh.iso.domain.Notice;
 import com.cauh.iso.domain.NoticeAttachFile;
@@ -53,12 +56,18 @@ public class NoticeController {
     private final FileStorageService fileStorageService;
     private final TrainingMatrixService trainingMatrixService;
     private final ApprovalLineRepository approvalLineRepository;
+    private final UserRepository userRepository;
 
 //    @Transactional
     @GetMapping("/notice")
     public String noticeList(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable, @CurrentUser Account user, Model model) {
         model.addAttribute("reviewCount", approvalLineRepository.countApproval(ApprovalLineType.reviewer, user));
         model.addAttribute("approvalCount", approvalLineRepository.countApproval(ApprovalLineType.approver, user));
+
+        if(user.getCommaJobTitle().contains("ADMIN")) {
+            model.addAttribute("signUpRequestCount", userRepository.countByUserStatus(UserStatus.SIGNUP_REQUEST));
+        }
+
         approvalLineRepository.countApproval(ApprovalLineType.reviewer, user);
         QNotice qNotice = QNotice.notice;
 
