@@ -200,7 +200,7 @@ public class AdminAuthorityController {
 
 
     /**
-     *
+     * Role Request 신청 수락 및 거절
      * @param id
      * @param action
      * @param attributes
@@ -254,6 +254,21 @@ public class AdminAuthorityController {
         return "redirect:/admin/authority/users";
     }
 
+    @PostMapping("/admin/authority/users/pwReset/{id}")
+    public String passwordReset(@PathVariable("id") Integer id){
+        //TODO :: Password Reset 작업 필요.
+
+
+        return "redirect:/admin/authority/users";
+    }
+
+    /**
+     * 유저 정보 수정
+     * @param id
+     * @param model
+     * @param attributes
+     * @return
+     */
     @GetMapping("/authority/users/{id}")
     public String usersEdit(@PathVariable("id") Integer id, Model model, RedirectAttributes attributes) {
         log.info("ID : {}", id);
@@ -262,7 +277,6 @@ public class AdminAuthorityController {
             attributes.addFlashAttribute("message", "존재하지 않는 유저 정보입니다.");
             return "redirect:/admin/authority/users";
         }
-
         Account account = optionalAccount.get();
 
         //User Edit
@@ -275,7 +289,6 @@ public class AdminAuthorityController {
     @PostMapping("/authority/users/{id}")
     @Transactional
     public String usersEditAction(@ModelAttribute("account")Account account, Model model, SessionStatus sessionStatus, RedirectAttributes attributes, BindingResult result) {
-
         userEditValidator.validate(account, result);
         if(result.hasErrors()) {
             log.debug("User Edit Errors : {}==========", result.getAllErrors());

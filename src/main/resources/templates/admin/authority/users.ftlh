@@ -209,6 +209,13 @@
                     console.log($("#roleRequestForm").submit());
                 }
             });
+
+            $(document).on("click", "#pwReset", function(e){
+                let name = $(this).data("value");
+                if(!confirm("[" + name + "]님의 비밀번호를 초기화 합니다.\n계속 진행하시겠습니까?")) {
+                    e.preventDefault();
+                }
+            })
         });
 
         function departmentSelect(value) {
@@ -355,9 +362,9 @@
                             </td>
                             <td class="text-center">
                                 <#if t.userStatus?has_content && t.userStatus == 'ACTIVE'>
-                                    <form action="pwReset" method="POST">
+                                    <form method="POST" action="/admin/authority/users/pwReset/${t.id}">
                                         <a href="/admin/authority/users/${t.id}" class="btn btn-icon btn-info">Edit</a>
-                                        <button class="btn btn-icon btn-danger">Password Reset</button>
+                                        <button id="pwReset" class="btn btn-icon btn-danger" data-value="${t.name}">Password Reset</button>
                                     </form>
                                 <#elseif t.userStatus?has_content && t.userStatus == 'SIGNUP_REQUEST'>
                                     <form class="form-horizontal" method="POST">
