@@ -1,10 +1,10 @@
 package com.cauh.iso.admin.controller;
 
-import com.cauh.common.entity.Account;
-import com.cauh.common.entity.Department;
-import com.cauh.common.entity.QAccount;
+import com.cauh.common.entity.*;
+import com.cauh.common.entity.constant.RoleStatus;
 import com.cauh.common.entity.constant.UserType;
 import com.cauh.common.mapper.DeptUserMapper;
+import com.cauh.common.repository.UserJobDescriptionChangeLogRepository;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.common.service.UserService;
 import com.cauh.iso.admin.service.DepartmentService;
@@ -13,9 +13,11 @@ import com.cauh.iso.domain.NonDisclosureAgreement;
 import com.cauh.iso.domain.constant.ApprovalStatus;
 import com.cauh.iso.domain.report.QExternalCustomer;
 import com.cauh.iso.repository.ExternalCustomerRepository;
+import com.cauh.iso.security.annotation.IsAdmin;
 import com.cauh.iso.service.AgreementPersonalInformationService;
 import com.cauh.iso.service.JDService;
 import com.cauh.iso.service.NonDisclosureAgreementService;
+import com.cauh.iso.service.UserJobDescriptionChangeLogService;
 import com.cauh.iso.validator.UserEditValidator;
 import com.cauh.iso.xdocreport.AgreementReportService;
 import com.cauh.iso.xdocreport.NonDisclosureAgreementReportService;
@@ -38,6 +40,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -60,6 +63,8 @@ public class AdminAuthorityController {
     private final JDService jdService;
     private final DepartmentService departmentService;
     private final ExternalCustomerRepository externalCustomerRepository;
+    private final UserJobDescriptionChangeLogRepository userJobDescriptionChangeLogRepository;
+    private final UserJobDescriptionChangeLogService userJobDescriptionChangeLogService;
 
     @Value("${gw.userTbl}")
     private String gwUserTbl;
@@ -112,7 +117,12 @@ public class AdminAuthorityController {
                         @RequestParam(value = "teamCode", required = false) String teamCode,
                         @RequestParam(value = "name", required = false) String name,
                         Model model) {
+        QUserJobDescriptionChangeLog qUserJobDescriptionChangeLog = QUserJobDescriptionChangeLog.userJobDescriptionChangeLog;;
         BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qUserJobDescriptionChangeLog.roleStatus.eq(RoleStatus.REQUESTED));
+        model.addAttribute("roleRequestList", userJobDescriptionChangeLogRepository.findAll(builder, pageable));
+
+        builder = new BooleanBuilder();
         QAccount qUser = QAccount.account;
 
         if(StringUtils.isEmpty(name) == false) {
@@ -188,6 +198,62 @@ public class AdminAuthorityController {
         return "redirect:/admin/authority/users";
     }
 
+
+    /**
+     *
+     * @param id
+     * @param action
+     * @param attributes
+     * @return
+     */
+    @PutMapping("/authority/users/role_request")
+    @Transactional
+    public String roleRequest(@RequestParam("id") Integer id,
+                              @RequestParam("action") String action,
+                              RedirectAttributes attributes){
+        log.info("==== role Request");
+        log.info("id : {}", id);
+        log.info("action : {}", action);
+
+
+        Optional<UserJobDescriptionChangeLog> userJobDescriptionChangeLogOptional
+                = userJobDescriptionChangeLogRepository.findById(id);
+        Account user = null;
+
+        if(userJobDescriptionChangeLogOptional.isPresent()) {
+            UserJobDescriptionChangeLog userJobDescriptionChangeLog = userJobDescriptionChangeLogOptional.get();
+
+            //userJobDescriptionChangeLog Status Change
+            if(action.equals("accept")) {
+                userJobDescriptionChangeLog.setRoleStatus(RoleStatus.ACCEPTED);
+
+                //UserJobDescription working
+                user = userJobDescriptionChangeLog.getUser();
+                String prevJDs = userJobDescriptionChangeLog.getPrevJobDescription();
+                String nextJDs = userJobDescriptionChangeLog.getNextJobDescription();
+                Date assignDate = userJobDescriptionChangeLog.getAssignDate();
+
+                userJobDescriptionChangeLogService.updateUserJobDescription(user, prevJDs, nextJDs, assignDate);
+                attributes.addFlashAttribute("message", "[" + user.getName() + "]의 ROLE 신청이 수락되었습니다.");
+
+            } else if(action.equals("reject")){ //거절 하면 변동 없이 끝
+                userJobDescriptionChangeLog.setRoleStatus(RoleStatus.REJECTED);
+                user = userJobDescriptionChangeLog.getUser();
+
+                attributes.addFlashAttribute("type", "warning");
+                attributes.addFlashAttribute("message", "[" + user.getName() + "]의 ROLE 신청이 반려되었습니다.");
+            } else {
+                attributes.addFlashAttribute("type", "dnager");
+                attributes.addFlashAttribute("message", "잘못된 동작을 수행하였습니다.");
+                return "redirect:/admin/authority/users";
+            }
+
+            userJobDescriptionChangeLogRepository.save(userJobDescriptionChangeLog);
+        }
+        
+        return "redirect:/admin/authority/users";
+    }
+
     @GetMapping("/authority/users/{id}")
     public String usersEdit(@PathVariable("id") Integer id, Model model, RedirectAttributes attributes) {
         log.info("ID : {}", id);
@@ -210,9 +276,7 @@ public class AdminAuthorityController {
     @Transactional
     public String usersEditAction(@ModelAttribute("account")Account account, Model model, SessionStatus sessionStatus, RedirectAttributes attributes, BindingResult result) {
 
-        //TODO :: 유저정보 수정 작업 필요.
         userEditValidator.validate(account, result);
-
         if(result.hasErrors()) {
             log.debug("User Edit Errors : {}==========", result.getAllErrors());
             model.addAttribute("departments", departmentService.getParentDepartment());
@@ -227,6 +291,7 @@ public class AdminAuthorityController {
                 account.setTeamName(department.getName());
             }else {
                 account.setDeptName(department.getName());
+                account.setTeamName(null);
             }
         }
         userService.saveOrUpdate(account);

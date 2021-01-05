@@ -40,7 +40,7 @@
                     <th class="text-center" style="width:60px;">No.</th>
                     <th class="text-center">팀</th>
                     <th class="text-center">이름</th>
-                    <th>직무</th>
+                    <th>ROLE</th>
                     <th class="text-center">#actions</th>
                 </tr>
                 </thead>

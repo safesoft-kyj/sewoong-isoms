@@ -1,6 +1,7 @@
 package com.cauh.iso.controller;
 
 import com.cauh.common.entity.*;
+import com.cauh.common.entity.constant.RoleStatus;
 import com.cauh.common.repository.SignatureRepository;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.annotation.CurrentUser;
@@ -9,6 +10,7 @@ import com.cauh.common.service.UserService;
 import com.cauh.iso.admin.service.DepartmentService;
 import com.cauh.iso.component.CurrentUserComponent;
 import com.cauh.iso.service.JDService;
+import com.cauh.iso.service.JobDescriptionService;
 import com.cauh.iso.service.UserJobDescriptionChangeLogService;
 import com.cauh.iso.validator.UserJobDescriptionChangeLogValidator;
 import com.querydsl.core.BooleanBuilder;
@@ -79,29 +81,51 @@ public class UserController {
         return "user/role_edit";
     }
 
-    @GetMapping("/user/profile/role/edit")
-    public String roleRequestEdit(@ModelAttribute("userJobDescriptionChangeLog") UserJobDescriptionChangeLog userJobDescriptionChangeLog, Model model){
-        model.addAttribute("userJobDescriptionChangeLog", userJobDescriptionChangeLog);
+    @GetMapping("/user/profile/role/{id}")
+    public String roleRequestEdit(@PathVariable("id") Integer id, RedirectAttributes attributes, Model model){
+
+        Optional<UserJobDescriptionChangeLog> userJobDescriptionChangeLogOptional = userJobDescriptionChangeLogService.getById(id);
+        if(!userJobDescriptionChangeLogOptional.isPresent()){
+            attributes.addFlashAttribute("message", "존재하지 않는 정보입니다.");
+            return "redirect:/user/profile/role";
+        }
+
+        model.addAttribute("commaJdIds", userJobDescriptionChangeLogService.getJdIdsByShortNames(userJobDescriptionChangeLogOptional.get().getNextJobDescription()));
+        model.addAttribute("userJobDescriptionChangeLog", userJobDescriptionChangeLogOptional.get());
         model.addAttribute("jobDescriptionMap", jdService.getJDMap());
 
         return "user/role_edit";
     }
 
-    @PostMapping({"/user/profile/role/new", "user/profile/role/edit"})
+    @PostMapping({"/user/profile/role/new", "user/profile/role/{id}"})
     @Transactional
-    public String roleRequest(@CurrentUser Account user, @ModelAttribute("userJobDescriptionChangeLog") UserJobDescriptionChangeLog userJobDescriptionChangeLog,
+    public String roleRequest(@CurrentUser Account user,
+                              @ModelAttribute("userJobDescriptionChangeLog") UserJobDescriptionChangeLog userJobDescriptionChangeLog,
                               Model model, SessionStatus sessionStatus, RedirectAttributes attributes, BindingResult result) {
         userJobDescriptionChangeLogValidator.validate(userJobDescriptionChangeLog, result);
         if(result.hasErrors()) {
             log.debug("--- Role Change Request Validate ---\n{}", result.getAllErrors());
+            model.addAttribute("commaJdIds", userJobDescriptionChangeLogService.getJdIdsByShortNames(userJobDescriptionChangeLog.getNextJobDescription()));
             model.addAttribute("jobDescriptionMap", jdService.getJDMap());
             return "user/role_edit";
         }
 
+        //New 인 경우,
+        if(ObjectUtils.isEmpty(userJobDescriptionChangeLog.getId())) {
+            if(userJobDescriptionChangeLogService.isRequestedRole(user)) {
+                attributes.addFlashAttribute("type", "danger");
+                attributes.addFlashAttribute("message", "이미 신청중인 Role 내역이 존재합니다.");
+                return "redirect:/user/profile/role";
+            }
+        }
+
+        userJobDescriptionChangeLog.setUser(user);
+        userJobDescriptionChangeLog.setRoleStatus(RoleStatus.REQUESTED);
         userJobDescriptionChangeLog.setRequestDate(new Date());
         userJobDescriptionChangeLogService.saveChangeLog(userJobDescriptionChangeLog);
         sessionStatus.setComplete();
 
+        attributes.addFlashAttribute("message", "Role 변경에 대한 신청이 이루어졌습니다.");
         return "redirect:/user/profile/role";
     }
 

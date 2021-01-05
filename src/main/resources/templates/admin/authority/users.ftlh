@@ -9,10 +9,30 @@
     <!-- select2 -->
     <script src="/static/plugins/select2/js/select2.min.js"></script>
 
+    <!-- Data Table -->
+    <link href="/static/plugins/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="/static/plugins/datatables/media/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <!-- Data Table -->
+    <script src="/static/plugins/datatables/media/js/jquery.dataTables.min.js"></script>
+    <script src="/static/plugins/datatables/media/js/dataTables.bootstrap4.min.js"></script>
+
+    <!--Bootbox Modals [ OPTIONAL ]-->
+    <script src="/static/plugins/bootbox/bootbox.min.js"></script>
+
+
     <style>
         .select2-container--open {
             z-index: 9999999
         }
+
+        .role-rquest-content {
+            padding: 10px;
+        }
+
+        .modal .modal-fullsize {
+            width: 80%;
+        }
+
     </style>
 
     <script>
@@ -120,6 +140,75 @@
             });
 
             $('#jdIds').select2({width: '100%'});
+
+            $('#roleRequests').dataTable({
+                "responsive": true,
+                "language": {
+                    "decimal" : "",
+                    "emptyTable" : "ROLE 신청 내역이 없습니다.",
+                    "info" : "_START_ - _END_ (총 _TOTAL_ 명)",
+                    "infoEmpty" : "0명",
+                    "infoFiltered" : "(전체 _MAX_ 명 중 검색결과)",
+                    "infoPostFix" : "",
+                    "thousands" : ",",
+                    "lengthMenu" : "_MENU_ 개씩 보기",
+                    "loadingRecords" : "로딩중...",
+                    "processing" : "처리중...",
+                    "search" : "검색 : ",
+                    "zeroRecords" : "검색된 데이터가 없습니다.",
+                    "paginate" : {
+                        "previous": '<i class="pli-arrow-left"></i>',
+                        "next": '<i class="pli-arrow-right"></i>',
+                        "first" : '<i class="pli-arrow-left-2"></i>',
+                        "last" : '<i class="pli-arrow-right-2"></i>',
+                    },
+                    "aria" : {
+                        "sortAscending" : " :  오름차순 정렬",
+                        "sortDescending" : " :  내림차순 정렬"
+                    }
+                },
+                "order":[[0, "desc"]],
+                "columns": [
+                    {"orderable": false},
+                    {"orderable": false},
+                    {"orderable": false},
+                    {"orderable": false},
+                    {"orderable": false},
+                    {"orderable": false},
+                    {"orderable": false},
+                    {"orderable": false},
+                    {"orderable": false}
+                ]
+            });
+
+            //Role Request Button 처리
+            $(document).on("click", "#roleAcceptBtn", function(){
+                let id = $(this).data("value");
+                let name = $(this).data("name");
+
+                if (confirm("[" + name + "]의 Role 변경 신청을 수락합니다.\n계속 하시겠습니까?")) {
+                    $("#roleRequestId").val(id);
+                    $("#roleRequestAction").val("accept");
+                    $("#roleRequestForm").submit();
+                } else {
+                    console.log("cancel");
+                }
+            });
+
+            $("#roleRequestForm").on("submit", function(e){
+               console.log("SUBMIT : ", $(this).attr("action"));
+            });
+
+            $(document).on("click", "#roleRejectBtn", function(){
+                let id = $(this).data("value");
+                let name = $(this).data("name");
+
+                if (confirm("[" + name + "]의 Role 변경 신청을 거절합니다.\n계속 하시겠습니까?")) {
+                    $("#roleRequestId").val(id);
+                    $("#roleRequestAction").val("reject");
+                    console.log($("#roleRequestForm").submit());
+                }
+            });
         });
 
         function departmentSelect(value) {
@@ -151,6 +240,18 @@
     <!--Data Table-->
     <!--===================================================-->
     <div class="panel-body">
+        <form id="roleRequestForm" action="/admin/authority/users/role_request" method="POST">
+            <input type="hidden" name="_method" value="PUT"/>
+            <input type="hidden" name="id" id="roleRequestId"/>
+            <input type="hidden" name="action" id="roleRequestAction" />
+        </form>
+        <#if roleRequestList.totalElements gt 0>
+            <div class="alert alert-info">
+                <button class="close" data-dismiss="alert"><i class="pci-cross pci-circle"></i></button>
+                <strong><i class="pli-bell"></i> ROLE 변경 신청</strong>이력이 확인 되었습니다. (<a href="#" class="alert-link" id="roleRequestBtn" data-toggle="modal" data-target="#role-request-modal" >확인 하기</a>)
+            </div>
+        </#if>
+
         <@pagination.bind users/>
         <div class="pad-btm">
 <#--            <div class="pull-right">-->
@@ -284,7 +385,7 @@
     <!--===================================================-->
     <!--End Data Table-->
 
-    <!-- Final Accept Modal -->
+    <!-- Sign Up Accept Modal -->
     <div class="modal fade" id="accept-modal" role="dialog" tabindex="-1" aria-labelledby="accept-modal"
          aria-hidden="true">
         <div class="modal-dialog modal-fullsize">
@@ -320,10 +421,11 @@
                                     </div>
                                     <label class="control-label">Job Descriptions</label>
                                     <div class="form-group">
-                                    <@spring.formMultiSelect "account.jdIds" jobDescriptionMap "class='form-control'" />
+                                        <@spring.formMultiSelect "account.jdIds" jobDescriptionMap "class='form-control'" />
                                     </div>
                                 </div>
                             </div>
+                        </div>
                         </div>
                     </div>
                     <!--Modal footer-->
@@ -335,8 +437,79 @@
             </div>
         </div>
     </div>
-    <!-- End Final Accept Modal-->
+    <!-- End Sign Up Accept Modal-->
 
+    <!-- Role Accept Modal -->
+    <div class="modal fade" id="role-request-modal" role="dialog" tabindex="-1" aria-labelledby="role-request-modal"
+         aria-hidden="true">
+        <div class="modal-dialog modal-fullsize">
+            <div class="modal-content">
+                <!--Modal header-->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i>
+                    </button>
+                    <h4 class="modal-title">ROLE Requests List</h4>
+                </div>
+                <!--Modal body-->
+                <div class="modal-body">
+                    <div class="panel panel-bordered-primary role-rquest-content">
+                        <div class="table-responsive">
+                            <table id="roleRequests" class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th class="text-center">No.</th>
+                                    <th class="text-center">부서</th>
+                                    <th class="text-center">팀</th>
+                                    <th class="text-center">이름</th>
+                                    <th class="text-center">변경 전 ROLE</th>
+                                    <th class="text-center">변경 후 ROLE</th>
+                                    <th class="text-center">요청 일자</th>
+                                    <th class="text-center">배정 일자</th>
+                                    <th class="text-center">#Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <#if roleRequestList.content?has_content>
+                                    <#list roleRequestList.content as roleRequest>
+                                        <tr>
+                                            <td class="text-center">${(roleRequestList.totalElements - (roleRequestList.size * roleRequestList.number)) - roleRequest?index}</td>
+                                            <td class="text-center">${roleRequest.user.deptName}</td>
+                                            <td class="text-center">${roleRequest.user.teamName}</td>
+                                            <td class="text-center">${roleRequest.user.name}</td>
+                                            <td class="text-center"><span
+                                                        class="label label-warning">${roleRequest.prevJobDescription}</span>
+                                            </td>
+                                            <td class="text-center"><span
+                                                        class="label label-purple">${roleRequest.nextJobDescription}</span>
+                                            </td>
+                                            <td class="text-center">${roleRequest.requestDate?string('yyyy-MM-dd')}</td>
+                                            <td class="text-center">${roleRequest.assignDate?string('yyyy-MM-dd')}</td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-info" id="roleAcceptBtn"
+                                                        data-value="${roleRequest.id}"
+                                                        data-name="${roleRequest.user.name}">Accept
+                                                </button>
+                                                <button type="button" class="btn btn-danger" id="roleRejectBtn"
+                                                        data-value="${roleRequest.id}"
+                                                        data-name="${roleRequest.user.name}">Reject
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </#list>
+                                </#if>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!--Modal footer-->
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-default" id="closeBtn" type="button">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Role Accept Modal-->
 </div><!-- end panel-->
 </body>
 </html>

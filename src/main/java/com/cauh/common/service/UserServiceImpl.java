@@ -12,7 +12,6 @@ import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.authentication.InternalAccountAuthenticationException;
 import com.cauh.common.security.authentication.SignUpRequestedAccountException;
 import com.cauh.common.utils.DateUtils;
-import com.cauh.iso.admin.service.UserJobDescriptionService;
 import com.cauh.iso.component.CurrentUserComponent;
 import com.cauh.iso.service.JobDescriptionService;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import javax.security.auth.login.AccountExpiredException;
-import javax.security.auth.login.AccountLockedException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -135,6 +132,7 @@ public class UserServiceImpl implements UserService {
                 account.setTeamName(department.getName());
             } else { //상위 부서가 없을 경우
                 account.setDeptName(department.getName());
+                account.setTeamName(null);
             }
         }
 
@@ -170,16 +168,15 @@ public class UserServiceImpl implements UserService {
         //부서입력
         if(!ObjectUtils.isEmpty(account.getDepartment())) {
             Department department = account.getDepartment();
-
             //상위 부서가 존재할 경우
             if(!ObjectUtils.isEmpty(department.getParentDepartment())) {
                 account.setDeptName(department.getParentDepartment().getName());
                 account.setTeamName(department.getName());
             } else { //상위 부서가 없을 경우
                 account.setDeptName(department.getName());
+                account.setTeamName(null);
             }
         }
-
 
         //JD 재입력
         if(!ObjectUtils.isEmpty(account.getJdIds())){
@@ -234,7 +231,7 @@ public class UserServiceImpl implements UserService {
                     .prevJobDescription(prevRole)
                     .nextJobDescription(nextRole)
                     .reason("신규 가입")
-                    .roleStatus(RoleStatus.APPROVED)
+                    .roleStatus(RoleStatus.ACCEPTED)
                     .build();
             userJobDescriptionChangeLogRepository.save(userJobDescriptionChangeLog);
         }

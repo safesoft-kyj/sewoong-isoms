@@ -10,13 +10,20 @@
     <!-- select2 -->
     <script src="/static/plugins/select2/js/select2.min.js"></script>
 
+    <!-- Bootstrap DatePicker -->
+    <link href="/static/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
+    <!-- Bootstrap DatePicker -->
+    <script src="/static/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
 
     <style></style>
 
     <script>
-
         $(document).ready(function(){
+            //JD select2 Setting
+            let jds = "${commaJdIds?has_content?then("${commaJdIds}", '')}";
+            let JDList = String(jds).indexOf(",")!=-1?jds.split(','):jds;
             $('#jdIds').select2({width: '100%'});
+            $("#jdIds").val(JDList).trigger("change");
 
             $('#jdIds').change(function(){
                 let nextRoleList = [];
@@ -27,8 +34,9 @@
 
                 $("#nextJobDescription").val(nextRole);
             })
-        });
 
+            $('#assignDate').datepicker({format:'yyyy-mm-dd', autoclose:true, clearBtn:true, todayBtn: "linked", todayHighlight: true, endDate: new Date()});
+        });
     </script>
 
 </head>
@@ -59,13 +67,13 @@
                 <@spring.showErrors "" "color:red;"/>
             </div>
             <div class="form-group">
-                <label class="control-label">Reason</label>
-                <@spring.formInput "userJobDescriptionChangeLog.reason" "class='form-control'"/>
+                <label class="control-label">Assign Date</label>
+                <@spring.formInput "userJobDescriptionChangeLog.assignDate" "class='form-control'"/>
                 <@spring.showErrors "" "color:red;"/>
             </div>
             <div class="form-group">
-                <label class="control-label">Assign Date</label>
-                <@spring.formInput "userJobDescriptionChangeLog.assignDate" "class='form-control'"/>
+                <label class="control-label">Reason</label>
+                <@spring.formTextarea "userJobDescriptionChangeLog.reason" "class='form-control' rows='4'"/>
                 <@spring.showErrors "" "color:red;"/>
             </div>
         </div>

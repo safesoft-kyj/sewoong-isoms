@@ -45,6 +45,7 @@
                         <th class="text-center">Role 배정 일자</th>
                         <th class="text-center">사유</th>
                         <th class="text-center">상태</th>
+                        <th class="text-center">#Actions</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -58,12 +59,19 @@
                                 <td class="text-center">${role.assignDate?has_content?then(role.assignDate?string("yyyy-MM-dd"), '')}</td>
                                 <td class="text-center">${role.reason}</td>
                                 <td class="text-center">
-                                    <#if role.roleStatus == 'APPROVED'>
+                                    <#if role.roleStatus == 'ACCEPTED'>
                                         <span class="label label-info">${role.roleStatus}</span>
                                     <#elseif role.roleStatus == 'REQUESTED'>
-                                        <span class="label label-primary">${role.roleStatus}</span>
+                                        <span class="label label-primary" >${role.roleStatus}</span>
                                     <#elseif role.roleStatus == 'REJECTED'>
-                                        <span class="label label-danger">${role.roleStatus}</span>
+                                        <span class="label label-danger" >${role.roleStatus}</span>
+                                    </#if>
+                                </td>
+                                <td class="text-center">
+                                    <#if role.roleStatus == 'REQUESTED'>
+                                        <a class="label label-mint" href="javascript:goToURL('/user/profile/role/${role.id}')"><i class="pli-pencil"></i> Edit</a>
+                                    <#else>
+                                        -
                                     </#if>
                                 </td>
                             </tr>

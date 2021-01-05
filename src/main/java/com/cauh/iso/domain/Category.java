@@ -1,6 +1,7 @@
 package com.cauh.iso.domain;
 
 import com.cauh.common.entity.BaseEntity;
+import com.cauh.iso.domain.constant.CategoryType;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.GenericGenerator;
@@ -28,6 +29,10 @@ public class Category extends BaseEntity implements Serializable {
 
     @Column(name = "name", columnDefinition = "nvarchar(255)", nullable = false)
     private String name;
+
+    @Column(name = "categoryType")
+    @Enumerated(EnumType.STRING)
+    private CategoryType categoryType;
 
     @Column(name = "deleted")
     private boolean deleted;

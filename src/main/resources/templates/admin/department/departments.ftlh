@@ -134,7 +134,7 @@
                                     <#else>
                                         <a class="btn btn-sm btn-mint" href="/admin/department?action=edit&id=${d.id}#edit${d?index}"><i class="fa fa-pencil"> 수정</i></a>
                                         <button class="btn btn-sm btn-danger" id="deleteDept" data-value="${d.id}" data-ischilds="${ischilds}"><i class="fa fa-trash"> 삭제</i></button>
-                                        <a class="btn btn-sm btn-info" href="/admin/department?action=subNew&pid=${d.id}#edit${d?index}"><i class="fa fa-plus-circle"> 부서 추가</i></a>
+                                        <a class="btn btn-sm btn-info" href="/admin/department?action=subNew&pid=${d.id}#edit${d?index}"><i class="fa fa-plus-circle"> 팀 추가</i></a>
                                     </#if>
                                 </td>
                             </tr>

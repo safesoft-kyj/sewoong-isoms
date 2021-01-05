@@ -11,6 +11,23 @@
     <li>
         <a href="#" aria-expanded="false">
             <i class="pli-folder-with-document"></i>
+            <span class="menu-title">ISO Management</span>
+            <i class="arrow"></i>
+        </a>
+        <!--Submenu-->
+        <ul class="collapse" aria-expanded="false">
+            <%--            <li><a href="/admin/SOP/management/development">Development</a></li>--%>
+            <%--            <li><a href="/admin/SOP/management/revision">Revision</a></li>--%>
+            <li><a href="/admin/ISO/management/approved">Approved SOP</a></li>
+            <li><a href="/admin/ISO/management/effective">Effective SOP</a></li>
+            <li><a href="/admin/ISO/management/superseded">Superseded SOP</a></li>
+            <li><a href="/admin/ISO/management/retirement">Retirement SOP</a></li>
+            <li><a href="/admin/ISO/category">SOP Category</a></li>
+        </ul>
+    </li>
+    <li>
+        <a href="#" aria-expanded="false">
+            <i class="pli-folder-with-document"></i>
             <span class="menu-title">SOP Management</span>
             <i class="arrow"></i>
         </a>
