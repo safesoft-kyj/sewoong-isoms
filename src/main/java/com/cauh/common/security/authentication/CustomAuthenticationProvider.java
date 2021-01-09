@@ -115,7 +115,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
         } catch (AccountExpiredException e) {
             throw e;
         } catch (CredentialsExpiredException e) {
-            throw e;
+//            throw e;
+            log.info("비밀번호 기한 만료");
+
         } catch (UsernameNotFoundException e) {
             throw e;
         }
@@ -160,6 +162,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
              */
             preAuthenticationChecks(userDetails);
             userDetails.setUserType(UserType.USER);
+            userDetails.setSignature(signatureRepository.findById(username).isPresent());
             log.info("@@@@@@User -> JobDescription : {}", userDetails.getUserJobDescriptions());
 
         } else {

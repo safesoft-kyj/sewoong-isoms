@@ -74,8 +74,8 @@ public class MailServiceImpl implements MailService {
             if(ObjectUtils.isEmpty(mail.getBcc()) == false) {
                 helper.setCc(mail.getBcc());
             }
-            helper.setReplyTo("no-reply@kcsg.org", "no-reply");
-            helper.setFrom("no-reply@kcsg.org", "KCSG(e-SOP)");
+            helper.setReplyTo("ssoft@safesoft.co.kr", "SafeSoft Systems");
+            helper.setFrom("ssoft@safesoft.co.kr", "SafeSoft Systems");
             helper.setSubject(mail.getSubject());
             helper.setText(content, true);
             javaMailSender.send(message);

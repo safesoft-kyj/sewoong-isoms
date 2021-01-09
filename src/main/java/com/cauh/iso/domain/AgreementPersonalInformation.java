@@ -1,9 +1,12 @@
 package com.cauh.iso.domain;
 
+import com.cauh.common.entity.Account;
 import com.cauh.common.entity.BaseEntity;
+import com.cauh.common.entity.constant.UserType;
 import com.cauh.iso.domain.report.ExternalCustomer;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,6 +21,7 @@ import java.io.Serializable;
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @SequenceGenerator(name = "AGREEMENT_PERSONAL_INFO_SEQ_GENERATOR", sequenceName = "SEQ_AGREEMENT_PERSONAL_INFO", initialValue = 1, allocationSize = 1)
+@Audited(withModifiedFlag = true)
 public class AgreementPersonalInformation extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 8353552912714083258L;
 
@@ -29,14 +33,21 @@ public class AgreementPersonalInformation extends BaseEntity implements Serializ
     private String email;
 
     @ManyToOne
+    @JoinColumn(name ="internal_user_id", referencedColumnName = "id")
+    private Account internalUser; //내부 사용자
+
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
+
+    @ManyToOne
     @JoinColumn(name = "external_customer_id", referencedColumnName = "id")
-    private ExternalCustomer externalCustomer;
+    private ExternalCustomer externalCustomer; //외부 사용자.
 
     @Column(name = "agree")
     private boolean agree;
 
     @Column(name = "base64signature", columnDefinition = "varchar(max)")
-    private String base64signature;
+    private String base64signature; //외부 사용자 전용 서명란.
 
     @ManyToOne
     @JoinColumn(name = "document_version_id", referencedColumnName = "id")

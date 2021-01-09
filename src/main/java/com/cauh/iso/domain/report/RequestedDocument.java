@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -20,6 +21,7 @@ import java.io.Serializable;
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @SequenceGenerator(name = "SOP_DISCLOSURE_REQ_DOC_SEQ_GENERATOR", sequenceName = "SEQ_DISCLOSURE_REQ_DOC", initialValue = 1, allocationSize = 1)
+@Audited(withModifiedFlag = true)
 public class RequestedDocument extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 593521865801919744L;

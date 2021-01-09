@@ -9,15 +9,13 @@ import com.cauh.common.repository.UserRepository;
 import com.cauh.common.service.UserService;
 import com.cauh.iso.admin.service.DepartmentService;
 import com.cauh.iso.domain.AgreementPersonalInformation;
+import com.cauh.iso.domain.Mail;
 import com.cauh.iso.domain.NonDisclosureAgreement;
 import com.cauh.iso.domain.constant.ApprovalStatus;
 import com.cauh.iso.domain.report.QExternalCustomer;
 import com.cauh.iso.repository.ExternalCustomerRepository;
 import com.cauh.iso.security.annotation.IsAdmin;
-import com.cauh.iso.service.AgreementPersonalInformationService;
-import com.cauh.iso.service.JDService;
-import com.cauh.iso.service.NonDisclosureAgreementService;
-import com.cauh.iso.service.UserJobDescriptionChangeLogService;
+import com.cauh.iso.service.*;
 import com.cauh.iso.validator.UserEditValidator;
 import com.cauh.iso.xdocreport.AgreementReportService;
 import com.cauh.iso.xdocreport.NonDisclosureAgreementReportService;
@@ -29,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -40,6 +39,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +54,8 @@ import java.util.Optional;
 public class AdminAuthorityController {
     private final AgreementPersonalInformationService agreementPersonalInformationService;
     private final NonDisclosureAgreementService nonDisclosureAgreementService;
-//    private final SOPDisclosureRequestFormRepository sopDisclosureRequestFormRepository;
+    private final PasswordEncoder passwordEncoder;
+    //    private final SOPDisclosureRequestFormRepository sopDisclosureRequestFormRepository;
     private final AgreementReportService agreementReportService;
     private final NonDisclosureAgreementReportService nonDisclosureAgreementReportService;
     private final UserRepository userRepository;
@@ -65,6 +67,7 @@ public class AdminAuthorityController {
     private final ExternalCustomerRepository externalCustomerRepository;
     private final UserJobDescriptionChangeLogRepository userJobDescriptionChangeLogRepository;
     private final UserJobDescriptionChangeLogService userJobDescriptionChangeLogService;
+    private final MailService mailService;
 
     @Value("${gw.userTbl}")
     private String gwUserTbl;
@@ -254,11 +257,41 @@ public class AdminAuthorityController {
         return "redirect:/admin/authority/users";
     }
 
-    @PostMapping("/admin/authority/users/pwReset/{id}")
-    public String passwordReset(@PathVariable("id") Integer id){
+    @PostMapping("/authority/users/pwReset/{id}")
+    @Transactional
+    public String passwordReset(@PathVariable("id") Integer id, RedirectAttributes attributes){
         //TODO :: Password Reset 작업 필요.
+        Optional<Account> accountOptional = userRepository.findById(id);
 
+        if(!accountOptional.isPresent()){ // 유저 정보가 없으면
+            attributes.addFlashAttribute("type", "danger");
+            attributes.addFlashAttribute("message", "잘못된 유저 정보입니다.");
+            return "redirect:/admin/authority/users";
+        }
+        Account account = accountOptional.get();
 
+        //계정 비밀번호 Setting 구간
+        String rdPassword = getRandomPassword(10);
+        account.setPassword(passwordEncoder.encode(rdPassword));
+        LocalDate pwDueDate = LocalDate.now().plusDays(90); //오늘 날짜로부터 90일 다시 갱신.
+        account.setCredentialsExpiredDate(Date.from(pwDueDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        userRepository.save(account);
+
+        //계정 Mail 전송 구간.
+        HashMap<String, Object> model = new HashMap<>();
+        model.put("message", "임시 비밀번호 안내");
+        model.put("password", rdPassword);
+
+        Mail mail = Mail.builder()
+                .to(new String[]{account.getEmail()})
+                .subject(String.format("[ISO-MS/System] '%s' 사용자 임시 비밀번호 안내", account.getUsername()))
+                .model(model)
+                .templateName("user-password-reset")
+                .build();
+
+        mailService.sendMail(mail);
+
+        attributes.addFlashAttribute("message", "[" + account.getName() + "]님의 임시 비밀번호가\n이메일로 전송되었습니다.");
         return "redirect:/admin/authority/users";
     }
 
@@ -365,5 +398,20 @@ public class AdminAuthorityController {
         }
 
         return result;
+    }
+
+
+    public static String getRandomPassword(int len) {
+        char[] charSet = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+        int idx = 0;
+        StringBuffer sb = new StringBuffer();
+//        System.out.println("charSet.length :::: " + charSet.length);
+        for (int i = 0; i < len; i++) {
+            idx = (int) (charSet.length * Math.random()); // 36 * 생성된 난수를 Int로 추출 (소숫점제거)
+            System.out.println("idx :::: "+idx);
+            sb.append(charSet[idx]);
+        }
+
+        return sb.toString();
     }
 }

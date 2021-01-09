@@ -54,6 +54,12 @@ public class UserController {
 
     private List<Account> accounts = new ArrayList<>();
 
+    @GetMapping("/user/password-changed")
+    public String passwordChange(){ //비밀번호 기한 만료 시, 자동으로 비밀번호 변경 화면으로 이동.
+
+        return "/";
+    }
+
     @GetMapping("/user/profile")
     public String profile() {
         return "user/profile";

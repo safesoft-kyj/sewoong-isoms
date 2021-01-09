@@ -242,7 +242,7 @@ public class ApprovalService {
 
         Mail mail = Mail.builder()
                 .to(new String[]{toUser.getEmail()})
-                .subject(String.format("[e-SOP/전자결재/%s] %s", resultStr, approval.getType().getLabel()))
+                .subject(String.format("[ISO-MS/전자결재/%s] %s", resultStr, approval.getType().getLabel()))
                 .model(model)
                 .templateName("approval-response")
                 .build();

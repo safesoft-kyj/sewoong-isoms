@@ -1,5 +1,7 @@
 package com.cauh.iso.controller;
 
+import com.cauh.common.entity.Account;
+import com.cauh.common.security.annotation.CurrentUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -19,5 +21,12 @@ public class LoginController {
         } else {
             return "redirect:/notice";
         }
+    }
+
+    @GetMapping("/password-change")
+    public String passwordChange(@CurrentUser Account user){
+
+
+        return "common/";
     }
 }

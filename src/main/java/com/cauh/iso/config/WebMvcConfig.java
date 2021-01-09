@@ -3,7 +3,7 @@ package com.cauh.iso.config;
 
 import com.cauh.iso.config.filter.WebSiteMeshFilter;
 import com.cauh.iso.security.interceptor.ExternalCustomerCheckInterceptor;
-import com.cauh.iso.security.interceptor.SignatureCheckInterceptor;
+import com.cauh.iso.security.interceptor.LoginPostCheckInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -73,10 +73,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         return new ExternalCustomerCheckInterceptor();
     }
 
-//    @Bean
-//    public SignatureCheckInterceptor signatureCheckInterceptor() {
-//        return new SignatureCheckInterceptor();
-//    }
+    @Bean
+    public LoginPostCheckInterceptor loginPostCheckInterceptor() {
+        return new LoginPostCheckInterceptor();
+    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -88,21 +88,22 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         registry.addInterceptor(externalCustomerCheckInterceptor())
                 .addPathPatterns("/**")
-                .excludePathPatterns("/static/**", "/login", "/logout", "/error", "/expired", "/invalidSession", "/api/**", "/favicon.ico", "/ajax/**",
+                .excludePathPatterns("/static/**", "/login", "/signUp", "/logout", "/error", "/expired", "/invalidSession", "/api/**", "/favicon.ico", "/ajax/**",
                         "/denied",
                         "/please-enter-your-access-code",
                         "/agreement-to-collect-and-use-personal-information",
                         "/non-disclosure-agreement-for-sop");
 
         //YSH : 2020-1124 - Signature 미사용으로 인한 Interceptor 비활성화.
-//        registry.addInterceptor(signatureCheckInterceptor())
-//                .addPathPatterns("/**")
-//                .excludePathPatterns("/static/**", "/login", "/logout", "/error", "/expired", "/invalidSession", "/api/**", "/favicon.ico", "/ajax/**",
-//                        "/denied",
-//                        "/please-enter-your-access-code",
-//                        "/agreement-to-collect-and-use-personal-information",
-//                        "/non-disclosure-agreement-for-sop",
-//                        "/user/signature");
+        //YSH : 2021-0106 - 다시 사용하기로 결정. - 로그인 이후 동작 제어.
+        registry.addInterceptor(loginPostCheckInterceptor())
+                .addPathPatterns("/**")
+                .excludePathPatterns("/static/**", "/login", "/signUp", "/logout", "/error", "/expired", "/invalidSession", "/api/**", "/favicon.ico", "/ajax/**",
+                        "/denied",
+                        "/please-enter-your-access-code",
+                        "/agreement-to-collect-and-use-personal-information",
+                        "/non-disclosure-agreement-for-sop",
+                        "/user/signature");
     }
 
     @Bean

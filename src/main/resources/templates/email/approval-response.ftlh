@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Billing e.g. invoices and receipts</title>
-    <link href="http://kcsgesop.safesoft.co.kr/static/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="http://${domain}/static/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />
 </head>
 
 <body itemscope itemtype="http://schema.org/EmailMessage">
@@ -42,7 +42,7 @@
                                             </tr>
                                             <tr>
                                                 <td class="content-block aligncenter">
-                                                    <a href="http://kcsgesop.safesoft.co.kr" target="_blank">e-SOP 바로가기</a>
+                                                    <a href="http://iso.cauh.ac.kr" target="_blank">CAUH ISO-MS 바로가기</a>
                                                 </td>
                                             </tr>
                                         </table>
@@ -57,7 +57,7 @@
                         <tr>
                             <td class="aligncenter">
                                 <small>본 이메일의 발신자 주소는 발신전용으로 회신되지 않습니다.<br/>
-                                    COPYRIGHT© KCSG. CO. LTD. ALL RIGHTS RESERVED.
+                                    COPYRIGHT© CHUNG-ANG UNIVERSITY. ALL RIGHTS RESERVED.
                                 </small></td>
                         </tr>
                     </table>

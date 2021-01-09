@@ -6,6 +6,8 @@ import com.cauh.iso.domain.Approval;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Where;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.ObjectUtils;
 
@@ -26,6 +28,7 @@ import java.util.List;
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @SequenceGenerator(name = "SOP_DISCLOSURE_FORM_SEQ_GENERATOR", sequenceName = "SEQ_DISCLOSURE_FORM", initialValue = 1, allocationSize = 1)
+@Audited(withModifiedFlag = true)
 public class SOPDisclosureRequestForm extends BaseEntity implements Serializable {
 
     @Builder
@@ -91,6 +94,7 @@ public class SOPDisclosureRequestForm extends BaseEntity implements Serializable
     private List<RequestedDocument> requestedDocumentRDs = new ArrayList<>();
 
     @OneToMany(mappedBy = "sopDisclosureRequestForm")
+    @NotAudited
     private List<DisclosureDigitalBinder> disclosureDigitalBinders = new ArrayList<>();
 
     public boolean isRequestedSOP() {

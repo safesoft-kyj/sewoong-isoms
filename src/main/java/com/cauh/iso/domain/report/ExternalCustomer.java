@@ -3,6 +3,7 @@ package com.cauh.iso.domain.report;
 import com.cauh.common.entity.BaseEntity;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,6 +15,7 @@ import java.io.Serializable;
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @SequenceGenerator(name = "EXTERNAL_CUSTOMER_SEQ_GENERATOR", sequenceName = "SEQ_EXTERNAL_CUSTOMER", initialValue = 1, allocationSize = 1)
+@Audited(withModifiedFlag = true)
 public class ExternalCustomer extends BaseEntity implements Serializable {
     private static final long serialVersionUID = -3981219923364485410L;
     @Id

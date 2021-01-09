@@ -7,6 +7,7 @@ import com.cauh.iso.domain.constant.ApprovalStatus;
 import com.cauh.iso.utils.DateUtils;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.envers.Audited;
 import org.springframework.util.ObjectUtils;
 
 import javax.persistence.*;
@@ -28,6 +29,7 @@ import java.io.Serializable;
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @SequenceGenerator(name = "APPROVAL_LINE_SEQ_GENERATOR", sequenceName = "SEQ_APPROVAL_LINE", initialValue = 1, allocationSize = 1)
+@Audited(withModifiedFlag = true)
 public class ApprovalLine extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 4297913588105294338L;
 

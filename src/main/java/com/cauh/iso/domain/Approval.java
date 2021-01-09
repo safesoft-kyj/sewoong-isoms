@@ -7,6 +7,7 @@ import com.cauh.iso.domain.report.*;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.envers.Audited;
 import org.springframework.util.ObjectUtils;
 
 import javax.persistence.*;
@@ -23,6 +24,7 @@ import java.util.List;
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @SequenceGenerator(name = "APPROVAL_SEQ_GENERATOR", sequenceName = "SEQ_APPROVAL", initialValue = 1, allocationSize = 1)
+@Audited(withModifiedFlag = true)
 public class Approval extends BaseEntity implements Serializable, Cloneable {
     private static final long serialVersionUID = 7912477670521301292L;
 
