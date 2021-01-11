@@ -45,16 +45,16 @@ public class LoginPostCheckInterceptor extends HandlerInterceptorAdapter {
             log.info("비밀번호 기한이 만료되었나? : {}", today.isAfter(credentialsExpire));
 
             //내부 사용자이면서 비밀번호 기한이 만료되었는가?
-//            if (user.getUserType() == UserType.USER && today.isAfter(credentialsExpire)) {
-//                if (!user.isPasswordExpiredIgnore()) { //처음 시작 : false, 다음에 변경 선택 : true
-//                    log.info("비밀번호 기한 만료");
-//                    //TODO :: 작업 수정 필요
-//
-//                    modelAndView.setViewName("redirect:/password-change");
-//                    super.postHandle(request, response, handler, modelAndView);
-//                    return;
-//                }
-//            }
+            if (user.getUserType() == UserType.USER && today.isAfter(credentialsExpire)) {
+                if (!user.isPasswordExpiredIgnore()) { //처음 시작 : false, 다음에 변경 선택 : true
+                    log.info("비밀번호 기한 만료");
+                    //TODO :: 작업 수정 필요
+
+                    modelAndView.setViewName("redirect:/password-change");
+                    super.postHandle(request, response, handler, modelAndView);
+                    return;
+                }
+            }
         }
 
         //CASE 2.User Signature 미 등록 시,

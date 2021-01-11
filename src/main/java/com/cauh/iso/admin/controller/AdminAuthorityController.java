@@ -273,25 +273,26 @@ public class AdminAuthorityController {
         //계정 비밀번호 Setting 구간
         String rdPassword = getRandomPassword(10);
         account.setPassword(passwordEncoder.encode(rdPassword));
-        LocalDate pwDueDate = LocalDate.now().plusDays(90); //오늘 날짜로부터 90일 다시 갱신.
+        LocalDate pwDueDate = LocalDate.now().minusDays(1); //비밀번호 기한 초과되게 만들기. (변경을 위한 동작)
         account.setCredentialsExpiredDate(Date.from(pwDueDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
         userRepository.save(account);
 
         //계정 Mail 전송 구간.
         HashMap<String, Object> model = new HashMap<>();
         model.put("message", "임시 비밀번호 안내");
+        model.put("username", account.getUsername());
         model.put("password", rdPassword);
 
         Mail mail = Mail.builder()
                 .to(new String[]{account.getEmail()})
-                .subject(String.format("[ISO-MS/System] '%s' 사용자 임시 비밀번호 안내", account.getUsername()))
+                .subject(String.format("[ISO-MS/System] 사용자 임시 비밀번호 안내"))
                 .model(model)
                 .templateName("user-password-reset")
                 .build();
 
         mailService.sendMail(mail);
 
-        attributes.addFlashAttribute("message", "[" + account.getName() + "]님의 임시 비밀번호가\n이메일로 전송되었습니다.");
+        attributes.addFlashAttribute("message", "[" + account.getName() + "]님의 임시 비밀번호가 이메일로 전송되었습니다.");
         return "redirect:/admin/authority/users";
     }
 

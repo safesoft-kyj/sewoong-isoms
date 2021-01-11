@@ -343,9 +343,9 @@
                             <td class="text-center" style="vertical-align: middle;">${t.deptName!''}</td>
                             <td class="text-center" style="vertical-align: middle;">${t.teamName!''}</td>
                             <td class="text-center" style="vertical-align: middle;">${t.name}</td>
-                            <td class="text-center" style="vertical-align: middle;">${t.birthDate?string('yyyy-MM-dd')}</td>
-                            <td class="text-center" style="vertical-align: middle;">${t.phone}</td>
-                            <td class="text-center" style="vertical-align: middle;">${t.email}</td>
+                            <td class="text-center" style="vertical-align: middle;">${t.birthDate?has_content?then(t.birthDate?string('yyyy-MM-dd'), '')}</td>
+                            <td class="text-center" style="vertical-align: middle;">${t.phone!''}</td>
+                            <td class="text-center" style="vertical-align: middle;">${t.email!''}</td>
                             <td class="text-center">
                                 <#if t.userStatus?has_content && t.userStatus == 'ACTIVE'>
                                     <button class="btn btn-icon btn-${t.training?then('success', 'default')} btn-circle" data-id="${t.id}" name="trainingBtn" id="trainingBtn${t.id}"><i class="fa fa-check"></i></button>

@@ -64,7 +64,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
         WebSiteMeshFilter siteMeshFilter = new WebSiteMeshFilter();
         filterRegistrationBean.setFilter(siteMeshFilter);
 
-
         return filterRegistrationBean;
     }
 
@@ -99,6 +98,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(loginPostCheckInterceptor())
                 .addPathPatterns("/**")
                 .excludePathPatterns("/static/**", "/login", "/signUp", "/logout", "/error", "/expired", "/invalidSession", "/api/**", "/favicon.ico", "/ajax/**",
+                        "/password-change",
                         "/denied",
                         "/please-enter-your-access-code",
                         "/agreement-to-collect-and-use-personal-information",

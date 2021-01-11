@@ -37,7 +37,7 @@
                                         <table style="margin: 25px auto; text-align: left; width: 100%;">
                                             <tr>
                                                 <td style="padding: 5px 0;">
-                                                    신규 임시 비밀번호가 발급되었습니다.
+                                                    [${username}]님의 신규 임시 비밀번호가 발급되었습니다.
                                                 </td>
                                             </tr>
                                             <tr>

@@ -172,7 +172,8 @@
                             },
                             regexp: {
                                 //최소 8자, 대문자 하나 이상, 소문자 하나, 숫자 하나 및 특수문자 하나 이상
-                                regexp: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}/,
+                                //최소 8자, 최소 하나의 문자, 숫자, 특수문자 조합
+                                regexp: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/,
                                 message: '> The password can over than 8 length consist of upper/lower alphabetical, number, dot and special character'
                             }
                         }

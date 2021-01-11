@@ -1,168 +1,127 @@
 <#assign security=JspTaglibs["http://www.springframework.org/security/tags"] />
 <#import "/spring.ftl" as spring />
 <@security.authentication property="principal" var="user"/>
-<#setting locale="en_US">
 <html>
 <head>
     <title>Chung Ang University Hospital - ISO Management System</title>
-    <script src="/static/js/signature_pad.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            var signaturePad = new SignaturePad(document.getElementById('signature-pad'), {
-                backgroundColor: 'rgba(255, 255, 255, 0)',
-                penColor: 'rgb(0, 0, 0)',
-                minWidth:3,
-                maxWidth:7
-            });
+    <!--Bootstrap Stylesheet [ REQUIRED ]-->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!--Nifty Stylesheet [ REQUIRED ]-->
+    <link href="/static/css/nifty.min.css" rel="stylesheet">
+    <!--Premium Icons [ OPTIONAL ]-->
+    <link href="/static/premium/icon-sets/icons/line-icons/premium-line-icons.min.css" rel="stylesheet">
+    <link href="/static/premium/icon-sets/icons/solid-icons/premium-solid-icons.min.css" rel="stylesheet">
 
-            if($("#base64signature").val()) {
-                signaturePad.fromDataURL($("#base64signature").val());
-            }
-            var saveButton = document.getElementById('save');
-            var cancelButton = document.getElementById('clear');
-
-            saveButton.addEventListener('click', function (event) {
-                if(signaturePad.isEmpty()) {
-                    event.preventDefault();
-                    alert('Please sign.');
-                } else {
-                    var data = signaturePad.toDataURL('image/png');
-
-                    $("#base64signature").val(data);
-                    // $("#agreeForm").submit();
-                    $("#sign").html("<img src='"+data+"' width='50px'/>")
-                    $("#sign-modal").modal('hide');
-                }
-            });
-
-            cancelButton.addEventListener('click', function (event) {
-                signaturePad.clear();
-            });
-
-            $("#agreeForm").submit(function(e) {
-                if(!$("#chk1").is(":checked") ||
-                    !$("#chk2").is(":checked") ||
-                    !$("#chk3").is(":checked") ||
-                    !$("#chk4").is(":checked")) {
-                    e.preventDefault();
-                    alert('Please tick the all boxes when you have read and understand the statement below');
-                } else if(!$("#base64signature").val()) {
-                    e.preventDefault();
-                    alert('Please sign.');
-                }
-            });
-        });
-    </script>
+    <!--jQuery [ REQUIRED ]-->
+    <script src="/static/js/jquery.min.js"></script>
     <!--BootstrapJS [ RECOMMENDED ]-->
     <script src="/static/js/bootstrap.min.js"></script>
+    <!--Nifty Admin [ RECOMMENDED ]-->
+    <script src="/static/js/nifty.min.js"></script>
+    <!--Bootstrap Validator -->
+    <script src="/static/plugins/bootstrap-validator/bootstrapValidator.js"></script>
+
+    <script>
+        $(document).ready(function(){
+            $("#pwChangeForm").bootstrapValidator({
+                message: 'This value is not valid',
+                fields: {
+                    newPassword: {
+                        validators: {
+                            remote: {
+                                message: '현재 패스워드와 동일합니다.',
+                                url: '/ajax/password-chanage/validation',
+                                type: 'POST',
+                                name: 'data' // 입력된 데이터 name을 keyword로 한다.
+                            },
+                            notEmpty: {
+                                message: '신규 비밀번호를 입력해 주세요.'
+                            },
+                            identical: {
+                                field: 'confirmPassword',
+                                message: '신규 비밀번호와 비밀번호 확인란이 동일하지 않습니다.'
+                            },
+                            regexp: {
+                                //최소 8자, 대문자 하나 이상, 소문자 하나, 숫자 하나 및 특수문자 하나 이상
+                                // regexp: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}/,
+                                //최소 8자, 최소 하나의 문자, 숫자, 특수문자 조합
+                                regexp: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/,
+                                message: '최소 8자 이상 영문자, 숫자, 특수기호가 포함되어야 합니다.'
+                            }
+                        }
+                    },
+                    confirmPassword: {
+                        validators: {
+                            notEmpty: {
+                                message: '비밀번호 확인란을 입력해 주세요.'
+                            },
+                            identical: {
+                                field: 'newPassword',
+                                message: '신규 비밀번호와 비밀번호 확인란이 동일하지 않습니다.'
+                            },
+                            regexp: {
+                                //최소 8자, 대문자 하나 이상, 소문자 하나, 숫자 하나 및 특수문자 하나 이상
+                                regexp: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/,
+                                message: '최소 8자 이상 영문자, 숫자, 특수기호가 포함되어야 합니다.'
+                            }
+                        }
+                    }
+                }
+            });
+        })
+
+    </script>
+
 </head>
 <body>
-
-
 <div class="cls-content">
-    <div class="cls-content-lg panel" style="width:750px !important;">
-        <div class="panel-body text-left">
-            <div class="mar-btm row">
-                <div class="col-xs-4"><img src="/static/img/dtnsm_logo.png" height="45px"/></div>
-                <div class="col-xs-8 text-right pad-top"><span class="text-bold" style="font-size:25px;">&nbsp;&nbsp;Non-Disclosure Agreement for SOP</span></div>
-            </div>
-            <hr/>
-            <div>&nbsp;</div>
-            <div class="mar-top mar-btm">This NON-DISCLOSURE AGREEMENT FOR SOP is to assure the protection and preservation of the confidential and/or proprietary nature of information to be disclosed.</div>
-            <div class="mar-btm">The Discloser (KCSG) intends to disclose proprietary information and data <span class="text-bold"><’The Confidential Information’></span> relating to KCSG Standard Operating Procedures (SOP) to the Recipient for the purpose as below (<span style="font-style: italic">Please tick where applicable</span>).</div>
-
-            <div class="mar-top mar-btm">
-                <label class="checkbox-inline">
-                    <input type="checkbox" disabled${(nonDisclosureAgreement.externalCustomer.sopDisclosureRequestForm.purposeOfDisclosure == 'AUDIT')?then(' checked', '')}> Audit
-                </label>
-                <label class="checkbox-inline">
-                    <input type="checkbox" disabled${(nonDisclosureAgreement.externalCustomer.sopDisclosureRequestForm.purposeOfDisclosure == 'INSPECTION')?then(' checked', '')}> Inspection
-                </label>
-                <label class="checkbox-inline">
-                    <input type="checkbox" disabled${(nonDisclosureAgreement.externalCustomer.sopDisclosureRequestForm.purposeOfDisclosure == 'ASSESSMENT')?then(' checked', '')}> Assessment/Evaluation Visit
-                </label>
-                <label class="checkbox-inline">
-                    <input type="checkbox" disabled${(nonDisclosureAgreement.externalCustomer.sopDisclosureRequestForm.purposeOfDisclosure == 'OTHER')?then(' checked', '')}> Other:${(nonDisclosureAgreement.externalCustomer.sopDisclosureRequestForm.purposeOfDisclosure == 'OTHER')?then(nonDisclosureAgreement.externalCustomer.sopDisclosureRequestForm.purposeOfDisclosureOther, '_______________________')}
-                </label>
-            </div>
-
-            <div class="text-bold">Obligation of Recipient; </div>
-            <div style="font-style: italic;" class="mar-btm"><u>* Please tick the all boxes when you have read and understand the statement below.</u></div>
-            <div class="mar-btm text-muted">
-                <label class="checkbox-inline">
-                    <input type="checkbox" id="chk1"> I understand that the Confidential Information cannot be used for any purpose or in any manner that would constitute a violation of any laws or regulations.
-                </label>
-            </div>
-            <div class="mar-btm text-muted">
-                <label class="checkbox-inline">
-                    <input type="checkbox" id="chk2"> I agree to keep the Confidential Information secure and not to disclose it to any third party.
-                </label>
-            </div>
-            <div class="mar-btm text-muted">
-                <label class="checkbox-inline">
-                    <input type="checkbox" id="chk3"> I agree that the Confidential Information provided shall not be reproduced in any form.
-                </label>
-            </div>
-            <div class="mar-btm text-muted">
-                <label class="checkbox-inline">
-                    <input type="checkbox" id="chk4"> I will return all copies and records of the Confidential Information to the Discloser and will not retain any copies or records of the Confidential Information without permission.
-                </label>
-            </div>
-
-            <div>&nbsp;</div>
-            <div class="mar-top">
-                <div class="col-xs-3 text-center">
-                    <div style="height:40px;" class="pad-top">${user.engName}</div>
-                    <hr style="margin-top:5px;margin-bottom: 3px"/><div class="text-xs">Print Name</div>
+    <div class="cls-content-lg" style="width:750px !important;">
+        <div class="panel panel-bordered-info">
+            <form method="post" id="pwChangeForm">
+                <div class="panel-body text-left">
+                    <div class="mar-btm row">
+                        <div class="text-center"><span class="text-bold" style="font-size:25px;">Password Change</span>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="mar-btm pad-top breadcrumb bg-info">
+                        <span>[${user.name}]님의 비밀번호 기한이 지났거나, 비밀번호가 초기화 되어 비밀번호 변경이 필요합니다.</span>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 75px;">
+                        <@spring.formHiddenInput "user.id" />
+                        <label class="control-label col-sm-3 pad-top" for="password">현재 비밀번호</label>
+                        <div class="col-sm-9">
+                            <@spring.formPasswordInput "user.password" "class='form-control'" />
+                            <@spring.showErrors "" "color:red;" />
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 120px;">
+                        <label class="control-label col-sm-3" for="newPassword">신규 비밀번호</label>
+                        <div class="col-sm-9">
+                            <input type="password" id="newPw" name="newPassword" placeholder="(알파벳,숫자,특수기호 포함 8자 이상)"
+                                   class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="newPassword">비밀번호 확인</label>
+                        <div class="col-sm-9">
+                            <input type="password" id="confirmPw" name="confirmPassword"
+                                   placeholder="(알파벳,숫자,특수기호 포함 8자 이상)" class="form-control"/>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-xs-3 text-center">
-                    <div style="height:40px;" class="pad-top">${user.teamName}</div>
-                    <hr style="margin-top:5px;margin-bottom: 3px"/><div class="text-xs">Title/Company</div>
+                <div class="panel-footer text-right">
+                    <button class="btn btn-info" name="action" value="change" type="submit"><i class="pli-yes"></i>
+                        비밀번호 변경
+                    </button>
+                    <a class="btn btn-warning" href="/password-change/skip" type="submit"><i class="pli-back"></i>
+                        다음에 변경하기
+                    </a>
                 </div>
-                <div class="col-xs-3 text-center">
-                    <div id="sign" style="height:40px;"><a class="btn btn-link" href="#sign-modal" data-toggle="modal"><i class="fa fa-pencil"></i> Sign </a> </div>
-                    <hr style="margin-top:5px;margin-bottom: 3px"/><div class="text-xs">Signature</div>
-                </div>
-                <div class="col-xs-3 text-center">
-                    <div style="height:40px;" class="pad-top">${user.loginDate?string('dd-MMM-yyyy')}</div>
-                    <hr style="margin-top:5px;margin-bottom: 3px"/><div class="text-xs">Date<span class="text-muted">(DD-MMM-YYYY)</span></div>
-                </div>
-            </div>
-        </div>
-        <div class="panel-footer text-right">
-            <form method="post" id="agreeForm">
-                <input type="hidden" id="base64signature" name="base64signature"/>
-                <a class="btn btn-warning" href="/logout"><i class="fa fa-times"></i> Cancel</a>
-                <button class="btn btn-info" type="submit"><i class="fa fa-check"></i> Submit</button>
             </form>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="sign-modal" role="dialog" tabindex="-1" aria-labelledby="sign-modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <!--Modal header-->
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
-                <h4 class="modal-title">Signature</h4>
-            </div>
-
-            <!--Modal body-->
-            <div class="modal-body" style="padding:0px;">
-                <#--                    <div>-->
-                <div class="wrapper" style="padding:5px">
-                    <canvas id="signature-pad" class="signature-pad" width=585 height=400 style="border:1px solid #eeeeee"></canvas>
-                </div>
-            </div>
-
-            <!--Modal footer-->
-            <div class="modal-footer text-right">
-                <button class="btn btn-default" type="button" id="clear"><i class="fa fa-eraser"></i> Clear</button>
-                <button class="btn btn-info" type="button" id="save"><i class="fa fa-check"></i> Submit</button>
-            </div>
-        </div>
-    </div>
-</div>
 </body>
 </html>
