@@ -1,6 +1,8 @@
 package com.cauh.iso.domain;
 
+import com.cauh.common.entity.Account;
 import com.cauh.common.entity.BaseEntity;
+import com.cauh.common.entity.constant.UserType;
 import com.cauh.iso.domain.report.ExternalCustomer;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,13 @@ public class NonDisclosureAgreement extends BaseEntity implements Serializable {
 
     @Column(name = "email", nullable = false, length = 64, updatable = false)
     private String email;
+
+    @ManyToOne
+    @JoinColumn(name ="internal_user_id", referencedColumnName = "id")
+    private Account internalUser; //내부 사용자
+
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
 
     @ManyToOne
     @JoinColumn(name = "external_customer_id", referencedColumnName = "id")

@@ -35,21 +35,36 @@ public class LoginPostCheckInterceptor extends HandlerInterceptorAdapter {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account user = (Account)authentication.getPrincipal();
 
-        //CASE 1.User 비밀번호기한 만료 시 화면 이동.
+        if (user.getUserType() == UserType.USER) {
+            String uri = request.getRequestURI();
+            log.debug("@URI : {}", uri);
+
+            //CASE 1. 개인정보 활용 동의
+            if (user.isAgreementCollectUse()) {
+                log.trace("@Username : {} Agreement to Collect Use 동의 처리 되어 있음.", user.getUsername());
+
+                //CASE 2. 비밀 유지 서약
+                if (!user.isNonDisclosureAgreement()) {
+                    log.info("@Username : {} Non-Disclosure Agreement for SOP 동의 기록 없음. 동의 페이지로 이동", user.getUsername());
+                    modelAndView.setViewName("redirect:/non-disclosure-agreement-for-sop");
+                }
+            } else {
+                log.info("@Username : {} Agreement to Collect Use 동의 기록 없음. 동의 페이지로 이동", user.getUsername());
+                modelAndView.setViewName("redirect:/agreement-to-collect-and-use-personal-information");
+            }
+        }
+
+        //CASE 3.User 비밀번호기한 만료 시 화면 이동.
         //내부 사용자면서 비밀번호 기한이 만료 됐으면
         if(!ObjectUtils.isEmpty(user.getCredentialsExpiredDate())) {
             LocalDate today = LocalDate.now();
             LocalDate credentialsExpire = user.getCredentialsExpiredDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
-            log.info("다음에 변경 : {}", user.isPasswordExpiredIgnore());
-            log.info("비밀번호 기한이 만료되었나? : {}", today.isAfter(credentialsExpire));
+//            log.info("다음에 변경 : {}", user.isPasswordExpiredIgnore());
+//            log.info("비밀번호 기한이 만료되었나? : {}", today.isAfter(credentialsExpire));
 
             //내부 사용자이면서 비밀번호 기한이 만료되었는가?
             if (user.getUserType() == UserType.USER && today.isAfter(credentialsExpire)) {
                 if (!user.isPasswordExpiredIgnore()) { //처음 시작 : false, 다음에 변경 선택 : true
-                    log.info("비밀번호 기한 만료");
-                    //TODO :: 작업 수정 필요
-
                     modelAndView.setViewName("redirect:/password-change");
                     super.postHandle(request, response, handler, modelAndView);
                     return;
@@ -57,7 +72,7 @@ public class LoginPostCheckInterceptor extends HandlerInterceptorAdapter {
             }
         }
 
-        //CASE 2.User Signature 미 등록 시,
+        //CASE 4.User Signature 미 등록 시,
         //내부 사용자면서 서명이 없으면,
         if(user.getUserType() == UserType.USER && user.isSignature() == false) {
             //modelAndView.getModel().put("message", "서명을 등록해 주세요.");
