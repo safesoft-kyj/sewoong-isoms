@@ -62,7 +62,7 @@
     <div class="cls-content-lg panel" style="width:750px !important;">
         <div class="panel-body text-left">
             <div class="mar-btm row">
-                <div class="col-xs-4"><img src="/static/img/dtnsm_logo.png" height="45px"/></div>
+                <div class="col-xs-4"><img src="https://ch.caumc.or.kr/images/main_re_logo.gif" height="45px"/></div>
                 <div class="col-xs-8 text-right pad-top"><span class="text-bold" style="font-size:25px;">&nbsp;&nbsp;Non-Disclosure Agreement for SOP</span></div>
             </div>
             <hr/>
@@ -119,7 +119,13 @@
                     <hr style="margin-top:5px;margin-bottom: 3px"/><div class="text-xs">Title/Company</div>
                 </div>
                 <div class="col-xs-3 text-center">
-                    <div id="sign" style="height:40px;"><a class="btn btn-link" href="#sign-modal" data-toggle="modal"><i class="fa fa-pencil"></i> Sign </a> </div>
+                    <#if user.signature?has_content>
+                        <div id="sign" style="height:40px;">
+                            <img src="${signatureData!''}" width="50px" >
+                        </div>
+                    <#else>
+                        <div id="sign" style="height:40px;"><a class="btn btn-link" href="#sign-modal" data-toggle="modal"><i class="fa fa-pencil"></i> Sign </a></div>
+                    </#if>
                     <hr style="margin-top:5px;margin-bottom: 3px"/><div class="text-xs">Signature</div>
                 </div>
                 <div class="col-xs-3 text-center">
@@ -130,7 +136,7 @@
         </div>
         <div class="panel-footer text-right">
             <form method="post" id="agreeForm">
-                <input type="hidden" id="base64signature" name="base64signature"/>
+                <input type="hidden" id="base64signature" name="base64signature" value="${signatureData!''}"/>
                 <a class="btn btn-warning" href="/logout"><i class="fa fa-times"></i> Cancel</a>
                 <button class="btn btn-info" type="submit"><i class="fa fa-check"></i> Submit</button>
             </form>

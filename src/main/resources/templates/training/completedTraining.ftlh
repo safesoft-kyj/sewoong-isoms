@@ -30,7 +30,7 @@
         <div class="tab-base">
             <ul class="nav nav-tabs">
                 <li>
-                    <a href="/training/mandatory-training">Ongoing</a>
+                    <a href="/training/${documentType}/mandatory-training">Ongoing</a>
                 </li>
                 <li class="active">
                     <a href="#">Completed</a>
@@ -88,7 +88,7 @@
                     }
                 </script>
                 <table data-toggle="table"
-                       data-url="/ajax/training/mandatory-training/completed"
+                       data-url="/ajax/training/${documentType}/mandatory-training/completed"
 <#--                       data-show-columns="true"-->
 <#--                       data-toolbar="#toolbar"-->
                        data-page-list="[5, 10, 20, 50]"

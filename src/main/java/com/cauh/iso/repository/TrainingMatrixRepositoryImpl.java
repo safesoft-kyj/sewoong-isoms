@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -153,14 +154,14 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
             BooleanBuilder docStatus = new BooleanBuilder();
             QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
             docStatus.and(qDocumentVersion.status.in(DocumentStatus.APPROVED, DocumentStatus.EFFECTIVE));
-            return getMyMandatoryTrainingList(user.getDeptCode(), user.getTeamCode(), user.getId(), null, null, pageable, docStatus);
+            return getMyMandatoryTrainingList(user.getDepartment(), user.getId(), null, null, pageable, docStatus);
         }
     }
 
     /**
      * 필수 트레이닝 이며, Training을 완료한 경우는 제외하고 리스트를 가져온다.
      */
-    private JPAQuery getMyMandatoryTrainingListJpaQuery(String deptCode, String teamCode, Integer userId, String docId, Account loginUser, BooleanBuilder docStatus) {
+    private JPAQuery getMyMandatoryTrainingListJpaQuery(Department department, Integer userId, String docId, Account loginUser, BooleanBuilder docStatus) {
         QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
         QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
         QTrainingPeriod qTrainingPeriod = QTrainingPeriod.trainingPeriod;
@@ -179,11 +180,8 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
         builder.and(qUser.indate.isNotNull());
         builder.and(qUser.empNo.isNotNull());
 //        if(ObjectUtils.isEmpty(loginUser) == false) builder.and(qUser.id.ne(loginUser.getId()));
-        if (!StringUtils.isEmpty(deptCode)) {
-            builder.and(qUser.deptCode.eq(deptCode));
-        }
-        if (!StringUtils.isEmpty(teamCode)) {
-            builder.and(qUser.teamCode.eq(teamCode));
+        if (!StringUtils.isEmpty(department)) {
+            builder.and(qUser.department.eq(department));
         }
         if(!ObjectUtils.isEmpty(userId)) {
             builder.and(qUser.id.eq(userId));
@@ -245,7 +243,7 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
         return jpaQuery;
     }
 
-    private JPAQuery getTrainingListJpaQuery(String deptCode, String teamCode, Integer userId, String docId, Account loginUser, BooleanBuilder docStatus, List<JobDescriptionStatus> statusList) {
+    private JPAQuery getTrainingListJpaQuery(Department department, Integer userId, String docId, Account loginUser, BooleanBuilder docStatus, List<JobDescriptionStatus> statusList) {
         QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
         QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
         QTrainingPeriod qTrainingPeriod = QTrainingPeriod.trainingPeriod;
@@ -258,12 +256,12 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
         builder.and(qUser.indate.isNotNull());
         builder.and(qUser.empNo.isNotNull());
         if(ObjectUtils.isEmpty(loginUser) == false) builder.and(qUser.id.ne(loginUser.getId()));
-        if (!StringUtils.isEmpty(deptCode)) {
-            builder.and(qUser.deptCode.eq(deptCode));
+        if (!StringUtils.isEmpty(department)) {
+            builder.and(qUser.department.eq(department));
         }
-        if (!StringUtils.isEmpty(teamCode)) {
-            builder.and(qUser.teamCode.eq(teamCode));
-        }
+//        if (!StringUtils.isEmpty(teamCode)) {
+//            builder.and(qUser.teamCode.eq(teamCode));
+//        }
         if(!ObjectUtils.isEmpty(userId)) {
             builder.and(qUser.id.eq(userId));
         }
@@ -276,7 +274,7 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
             builder.and(trainingMatrix.documentVersion.document.docId.like(docId.toUpperCase() + "%"));
         }
 
-        //TODO:: 20201201 - 수정필요
+        //TODO:: 20210115 - 수정
         JPAQuery<MyTraining> jpaQuery = queryFactory.selectDistinct(Projections.constructor(MyTraining.class,
                     qUser,
                 trainingMatrix.documentVersion.document,
@@ -312,20 +310,26 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
         return jpaQuery;
     }
 
-    public Page<MyTraining> getMyMandatoryTrainingList(String deptCode, String teamCode, Integer userId, String docId, Account user, Pageable pageable, BooleanBuilder docStatus) {
+    public Page<MyTraining> getMyMandatoryTrainingList(Department department, Integer userId, String docId, Account user, Pageable pageable, BooleanBuilder docStatus) {
 
-        JPAQuery<MyTraining> jpaQuery = getMyMandatoryTrainingListJpaQuery(deptCode, teamCode, userId, docId, user, docStatus);
-        QueryResults<MyTraining> results = jpaQuery.offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetchResults();
+        JPAQuery<MyTraining> jpaQuery = getMyMandatoryTrainingListJpaQuery(department, userId, docId, user, docStatus);
+        QueryResults<MyTraining> results = null;
+
+        try{
+            results = jpaQuery.offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .fetchResults();
+        }catch(Exception e) {
+            log.error("Query 동작 중 에러 발생 : {}", e.getMessage());
+            return new PageImpl<>(new ArrayList<>(), pageable, 0);
+        }
 
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 
     /**
      * 필수 트레이닝 목록
-     * @param deptCode
-     * @param teamCode
+     * @param department
      * @param userId
      * @param docId
      * @param user
@@ -333,31 +337,49 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
      * @param docStatus
      * @return
      */
-    public Page<MyTraining> getTrainingList(String deptCode, String teamCode, Integer userId, String docId, Account user, Pageable pageable, BooleanBuilder docStatus) {
+    public Page<MyTraining> getTrainingList(Department department, Integer userId, String docId, Account user, Pageable pageable, BooleanBuilder docStatus) {
 
 //        JPAQuery<MyTraining> jpaQuery = getTrainingListJpaQuery(deptCode, teamCode, userId, docId, user, docStatus, statusList);
 //        QueryResults<MyTraining> results = jpaQuery.offset(pageable.getOffset())
 //        .limit(pageable.getPageSize())
 //                .fetchResults();
-        JPAQuery<MyTraining> jpaQuery = getMyMandatoryTrainingListJpaQuery(deptCode, teamCode, userId, docId, user, docStatus);
-        QueryResults<MyTraining> results = jpaQuery.offset(pageable.getOffset())
-        .limit(pageable.getPageSize())
-                .fetchResults();
+        JPAQuery<MyTraining> jpaQuery = getMyMandatoryTrainingListJpaQuery(department, userId, docId, user, docStatus);
+        QueryResults<MyTraining> results;
+
+        try{
+            results = jpaQuery.offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .fetchResults();
+        }catch(Exception e) {
+            log.error("@Training Log List 동작 중 에러 발생 : {}", e.getMessage());
+            return new PageImpl<>(new ArrayList<>(), pageable, 0);
+        }
 
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 
-    public List<MyTraining> getDownloadTrainingList(String deptCode, String teamCode, Integer userId, String docId, Account user) {
+    public List<MyTraining> getDownloadTrainingList(Department department, Integer userId, String docId, Account user, DocumentType documentType) {
         BooleanBuilder docStatus = new BooleanBuilder();
         QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
+
+        if(!ObjectUtils.isEmpty(documentType)) {
+            docStatus.and(qDocumentVersion.document.type.eq(documentType));
+        }
+
         docStatus.and(qDocumentVersion.status.in(DocumentStatus.APPROVED, DocumentStatus.EFFECTIVE));
 
-        JPAQuery<MyTraining> jpaQuery = getMyMandatoryTrainingListJpaQuery(deptCode, teamCode, userId, docId, user, docStatus);
+        JPAQuery<MyTraining> jpaQuery = getMyMandatoryTrainingListJpaQuery(department, userId, docId, user, docStatus);
 //        BooleanBuilder docStatus = new BooleanBuilder();
 //        QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
 //        docStatus.and(qDocumentVersion.status.notIn(DocumentStatus.REVISION, DocumentStatus.DEVELOPMENT));
 //
 //        JPAQuery<MyTraining> jpaQuery = getTrainingListJpaQuery(deptCode, teamCode, userId, docId, user, docStatus, statusList);
-        return jpaQuery.fetch();
+
+        try{
+            return jpaQuery.fetch();
+        }catch(Exception e) {
+            log.error("@Training Log List 동작 중 에러 발생 : {}", e.getMessage());
+            return new ArrayList<>();
+        }
     }
 }

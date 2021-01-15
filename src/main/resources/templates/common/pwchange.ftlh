@@ -4,16 +4,7 @@
 <html>
 <head>
     <title>Chung Ang University Hospital - ISO Management System</title>
-    <!--Bootstrap Stylesheet [ REQUIRED ]-->
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-    <!--Nifty Stylesheet [ REQUIRED ]-->
-    <link href="/static/css/nifty.min.css" rel="stylesheet">
-    <!--Premium Icons [ OPTIONAL ]-->
-    <link href="/static/premium/icon-sets/icons/line-icons/premium-line-icons.min.css" rel="stylesheet">
-    <link href="/static/premium/icon-sets/icons/solid-icons/premium-solid-icons.min.css" rel="stylesheet">
 
-    <!--jQuery [ REQUIRED ]-->
-    <script src="/static/js/jquery.min.js"></script>
     <!--BootstrapJS [ RECOMMENDED ]-->
     <script src="/static/js/bootstrap.min.js"></script>
     <!--Nifty Admin [ RECOMMENDED ]-->
@@ -114,7 +105,7 @@
                     <button class="btn btn-info" name="action" value="change" type="submit"><i class="pli-yes"></i>
                         비밀번호 변경
                     </button>
-                    <a class="btn btn-warning" href="/password-change/skip" type="submit"><i class="pli-back"></i>
+                    <a class="btn btn-warning" href="/password-change/skip"><i class="pli-back"></i>
                         다음에 변경하기
                     </a>
                 </div>

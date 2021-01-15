@@ -13,7 +13,9 @@ import com.cauh.common.security.authentication.InternalAccountAuthenticationExce
 import com.cauh.common.security.authentication.SignUpRequestedAccountException;
 import com.cauh.common.utils.DateUtils;
 import com.cauh.iso.component.CurrentUserComponent;
+import com.cauh.iso.domain.Mail;
 import com.cauh.iso.service.JobDescriptionService;
+import com.cauh.iso.service.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -40,12 +42,11 @@ public class UserServiceImpl implements UserService {
     private final UserJobDescriptionRepository userJobDescriptionRepository;
     private final PasswordEncoder passwordEncoder;
     private final DepartmentRepository departmentRepository;
-
     //현재 유저정보를 가지고있는 Component
     private final CurrentUserComponent currentUserComponent;
-
     private final UserJobDescriptionChangeLogRepository userJobDescriptionChangeLogRepository;
     private final JobDescriptionService jobDescriptionService;
+    private final MailService mailService;
 
 //    private final DeptUserMapper deptUserMapper;
 //
@@ -104,6 +105,31 @@ public class UserServiceImpl implements UserService {
     @Override
     public Account saveOrUpdate(Account user) {
         return userRepository.save(user);
+    }
+
+    @Override
+    public void userPasswordReset(Account account) {
+        //계정 비밀번호 Setting 구간
+        String rdPassword = getRandomPassword(10);
+        account.setPassword(passwordEncoder.encode(rdPassword));
+        LocalDate pwDueDate = LocalDate.now().minusDays(1); //비밀번호 기한 초과되게 만들기. (변경을 위한 동작)
+        account.setCredentialsExpiredDate(Date.from(pwDueDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        userRepository.save(account);
+
+        //계정 Mail 전송 구간.
+        HashMap<String, Object> model = new HashMap<>();
+        model.put("message", "임시 비밀번호 안내");
+        model.put("username", account.getUsername());
+        model.put("password", rdPassword);
+
+        Mail mail = Mail.builder()
+                .to(new String[]{account.getEmail()})
+                .subject(String.format("[ISO-MS/System] 사용자 임시 비밀번호 안내"))
+                .model(model)
+                .templateName("user-password-reset")
+                .build();
+
+        mailService.sendMail(mail);
     }
 
     @Override
@@ -234,6 +260,9 @@ public class UserServiceImpl implements UserService {
                     .roleStatus(RoleStatus.ACCEPTED)
                     .build();
             userJobDescriptionChangeLogRepository.save(userJobDescriptionChangeLog);
+
+            //유저 가입 수락 후 현재 유저 목록 갱신.
+            currentUserComponent.updateCurrentUserList();
         }
 
         //Account 저장 시, UserJobDescription 저장데이터 제거
@@ -349,5 +378,19 @@ public class UserServiceImpl implements UserService {
     protected Date toDate(String empNo) {
         String s = empNo.replace("S", "20");
         return DateUtils.toDate(s.substring(0, s.length() - 2), "yyyyMMdd");
+    }
+
+    public static String getRandomPassword(int len) {
+        char[] charSet = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+        int idx = 0;
+        StringBuffer sb = new StringBuffer();
+//        System.out.println("charSet.length :::: " + charSet.length);
+        for (int i = 0; i < len; i++) {
+            idx = (int) (charSet.length * Math.random()); // 36 * 생성된 난수를 Int로 추출 (소숫점제거)
+            System.out.println("idx :::: "+idx);
+            sb.append(charSet[idx]);
+        }
+
+        return sb.toString();
     }
 }

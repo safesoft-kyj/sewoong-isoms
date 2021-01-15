@@ -2,7 +2,7 @@
 <#import "/spring.ftl" as spring />
 <html>
 <head>
-    <title>ISO Management System > Authority Management > 개인정보 활용동의 이력</title>
+    <title>ISO Management System > Authority Management > 개인정보 활용동의 이력 (외부사용자)</title>
 </head>
 <body>
 
@@ -14,7 +14,7 @@
         <div class="pad-btm form-inline">
             <div class="row">
                 <div class="col-sm-6 table-toolbar-left">
-                    <#--                    <a class="btn btn-purple" href="/notice/new"><i class="pli-add"></i> Add</a>-->
+                    <a class="btn btn-purple" href="/admin/authority/agreement-to-collect-and-use/internal"><i class="pli-door"></i> 내부 사용자</a>
                     <#--                    <button class="btn btn-default"><i class="pli-printer"></i></button>-->
                     <#--                    <div class="btn-group">-->
                     <#--                        <button class="btn btn-default"><i class="pli-exclamation"></i></button>-->
@@ -52,6 +52,7 @@
                             <td class="text-center">${t.externalCustomer.name}</td>
                             <td class="text-center">${t.externalCustomer.email}</td>
                             <td class="text-center">${t.externalCustomer.jobTitle!''}</td>
+
                             <td class="text-center">${t.createdDate?string('yyyy-MM-dd')}</td>
                             <td class="text-center">
                                 <a class="btn btn-info btn-xs" href="#approval-modal" data-toggle="modal" data-title="SOP & Digital Binder Disclosure Request Form" data-id="${t.externalCustomer.sopDisclosureRequestForm.approval.id}"><i class="fa fa-file-text-o"></i></a>

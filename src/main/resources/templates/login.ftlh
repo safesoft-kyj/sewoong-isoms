@@ -864,9 +864,8 @@
                 <div class="signup-form" style="padding: 0">
                     <a href="https://ch.cauhs.or.kr/" target="_blank"><img
                                 src="https://ch.cauhs.or.kr/images/main_re_logo.gif"
-                                style="height: 40px; padding-bottom: 10px" alt="KCSG"></a>
+                                style="height: 40px; padding-bottom: 10px" alt="CAUH"></a>
                     <h2 class="form-title" style="padding-bottom: 5px">
-
                         <span class="title-head" style="padding-top: 5px;">ISO</span>
                         <span class="title-head">M</span>anagement
                         <span class="title-head">S</span>ystem
@@ -875,6 +874,10 @@
                         <#if RequestParameters.sessionExpired?exists || RequestParameters.invalidSession?exists>
                             <div class="alert alert-danger">
                                 Your session has expired.
+                            </div>
+                        <#elseif RequestParameters.passwordReset?exists>
+                            <div class="alert alert-info">
+                                Temporary password was sent to input email. please check.
                             </div>
                         <#elseif RequestParameters.error?exists>
                             <#if RequestParameters.error=='locked'>
@@ -930,9 +933,15 @@
                         <!--                                <input type="password" name="re_pass" id="re_pass" placeholder="Repeat your password"/>-->
                         <!--                            </div>-->
                         <div class="form-group">
-                            <input type="checkbox" name="agree-term" id="form-checkbox" class="agree-term"/>
-                            <label for="form-checkbox" class="label-agree-term"><span><span></span></span>Saved
-                                ID</label>
+                            <div class="row">
+                                <div class="col-lg-6 text-left">
+                                    <input type="checkbox" name="agree-term" id="form-checkbox" class="agree-term"/>
+                                    <label for="form-checkbox" class="label-agree-term"><span><span></span></span>Saved ID</label>
+                                </div>
+                                <div class="col-lg-6 text-right">
+                                    <a href="/forgot-password">Forgot Password?</a>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group form-button">
                             <input type="submit" name="signIn" id="signIn" class="form-submit" value="Login"/>

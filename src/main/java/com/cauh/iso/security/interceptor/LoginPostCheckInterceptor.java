@@ -43,10 +43,10 @@ public class LoginPostCheckInterceptor extends HandlerInterceptorAdapter {
             if (user.isAgreementCollectUse()) {
                 log.trace("@Username : {} Agreement to Collect Use 동의 처리 되어 있음.", user.getUsername());
 
-                //CASE 2. 비밀 유지 서약
-                if (!user.isNonDisclosureAgreement()) {
-                    log.info("@Username : {} Non-Disclosure Agreement for SOP 동의 기록 없음. 동의 페이지로 이동", user.getUsername());
-                    modelAndView.setViewName("redirect:/non-disclosure-agreement-for-sop");
+                //CASE 2. 기밀 유지 서약
+                if (!user.isConfidentialityPledge()) {
+                    log.info("@Username : {} Confidentiality-pledge 동의 기록 없음. 동의 페이지로 이동", user.getUsername());
+                    modelAndView.setViewName("redirect:/confidentiality-pledge");
                 }
             } else {
                 log.info("@Username : {} Agreement to Collect Use 동의 기록 없음. 동의 페이지로 이동", user.getUsername());
@@ -74,13 +74,11 @@ public class LoginPostCheckInterceptor extends HandlerInterceptorAdapter {
 
         //CASE 4.User Signature 미 등록 시,
         //내부 사용자면서 서명이 없으면,
-        if(user.getUserType() == UserType.USER && user.isSignature() == false) {
-            //modelAndView.getModel().put("message", "서명을 등록해 주세요.");
-            modelAndView.setViewName("redirect:/user/signature");
-            super.postHandle(request, response, handler, modelAndView);
-            return;
-        }
-
-        //CASE 3.사용
+//        if(user.getUserType() == UserType.USER && user.isSignature() == false) {
+//            //modelAndView.getModel().put("message", "서명을 등록해 주세요.");
+//            modelAndView.setViewName("redirect:/user/signature");
+//            super.postHandle(request, response, handler, modelAndView);
+//            return;
+//        }
     }
 }

@@ -12,6 +12,8 @@ import com.cauh.common.service.CustomUserDetailsService;
 import com.cauh.common.service.ExternalCustomUserService;
 import com.cauh.common.service.UserService;
 import com.cauh.common.utils.DateUtils;
+import com.cauh.iso.repository.AgreementPersonalInformationRepository;
+import com.cauh.iso.repository.ConfidentialityPledgeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +67,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
     private ExternalCustomUserService externalCustomUserService;
     @Autowired
     private SignatureRepository signatureRepository;
+    @Autowired
+    private AgreementPersonalInformationRepository agreementPersonalInformationRepository;
+    @Autowired
+    private ConfidentialityPledgeRepository confidentialityPledgeRepository;
+
 
     @Value("${spring.profiles.active}")
     private String activeProfile;
@@ -162,7 +169,15 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
              */
             preAuthenticationChecks(userDetails);
             userDetails.setUserType(UserType.USER);
+
             userDetails.setSignature(signatureRepository.findById(username).isPresent());
+
+            //개인정보 활용동의 여부
+            userDetails.setAgreementCollectUse(agreementPersonalInformationRepository.findByInternalUser(userDetails).isPresent());
+
+            //기밀유지 서약 여부
+            userDetails.setConfidentialityPledge(confidentialityPledgeRepository.findByInternalUser(userDetails).isPresent());
+
             log.info("@@@@@@User -> JobDescription : {}", userDetails.getUserJobDescriptions());
 
         } else {

@@ -40,10 +40,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -93,9 +90,9 @@ public class SOPController {
         .collect(toList());
 
         if(StringUtils.isEmpty(sopId)) {
-            java.util.List<DocumentVersion> rdSopLists = documentVersionRepository.getSOPFoldersByStatus(status, categoryId);
-            if (!ObjectUtils.isEmpty(rdSopLists)) {
-                sopList.addAll(rdSopLists);
+            java.util.List<DocumentVersion> rfSopLists = documentVersionRepository.getSOPFoldersByStatus(status, categoryId);
+            if (!ObjectUtils.isEmpty(rfSopLists)) {
+                sopList.addAll(rfSopLists);
             }
         }
 
@@ -105,13 +102,10 @@ public class SOPController {
                 .collect(toList());
 
         if (!ObjectUtils.isEmpty(filteredList) && StringUtils.isEmpty(categoryId)) {
-            model.addAttribute("categoryList", filteredList.stream()
-                    .map(v -> v.getDocument().getCategory())
-                    .distinct()
-                    .sorted(Comparator.comparing((Category::getShortName)))
+            model.addAttribute("categoryList", filteredList.stream().map(v -> v.getDocument().getCategory())
+                    .distinct().sorted(Comparator.comparing((Category::getShortName)))
                     .collect(toList()));
         }
-
 //        }
 //            /**
 //             * 외부 사용자
@@ -253,8 +247,6 @@ public class SOPController {
 
 //            addTextWatermark(stringStatus.toUpperCase(), uuid, resource.getInputStream(), response.getOutputStream());
         watermark(status.name(), accessLog.isPresent() ? accessLog.get().getId() : "", resource.getInputStream(), response.getOutputStream());
-
-
 
 //            return ResponseEntity.ok()
 //                    .contentType(MediaType.parseMediaType(contentType))

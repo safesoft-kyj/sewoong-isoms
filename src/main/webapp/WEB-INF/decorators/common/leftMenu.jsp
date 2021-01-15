@@ -27,6 +27,11 @@
             <li><a href="/user/signature">Signature</a></li>
         </ul>
     </li>
+    <li class="text-center mar-btm mar-top">
+        <a href="#">
+            <img class="menu-title" src="/static/img/withdrawal.png" alt="철회신청">
+        </a>
+    </li>
     <li>
         <%-- Profile Area --%>
         <a href="#" aria-expanded="true">
@@ -100,27 +105,26 @@
             </c:if>
         </ul>
     </li>
-
-<%--    <li>--%>
-<%--        <a href="/approval" aria-expanded="false">--%>
-<%--            <i class="pli-check"></i>--%>
-<%--            <span class="menu-title">전자결재</span>--%>
-<%--            <i class="arrow"></i>--%>
-<%--        </a>--%>
-<%--        <!--Submenu-->--%>
-<%--        <ul class="collapse" aria-expanded="false">--%>
-<%--            <li>--%>
-<%--                <a href="/approval/box/requester" aria-expanded="false">기안함</a>--%>
-<%--            </li>--%>
-<%--            <li>--%>
-<%--                <a href="/approval/box/reviewer" aria-expanded="false">검토함</a>--%>
-<%--            </li>--%>
-<%--            <li>--%>
-<%--                <a href="/approval/box/approver" aria-expanded="false">승인함</a>--%>
-<%--            </li>--%>
-<%--            </li>--%>
-<%--        </ul>--%>
-<%--    </li>--%>
+    <li>
+        <a href="/approval" aria-expanded="false">
+            <i class="pli-check"></i>
+            <span class="menu-title">전자결재</span>
+            <i class="arrow"></i>
+        </a>
+        <!--Submenu-->
+        <ul class="collapse" aria-expanded="false">
+            <li>
+                <a href="/approval/box/requester" aria-expanded="false">기안함</a>
+            </li>
+            <li>
+                <a href="/approval/box/reviewer" aria-expanded="false">검토함</a>
+            </li>
+            <li>
+                <a href="/approval/box/approver" aria-expanded="false">승인함</a>
+            </li>
+            </li>
+        </ul>
+    </li>
 
     <%--    <li>--%>
     <%--        <a href="xx#xxx" aria-expanded="false">--%>

@@ -1,9 +1,6 @@
 package com.cauh.iso.repository;
 
-import com.cauh.common.entity.Account;
-import com.cauh.common.entity.JobDescription;
-import com.cauh.common.entity.RoleAccount;
-import com.cauh.common.entity.UserJobDescription;
+import com.cauh.common.entity.*;
 import com.cauh.iso.domain.MyTraining;
 import com.cauh.iso.domain.MyTrainingMatrix;
 import com.cauh.iso.domain.constant.DocumentType;
@@ -27,7 +24,7 @@ public interface TrainingMatrixRepositoryCustom {
     //Page<MyTraining> getMyTraining(TrainingRequirement requirement,Pageable pageable, Account user);
     Page<MyTraining> getMyTraining(TrainingRequirement requirement, DocumentType documentType, Pageable pageable, Account user);
 
-    Page<MyTraining> getTrainingList(String deptCode, String teamCode, Integer userId, String docId, Account user, Pageable pageable, BooleanBuilder docStatus);
+    Page<MyTraining> getTrainingList(Department department, Integer userId, String docId, Account user, Pageable pageable, BooleanBuilder docStatus);
 
-    List<MyTraining> getDownloadTrainingList(String deptCode, String teamCode, Integer userId, String docId, Account user);
+    List<MyTraining> getDownloadTrainingList(Department department, Integer userId, String docId, Account user, DocumentType documentType);
 }

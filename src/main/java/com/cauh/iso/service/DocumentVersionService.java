@@ -527,7 +527,7 @@ public class DocumentVersionService {
         int[] diffArr = {0, 2, 6, 9};
         iterable.forEach(user -> {
             log.info("@SOP 트레이닝 이메일 알림을 전송한다.");
-            List<MyTraining> trainingList = trainingMatrixRepository.getDownloadTrainingList(null, null, user.getId(), null, null);
+            List<MyTraining> trainingList = trainingMatrixRepository.getDownloadTrainingList(null, user.getId(), null, null, null);
 
             for(int compareDiff : diffArr) {
                 log.info("@Diff : {}", compareDiff);

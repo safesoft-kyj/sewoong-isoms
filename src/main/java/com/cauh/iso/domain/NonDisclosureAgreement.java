@@ -31,13 +31,6 @@ public class NonDisclosureAgreement extends BaseEntity implements Serializable {
     private String email;
 
     @ManyToOne
-    @JoinColumn(name ="internal_user_id", referencedColumnName = "id")
-    private Account internalUser; //내부 사용자
-
-    @Enumerated(EnumType.STRING)
-    private UserType userType;
-
-    @ManyToOne
     @JoinColumn(name = "external_customer_id", referencedColumnName = "id")
     private ExternalCustomer externalCustomer;
 

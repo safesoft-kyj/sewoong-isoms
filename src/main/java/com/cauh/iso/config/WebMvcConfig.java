@@ -87,7 +87,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         registry.addInterceptor(externalCustomerCheckInterceptor())
                 .addPathPatterns("/**")
-                .excludePathPatterns("/static/**", "/login", "/signUp", "/logout", "/error", "/expired", "/invalidSession", "/api/**", "/favicon.ico", "/ajax/**",
+                .excludePathPatterns("/static/**", "/login", "/signUp/**", "/logout", "/error", "/expired", "/invalidSession", "/api/**", "/favicon.ico", "/ajax/**",
                         "/denied",
                         "/please-enter-your-access-code",
                         "/agreement-to-collect-and-use-personal-information",
@@ -97,12 +97,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
         //YSH : 2021-0106 - 다시 사용하기로 결정. - 로그인 이후 동작 제어.
         registry.addInterceptor(loginPostCheckInterceptor())
                 .addPathPatterns("/**")
-                .excludePathPatterns("/static/**", "/login", "/signUp", "/logout", "/error", "/expired", "/invalidSession", "/api/**", "/favicon.ico", "/ajax/**",
+                .excludePathPatterns("/static/**", "/login", "/signUp/**", "/logout", "/error", "/expired", "/invalidSession", "/api/**", "/favicon.ico", "/ajax/**",
                         "/password-change",
+                        "/forgot-password",
                         "/denied",
                         "/please-enter-your-access-code",
                         "/agreement-to-collect-and-use-personal-information",
                         "/non-disclosure-agreement-for-sop",
+                        "/confidentiality-pledge",
                         "/user/signature");
     }
 

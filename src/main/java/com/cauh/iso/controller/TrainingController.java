@@ -1,5 +1,6 @@
 package com.cauh.iso.controller;
 
+import com.cauh.common.entity.Department;
 import com.cauh.common.entity.QAccount;
 import com.cauh.common.entity.Account;
 import com.cauh.common.entity.TrainingRecord;
@@ -8,6 +9,7 @@ import com.cauh.common.mapper.DeptUserMapper;
 import com.cauh.common.repository.TrainingRecordRepository;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.annotation.CurrentUser;
+import com.cauh.iso.admin.service.DepartmentService;
 import com.cauh.iso.domain.*;
 import com.cauh.iso.domain.constant.*;
 import com.cauh.iso.repository.TrainingMatrixRepository;
@@ -69,6 +71,7 @@ public class TrainingController {
     private final OfflineTrainingService offlineTrainingService;
     private final OfflineTrainingAttendeeService offlineTrainingAttendeeService;
     private final DeptUserMapper deptUserMapper;
+    private final DepartmentService departmentService;
     private final DocumentService documentService;
     private final TrainingRecordRepository trainingRecordRepository;
     private final TrainingService trainingService;
@@ -223,11 +226,14 @@ public class TrainingController {
     }
 
     @GetMapping("/training/{documentType}/mandatory-training/completed")
-    public String completedTraining() {//@PageableDefault(size = 15, sort = {"completeDate"}, direction = Sort.Direction.DESC) Pageable pageable, @CurrentUser Account user, Model model
+    public String completedTraining(@PathVariable("documentType") DocumentType documentType) {
+//        @PageableDefault(size = 15, sort = {"completeDate"}, direction = Sort.Direction.DESC) Pageable pageable,        @PathVariable("documentType") DocumentType documentType, @CurrentUser Account user, Model model
+
 //        QTrainingLog qTrainingLog = QTrainingLog.trainingLog;
 //        BooleanBuilder builder = new BooleanBuilder();
 //        builder.and(qTrainingLog.user.id.eq(user.getId()));
 //        builder.and(qTrainingLog.status.eq(TrainingStatus.COMPLETED));
+//        builder.and(qTrainingLog.documentVersion.document.type.eq(documentType));
 //
 //        model.addAttribute("trainingLog", trainingLogService.findAll(builder, pageable));
         return "training/completedTraining";
@@ -505,7 +511,7 @@ public class TrainingController {
     @PreAuthorize("authentication.principal.lev eq 1 or authentication.principal.teamManager eq true")
     public String teamDeptTrainingLog(@PageableDefault(size = 25) Pageable pageable,
                                       @CurrentUser Account user,
-                                      @RequestParam(value = "teamCode", required = false) String teamCode,
+                                      @RequestParam(value = "departmentId", required = false) Integer departmentId,
                                       @RequestParam(value = "userId", required = false) Integer userId,
                                       Model model) {
         //TODO 팀장, 부서장 정확히 할것
@@ -550,7 +556,7 @@ public class TrainingController {
     @PreAuthorize("authentication.principal.lev eq 1 or authentication.principal.teamManager eq true")
     public String teamDeptTrainingLog2(@PageableDefault(size = 25) Pageable pageable,
                                       @CurrentUser Account user,
-                                      @RequestParam(value = "teamCode", required = false) String teamCode,
+                                      @RequestParam(value = "departmentId", required = false) Integer departmentId,
                                       @RequestParam(value = "userId", required = false) Integer userId,
                                       @RequestParam(value = "docId", required = false) String docId,
                                       Model model) {
@@ -595,14 +601,13 @@ public class TrainingController {
     public void downloadTeamDeptTrainingLog(
             @PathVariable("documentType") DocumentType documentType,
             @CurrentUser Account user,
-            @RequestParam(value = "teamCode", required = false) String teamCode,
+            @RequestParam(value = "teamId", required = false) Integer teamId,
             @RequestParam(value = "userId", required = false) Integer userId,
             @RequestParam(value = "docId", required = false) String docId,
             HttpServletResponse response) throws Exception {
 
-        //TODO : DocumentType에 관련하여 변경작업 필요
-
-        List<MyTraining> trainingList = trainingMatrixRepository.getDownloadTrainingList(user.getTeamDept(), teamCode, userId, docId, user);
+        Department department = departmentService.getDepartmentById(teamId);
+        List<MyTraining> trainingList = trainingMatrixRepository.getDownloadTrainingList(department, userId, docId, user, documentType);
         InputStream is = IndexReportService.class.getResourceAsStream("trainingLog.xlsx");
         Context context = new Context();
         context.putVar("trainings", trainingList);

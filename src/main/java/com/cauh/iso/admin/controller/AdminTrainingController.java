@@ -1,8 +1,11 @@
 package com.cauh.iso.admin.controller;
 
+import com.cauh.common.entity.Department;
 import com.cauh.common.entity.QAccount;
 import com.cauh.common.mapper.DeptUserMapper;
+import com.cauh.common.repository.DepartmentRepository;
 import com.cauh.common.repository.UserRepository;
+import com.cauh.iso.admin.service.DepartmentService;
 import com.cauh.iso.domain.*;
 import com.cauh.iso.domain.constant.DocumentStatus;
 import com.cauh.iso.domain.constant.DocumentType;
@@ -55,6 +58,7 @@ public class AdminTrainingController {
     private final DocumentVersionService documentVersionService;
     private final TrainingPeriodValidator trainingPeriodValidator;
     private final DeptUserMapper deptUserMapper;
+    private final DepartmentService departmentService;
     private final UserRepository userRepository;
     private final TrainingMatrixRepository trainingMatrixRepository;
 
@@ -183,50 +187,73 @@ public class AdminTrainingController {
     public String teamDeptTrainingLog2(@PathVariable("dType") DocumentType documentType,
                                        @PageableDefault(size = 25) Pageable pageable,
 //                                       @CurrentUser User user,
-                                       @RequestParam(value = "deptCode", required = false) String deptCode,
-                                       @RequestParam(value = "teamCode", required = false) String teamCode,
+                                       @RequestParam(value = "deptId", required = false) Integer deptId,
+                                       @RequestParam(value = "teamId", required = false) Integer teamId,
                                        @RequestParam(value = "userId", required = false) Integer userId,
                                        @RequestParam(value = "docId", required = false) String docId,
                                        Model model) {
-        Map<String, String> param = new HashMap<>();
-        param.put("gwUserTbl", gwUserTbl);
-        param.put("gwDeptTbl", gwDeptTbl);
-        model.addAttribute("deptList", deptUserMapper.findAllDept(param));
+        //부서 목록
+        model.addAttribute("deptList", departmentService.getParentDepartment());
+        Department department = null;
 
-        if(StringUtils.isEmpty(deptCode) == false) {
-            param.put("deptCode", deptCode);
-            model.addAttribute("teamList", deptUserMapper.findByDeptTeam(param));
+        if(!ObjectUtils.isEmpty(deptId)) {
+            department = new Department(deptId);
+            model.addAttribute("teamList", departmentService.getChildDepartment(department));
+
+            if (!ObjectUtils.isEmpty(teamId)) {
+                department = new Department(teamId);
+                QAccount qUser = QAccount.account;
+                BooleanBuilder userBuilder = new BooleanBuilder();
+                userBuilder.and(qUser.department.eq(department));
+                model.addAttribute("userList", userRepository.findAll(userBuilder, qUser.engName.asc()));
+            }
         }
 
-        if(ObjectUtils.isEmpty(teamCode) == false) {
-            QAccount qUser = QAccount.account;
-            BooleanBuilder userBuilder = new BooleanBuilder();
-//            userBuilder.and(qUser.teamCode.eq(teamCode));
-            model.addAttribute("userList", userRepository.findAll(userBuilder, qUser.engName.asc()));
-        }
-
-
-//        model.addAttribute("trainingLog", trainingLogService.findAll(builder, pageable));
         BooleanBuilder docStatus = new BooleanBuilder();
         QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
 
+        //Document Type을 지정. (ISO or SOP)
+        docStatus.and(qDocumentVersion.document.type.eq(documentType));
         docStatus.and(qDocumentVersion.status.in(DocumentStatus.APPROVED, DocumentStatus.EFFECTIVE));
-        model.addAttribute("trainingLog", trainingMatrixRepository.getTrainingList(deptCode, teamCode, userId, docId, null, pageable, docStatus));
+        model.addAttribute("trainingLog", trainingMatrixRepository.getTrainingList(department, userId, docId, null, pageable, docStatus));
+
+//        model.addAttribute("trainingLog", trainingLogService.findAll(builder, pageable));
         return "training/teamDeptTrainingLog2";
     }
 
     @PostMapping("/training/{dType}/trainingLog")
-    @Transactional(readOnly = true)
+//    @Transactional(readOnly = true)
+    @Transactional
     public void downloadTeamDeptTrainingLog(@PathVariable("dType") DocumentType documentType,
-                                              @RequestParam(value = "deptCode", required = false) String deptCode,
-                                              @RequestParam(value = "teamCode", required = false) String teamCode,
-                                              @RequestParam(value = "userId", required = false) Integer userId,
-                                              @RequestParam(value = "docId", required = false) String docId,
-                                              HttpServletResponse response) throws Exception {
-        List<MyTraining> trainingList = trainingMatrixRepository.getDownloadTrainingList(deptCode, teamCode, userId, docId, null);
+                                            @RequestParam(value = "deptId", required = false) Integer deptId,
+                                            @RequestParam(value = "teamId", required = false) Integer teamId,
+                                            @RequestParam(value = "userId", required = false) Integer userId,
+                                            @RequestParam(value = "docId", required = false) String docId,
+                                            HttpServletResponse response) throws Exception {
+
+        //team, user 정보는 있는데 부서정보가 없는 경우
+        if((!ObjectUtils.isEmpty(teamId) || !ObjectUtils.isEmpty(userId)) && ObjectUtils.isEmpty(deptId)) {
+            log.error("부서 정보가 잘못되었습니다. deptId : {}, teamId = {}, userId = {}", deptId, teamId, userId);
+            return;
+        }
+
+        Department department = null;
+
+        //팀정보가 있으면 팀, 없으면 부서정보.
+        if(!ObjectUtils.isEmpty(deptId)) {
+            if(!ObjectUtils.isEmpty(teamId)) {
+                department = departmentService.getDepartmentById(teamId);
+            } else {
+                department = departmentService.getDepartmentById(deptId);
+            }
+        }
+
+        //Document Type 별 분류 (ISO / SOP)
+        List<MyTraining> trainingList = trainingMatrixRepository.getDownloadTrainingList(department, userId, docId, null, documentType);
         InputStream is = null;
+
+        //TODO :: 문서별 Training Log 양식이 나오면 분류.
         if(documentType == DocumentType.ISO){
-            //TODO :: 수정 필요.
             is = IndexReportService.class.getResourceAsStream("trainingLog.xlsx");
         } else if(documentType == DocumentType.SOP) {
             is = IndexReportService.class.getResourceAsStream("trainingLog.xlsx");

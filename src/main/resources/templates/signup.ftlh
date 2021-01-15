@@ -35,7 +35,6 @@
         .form-group {
             margin-bottom: 10px;
         }
-
     </style>
 
     <script>
@@ -227,13 +226,17 @@
     </script>
 </head>
 <body class="main" style="background-color: white">
-<div class="container">
+<div class="cls-content">
     <!-- Sign Up Page -->
-    <div class="panel panel-success">
+    <div class="panel panel-bordered-success cls-content-lg text-lg-left pad-top" style="width: 800px">
         <!--Modal header-->
-        <div class="panel-heading">
-            <h4 class="panel-title">ISO Management System > Sign Up</h4>
+        <div class="text-center mar-btm">
+            <div class="row">
+                <div class="col-xs-4"><img src="https://ch.caumc.or.kr/images/main_re_logo.gif"></div>
+                <div class="col-xs-8 text-right pad-top"><span class="text-bold pad-rgt" style="font-size:24px;">ISO Management System > Sign Up</span></div>
+            </div>
         </div>
+        <hr>
         <form action="/signUp" method="POST" class="register-form" id="signup-form">
             <!--Modal body-->
             <div class="panel-body">
@@ -331,7 +334,7 @@
                 </div>
             </div>
             <!--Modal footer-->
-            <div class="panel-footer">
+            <div class="panel-footer text-right">
                 <button class="btn btn-default" id="requestBtn" type="submit"><i class="pli-yes"></i>Request</button>
                 <a data-dismiss="modal" class="btn btn-default" href="/login"><i class="pli-arrow-left-2"></i> Back</a>
             </div>

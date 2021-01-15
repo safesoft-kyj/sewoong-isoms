@@ -3,8 +3,9 @@ package com.cauh.iso.controller;
 import com.cauh.common.entity.Account;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.annotation.CurrentUser;
-import com.cauh.iso.component.CurrentUserComponent;
-import com.cauh.iso.validator.UserPasswordValidator;
+import com.cauh.common.service.UserService;
+import com.cauh.iso.validator.UserForgotPasswordValidator;
+import com.cauh.iso.validator.UserPasswordChangeValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -14,13 +15,13 @@ import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -30,7 +31,9 @@ import java.util.Map;
 public class LoginController {
 
     private final UserRepository userRepository;
-    private final UserPasswordValidator userPasswordValidator;
+    private final UserService userService;
+    private final UserPasswordChangeValidator userPasswordChangeValidator;
+    private final UserForgotPasswordValidator userForgotPasswordValidator;
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/login")
@@ -40,6 +43,28 @@ public class LoginController {
         } else {
             return "redirect:/notice";
         }
+    }
+
+    @GetMapping("/forgot-password")
+    public String forgotPassword(Model model) {
+        model.addAttribute("user", new Account());
+
+        return "common/forgot-password";
+    }
+
+    @PostMapping("/forgot-password")
+    public String forgotPassword(@ModelAttribute("user") Account user, SessionStatus status,
+                                 RedirectAttributes attributes, BindingResult result){
+        userForgotPasswordValidator.validate(user, result);
+        if(result.hasErrors()) {
+            log.debug("User Errors : {}", result.getAllErrors());
+            return "common/forgot-password";
+        }
+
+        Account resetUser = userRepository.findByUsernameAndEmail(user.getUsername(), user.getEmail()).get();
+        userService.userPasswordReset(resetUser);
+
+        return "redirect:/login?passwordReset";
     }
 
     @GetMapping("/password-change")
@@ -60,11 +85,12 @@ public class LoginController {
     public String passwordChangeProc(@CurrentUser Account currentUser,
                                      @ModelAttribute("user") Account user,
                                      @RequestParam("newPassword") String password,
+                                     SessionStatus status,
                                      RedirectAttributes attributes, BindingResult result) {
         log.info("New Password : {}", password);
         log.info("Current Password : {}", user.getPassword());
 
-        userPasswordValidator.validate(user, result);
+        userPasswordChangeValidator.validate(user, result);
 
         if(result.hasErrors()){
             log.debug("Errors : {}", result.getAllErrors());
@@ -80,6 +106,7 @@ public class LoginController {
         log.info("저장된 비밀번호 : {}", savedUser.getPassword());
         log.info("저장된 비밀번호 유효기간 : {}", savedUser.getCredentialsExpiredDate());
 
+        status.setComplete();
         return "redirect:/";
     }
 

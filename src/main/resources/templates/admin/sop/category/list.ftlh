@@ -18,7 +18,7 @@
         <div class="pad-btm form-inline">
             <div class="row">
                 <div class="col-sm-6 table-toolbar-left">
-                    <a class="btn btn-primary" href="/admin/sop/category?action=new#edit0"><i class="pli-pencil"></i> Category 추가</a>
+                    <a class="btn btn-primary" href="/admin/${categoryType}/category?action=new#edit0"><i class="pli-pencil"></i> Category 추가</a>
                 </div>
                 <div class="col-sm-6 table-toolbar-right">
 <#--                    <div class="form-group">-->
@@ -31,7 +31,7 @@
             </div>
         </div>
         <div class="table-responsive">
-            <form name="f" method="post" action="/admin/sop/category">
+            <form name="f" method="post" action="/admin/${categoryType}/category">
                 <input type="hidden" name="action" value="${action}">
             <table class="table table-striped">
                 <thead>
@@ -72,7 +72,7 @@
                                 <#if action == "edit" && id == category.id>
                                     <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 저장</button>
                                 <#else>
-                                    <a class="btn btn-sm btn-mint" href="/admin/sop/category?action=edit&id=${category.id}#edit${category?index}"><i class="fa fa-pencil"> 수정</i></a>
+                                    <a class="btn btn-sm btn-mint" href="/admin/${categoryType}/category?action=edit&id=${category.id}#edit${category?index}"><i class="fa fa-pencil"> 수정</i></a>
                                 </#if>
                             </td>
                         </tr>

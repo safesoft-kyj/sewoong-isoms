@@ -32,7 +32,6 @@
         .modal .modal-fullsize {
             width: 80%;
         }
-
     </style>
 
     <script>
@@ -395,7 +394,7 @@
     <!-- Sign Up Accept Modal -->
     <div class="modal fade" id="accept-modal" role="dialog" tabindex="-1" aria-labelledby="accept-modal"
          aria-hidden="true">
-        <div class="modal-dialog modal-fullsize">
+        <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <!--Modal header-->
                 <div class="modal-header">
@@ -432,7 +431,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
                         </div>
                     </div>
                     <!--Modal footer-->

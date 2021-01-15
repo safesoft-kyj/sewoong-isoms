@@ -17,6 +17,8 @@ public interface UserRepository extends PagingAndSortingRepository<Account, Inte
 
     Optional<Account> findByUsername(@Param("username") String username);
 
+    Optional<Account> findByUsernameAndEmail(String username, String email);
+
     List<Account> findAllByUserTypeAndEnabledOrderByNameAsc(UserType userType, boolean enabled);
 
     //WHERE enabled = ? and user_status in (?, ?)

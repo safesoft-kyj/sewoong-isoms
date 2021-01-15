@@ -11,10 +11,10 @@ import com.cauh.iso.admin.service.DepartmentService;
 import com.cauh.iso.domain.AgreementPersonalInformation;
 import com.cauh.iso.domain.Mail;
 import com.cauh.iso.domain.NonDisclosureAgreement;
+import com.cauh.iso.domain.QAgreementPersonalInformation;
 import com.cauh.iso.domain.constant.ApprovalStatus;
 import com.cauh.iso.domain.report.QExternalCustomer;
 import com.cauh.iso.repository.ExternalCustomerRepository;
-import com.cauh.iso.security.annotation.IsAdmin;
 import com.cauh.iso.service.*;
 import com.cauh.iso.validator.UserEditValidator;
 import com.cauh.iso.xdocreport.AgreementReportService;
@@ -57,6 +57,7 @@ public class AdminAuthorityController {
     private final PasswordEncoder passwordEncoder;
     //    private final SOPDisclosureRequestFormRepository sopDisclosureRequestFormRepository;
     private final AgreementReportService agreementReportService;
+    private final ConfidentialityPledgeService confidentialityPledgeService;
     private final NonDisclosureAgreementReportService nonDisclosureAgreementReportService;
     private final UserRepository userRepository;
     private final UserEditValidator userEditValidator;
@@ -67,7 +68,6 @@ public class AdminAuthorityController {
     private final ExternalCustomerRepository externalCustomerRepository;
     private final UserJobDescriptionChangeLogRepository userJobDescriptionChangeLogRepository;
     private final UserJobDescriptionChangeLogService userJobDescriptionChangeLogService;
-    private final MailService mailService;
 
     @Value("${gw.userTbl}")
     private String gwUserTbl;
@@ -86,10 +86,34 @@ public class AdminAuthorityController {
         return "admin/authority/account";
     }
 
+
     @GetMapping("/authority/agreement-to-collect-and-use")
-    public String agreement(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable, Model model) {
-        model.addAttribute("agreement", agreementPersonalInformationService.findAll(pageable));
-        return "admin/authority/agreement";
+    public String agreement(){
+        return "redirect:/admin/authority/agreement-to-collect-and-use/internal";
+    }
+
+    @GetMapping( "/authority/agreement-to-collect-and-use/{type}")
+    public String agreement(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable,
+                            @PathVariable("type") String type, Model model) {
+        QAgreementPersonalInformation qAgreementPersonalInformation = QAgreementPersonalInformation.agreementPersonalInformation;
+        BooleanBuilder builder = new BooleanBuilder();
+
+        //CASE 1. Internal User에 대한 개인정보 활용동의
+        if(!StringUtils.isEmpty(type) && type.equals("internal")) {
+            builder.and(qAgreementPersonalInformation.internalUser.isNotNull());
+            builder.and(qAgreementPersonalInformation.externalCustomer.isNull());
+            model.addAttribute("agreement", agreementPersonalInformationService.findAll(builder, pageable));
+            return "admin/authority/agreement-internal";
+        }
+        //CASE 2. External User에 대한 개인정보 활용동의
+        else if(!StringUtils.isEmpty(type) && type.equals("external")){
+            builder.and(qAgreementPersonalInformation.internalUser.isNull());
+            builder.and(qAgreementPersonalInformation.externalCustomer.isNotNull());
+            model.addAttribute("agreement", agreementPersonalInformationService.findAll(builder, pageable));
+            return "admin/authority/agreement-external";
+        }
+
+        return "redirect:/admin/authority/agreement-to-collect-and-use/internal";
     }
 
     @GetMapping("/authority/agreement-to-collect-and-use/{id}/print")
@@ -98,6 +122,14 @@ public class AdminAuthorityController {
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Agreement to Collect and Use Personal Information.pdf");
         AgreementPersonalInformation agreement = agreementPersonalInformationService.findById(id).get();
         agreementReportService.generateReport(agreement, response);
+    }
+
+
+    @GetMapping("/authority/confidentiality-pledge")
+    public String confidentialPledge(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable, Model model){
+        model.addAttribute("confidentialpledge", confidentialityPledgeService.findAll(pageable));
+
+        return "admin/authority/confidentiality-pledge";
     }
 
     @GetMapping("/authority/non-disclosure-agreement-for-sop")
@@ -260,7 +292,6 @@ public class AdminAuthorityController {
     @PostMapping("/authority/users/pwReset/{id}")
     @Transactional
     public String passwordReset(@PathVariable("id") Integer id, RedirectAttributes attributes){
-        //TODO :: Password Reset 작업 필요.
         Optional<Account> accountOptional = userRepository.findById(id);
 
         if(!accountOptional.isPresent()){ // 유저 정보가 없으면
@@ -270,27 +301,8 @@ public class AdminAuthorityController {
         }
         Account account = accountOptional.get();
 
-        //계정 비밀번호 Setting 구간
-        String rdPassword = getRandomPassword(10);
-        account.setPassword(passwordEncoder.encode(rdPassword));
-        LocalDate pwDueDate = LocalDate.now().minusDays(1); //비밀번호 기한 초과되게 만들기. (변경을 위한 동작)
-        account.setCredentialsExpiredDate(Date.from(pwDueDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
-        userRepository.save(account);
-
-        //계정 Mail 전송 구간.
-        HashMap<String, Object> model = new HashMap<>();
-        model.put("message", "임시 비밀번호 안내");
-        model.put("username", account.getUsername());
-        model.put("password", rdPassword);
-
-        Mail mail = Mail.builder()
-                .to(new String[]{account.getEmail()})
-                .subject(String.format("[ISO-MS/System] 사용자 임시 비밀번호 안내"))
-                .model(model)
-                .templateName("user-password-reset")
-                .build();
-
-        mailService.sendMail(mail);
+        //User Password Reset
+        userService.userPasswordReset(account);
 
         attributes.addFlashAttribute("message", "[" + account.getName() + "]님의 임시 비밀번호가 이메일로 전송되었습니다.");
         return "redirect:/admin/authority/users";
@@ -399,20 +411,5 @@ public class AdminAuthorityController {
         }
 
         return result;
-    }
-
-
-    public static String getRandomPassword(int len) {
-        char[] charSet = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
-        int idx = 0;
-        StringBuffer sb = new StringBuffer();
-//        System.out.println("charSet.length :::: " + charSet.length);
-        for (int i = 0; i < len; i++) {
-            idx = (int) (charSet.length * Math.random()); // 36 * 생성된 난수를 Int로 추출 (소숫점제거)
-            System.out.println("idx :::: "+idx);
-            sb.append(charSet[idx]);
-        }
-
-        return sb.toString();
     }
 }

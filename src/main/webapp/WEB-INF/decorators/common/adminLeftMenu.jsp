@@ -18,11 +18,11 @@
         <ul class="collapse" aria-expanded="false">
             <%--            <li><a href="/admin/SOP/management/development">Development</a></li>--%>
             <%--            <li><a href="/admin/SOP/management/revision">Revision</a></li>--%>
-            <li><a href="/admin/ISO/management/approved">Approved SOP</a></li>
-            <li><a href="/admin/ISO/management/effective">Effective SOP</a></li>
-            <li><a href="/admin/ISO/management/superseded">Superseded SOP</a></li>
-            <li><a href="/admin/ISO/management/retirement">Retirement SOP</a></li>
-            <li><a href="/admin/ISO/category">SOP Category</a></li>
+            <li><a href="/admin/ISO/management/approved">Approved ISO</a></li>
+            <li><a href="/admin/ISO/management/effective">Effective ISO</a></li>
+            <li><a href="/admin/ISO/management/superseded">Superseded ISO</a></li>
+            <li><a href="/admin/ISO/management/retirement">Retirement ISO</a></li>
+            <li><a href="/admin/ISO/category">ISO Category</a></li>
         </ul>
     </li>
     <li>
@@ -39,7 +39,7 @@
             <li><a href="/admin/SOP/management/effective">Effective SOP</a></li>
             <li><a href="/admin/SOP/management/superseded">Superseded SOP</a></li>
             <li><a href="/admin/SOP/management/retirement">Retirement SOP</a></li>
-            <li><a href="/admin/sop/category">SOP Category</a></li>
+            <li><a href="/admin/SOP/category">SOP Category</a></li>
         </ul>
     </li>
     <li>
@@ -109,6 +109,7 @@
             <li><a href="/admin/department">부서 관리</a></li>
             <li><a href="/admin/role">ROLE 관리</a></li>
             <li><a href="/admin/authority/agreement-to-collect-and-use">개인정보 활용동의</a></li>
+            <li><a href="/admin/authority/confidentiality-pledge">기밀 서약 유지</a></li>
             <li><a href="/admin/authority/non-disclosure-agreement-for-sop">비밀 유지 서약 동의</a></li>
         </ul>
     </li>

@@ -28,18 +28,16 @@ public interface UserService {
     
     //회원가입 신청 시 절차
     Account signUpRequest(Account account);
-
     //회원가입 수락
     Account signUpAccept(Account account);
-
     //회원가입 거절
     Account signUpReject(Account account);
 
+    void userPasswordReset(Account account);
+
+
     void sync();
-
     void refresh();
-
-
     //Login Failure Handler Method
     void countFailure(String username);
     void lockedUser(String username);

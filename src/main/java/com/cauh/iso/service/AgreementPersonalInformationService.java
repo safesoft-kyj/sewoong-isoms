@@ -5,6 +5,7 @@ import com.cauh.iso.domain.QAgreementPersonalInformation;
 import com.cauh.iso.repository.AgreementPersonalInformationRepository;
 import com.cauh.iso.utils.DateUtils;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,10 @@ public class AgreementPersonalInformationService {
 
     public Page<AgreementPersonalInformation> findAll(Pageable pageable) {
         return agreementPersonalInformationRepository.findAll(pageable);
+    }
+
+    public Page<AgreementPersonalInformation> findAll(Predicate predicate, Pageable pageable) {
+        return agreementPersonalInformationRepository.findAll(predicate, pageable);
     }
 
     public Optional<AgreementPersonalInformation> findOneAgreementPersonalInformation(String email) {

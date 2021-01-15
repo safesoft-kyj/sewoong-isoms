@@ -143,7 +143,7 @@
                             <a href="/sop/${status.name()?lower_case}" class="list-group-item<#if categoryId?has_content == false> text-bold</#if>">
                                 <span class="text-main"><i class="pli-folder-with-document icon-lg icon-fw"></i> ALL</span>
                             </a>
-                            <#if categoryList?has_content>
+                            <#if categoryList?exists && categoryList?has_content>
                                 <#list categoryList as category>
                                     <a href="/sop/${status.name()?lower_case}/${category.id}" class="list-group-item<#if categoryId?default('') == category.id> text-bold</#if>">
                                         <span class="text-main"><i class="pli-folder<#if categoryId?default('') == category.id>-with-document</#if> icon-lg icon-fw"></i> ${category.name}</span>

@@ -36,14 +36,14 @@
                     <button type="button" class="btn btn-primary" id="exportBtn"><i class="fa fa-file-excel-o"></i> Export</button>
                 </div>
                 <#if deptList?has_content>
-                    <#assign pDeptCode = RequestParameters['deptCode']?default('')/>
+                    <#assign pDeptCode = RequestParameters['deptId']?default('')/>
                     <div class="box-inline mar-btm">
                         <#--                        Team :-->
                         <#--                        <div class="select">-->
-                        <select name="deptCode" id="deptCode" class="form-control">
+                        <select name="deptId" id="deptCode" class="form-control">
                             <option value=""${pTeamCode?has_content?then('', ' selected')}>ALL</option>
                             <#list deptList as dept>
-                                <option value="${dept['deptCode']}"${pDeptCode?has_content?then((pDeptCode == dept['deptCode'])?then(' selected', ''), '')}>${dept['deptName']}</option>
+                                <option value="${dept.id}" ${pDeptCode?has_content?then((pDeptCode == dept.id?string)?then(' selected', ''), '')}>${dept.name}</option>
                             </#list>
                         </select>
                         <#--                        </div>-->
@@ -57,14 +57,14 @@
                     </script>
                 </#if>
                 <#if teamList?has_content>
-                    <#assign pTeamCode = RequestParameters['teamCode']?default('')/>
+                    <#assign pTeamCode = RequestParameters['teamId']?default('')/>
                     <div class="box-inline mar-btm">
 <#--                        Team :-->
 <#--                        <div class="select">-->
-                            <select name="teamCode" id="teamCode" class="form-control">
+                            <select name="teamId" id="teamCode" class="form-control">
                                 <option value=""${pTeamCode?has_content?then('', ' selected')}>ALL</option>
                                 <#list teamList as team>
-                                    <option value="${team['teamCode']}"${pTeamCode?has_content?then((pTeamCode == team['teamCode'])?then(' selected', ''), '')}>${team['teamName']}</option>
+                                    <option value="${team.id}" ${pTeamCode?has_content?then((pTeamCode == team.id?string)?then(' selected', ''), '')}>${team.name}</option>
                                 </#list>
                             </select>
 <#--                        </div>-->

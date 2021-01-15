@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@SessionAttributes({"categoryList", "category"})
+@SessionAttributes({"category"})
 public class AdminCategoryController {
     private final CategoryService categoryService;
     private final CategoryValidator categoryValidator;
@@ -27,7 +27,7 @@ public class AdminCategoryController {
     public String categoryList(@PathVariable("categoryType") CategoryType categoryType,
                                @RequestParam(value = "action", defaultValue = "list") String action,
                                @RequestParam(value = "id", required = false) String id, Model model) {
-        List<Category> categoryList = categoryService.getCategoryList();
+        List<Category> categoryList = categoryService.getCategoryList(categoryType);
         model.addAttribute("categoryList", categoryList);
 
         if("new".equals(action)) {
@@ -51,7 +51,8 @@ public class AdminCategoryController {
     @PostMapping("/admin/{categoryType}/category")
     public String editCategory(@PathVariable("categoryType") CategoryType categoryType,
                                @RequestParam(value = "action", defaultValue = "list") String action,
-                               @RequestParam(value = "id", required = false) String id, @ModelAttribute("category") Category category, BindingResult result,
+                               @RequestParam(value = "id", required = false) String id, @ModelAttribute("category") Category category,
+                               BindingResult result,
                                SessionStatus status, Model model, RedirectAttributes attributes) {
         categoryValidator.validate(category, result);
 

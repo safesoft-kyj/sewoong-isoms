@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class UserPasswordValidator implements Validator {
+public class UserPasswordChangeValidator implements Validator {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
