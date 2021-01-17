@@ -1,6 +1,7 @@
 package com.cauh.iso.validator;
 
 import com.cauh.iso.domain.AgreementsWithdrawal;
+import com.cauh.iso.repository.AgreementsWithdrawalRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -10,7 +11,6 @@ import org.springframework.validation.Validator;
 
 @Component
 @Slf4j
-@RequiredArgsConstructor
 public class AgreementsWithdrawalValidator implements Validator {
 
     @Override
@@ -29,5 +29,6 @@ public class AgreementsWithdrawalValidator implements Validator {
         if(ObjectUtils.isEmpty(agreementsWithdrawal.getEmail())) {
             errors.rejectValue("email", "message.email.required", "이메일 주소를 입력해 주세요.");
         }
+
     }
 }

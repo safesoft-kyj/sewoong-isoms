@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.text.SimpleDateFormat;
+
 @Controller
 @RequiredArgsConstructor
 @Slf4j
@@ -57,7 +59,7 @@ public class WithdrawalController {
     }
 
     @GetMapping("/agreements-withdrawal/check")
-    public String agreementsWithdrawalCheck(@ModelAttribute("user")Account user, Model model, SessionStatus status, RedirectAttributes attributes){
+    public String agreementsWithdrawalCheck(@ModelAttribute("user")Account user, Model model, RedirectAttributes attributes){
 
         //사용자 정보 확인을 거쳤는지에 대한 경로확인
         if(ObjectUtils.isEmpty(user)){
@@ -68,9 +70,8 @@ public class WithdrawalController {
             attributes.addFlashAttribute("message", "잘못된 경로입니다. 사용자 확인 화면으로 돌아갑니다.");
             return "redirect:/agreements-withdrawal";
         }
-
         //해당 화면 진입 통과 후 user 정보 초기화. (새로고침, 재진입 방지)
-        status.setComplete();
+        user.setWithdrawal(false);
 
         model.addAttribute("withdrawal", new AgreementsWithdrawal());
         return "common/withdrawal-check";
@@ -78,23 +79,30 @@ public class WithdrawalController {
 
     @PostMapping("/agreements-withdrawal/check")
     public String agreementsWithdrawalCheckProc(@ModelAttribute("withdrawal") AgreementsWithdrawal agreementsWithdrawal,
-                                                @CurrentUser Account user, RedirectAttributes attributes, BindingResult result) {
+                                                @CurrentUser Account user, RedirectAttributes attributes, SessionStatus status, BindingResult result) {
 
-        //TODO :: 철회신청 Logic 내용 추가 필요
-        agreementsWithdrawalValidator.validate(attributes, result);
+        agreementsWithdrawalValidator.validate(agreementsWithdrawal, result);
+
+        //날짜 정보가 입력된 경우, 해당 유저 정보로 이미 철회내용이 있는지 확인
+        if(!ObjectUtils.isEmpty(agreementsWithdrawal.getWithdrawalDate()) && agreementsWithdrawalRepository.findByUser(user).isPresent()) {
+            result.rejectValue("agreementsWithdrawal", "message.agreementsWithdrawal.duplicate", "이미 철회 신청한 내용이 있습니다.");
+        }
 
         if(result.hasErrors()) {
             log.error("AgreementsWithdrawal Error : {}", result.getAllErrors());
             return "common/withdrawal-check";
         }
-
+        status.setComplete();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
         //현재 접속중인 유저 정보 추가.
-//        agreementsWithdrawal.setUser(user);
-//        agreementsWithdrawalRepository.save(agreementsWithdrawal);
-//        attributes.addFlashAttribute("message", "[" + agreementsWithdrawal.getWithdrawalDate() + "] 일자로 약관 동의에 대한 철회 신청이 완료되었습니다.");
+        agreementsWithdrawal.setUser(user);
+        agreementsWithdrawalRepository.save(agreementsWithdrawal);
+        attributes.addFlashAttribute("message", "[" + df.format(agreementsWithdrawal.getWithdrawalDate())  + "] 일자로 약관 동의에 대한 철회 신청이 완료되었습니다.");
 
-        return "redirect:/";
+        //TODO :: Mail 전송 Logic 추가 필요.
+
+        return "redirect:/notice";
     }
 
 

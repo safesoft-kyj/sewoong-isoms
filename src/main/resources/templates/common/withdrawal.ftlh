@@ -2,6 +2,14 @@
 <html>
 <head>
     <title>Chung Ang University Hospital - ISO Management System</title>
+
+    <!--BootstrapJS [ RECOMMENDED ]-->
+    <script src="/static/js/bootstrap.min.js"></script>
+    <!--Nifty Admin [ RECOMMENDED ]-->
+    <script src="/static/js/nifty.min.js"></script>
+    <!--Bootstrap Validator -->
+    <script src="/static/plugins/bootstrap-validator/bootstrapValidator.js"></script>
+
     <script>
         $(document).ready(function() {
             //초기 화면 전환시 세팅
