@@ -25,11 +25,13 @@
         <div class="panel panel-bordered-info">
             <form method="post" id="pwChangeForm">
                 <div class="panel-body text-left">
-                    <div class="mar-btm row">
-                        <div class="text-center"><span class="text-bold" style="font-size:25px;">임시 비밀번호 발급</span>
+                    <div class="text-center mar-btm">
+                        <div class="row">
+                            <div class="col-xs-4"><img src="https://ch.caumc.or.kr/images/main_re_logo.gif"></div>
+                            <div class="text-right"><span class="text-bold" style="font-size:25px;">임시 비밀번호 발급</span>
                         </div>
                     </div>
-                    <hr/>
+                    <hr>
                     <div class="mar-btm pad-top breadcrumb bg-info">
                         <span>임시 비밀번호를 발급 받으실 ID, E-mail 주소를 입력해 주세요.</span>
                     </div>
