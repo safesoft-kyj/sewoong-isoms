@@ -5,6 +5,7 @@ import com.cauh.common.security.annotation.CurrentUser;
 import com.cauh.iso.admin.service.DepartmentService;
 import com.cauh.iso.domain.AgreementsWithdrawal;
 import com.cauh.iso.repository.AgreementsWithdrawalRepository;
+import com.cauh.iso.service.MailService;
 import com.cauh.iso.validator.AgreementsWithdrawalValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,7 @@ public class WithdrawalController {
     private final DepartmentService departmentService;
     private final AgreementsWithdrawalValidator agreementsWithdrawalValidator;
     private final AgreementsWithdrawalRepository agreementsWithdrawalRepository;
+    private final MailService mailService;
 
     @GetMapping("/agreements-withdrawal")
     public String agreementsWithdrawal(Model model) {
@@ -85,7 +87,7 @@ public class WithdrawalController {
 
         //날짜 정보가 입력된 경우, 해당 유저 정보로 이미 철회내용이 있는지 확인
         if(!ObjectUtils.isEmpty(agreementsWithdrawal.getWithdrawalDate()) && agreementsWithdrawalRepository.findByUser(user).isPresent()) {
-            result.rejectValue("agreementsWithdrawal", "message.agreementsWithdrawal.duplicate", "이미 철회 신청한 내용이 있습니다.");
+            result.rejectValue("withdrawalDate", "message.agreementsWithdrawal.duplicate", "이미 철회 신청한 내용이 있습니다.");
         }
 
         if(result.hasErrors()) {

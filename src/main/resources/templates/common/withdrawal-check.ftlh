@@ -19,7 +19,13 @@
 
     <script>
         $(document).ready(function() {
-            $("#withdrawalDate").datepicker({format:'yyyy-mm-dd', autoclose:true, clearBtn:true, startDate:new Date(), todayHighlight: true});
+
+            //다음날 지정.
+            let date = new Date();
+            date.setDate(date.getDate()+1);
+
+            //1일 뒤부터 선택 가능.
+            $("#withdrawalDate").datepicker({format:'yyyy-mm-dd', autoclose:true, clearBtn:true, startDate:date, todayHighlight: true});
 
             $("#withdrawalBtn").click(function(e){
                 e.preventDefault();
