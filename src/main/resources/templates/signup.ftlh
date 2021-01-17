@@ -245,6 +245,7 @@
                         <div class="form-group">
                             <label class="control-label" for="username">ID* : </label>
                             <@spring.formInput "account.username" "class='form-control'" />
+                            <@spring.showErrors "" "color:red;"/>
                         </div>
                     </div>
 
@@ -262,6 +263,7 @@
                         <div class="form-group">
                             <label class="control-label" for="password">Password* : </label>
                             <@spring.formInput "account.password" "class='form-control'" "password" />
+                            <@spring.showErrors "" "color:red;"/>
                         </div>
                     </div>
 
@@ -335,8 +337,8 @@
             </div>
             <!--Modal footer-->
             <div class="panel-footer text-right">
-                <button class="btn btn-default" id="requestBtn" type="submit"><i class="pli-yes"></i>Request</button>
-                <a data-dismiss="modal" class="btn btn-default" href="/login"><i class="pli-arrow-left-2"></i> Back</a>
+                <button class="btn btn-default" id="requestBtn" type="submit"><i class="pli-yes"></i> Request</button>
+                <a data-dismiss="modal" class="btn btn-default" href="/login"><i class="pli-back"></i> Back</a>
             </div>
         </form>
     </div>

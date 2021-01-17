@@ -36,9 +36,6 @@ public class AgreementPersonalInformation extends BaseEntity implements Serializ
     @JoinColumn(name ="internal_user_id", referencedColumnName = "id")
     private Account internalUser; //내부 사용자
 
-    @Enumerated(EnumType.STRING)
-    private UserType userType;
-
     @ManyToOne
     @JoinColumn(name = "external_customer_id", referencedColumnName = "id")
     private ExternalCustomer externalCustomer; //외부 사용자.

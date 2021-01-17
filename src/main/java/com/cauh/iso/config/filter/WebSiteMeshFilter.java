@@ -13,6 +13,8 @@ public class WebSiteMeshFilter extends ConfigurableSiteMeshFilter {
                 .addDecoratorPath("/agreement-to-collect-and-use-personal-information", "/WEB-INF/decorators/loginDecorator.jsp")
                 .addDecoratorPath("/non-disclosure-agreement-for-sop", "/WEB-INF/decorators/loginDecorator.jsp")
                 .addDecoratorPath("/confidentiality-pledge", "/WEB-INF/decorators/loginDecorator.jsp")
+                .addDecoratorPath("/agreements-withdrawal", "/WEB-INF/decorators/loginDecorator.jsp")
+                .addDecoratorPath("/agreements-withdrawal/**", "/WEB-INF/decorators/loginDecorator.jsp")
                 .addDecoratorPath("/password-change", "/WEB-INF/decorators/loginDecorator.jsp")
                 .addDecoratorPath("/forgot-password", "/WEB-INF/decorators/loginDecorator.jsp")
                 .addDecoratorPath("/signUp", "/WEB-INF/decorators/loginDecorator.jsp")

@@ -28,7 +28,7 @@
         </ul>
     </li>
     <li class="text-center mar-btm mar-top">
-        <a href="#">
+        <a href="/agreements-withdrawal">
             <img class="menu-title" src="/static/img/withdrawal.png" alt="철회신청">
         </a>
     </li>
