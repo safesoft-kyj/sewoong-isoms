@@ -2,7 +2,7 @@
 <#import "/spring.ftl" as spring />
 <html>
 <head>
-    <title>Admin > User Management > 개인정보 활용동의 이력 (내부사용자)</title>
+    <title>Admin > User Management > 철회 신청 내역</title>
 </head>
 <body>
 
@@ -10,7 +10,7 @@
     <!--Data Table-->
     <!--===================================================-->
     <div class="panel-body">
-        <@pagination.bind confidentialpledge/>
+        <@pagination.bind withdrawal/>
         <div class="pad-btm form-inline">
             <div class="row">
                 <div class="col-sm-6 table-toolbar-left">
@@ -46,21 +46,21 @@
                 </tr>
                 </thead>
                 <tbody>
-                <#if confidentialpledge.content?has_content>
-                    <#list confidentialpledge.content as t>
+                <#if withdrawal.content?has_content>
+                    <#list withdrawal.content as t>
                         <tr>
-                            <td class="text-center">${(confidentialpledge.totalElements - (confidentialpledge.size * confidentialpledge.number)) - t?index}</td>
-                            <td class="text-center">${t.internalUser.deptName!''}</td>
-                            <td class="text-center">${t.internalUser.teamName!''}</td>
-                            <td class="text-center">${t.internalUser.name!''}</td>
-                            <td class="text-center">${t.internalUser.email!''}</td>
-                            <td class="text-center"><span class="label label-primary">${t.internalUser.commaJobTitle!'N/A'}</span></td>
-                            <td class="text-center">${t.createdDate?string('yyyy-MM-dd')}</td>
+                            <td class="text-center">${(withdrawal.totalElements - (withdrawal.size * withdrawal.number)) - t?index}</td>
+                            <td class="text-center">${t.user.deptName!''}</td>
+                            <td class="text-center">${t.user.teamName!''}</td>
+                            <td class="text-center">${t.user.name!''}</td>
+                            <td class="text-center">${t.user.email!''}</td>
+                            <td class="text-center"><span class="label label-primary">${t.user.commaJobTitle!'N/A'}</span></td>
+                            <td class="text-center">${t.withdrawalDate?string('yyyy-MM-dd')}</td>
                             <td class="text-center">
-                                <span class="label label-${t.agree?then('info', 'danger')}">${t.agree?then('Agree', 'Withdrawal')}</span>
+                                <span class="label label-${t.apply?then('danger', 'primary')}">${t.apply?then('Processed', 'Scheduled')}</span>
                             </td>
 <#--                            <td class="text-center">-->
-<#--                                <a href="agreement-to-collect-and-use/${t.id}/print" class="btn btn-mint btn-xs add-tooltip" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Print"><i class="fa fa-print"></i></a>-->
+<#--&lt;#&ndash;                                <a href="agreement-to-collect-and-use/${t.id}/print" class="btn btn-mint btn-xs add-tooltip" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Print"><i class="fa fa-print"></i></a>&ndash;&gt;-->
 <#--                            </td>-->
                         </tr>
                     </#list>

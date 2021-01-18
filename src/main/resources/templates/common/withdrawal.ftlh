@@ -11,23 +11,41 @@
     <script src="/static/plugins/bootstrap-validator/bootstrapValidator.js"></script>
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             //초기 화면 전환시 세팅
             departmentSelect($("#deptSelect").val());
 
-            $("#deptSelect").change(function(){
+            $("#deptSelect").change(function () {
                 departmentSelect($(this).val());
             })
 
-            $("#teamSelect").change(function(){
+            $("#teamSelect").change(function () {
                 let res = $(this).val();
 
-                if(res == 'department') {
+                if (res == 'department') {
                     $("#department").val($("#deptSelect").val());
-                }else {
+                } else {
                     $("#department").val(res);
                 }
             })
+
+            <#if message?has_content >
+            $.niftyNoty({
+                type: 'danger',
+                container: 'floating',
+                // html: alert_content[alert_layout].type,
+                message: '${message}',
+                closeBtn: true,
+                floating: {
+                    position: 'top-right',
+                    animationIn: 'fadeInUp',
+                    animationOut: 'fadeOut'
+                },
+                focus: true,
+                timer: 5000
+            });
+            </#if>
+
         });
 
         function departmentSelect(value) {
@@ -40,7 +58,7 @@
                 success: function (data) {
                     let teamSelect = $("#teamSelect");
 
-                    if(data != '') {
+                    if (data != '') {
                         teamSelect.attr("disabled", false);
                         teamSelect.html(data);
                     } else {
@@ -64,9 +82,9 @@
                 <span style="font-size: 14px;">철회 신청을 위한 사용자 정보를 입력해 주세요.</span>
             </div>
             <hr>
-<#--            <div class="pad-btm mar-btm">-->
-<#--                <img alt="Profile Picture" class="img-lg img-circle img-border-light" src="img/profile-photos/1.png">-->
-<#--            </div>-->
+            <#--            <div class="pad-btm mar-btm">-->
+            <#--                <img alt="Profile Picture" class="img-lg img-circle img-border-light" src="img/profile-photos/1.png">-->
+            <#--            </div>-->
             <form id="withdrawalForm" method="post" class="text-left">
                 <div class="form-group">
                     <label class="control-label" for="email">E-mail </label>
@@ -95,22 +113,23 @@
                     <@spring.formInput "user.name" "class='form-control'" />
                     <@spring.showErrors "" "color:red;"/>
                 </div>
-<#--                <div class="form-group">-->
-<#--                    <label class="control-label" for="withdrawalDate">철회 날짜 </label>-->
-<#--                    <input class="form-control" type="text" id="withdrawalDate" name="name" />-->
-<#--                </div>-->
+                <#--                <div class="form-group">-->
+                <#--                    <label class="control-label" for="withdrawalDate">철회 날짜 </label>-->
+                <#--                    <input class="form-control" type="text" id="withdrawalDate" name="name" />-->
+                <#--                </div>-->
                 <div class="form-group text-right">
                     <div class="col-lg-6">
-                        <button class="btn btn-block btn-lg btn-primary" type="submit"><i class="pli-yes"></i> 계속</button>
+                        <button class="btn btn-block btn-lg btn-primary" type="submit"><i class="pli-yes"></i> 계속
+                        </button>
                     </div>
                     <div class="col-lg-6">
                         <a href="/" class="btn btn-block btn-lg btn-warning"><i class="pli-close"></i> 취소</a>
                     </div>
                 </div>
             </form>
-<#--            <div class="pad-ver">-->
-<#--                <a href="pages-login.html" class="btn-link mar-rgt text-bold">Sign in using different account</a>-->
-<#--            </div>-->
+            <#--            <div class="pad-ver">-->
+            <#--                <a href="pages-login.html" class="btn-link mar-rgt text-bold">Sign in using different account</a>-->
+            <#--            </div>-->
         </div>
     </div>
 </div>

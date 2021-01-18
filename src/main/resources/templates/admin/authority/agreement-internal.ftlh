@@ -2,7 +2,7 @@
 <#import "/spring.ftl" as spring />
 <html>
 <head>
-    <title>ISO Management System > Authority Management > 개인정보 활용동의 이력 (내부사용자)</title>
+    <title>Admin > User Management > 개인정보 활용동의 이력 (내부사용자)</title>
 </head>
 <body>
 
@@ -41,7 +41,8 @@
                     <th class="text-center">Email</th>
                     <th class="text-center">ROLE</th>
                     <th class="text-center">Agreement Date</th>
-                    <th style="width:80px;">#Actions</th>
+                    <th class="text-center">Agree</th>
+<#--                    <th style="width:80px;">#Actions</th>-->
                 </tr>
                 </thead>
                 <tbody>
@@ -56,8 +57,11 @@
                             <td class="text-center"><span class="label label-primary">${t.internalUser.commaJobTitle!'N/A'}</span></td>
                             <td class="text-center">${t.createdDate?string('yyyy-MM-dd')}</td>
                             <td class="text-center">
-                                <a href="agreement-to-collect-and-use/${t.id}/print" class="btn btn-mint btn-xs add-tooltip" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Print"><i class="fa fa-print"></i></a>
+                                <span class="label label-${t.agree?then('info', 'danger')}">${t.agree?then('Agree', 'Withdrawal')}</span>
                             </td>
+<#--                            <td class="text-center">-->
+<#--                                <a href="admin/authority/agreement-to-collect-and-use/${t.id}/print" class="btn btn-mint btn-xs add-tooltip" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Print"><i class="fa fa-print"></i></a>-->
+<#--                            </td>-->
                         </tr>
                     </#list>
                 <#else>

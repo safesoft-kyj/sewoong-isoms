@@ -137,13 +137,21 @@ public class UserAgreementController {
     public String agreementCollectUse(@ModelAttribute("agreementPersonalInformation") AgreementPersonalInformation agreementPersonalInformation,
                                       SessionStatus status,
                                       @CurrentUser Account user) {
-        AgreementPersonalInformation savedAgreementPersonalInformation1 = agreementPersonalInformationService.save(agreementPersonalInformation);
+
+        //기존 내역이 존재하면, 새로 저장하려는 동의 정보에 동의 여부를 true로 하여 재지정.
+        Optional<AgreementPersonalInformation> agreementPersonalInformationOptional = agreementPersonalInformationService.findByInternalUser(user);
+        if(agreementPersonalInformationOptional.isPresent()) {
+            AgreementPersonalInformation originAgreementPersonalInformation = agreementPersonalInformationOptional.get();
+            agreementPersonalInformation.setId(originAgreementPersonalInformation.getId());
+        }
+
+        AgreementPersonalInformation savedAgreementPersonalInformation = agreementPersonalInformationService.save(agreementPersonalInformation);
 
         //내부 사용자인 경우, Profile에 저장되는 서명 정보 저장.
         if(user.getUserType() == UserType.USER) {
             Signature signature = new Signature();
             signature.setId(user.getUsername());
-            signature.setBase64signature(savedAgreementPersonalInformation1.getBase64signature());
+            signature.setBase64signature(savedAgreementPersonalInformation.getBase64signature());
 
             signatureRepository.save(signature);
         }
@@ -183,6 +191,14 @@ public class UserAgreementController {
     public String confidentialityPledge(@CurrentUser Account user,
                                         @ModelAttribute("confidentialityPledge") ConfidentialityPledge confidentialityPledge,
                                         SessionStatus status) {
+
+        //기존 내역이 존재하면, 새로 저장하려는 동의 정보에 동의 여부를 true로 하여 재지정.
+        Optional<ConfidentialityPledge> confidentialityPledgeOptional = confidentialityPledgeService.findByInternalUser(user);
+        if(confidentialityPledgeOptional.isPresent()) {
+            ConfidentialityPledge originConfidentialityPledge = confidentialityPledgeOptional.get();
+            confidentialityPledge.setId(originConfidentialityPledge.getId());
+        }
+
         confidentialityPledgeService.save(confidentialityPledge);
         status.setComplete();
 

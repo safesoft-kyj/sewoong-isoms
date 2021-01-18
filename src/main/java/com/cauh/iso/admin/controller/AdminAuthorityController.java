@@ -59,6 +59,7 @@ public class AdminAuthorityController {
     private final AgreementReportService agreementReportService;
     private final ConfidentialityPledgeService confidentialityPledgeService;
     private final NonDisclosureAgreementReportService nonDisclosureAgreementReportService;
+    private final AgreementsWithdrawalService agreementsWithdrawalService;
     private final UserRepository userRepository;
     private final UserEditValidator userEditValidator;
     private final DeptUserMapper deptUserMapper;
@@ -144,6 +145,14 @@ public class AdminAuthorityController {
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Non-Disclosure Agreement for SOP.pdf");
         NonDisclosureAgreement agreement = nonDisclosureAgreementService.findById(id).get();
         nonDisclosureAgreementReportService.generateReport(agreement, response);
+    }
+
+    @GetMapping("/authority/agreements-withdrawal")
+    public String agreementsWithdrawal(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable, Model model) {
+
+        model.addAttribute("withdrawal", agreementsWithdrawalService.findAll(pageable));
+
+        return "admin/authority/agreements-withdrawal";
     }
 
     @GetMapping("/authority/users")

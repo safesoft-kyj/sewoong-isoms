@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.envers.Audited;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -17,6 +19,7 @@ import java.util.Date;
 @SequenceGenerator(name = "AGREEMENT_WITHDRAWAL_SEQ_GENERATOR", sequenceName = "SEQ_AGREEMENT_WITHDRAWAL", initialValue = 1, allocationSize = 1)
 @Slf4j
 @NoArgsConstructor
+@Audited(withModifiedFlag = true)
 public class AgreementsWithdrawal extends BaseEntity {
 
     @Id
@@ -33,6 +36,9 @@ public class AgreementsWithdrawal extends BaseEntity {
     @Column(name = "withdrawal_date")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date withdrawalDate;
+
+    @ColumnDefault("0")
+    private boolean apply;
 
     @Transient
     private String email;

@@ -2,7 +2,7 @@
 <#import "/spring.ftl" as spring />
 <html>
 <head>
-    <title>ISO Management System > Authority Management > 개인정보 활용동의 이력 (외부사용자)</title>
+    <title>Admin > User Management > 개인정보 활용동의 이력 (외부사용자)</title>
 </head>
 <body>
 
@@ -40,7 +40,7 @@
                     <th class="text-center">Email</th>
                     <th class="text-center">Job Title</th>
                     <th class="text-center">Agreement Date</th>
-                    <th style="width:80px;">#Actions</th>
+<#--                    <th style="width:80px;">#Actions</th>-->
                 </tr>
                 </thead>
                 <tbody>
@@ -54,10 +54,10 @@
                             <td class="text-center">${t.externalCustomer.jobTitle!''}</td>
 
                             <td class="text-center">${t.createdDate?string('yyyy-MM-dd')}</td>
-                            <td class="text-center">
-                                <a class="btn btn-info btn-xs" href="#approval-modal" data-toggle="modal" data-title="SOP & Digital Binder Disclosure Request Form" data-id="${t.externalCustomer.sopDisclosureRequestForm.approval.id}"><i class="fa fa-file-text-o"></i></a>
-                                <a href="agreement-to-collect-and-use/${t.id}/print" class="btn btn-mint btn-xs add-tooltip" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Print"><i class="fa fa-print"></i></a>
-                            </td>
+<#--                            <td class="text-center">-->
+<#--                                <a class="btn btn-info btn-xs" href="#approval-modal" data-toggle="modal" data-title="SOP & Digital Binder Disclosure Request Form" data-id="${t.externalCustomer.sopDisclosureRequestForm.approval.id}"><i class="fa fa-file-text-o"></i></a>-->
+<#--                                <a href="agreement-to-collect-and-use/${t.id}/print" class="btn btn-mint btn-xs add-tooltip" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Print"><i class="fa fa-print"></i></a>-->
+<#--                            </td>-->
                         </tr>
                     </#list>
                 <#else>

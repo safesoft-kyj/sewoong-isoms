@@ -2,7 +2,7 @@
 <#import "/spring.ftl" as spring />
 <html>
 <head>
-    <title>ISO Management System > Authority Management > 외부사용자</title>
+    <title>Admin > User Management > 외부사용자</title>
 </head>
 <body>
 

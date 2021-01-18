@@ -90,10 +90,11 @@ gw:
 
 #초 분 시 일 월 요일 연도
 scheduler:
-  sop-status-update: 0 5 0 * * *
+  sop-status-update: 0 5 0 * * * #매일 12시 5분 갱신
   training-alert: 0 30 0 * * * #1, 3, 7, 14 일전 교육 알림
   user-sync: 0 0 8,10,12,14,16,18,20 * * 1-5 #월~금 8시~20시 매 정시
   user-refresh: 0 10 0 * * * #매일 12시 10분 갱신
+  user-withdrawal: 0 15 0 * * * #매일 12시 15분 갱신
 
 # 시스템 관리자 Role(Job Title) 설정
 role:

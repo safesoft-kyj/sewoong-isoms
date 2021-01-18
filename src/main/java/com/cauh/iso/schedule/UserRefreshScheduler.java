@@ -16,9 +16,9 @@ public class UserRefreshScheduler {
 //        userService.sync();
 //    }
 //
-    //User 정보 갱신
-    @Scheduled(cron = "${scheduler.user-refresh}")//초 분 시 일 월 요일 연(0시 01분)
-    public void userRefresh() {
-        userService.sync();
-    }
+//    User 정보 갱신
+//    @Scheduled(cron = "${scheduler.user-refresh}")//초 분 시 일 월 요일 연(0시 01분)
+//    public void userRefresh() {
+//        userService.sync();
+//    }
 }

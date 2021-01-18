@@ -12,6 +12,8 @@ import com.cauh.common.service.CustomUserDetailsService;
 import com.cauh.common.service.ExternalCustomUserService;
 import com.cauh.common.service.UserService;
 import com.cauh.common.utils.DateUtils;
+import com.cauh.iso.domain.AgreementPersonalInformation;
+import com.cauh.iso.domain.ConfidentialityPledge;
 import com.cauh.iso.repository.AgreementPersonalInformationRepository;
 import com.cauh.iso.repository.ConfidentialityPledgeRepository;
 import lombok.RequiredArgsConstructor;
@@ -173,10 +175,18 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
             userDetails.setSignature(signatureRepository.findById(username).isPresent());
 
             //개인정보 활용동의 여부
-            userDetails.setAgreementCollectUse(agreementPersonalInformationRepository.findByInternalUser(userDetails).isPresent());
+            Optional<AgreementPersonalInformation> informationOptional = agreementPersonalInformationRepository.findByInternalUser(userDetails);
+            if(informationOptional.isPresent()){
+                AgreementPersonalInformation information = informationOptional.get();
+                userDetails.setAgreementCollectUse(information.isAgree());
+            }
 
             //기밀유지 서약 여부
-            userDetails.setConfidentialityPledge(confidentialityPledgeRepository.findByInternalUser(userDetails).isPresent());
+            Optional<ConfidentialityPledge> confidentialityPledgeOptional = confidentialityPledgeRepository.findByInternalUser(userDetails);
+            if(confidentialityPledgeOptional.isPresent()) {
+                ConfidentialityPledge confidentialityPledge = confidentialityPledgeOptional.get();
+                userDetails.setConfidentialityPledge(confidentialityPledge.isAgree());
+            }
 
             log.info("@@@@@@User -> JobDescription : {}", userDetails.getUserJobDescriptions());
 
@@ -190,8 +200,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
             userDetails = optionalUser.get();
             userDetails.setUserType(UserType.AUDITOR);
         }
-
-//        log.info("User Role => {}", userDetails.getRole());
 
         log.info("Application Name : {}, Username : {}, isAdmin : {}", applicationName, userDetails.getUsername(), userDetails.isAdmin());
 

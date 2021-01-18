@@ -24,15 +24,13 @@ public class QAgreementsWithdrawal extends EntityPathBase<AgreementsWithdrawal> 
 
     public final com.cauh.common.entity.QBaseEntity _super = new com.cauh.common.entity.QBaseEntity(this);
 
-    public final BooleanPath agree = createBoolean("agree");
+    public final BooleanPath apply = createBoolean("apply");
 
     //inherited
     public final StringPath createdBy = _super.createdBy;
 
     //inherited
     public final DateTimePath<java.sql.Timestamp> createdDate = _super.createdDate;
-
-    public final StringPath email = createString("email");
 
     public final NumberPath<Integer> id = createNumber("id", Integer.class);
 
@@ -43,6 +41,8 @@ public class QAgreementsWithdrawal extends EntityPathBase<AgreementsWithdrawal> 
     public final DateTimePath<java.sql.Timestamp> lastModifiedDate = _super.lastModifiedDate;
 
     public final com.cauh.common.entity.QAccount user;
+
+    public final DateTimePath<java.util.Date> withdrawalDate = createDateTime("withdrawalDate", java.util.Date.class);
 
     public QAgreementsWithdrawal(String variable) {
         this(AgreementsWithdrawal.class, forVariable(variable), INITS);

@@ -5,7 +5,7 @@ import com.cauh.common.security.annotation.CurrentUser;
 import com.cauh.iso.admin.service.DepartmentService;
 import com.cauh.iso.domain.AgreementsWithdrawal;
 import com.cauh.iso.repository.AgreementsWithdrawalRepository;
-import com.cauh.iso.service.MailService;
+import com.cauh.iso.service.AgreementsWithdrawalService;
 import com.cauh.iso.validator.AgreementsWithdrawalValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ public class WithdrawalController {
     private final DepartmentService departmentService;
     private final AgreementsWithdrawalValidator agreementsWithdrawalValidator;
     private final AgreementsWithdrawalRepository agreementsWithdrawalRepository;
-    private final MailService mailService;
+    private final AgreementsWithdrawalService agreementsWithdrawalService;
 
     @GetMapping("/agreements-withdrawal")
     public String agreementsWithdrawal(Model model) {
@@ -65,10 +65,8 @@ public class WithdrawalController {
 
         //사용자 정보 확인을 거쳤는지에 대한 경로확인
         if(ObjectUtils.isEmpty(user)){
-            attributes.addFlashAttribute("type", "danger");
             attributes.addFlashAttribute("message", "잘못된 경로입니다. 사용자 확인 화면으로 돌아갑니다.");
         } else if (!user.isWithdrawal()){
-            attributes.addFlashAttribute("type", "danger");
             attributes.addFlashAttribute("message", "잘못된 경로입니다. 사용자 확인 화면으로 돌아갑니다.");
             return "redirect:/agreements-withdrawal";
         }
@@ -95,14 +93,11 @@ public class WithdrawalController {
             return "common/withdrawal-check";
         }
         status.setComplete();
+
+        agreementsWithdrawalService.withdrawalRequest(user, agreementsWithdrawal);
+
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-
-        //현재 접속중인 유저 정보 추가.
-        agreementsWithdrawal.setUser(user);
-        agreementsWithdrawalRepository.save(agreementsWithdrawal);
         attributes.addFlashAttribute("message", "[" + df.format(agreementsWithdrawal.getWithdrawalDate())  + "] 일자로 약관 동의에 대한 철회 신청이 완료되었습니다.");
-
-        //TODO :: Mail 전송 Logic 추가 필요.
 
         return "redirect:/notice";
     }

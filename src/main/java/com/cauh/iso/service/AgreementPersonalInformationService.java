@@ -1,5 +1,6 @@
 package com.cauh.iso.service;
 
+import com.cauh.common.entity.Account;
 import com.cauh.iso.domain.AgreementPersonalInformation;
 import com.cauh.iso.domain.QAgreementPersonalInformation;
 import com.cauh.iso.repository.AgreementPersonalInformationRepository;
@@ -22,6 +23,10 @@ public class AgreementPersonalInformationService {
 
     public Optional<AgreementPersonalInformation> findById(Integer id) {
         return agreementPersonalInformationRepository.findById(id);
+    }
+
+    public Optional<AgreementPersonalInformation> findByInternalUser(Account user) {
+        return agreementPersonalInformationRepository.findByInternalUser(user);
     }
 
     public Page<AgreementPersonalInformation> findAll(Pageable pageable) {

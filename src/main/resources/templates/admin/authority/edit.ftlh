@@ -2,7 +2,7 @@
 <#import "/spring.ftl" as spring />
 <html>
 <head>
-    <title>ISO Management System > Authority Management > 사용자 관리</title>
+    <title>Admin > User Management > 사용자 관리</title>
     <script src="/static/js/jquery.mask.min.js"></script>
     <link href="/static/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
     <script src="/static/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
@@ -12,7 +12,6 @@
     <script>
         $(document).ready(function() {
             $("#birthDate").datepicker({format:'yyyy-mm-dd', autoclose:true, clearBtn:true, todayBtn: "linked", todayHighlight: true});
-
 
             //초기 화면 전환시 세팅
             departmentSelect($("#deptSelect").val());

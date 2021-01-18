@@ -2,7 +2,7 @@
 <#import "/spring.ftl" as spring />
 <html>
 <head>
-    <title>ISO Management System > Authority Management > 사용자 관리</title>
+    <title>Admin > User Management > 사용자 관리</title>
 
     <!-- select2 -->
     <link href="/static/plugins/select2/css/select2.min.css" rel="stylesheet">

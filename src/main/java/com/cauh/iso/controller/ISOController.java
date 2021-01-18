@@ -3,6 +3,7 @@ package com.cauh.iso.controller;
 import com.cauh.common.entity.Account;
 import com.cauh.common.security.annotation.CurrentUser;
 import com.cauh.iso.domain.QDocumentVersion;
+import com.cauh.iso.domain.QISO;
 import com.cauh.iso.domain.QNotice;
 import com.cauh.iso.domain.TrainingMatrixFile;
 import com.cauh.iso.domain.constant.ApprovalLineType;
@@ -36,18 +37,18 @@ public class ISOController {
 
     @GetMapping("/iso-14155")
     public String ISOlist(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable, @CurrentUser Account user, Model model){
-        QNotice qNotice = QNotice.notice;
+        QISO qISO = QISO.iSO;
 
         //공지사항 리스트
         BooleanBuilder builder = new BooleanBuilder();
-        builder.and(qNotice.deleted.eq(false));
-        model.addAttribute("noticeList", noticeService.getList(builder, pageable));
+        builder.and(qISO.deleted.eq(false));
+        model.addAttribute("isoList", noticeService.getList(builder, pageable));
 
         //공지사항(상단공지)
         Date today = new Date(System.currentTimeMillis());
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        builder.and(qNotice.topViewEndDate.goe(Date.valueOf(format.format(today))));
-        model.addAttribute("topNoticeList", noticeService.getTopNotices(builder));
+        builder.and(qISO.topViewEndDate.goe(Date.valueOf(format.format(today))));
+        model.addAttribute("topISOList", noticeService.getTopNotices(builder));
 
         Optional<TrainingMatrixFile> optionalTrainingMatrixFile = trainingMatrixService.findFirstByOrderByIdDesc();
         model.addAttribute("trainingMatrixFile", optionalTrainingMatrixFile.isPresent() ? optionalTrainingMatrixFile.get() : null);
