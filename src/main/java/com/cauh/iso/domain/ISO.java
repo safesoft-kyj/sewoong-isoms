@@ -57,6 +57,9 @@ public class ISO extends BaseEntity implements Serializable {
     @Transient
     private List<String> removeFiles;
 
+    @Transient
+    private List<String> uploadFileNames;
+
     @Builder
     public ISO(String title, String content, Date topViewEndDate, PostStatus postStatus) {
         this.title = title;

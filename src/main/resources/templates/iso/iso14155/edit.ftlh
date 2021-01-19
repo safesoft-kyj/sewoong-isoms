@@ -63,13 +63,13 @@
         <div class="panel">
             <div class="panel-body">
                 <div class="form-group">
-                    <@spring.formHiddenInput "notice.id"/>
-                    <@spring.formInput "notice.title" "class='form-control input-lg' placeholder='Title'"/>
+                    <@spring.formHiddenInput "iso.id"/>
+                    <@spring.formInput "iso.title" "class='form-control input-lg' placeholder='Title'"/>
                     <@spring.showErrors "" "color:red;"/>
                 </div>
 
                 <div class="form-group">
-                    <@spring.formTextarea "notice.content" "class='form-control'"/>
+                    <@spring.formTextarea "iso.content" "class='form-control'"/>
                     <@spring.showErrors "" "color:red;"/>
                 </div>
             </div>
@@ -80,9 +80,8 @@
         <div class="panel">
             <div class="panel-body">
 
-                <p class="text-main text-bold text-uppercase">첨부파일<#if notice.attachFiles?has_content>(${notice.attachFiles?size})</#if></p>
-                <#if notice.attachFiles?has_content>
-
+                <p class="text-main text-bold text-uppercase">첨부파일<#if iso.attachFiles?has_content>(${iso.attachFiles?size})</#if></p>
+                <#if iso.attachFiles?has_content>
                     <div class="form-group">
                         <table class="table table-bordered">
                             <thead>
@@ -93,35 +92,34 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <#list notice.attachFiles as attachFile>
+                            <#list iso.attachFiles as attachFile>
                                 <tr>
                                     <td>${attachFile?index + 1}</td>
                                     <td>${attachFile.originalFileName}</td>
                                     <td class="text-center">
-                                        <@spring.formCheckbox "notice.attachFiles[" + attachFile?index + "].deleted", "class='form-checkbox'"/>
+                                        <@spring.formCheckbox "iso.attachFiles[" + attachFile?index + "].deleted", "class='form-checkbox'"/>
                                         <#--                                <input type="checkbox" class="form-checkbox" value="${attachFile.id}"/>-->
                                     </td>
                                 </tr>
                             </#list>
                             </tbody>
                         </table>
-
                     </div>
-
+                    <#else>
+                    <@spring.formHiddenInput "iso.attachFiles" />
                 </#if>
                 <div class="form-group">
-                    <input name="uploadingFiles"  class="form-control" type="file" multiple>
+                    <input name="uploadingFiles"  class="form-control" type="file" multiple accept=".pdf">
+                    <@spring.showErrors "" "color:red;"/>
                 </div>
-
                 <hr>
-
                 <p class="text-main text-bold text-uppercase">상단공지</p>
                 <div class="form-horizontal">
                     <div class="form-group">
                         <label class="col-sm-5 control-label text-left" for="demo-hor-inputpass">종료일</label>
                         <div class="col-sm-7">
                             <div class="input-group date">
-                                <@spring.formInput "notice.topViewEndDate" "class='form-control'"/>
+                                <@spring.formInput "iso.topViewEndDate" "class='form-control'"/>
                                 <span class="input-group-addon"><i class="pli-calendar-4"></i></span>
                             </div>
                             <@spring.showErrors "" "color:red;"/>

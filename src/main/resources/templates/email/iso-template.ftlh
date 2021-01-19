@@ -17,12 +17,12 @@
                 <table class="main" width="100%" cellpadding="0" cellspacing="0">
                     <tr>
                         <td class="alert alert-good" style="vertical-align: top; font-size: 16px; color: #fff; font-weight: 500; padding: 20px; text-align: center; background-color: #8BC34A;">
-                            <strong>${notice.title}</strong>
+                            <strong>${iso.title}</strong>
                         </td>
                     </tr>
                     <tr>
                         <td class="content-block aligncenter" style="vertical-align: top; padding: 0 0 20px; text-align: center;">
-                            <div>[ISO-MS] 새로운 공지사항이 등록 되었습니다. 확인해 주세요.</div>
+                            <div>[ISO-MS] 새로운 ISO 항목이 등록 되었습니다. 확인해 주세요.</div>
                             <a href="http://iso.cauh.ac.kr" target="_blank" style="color: #348eda; text-decoration: underline;">CAUH ISO-MS 바로가기</a>
                         </td>
                     </tr>

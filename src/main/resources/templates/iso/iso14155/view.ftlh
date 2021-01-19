@@ -1,7 +1,7 @@
 <#assign security=JspTaglibs["http://www.springframework.org/security/tags"] />
 <html>
     <head>
-        <title>e-SOP :: ${notice.title}</title>
+        <title>e-SOP :: ${iso.title}</title>
         <!--Bootbox Modals [ OPTIONAL ]-->
         <script src="/static/plugins/bootbox/bootbox.min.js"></script>
     </head>
@@ -78,7 +78,7 @@
 
                 <div class="mar-btm pad-btm bord-btm">
                     <h1 class="page-header text-overflow">
-                        ${notice.title}
+                        ${iso.title}
                     </h1>
                 </div>
 
@@ -88,8 +88,8 @@
                         <!--Sender Information-->
                         <div class="media">
                             <div class="media-body text-left">
-                                <div class="text-bold"><i class="pli-user"></i> ${notice.createdBy?default('System')}</div>
-                                <small class="text-muted"><i class="pli-pencil"></i> ${notice.createdDate}</small>
+                                <div class="text-bold"><i class="pli-user"></i> ${iso.createdBy?default('System')}</div>
+                                <small class="text-muted"><i class="pli-pencil"></i> ${iso.createdDate}</small>
                             </div>
                         </div>
                     </div>
@@ -110,18 +110,18 @@
                         <button class="btn btn-default" type="button" onclick="fnPrint();"><i class="pli-printer icon-lg"></i></button>
 <#--                        <div class="btn-group btn-group">-->
                         <@security.authorize access="hasAnyAuthority('ADMIN')">
-                        <button class="btn btn-default" id="sendEmailBtn" data-id="${notice.id}"><i class="fa fa-send-o"></i> 메일 전송</button>
+                        <button class="btn btn-default" id="sendEmailBtn" data-id="${iso.id}"><i class="fa fa-send-o"></i> 메일 전송</button>
                         </@security.authorize>
 <#--                        </div>-->
                     </div>
                     <div class="col-sm-5 toolbar-right">
                         <!--Reply & forward buttons-->
                         <@security.authorize access="hasAnyAuthority('ADMIN')">
-                        <a class="btn btn-default" href="javascript:goToURL('/notice/${notice.id}/edit');"><i class="pli-pencil"></i> 수정</a>
+                        <a class="btn btn-default" href="javascript:goToURL('/iso-14155/${iso.id}/edit');"><i class="pli-pencil"></i> 수정</a>
                         <button class="btn btn-default" id="removeBtn"><i class="pli-trash icon-lg"></i> 삭제</button>
                         </@security.authorize>
                         <div class="btn-group btn-group">
-                            <a class="btn btn-default" href="javascript:goToURL('/notice');">
+                            <a class="btn btn-default" href="javascript:goToURL('/iso-14155');">
                                 <i class="psi-list-view"></i> 목록
                             </a>
 <#--                            <a class="btn btn-default" href="#">-->
@@ -134,25 +134,25 @@
                 <!--Message-->
                 <!--===================================================-->
                 <div class="mail-message">
-                    ${notice.content?no_esc}
+                    ${iso.content?no_esc}
                 </div>
                 <!--===================================================-->
                 <!--End Message-->
 
                 <!-- Attach Files-->
                 <!--===================================================-->
-                <#if notice.attachFiles?has_content>
+                <#if iso.attachFiles?has_content>
                 <div class="pad-ver">
-                    <p class="text-main text-bold box-inline"><i class="psi-paperclip icon-fw"></i> Attachments <span>(${notice.attachFiles?size})</span></p>
+                    <p class="text-main text-bold box-inline"><i class="psi-paperclip icon-fw"></i> Attachments <span>(${iso.attachFiles?size})</span></p>
 <#--                    <a href="#" class="btn-link">Download all</a> | <a href="#" class="btn-link">View all images</a>-->
 
                     <ul class="mail-attach-list list-ov">
-                        <#list notice.attachFiles as attachFile>
+                        <#list iso.attachFiles as attachFile>
                         <li>
-                            <a href="/notice/${notice.id}/downloadFile/${attachFile.id}" class="thumbnail">
+                            <a href="#iso-modal" data-toggle="modal" data-value="${attachFile.id}" class="thumbnail">
                                 <#if attachFile.fileType?index_of('image') == 0>
                                 <div class="mail-file-img">
-                                    <img class="image-responsive" src="/notice/${notice.id}/downloadFile/${attachFile.id}" alt="image">
+                                    <img class="image-responsive" src="/iso-14155/${iso.id}/downloadFile/${attachFile.id}" alt="image">
                                 </div>
                                 <#else>
                                 <div class="mail-file-icon">
@@ -160,7 +160,7 @@
                                 </div>
                                 </#if>
                                 <div class="caption">
-                                    <p class="text-main mar-no">${attachFile.originalFileName}</p>
+                                    <p class="text-main mar-no" style="overflow-x: hidden;">${attachFile.originalFileName}</p>
                                     <small class="text-muted">Added: ${attachFile.createdDate}</small>
                                 </div>
                             </a>
@@ -171,8 +171,36 @@
                 </#if>
                 <!--===================================================-->
                 <!-- End Attach Files-->
-
             </div>
+
+            <!-- ISO Viewer -->
+            <div class="modal fade" id="iso-modal" role="dialog" tabindex="-1" aria-labelledby="iso-modal"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-fullsize">
+                    <div class="modal-content">
+
+                        <!--Modal header-->
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
+                            <h4 class="modal-title">ISO Certification</h4>
+                        </div>
+
+                        <!--Modal body-->
+                        <div class="modal-body">
+                            <div class="table-responsive">
+                                <div id="certification-html" style="" >내용을 불러오는 중입니다...</div>
+                            </div>
+                        </div>
+
+                        <!--Modal footer-->
+                        <div class="modal-footer">
+                            <button data-dismiss="modal" class="btn btn-default" type="button"><i class="fa fa-times"></i> Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Certification viewer end -->
 
         </div>
     </div>

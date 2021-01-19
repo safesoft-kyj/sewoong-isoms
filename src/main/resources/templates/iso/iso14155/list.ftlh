@@ -35,7 +35,7 @@
             <div class="row">
                 <div class="col-sm-6 table-toolbar-left">
                     <@security.authorize access="hasAnyAuthority('ADMIN')">
-                    <a class="btn btn-primary" href="javascript:goToURL('/notice/new')"><i class="pli-pencil"></i> 공지 작성</a>
+                    <a class="btn btn-primary" href="javascript:goToURL('/iso-14155/new')"><i class="pli-pencil"></i> ISO 14155 작성</a>
                     </@security.authorize>
 <#--                    <button class="btn btn-default"><i class="pli-printer"></i></button>-->
 <#--                    <div class="btn-group">-->
@@ -65,7 +65,7 @@
                 </div>
             </div>
         </div>
-        <@pagination.bind noticeList/>
+        <@pagination.bind isoList/>
         <div class="table-responsive">
             <table class="table">
                 <thead>
@@ -80,14 +80,14 @@
                 </tr>
                 </thead>
                 <tbody>
-                <#if topNoticeList?has_content>
-                <#list topNoticeList as notice>
+                <#if topISOList?has_content>
+                <#list topISOList as iso>
                     <tr class="bg-gray-light">
                         <td class="text-center"><i class="fa fa-exclamation-circle text-warning"></i></td>
-                        <td><a class="btn-link" href="/notice/${notice.id}">${notice.title}</a></td>
-                        <td class="text-center"><#if notice.attachFiles?has_content><i class="fa fa-floppy-o"></i></#if></td>
-                        <td class="text-center"><span class="text-muted">${notice.createdDate?string('yyyy-MM-dd')}</span></td>
-                        <td class="text-center">${notice.createdBy?default('System')}</td>
+                        <td><a class="btn-link" href="/iso-14155/${iso.id}">${iso.title}</a></td>
+                        <td class="text-center"><#if iso.attachFiles?has_content><i class="fa fa-floppy-o"></i></#if></td>
+                        <td class="text-center"><span class="text-muted">${iso.createdDate?string('yyyy-MM-dd')}</span></td>
+                        <td class="text-center">${iso.createdBy?default('System')}</td>
 <#--                        <td class="text-center">-->
 <#--                            <#if notice.postStatus == 'NONE'>-->
 <#--                                --->
@@ -101,14 +101,14 @@
                     </tr>
                 </#list>
                 </#if>
-                <#if noticeList.content?has_content>
-                <#list noticeList.content as notice>
+                <#if isoList.content?has_content>
+                <#list isoList.content as iso>
                 <tr>
-                    <td class="text-center">${(noticeList.totalElements - (noticeList.size * noticeList.number)) - notice?index}</td>
-                    <td><a class="btn-link" href="/notice/${notice.id}<@pagination.getQueryString/>">${notice.title}</a></td>
-                    <td class="text-center"><#if notice.attachFiles?has_content><i class="fa fa-floppy-o"></i></#if></td>
-                    <td class="text-center"><span class="text-muted">${notice.createdDate?string('yyyy-MM-dd')}</span></td>
-                    <td class="text-center">${notice.createdBy?default('System')}</td>
+                    <td class="text-center">${(isoList.totalElements - (isoList.size * isoList.number)) - iso?index}</td>
+                    <td><a class="btn-link" href="/iso-14155/${iso.id}<@pagination.getQueryString/>">${iso.title}</a></td>
+                    <td class="text-center"><#if iso.attachFiles?has_content><i class="fa fa-floppy-o"></i></#if></td>
+                    <td class="text-center"><span class="text-muted">${iso.createdDate?string('yyyy-MM-dd')}</span></td>
+                    <td class="text-center">${iso.createdBy?default('System')}</td>
                 </tr>
                 </#list>
                 <#else>
