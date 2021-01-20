@@ -6,6 +6,7 @@ import com.cauh.iso.domain.*;
 import com.cauh.iso.domain.constant.ApprovalLineType;
 import com.cauh.iso.domain.constant.PostStatus;
 import com.cauh.iso.security.annotation.IsAdmin;
+import com.cauh.iso.service.FileStorageService;
 import com.cauh.iso.service.ISOService;
 import com.cauh.iso.service.NoticeService;
 import com.cauh.iso.service.TrainingMatrixService;
@@ -13,9 +14,13 @@ import com.cauh.iso.validator.ISOValidator;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -28,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -41,6 +47,7 @@ public class ISOController {
 
     private final ISOService isoService;
     private final ISOValidator isoValidator;
+    private final FileStorageService fileStorageService;
 
     private final TrainingMatrixService trainingMatrixService;
 
@@ -156,6 +163,36 @@ public class ISOController {
         } else {
             attributes.addFlashAttribute("message", "존재하지 않는 ISO-14155 게시물 입니다.");
             return "redirect:/iso-14155";
+        }
+    }
+
+    @GetMapping("/iso-14155/{id}/downloadFile/{attachFileId:.+}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable("id") Integer id, @PathVariable("attachFileId") String attachFileId, HttpServletRequest request) {
+        // Load file as Resource
+        Optional<ISOAttachFile> optionalAttachFile = isoService.getAttachFile(attachFileId);
+        if(optionalAttachFile.isPresent()) {
+            ISOAttachFile attachFile = optionalAttachFile.get();
+            Resource resource = fileStorageService.loadFileAsResource(attachFile.getFileName());
+
+            // Try to determine file's content type
+            String contentType = null;
+            try {
+                contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+            } catch (IOException ex) {
+                log.info("Could not determine file type.");
+            }
+
+            // Fallback to the default content type if type could not be determined
+            if (contentType == null) {
+                contentType = "application/octet-stream";
+            }
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + attachFile.getOriginalFileName() + "\"")
+                    .body(resource);
+        } else {
+            return ResponseEntity.of(Optional.empty());
         }
     }
 

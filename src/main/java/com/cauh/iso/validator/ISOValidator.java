@@ -1,7 +1,6 @@
 package com.cauh.iso.validator;
 
 import com.cauh.iso.domain.ISO;
-import com.cauh.iso.domain.ISOAttachFile;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
