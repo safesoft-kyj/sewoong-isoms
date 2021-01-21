@@ -5,6 +5,7 @@ import com.cauh.iso.domain.constant.ISOType;
 import com.cauh.iso.domain.constant.PostStatus;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -50,9 +51,36 @@ public class ISO extends BaseEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private PostStatus postStatus;
 
+    //ISO 첨부 파일 (Training시, 강의 파일이 됨)
     @OneToMany(mappedBy = "iso")
     @AuditMappedBy(mappedBy = "iso")
     private List<ISOAttachFile> attachFiles;
+
+    // 뷰 카운터
+    @ColumnDefault("0")
+    private int viewCnt;
+
+    //강의 여부
+    @ColumnDefault("0")
+    private boolean training;
+
+    //강의 active 여부
+    @ColumnDefault("0")
+    private boolean active;
+
+    //=============강의 정보===============
+
+    //ISO 배정 정보
+    @OneToMany(mappedBy = "iso")
+    List<ISOTrainingMatrix> isoTrainingMatrixList;
+
+    //ISO
+
+    //퀴즈
+    @Column(name = "quiz", columnDefinition = "nvarchar(MAX)")
+    private String quiz;
+
+    //설문
 
     @Transient
     private List<String> removeFiles;

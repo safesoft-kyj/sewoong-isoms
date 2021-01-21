@@ -61,7 +61,7 @@ public class TrainingPeriodService {
         return trainingPeriodRepository.findAll(predicate, pageable);
     }
 
-    public void deleteByIdAndType(Integer id, DocumentType documentType) {
+    public void deleteById(Integer id) {
         trainingPeriodRepository.deleteById(id);
     }
 }

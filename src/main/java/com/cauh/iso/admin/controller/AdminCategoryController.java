@@ -1,7 +1,6 @@
 package com.cauh.iso.admin.controller;
 
 import com.cauh.iso.domain.Category;
-import com.cauh.iso.domain.constant.CategoryType;
 import com.cauh.iso.service.CategoryService;
 import com.cauh.iso.service.DocumentService;
 import com.cauh.iso.validator.CategoryValidator;
@@ -23,23 +22,20 @@ public class AdminCategoryController {
     private final CategoryValidator categoryValidator;
     private final DocumentService documentService;
 
-    @GetMapping("/admin/{categoryType}/category")
-    public String categoryList(@PathVariable("categoryType") CategoryType categoryType,
-                               @RequestParam(value = "action", defaultValue = "list") String action,
+    @GetMapping("/admin/sop/category")
+    public String categoryList(@RequestParam(value = "action", defaultValue = "list") String action,
                                @RequestParam(value = "id", required = false) String id, Model model) {
-        List<Category> categoryList = categoryService.getCategoryList(categoryType);
+        List<Category> categoryList = categoryService.getCategoryList();
         model.addAttribute("categoryList", categoryList);
 
         if("new".equals(action)) {
-            Category category = new Category();
-            category.setCategoryType(categoryType);
-            model.addAttribute("category", category);
+            Category Category = new Category();
+            model.addAttribute("category", Category);
         } else if ("edit".equals(action)) {
             long count = documentService.countByCategoryId(id);
-            Category category = categoryService.findById(id);
-            category.setCategoryType(categoryType);
-            category.setReadonly(count > 0);
-            model.addAttribute("category", category);
+            Category Category = categoryService.findById(id);
+            Category.setReadonly(count > 0);
+            model.addAttribute("category", Category);
         }
 
         model.addAttribute("action", action);
@@ -48,22 +44,22 @@ public class AdminCategoryController {
         return "admin/sop/category/list";
     }
 
-    @PostMapping("/admin/{categoryType}/category")
-    public String editCategory(@PathVariable("categoryType") CategoryType categoryType,
-                               @RequestParam(value = "action", defaultValue = "list") String action,
-                               @RequestParam(value = "id", required = false) String id, @ModelAttribute("category") Category category,
+    @PostMapping("/admin/sop/category")
+    public String editCategory(@RequestParam(value = "action", defaultValue = "list") String action,
+                               @RequestParam(value = "id", required = false) String id,
+                               @ModelAttribute("category") Category Category,
                                BindingResult result,
                                SessionStatus status, Model model, RedirectAttributes attributes) {
-        categoryValidator.validate(category, result);
+        categoryValidator.validate(Category, result);
 
         if(result.hasErrors()) {
             model.addAttribute("action", action);
             return "admin/sop/category/list";
         }
 
-        categoryService.save(category);
+        categoryService.save(Category);
         status.setComplete();
         attributes.addFlashAttribute("message", "저장 되었습니다.");
-        return "redirect:/admin/{categoryType}/category";
+        return "redirect:/admin/sop/category";
     }
 }

@@ -2,9 +2,7 @@ package com.cauh.iso.service;
 
 import com.cauh.iso.domain.Category;
 import com.cauh.iso.domain.QCategory;
-import com.cauh.iso.domain.constant.CategoryType;
 import com.cauh.iso.repository.CategoryRepository;
-import com.querydsl.core.BooleanBuilder;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +17,8 @@ public class CategoryService {
     @Resource
     private CategoryRepository categoryRepository;
 
-    public Category save(Category category) {
-        return categoryRepository.save(category);
+    public Category save(Category Category) {
+        return categoryRepository.save(Category);
     }
 
     public Category findById(String id) {
@@ -37,14 +35,11 @@ public class CategoryService {
         return categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "shortName"));
     }
 
-    public List<Category> getCategoryList(CategoryType categoryType) {
-        return categoryRepository.findAllByCategoryType(categoryType, Sort.by(Sort.Direction.ASC, "shortName"));
-    }
-
     public TreeMap<String, String> categoryMap() {
         TreeMap<String, String> categoryMap = new TreeMap<>();
         categoryMap.putAll(getCategoryList().stream().collect(Collectors.toMap(c -> c.getShortName(), c-> "[" + c.getShortName() + "] " + c.getName())));
         return categoryMap;
     }
+
 
 }

@@ -59,8 +59,6 @@ public class DocumentVersionService {
     public DocumentVersion save(DocumentVersion documentVersion) {
         if (documentVersion.getDocument().getType() == DocumentType.SOP) {
             documentVersion.getDocument().setCategory(categoryService.findByShortName(documentVersion.getDocument().getCategory().getShortName()).get());
-        } else if(documentVersion.getDocument().getType() == DocumentType.ISO) {
-
         } else if (documentVersion.getDocument().getType() == DocumentType.RF) {
             documentVersion.getDocument().setSop(documentService.findByDocId(documentVersion.getDocument().getSop().getDocId()).get());
         }
@@ -527,7 +525,7 @@ public class DocumentVersionService {
         int[] diffArr = {0, 2, 6, 9};
         iterable.forEach(user -> {
             log.info("@SOP 트레이닝 이메일 알림을 전송한다.");
-            List<MyTraining> trainingList = trainingMatrixRepository.getDownloadTrainingList(null, user.getId(), null, null, null);
+            List<MyTraining> trainingList = trainingMatrixRepository.getDownloadTrainingList(null, user.getId(), null, null);
 
             for(int compareDiff : diffArr) {
                 log.info("@Diff : {}", compareDiff);

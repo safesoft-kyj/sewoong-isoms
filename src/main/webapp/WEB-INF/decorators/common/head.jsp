@@ -67,7 +67,7 @@ You must include this in your project.
 
 
 RECOMMENDED
-This category must be included but you may modify which plugins or components which should be included in your
+This Category must be included but you may modify which plugins or components which should be included in your
 project.
 
 

@@ -4,6 +4,5 @@ import lombok.AllArgsConstructor;
 
 public enum DocumentType {
     SOP,
-    RF,
-    ISO
+    RF
 }

@@ -13,7 +13,6 @@ import com.cauh.iso.domain.*;
 import com.cauh.iso.domain.constant.DocumentStatus;
 import com.cauh.iso.domain.constant.DocumentType;
 import com.cauh.iso.domain.report.ExternalCustomer;
-import com.cauh.iso.repository.ConfidentialityPledgeRepository;
 import com.cauh.iso.repository.ExternalCustomerRepository;
 import com.cauh.iso.service.*;
 import com.querydsl.core.BooleanBuilder;

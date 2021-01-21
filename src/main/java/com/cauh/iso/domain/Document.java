@@ -68,11 +68,11 @@ public class Document extends BaseEntity implements Serializable {
 
 
     @Builder
-    public Document(String id, Document sop, DocumentType type, Category category, String documentNo, String docId, String title) {
+    public Document(String id, Document sop, DocumentType type, Category Category, String documentNo, String docId, String title) {
         this.id = id;
         this.sop = sop;
         this.type = type;
-        this.category = category;
+        this.category = Category;
         this.documentNo = documentNo;
         this.docId = docId;
         this.title = title;

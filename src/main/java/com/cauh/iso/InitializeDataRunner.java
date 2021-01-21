@@ -141,12 +141,12 @@ public class InitializeDataRunner implements ApplicationRunner {
         return categoryRepository.save(category);
     }
 
-    public Document addSOP(String id, Category category, String documentNo, String title) {
+    public Document addSOP(String id, Category Category, String documentNo, String title) {
         Document document = Document.builder()
                 .id(id)
-                .category(category)
+                .Category(Category)
                 .documentNo(documentNo)
-                .docId(DocumentType.SOP.name() +"-" + category.getShortName() + documentNo)
+                .docId(DocumentType.SOP.name() +"-" + Category.getShortName() + documentNo)
                 .title(title)
                 .type(DocumentType.SOP)
                 .build();

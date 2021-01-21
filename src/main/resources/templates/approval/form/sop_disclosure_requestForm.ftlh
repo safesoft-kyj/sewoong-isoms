@@ -187,7 +187,7 @@
                     <label><input type="checkbox" />Effective SOP </label>
                     <ul style="list-style: none;padding-left:20px;">
 
-                        <#list categoryList as c>
+                        <#list CategoryList as c>
                             <#if currentSopCategoryMap[c.id]?has_content>
                                 <li class="checkbox"> <i class="fa fa-plus"></i>
                                     <label><input id="${c.id}" data-id="${c.id}" name="ctg" value="${c.id}" type="checkbox" />${c.name} </label>
@@ -227,7 +227,7 @@
                 <li class="checkbox"> <i class="fa fa-plus"></i>
                     <label><input type="checkbox" />Superseded SOP </label>
                     <ul style="list-style: none;padding-left:20px;">
-                        <#list categoryList as c>
+                        <#list CategoryList as c>
                             <#if supersededSopCategoryMap[c.id]?has_content>
                                 <li class="checkbox"> <i class="fa fa-plus"></i>
                                     <label><input id="${c.id}" data-id="${c.id}" name="ctg" value="${c.id}" type="checkbox" />${c.name} </label>

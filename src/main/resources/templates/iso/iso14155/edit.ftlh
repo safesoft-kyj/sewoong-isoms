@@ -79,8 +79,7 @@
     <div class="col-sm-3">
         <div class="panel">
             <div class="panel-body">
-
-                <p class="text-main text-bold text-uppercase">첨부파일<#if iso.attachFiles?has_content>(${iso.attachFiles?size})</#if></p>
+                <p class="text-main text-bold text-uppercase">첨부파일(ISO)<#if iso.attachFiles?has_content>(${iso.attachFiles?size})</#if></p>
                 <#if iso.attachFiles?has_content>
                     <div class="form-group">
                         <table class="table table-bordered">
@@ -109,7 +108,7 @@
                     <@spring.formHiddenInput "iso.attachFiles" />
                 </#if>
                 <div class="form-group">
-                    <input name="uploadingFiles"  class="form-control" type="file" multiple accept=".pdf">
+                    <input name="uploadingFiles" class="form-control" type="file" accept=".pdf">
                     <@spring.showErrors "" "color:red;"/>
                 </div>
                 <hr>

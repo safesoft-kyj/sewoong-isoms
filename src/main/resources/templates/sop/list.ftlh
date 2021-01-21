@@ -143,10 +143,10 @@
                             <a href="/sop/${status.name()?lower_case}" class="list-group-item<#if categoryId?has_content == false> text-bold</#if>">
                                 <span class="text-main"><i class="pli-folder-with-document icon-lg icon-fw"></i> ALL</span>
                             </a>
-                            <#if categoryList?exists && categoryList?has_content>
-                                <#list categoryList as category>
-                                    <a href="/sop/${status.name()?lower_case}/${category.id}" class="list-group-item<#if categoryId?default('') == category.id> text-bold</#if>">
-                                        <span class="text-main"><i class="pli-folder<#if categoryId?default('') == category.id>-with-document</#if> icon-lg icon-fw"></i> ${category.name}</span>
+                            <#if CategoryList?exists && CategoryList?has_content>
+                                <#list CategoryList as Category>
+                                    <a href="/sop/${status.name()?lower_case}/${Category.id}" class="list-group-item<#if categoryId?default('') == Category.id> text-bold</#if>">
+                                        <span class="text-main"><i class="pli-folder<#if categoryId?default('') == Category.id>-with-document</#if> icon-lg icon-fw"></i> ${Category.name}</span>
                                     </a>
                                 </#list>
                             </#if>
@@ -165,8 +165,8 @@
                     <ol class="breadcrumb">
                         <li>SOP</li>
                         <li><a href="/sop/${status.name()?lower_case}">${status.label} SOP</a></li>
-                        <#if category?has_content>
-                            <li><a href="/sop/${status.name()?lower_case}/${category.id}">${category.name}</a></li>
+                        <#if Category?has_content>
+                            <li><a href="/sop/${status.name()?lower_case}/${Category.id}">${Category.name}</a></li>
                         </#if>
 
                         <#if sopId?has_content>
@@ -204,7 +204,7 @@
                                     <div class="file-control">
                                     </div>
                                     <div class="file-attach-icon"></div>
-                                    <a href="/sop/${status.name()?lower_case}/${sopVer.document.category.id}/${sopVer.document.id}" class="file-details">
+                                    <a href="/sop/${status.name()?lower_case}/${sopVer.document.Category.id}/${sopVer.document.id}" class="file-details">
                                         <div class="media-block">
                                             <div class="media-left" style="color:#ffc848"><i class="psi-folder"></i></div>
                                             <div class="media-body">

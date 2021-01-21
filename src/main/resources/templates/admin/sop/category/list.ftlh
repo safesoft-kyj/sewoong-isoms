@@ -3,6 +3,21 @@
 <html>
 <head>
     <title>e-SOP > SOP > Category 관리</title>
+    <script>
+        $(document).ready(function(){
+
+            //삭제 버튼 동적 이벤트 할당.
+            $(document).on("click", "#deleteBtn", function(){
+                let categoryName = $(this).data("value");
+                let res = confirm("정말로 [" + categoryName + "]을(를) 삭제하시겠습니까?");
+                if(res) {
+                    console.log("삭제");
+                }
+
+            });
+        })
+    </script>
+
 </head>
 <body>
 
@@ -18,7 +33,7 @@
         <div class="pad-btm form-inline">
             <div class="row">
                 <div class="col-sm-6 table-toolbar-left">
-                    <a class="btn btn-primary" href="/admin/${categoryType}/category?action=new#edit0"><i class="pli-pencil"></i> Category 추가</a>
+                    <a class="btn btn-primary" href="/admin/sop/category?action=new#edit0"><i class="pli-pencil"></i> Category 추가</a>
                 </div>
                 <div class="col-sm-6 table-toolbar-right">
 <#--                    <div class="form-group">-->
@@ -31,7 +46,7 @@
             </div>
         </div>
         <div class="table-responsive">
-            <form name="f" method="post" action="/admin/${categoryType}/category">
+            <form name="f" method="post" action="/admin/sop/category">
                 <input type="hidden" name="action" value="${action}">
             <table class="table table-striped">
                 <thead>
@@ -72,7 +87,8 @@
                                 <#if action == "edit" && id == category.id>
                                     <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 저장</button>
                                 <#else>
-                                    <a class="btn btn-sm btn-mint" href="/admin/${categoryType}/category?action=edit&id=${category.id}#edit${category?index}"><i class="fa fa-pencil"> 수정</i></a>
+                                    <a class="btn btn-sm btn-mint" href="/admin/sop/category?action=edit&id=${category.id}#edit${category?index}"><i class="fa fa-pencil"> 수정</i></a>
+                                    <button class="btn btn-sm btn-danger" data-value="${category.name}" type="button" id="deleteBtn"><i class="fa fa-trash"> 삭제</i></button>
                                 </#if>
                             </td>
                         </tr>
@@ -96,7 +112,6 @@
                         </td>
                     </tr>
                     </#if>
-
                 </tbody>
             </table>
             </form>

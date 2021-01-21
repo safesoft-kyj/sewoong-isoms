@@ -83,7 +83,7 @@
                 </#list>
                 <#else>
                     <tr>
-                        <td class="text-center" colspan="${jdSize + 6}"><i class="fa fa-exclamation-circle text-info"></i> ${documentType} 정보가 존재하지 않습니다.</td>
+                        <td class="text-center" colspan="${jdSize + 6}"><i class="fa fa-exclamation-circle text-info"></i> SOP 정보가 존재하지 않습니다.</td>
                     </tr>
                 </#if>
                 </tbody>

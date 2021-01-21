@@ -88,7 +88,7 @@
                     <th class="text-center"><i class="fa fa-file-pdf-o"></i></th>
                     <th>
                         <#if type == 'SOP'>
-                        <@pagination.sortField "Category" "document.category.shortName"/>
+                        <@pagination.sortField "Category" "document.Category.shortName"/>
                         <#else>
                         <@pagination.sortField "SOP" "document.sop.docId"/>
                         </#if>
@@ -116,7 +116,7 @@
                             </td>
                             <td>
                             <#if type == 'SOP'>
-                                ${documentVer.document.category.name}
+                                ${documentVer.document.Category.name}
                             <#else>
                                 ${documentVer.document.sop.docId}
                             </#if>

@@ -15,7 +15,7 @@
             <a href="#">Ongoing</a>
         </li>
         <li>
-            <a href="/training/${documentType}/mandatory-training/completed">Completed</a>
+            <a href="/training/sop/mandatory-training/completed">Completed</a>
         </li>
     </ul>
     </#if>

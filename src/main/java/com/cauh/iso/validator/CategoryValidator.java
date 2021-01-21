@@ -20,15 +20,15 @@ public class CategoryValidator implements Validator {
 
     @Override
     public void validate(Object o, Errors errors) {
-        Category category = (Category)o;
+        Category Category = (Category)o;
 
-        if(StringUtils.isEmpty(category.getShortName())) {
+        if(StringUtils.isEmpty(Category.getShortName())) {
             errors.rejectValue("shortName", "message.required", "필수 입력 항목입니다.");
-        } else if (StringUtils.isEmpty(category.getId()) && categoryService.findByShortName(category.getShortName()).isPresent()) {
+        } else if (StringUtils.isEmpty(Category.getId()) && categoryService.findByShortName(Category.getShortName()).isPresent()) {
             errors.rejectValue("shortName", "message.required", "이미 사용중 입니다.");
         }
 
-        if(StringUtils.isEmpty(category.getName())) {
+        if(StringUtils.isEmpty(Category.getName())) {
             errors.rejectValue("name", "message.required", "필수 입력 항목입니다.");
         }
     }

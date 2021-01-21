@@ -30,10 +30,6 @@ public class Category extends BaseEntity implements Serializable {
     @Column(name = "name", columnDefinition = "nvarchar(255)", nullable = false)
     private String name;
 
-    @Column(name = "categoryType")
-    @Enumerated(EnumType.STRING)
-    private CategoryType categoryType;
-
     @Column(name = "deleted")
     private boolean deleted;
 

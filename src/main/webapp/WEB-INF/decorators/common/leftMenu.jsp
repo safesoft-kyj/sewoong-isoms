@@ -64,13 +64,13 @@
         </a>
         <!--Submenu-->
         <ul class="collapse" aria-expanded="false">
-            <li><a href="/training/ISO/my-training-matrix">My Training Matrix</a></li>
-            <li><a href="/training/ISO/mandatory-training">My Training</a></li>
-            <li><a href="/training/ISO/optional-training">Optional Training</a></li>
-            <li><a href="/training/ISO/offline-training">Off-line Training</a></li>
-            <li><a href="/training/ISO/trainingLog">Training Log(ISO)</a></li>
+            <li><a href="/training/iso/my-training-matrix">My Training Matrix</a></li>
+            <li><a href="/training/iso/mandatory-training">My Training</a></li>
+            <li><a href="/training/iso/optional-training">Optional Training</a></li>
+            <li><a href="/training/iso/offline-training">Off-line Training</a></li>
+            <li><a href="/training/iso/trainingLog">Training Log(ISO)</a></li>
             <c:if test="${user.teamManager == true || user.deptManager == true}">
-                <li><a href="/training/ISO/teamDeptTrainingLog2">Employee Training Log</a></li>
+                <li><a href="/training/iso/teamDeptTrainingLog2">Employee Training Log</a></li>
             </c:if>
         </ul>
     </li>
@@ -95,13 +95,13 @@
         </a>
         <!--Submenu-->
         <ul class="collapse" aria-expanded="false">
-            <li><a href="/training/SOP/my-training-matrix">My Training Matrix</a></li>
-            <li><a href="/training/SOP/mandatory-training">My Training</a></li>
-            <li><a href="/training/SOP/optional-training">Optional Training</a></li>
-            <li><a href="/training/SOP/offline-training">Off-line Training</a></li>
-            <li><a href="/training/SOP/trainingLog">Training Log(SOP)</a></li>
+            <li><a href="/training/sop/my-training-matrix">My Training Matrix</a></li>
+            <li><a href="/training/sop/mandatory-training">My Training</a></li>
+            <li><a href="/training/sop/optional-training">Optional Training</a></li>
+            <li><a href="/training/sop/offline-training">Off-line Training</a></li>
+            <li><a href="/training/sop/trainingLog">Training Log(SOP)</a></li>
             <c:if test="${user.teamManager == true || user.deptManager == true}">
-                <li><a href="/training/SOP/teamDeptTrainingLog2">Employee Training Log</a></li>
+                <li><a href="/training/sop/teamDeptTrainingLog2">Employee Training Log</a></li>
             </c:if>
         </ul>
     </li>

@@ -1,9 +1,23 @@
 <#assign security=JspTaglibs["http://www.springframework.org/security/tags"] />
 <html>
     <head>
-        <title>e-SOP :: ${iso.title}</title>
+        <title>ISO-MS :: ${iso.title}</title>
         <!--Bootbox Modals [ OPTIONAL ]-->
         <script src="/static/plugins/bootbox/bootbox.min.js"></script>
+
+        <style>
+            .modal-fullsize {
+                width: 80%;
+                height: 800px;
+                margin: 3px;
+                padding: 0;
+            }
+
+            #iso-html {
+                height: 700px;
+            }
+        </style>
+
     </head>
 <body>
 
@@ -48,9 +62,9 @@
 
         $("#sendEmailBtn").click(function() {
             if(confirm('알림 메일을 전송 하시겠습니까?')) {
-                var noticeId = $(this).data("id");
+                var isoId = $(this).data("id");
                 $.ajax({
-                    url:'/ajax/notice/' + noticeId + '/send',
+                    url:'/ajax/iso-14155/' + isoId + '/send',
                     data:{r:Math.random()},
                     success:function(r) {
                         // alert(r);
@@ -149,7 +163,7 @@
                     <ul class="mail-attach-list list-ov">
                         <#list iso.attachFiles as attachFile>
                         <li>
-                            <a href="#iso-modal" data-toggle="modal" data-value="${attachFile.id}" class="thumbnail">
+                            <a href="#iso-modal" data-toggle="modal" data-id="${iso.id}" data-file="${attachFile.id}" data-name="${attachFile.originalFileName}" class="thumbnail">
                                 <#if attachFile.fileType?index_of('image') == 0>
                                 <div class="mail-file-img">
                                     <img class="image-responsive" src="/iso-14155/${iso.id}/downloadFile/${attachFile.id}" alt="image">
@@ -182,13 +196,13 @@
                         <!--Modal header-->
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
-                            <h4 class="modal-title">ISO Certification</h4>
+                            <h4 class="modal-title">ISO 14155</h4>
                         </div>
 
                         <!--Modal body-->
                         <div class="modal-body">
                             <div class="table-responsive">
-                                <div id="certification-html" style="" >내용을 불러오는 중입니다...</div>
+                                <div id="iso-html" style="" >내용을 불러오는 중입니다...</div>
                             </div>
                         </div>
 
@@ -200,7 +214,37 @@
                     </div>
                 </div>
             </div>
-            <!-- Certification viewer end -->
+
+            <#-- PDF Object -->
+            <script src='/static/js/pdfjs/control/pdfobject.js'></script>
+            <!-- ISO viewer end -->
+            <script>
+                $('#iso-modal').on('show.bs.modal', function (event) {
+                    $("#iso-html").html('<string>내용을 불러오는 중입니다...</string>');
+                    var button = $(event.relatedTarget); // Button that triggered the modal
+                    var isoId = button.data('id');
+                    var fileId = button.data('file');
+                    var isoName = button.data('name');
+
+                    isoName = isoName.substr(0, isoName.indexOf(".pdf"));
+                    $(".modal-title").html(isoName);
+
+                    var options = {
+                        height: "800",
+                        page: '1',
+                        pdfOpenParams: {
+                            view: 'FitV',
+                            pagemode: 'thumbs',
+                            search: 'lorem ipsum'
+                        },
+                        forcePDFJS: true, // 강제로 PDF Viewer를 실행시키는 옵션
+                        PDFJS_URL: "/static/js/pdfjs/web/viewer.html" //PDF.js의 PDF viewer를 viewer로 지정.
+                    };
+
+                    //제일 처음 열리는 pdf파일 경로 설정.
+                    PDFObject.embed("/iso-14155/" + isoId + "/downloadFile/" + fileId , "#iso-html", options);
+                });
+            </script>
 
         </div>
     </div>

@@ -9,6 +9,4 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<Category, String>, QuerydslPredicateExecutor<Category> {
-
-    List<Category> findAllByCategoryType(CategoryType category, Sort sort);
 }

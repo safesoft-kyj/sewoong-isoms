@@ -68,42 +68,34 @@ public class AdminTrainingController {
     @Value("${gw.deptTbl}")
     private String gwDeptTbl;
 
-    @GetMapping("/training/{type}/matrix")
-    public String trainingMatrix(
-            @PathVariable DocumentType type,
-            @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 20) Pageable pageable, Model model) {
+    @GetMapping("/training/sop/matrix")
+    public String trainingMatrix(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 20) Pageable pageable, Model model) {
         model.addAttribute("trainingMatrix", trainingMatrixService.findAll(pageable));
         return "admin/training/matrix/list";
     }
 
-    @PostMapping("/training/{type}/matrix")
+    @PostMapping("/training/sop/matrix")
     public String uploadTrainingMatrix(@ModelAttribute TrainingMatrixFile trainingMatrixFile) {
         trainingMatrixService.save(trainingMatrixFile);
 
         return "redirect:/admin/training/matrix";
     }
 
-    //TODO :: YSH
-    @GetMapping("/training/{dType}/offline-training")
-    public String offlineTraining(@PathVariable("dType") DocumentType type,
-            @PageableDefault(size = 25, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable, Model model) {
-        log.info("OfflineTraining Log Type : {}", type);
+    @GetMapping("/training/sop/offline-training")
+    public String offlineTraining(@PageableDefault(size = 25, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable, Model model) {
         model.addAttribute("offlineTraining", offlineTrainingService.findAll(pageable));
         return "admin/training/offline/list";
     }
 
-    //TODO :: YSH
-    @GetMapping("/training/{dType}/offline-training/{id}")
-    public String offlineTraining(@PathVariable("dType") DocumentType documentType,
-            @PathVariable("id") Integer id, Model model) {
+    @GetMapping("/training/sop/offline-training/{id}")
+    public String offlineTraining(@PathVariable("id") Integer id, Model model) {
         model.addAttribute("offlineTraining", offlineTrainingService.findById(id).get());
         return "admin/training/offline/view";
     }
 
     //TODO :: YSH
-    @PostMapping("/training/{dType}/offline-training/{id}")
-    public String offlineTraining(@PathVariable("dType") DocumentType documentType,
-            @PathVariable("id") Integer id, RedirectAttributes attributes) {
+    @PostMapping("/training/sop/offline-training/{id}")
+    public String offlineTraining(@PathVariable("id") Integer id, RedirectAttributes attributes) {
         OfflineTraining savedOfflineTraining = offlineTrainingService.offlineTrainingApply(id);
         offlineTrainingService.sendApplyEmail(savedOfflineTraining);
 
@@ -111,7 +103,7 @@ public class AdminTrainingController {
         return "redirect:/admin/training/offline-training";
     }
 
-    @DeleteMapping("/training/{type}/offline-training/{id}")
+    @DeleteMapping("/training/sop/offline-training/{id}")
     public String deleteOfflineTraining(@PathVariable("id") Integer id, RedirectAttributes attributes) {
         offlineTrainingService.delete(id);
 
@@ -119,15 +111,11 @@ public class AdminTrainingController {
         return "redirect:/admin/training/offline-training";
     }
 
-    @GetMapping("/training/{dType}/refresh-training")
-    public String refreshTraining(@PathVariable("dType") DocumentType type,
-            @PageableDefault(size = 25, sort = {"startDate"}, direction = Sort.Direction.DESC) Pageable pageable, Model model) {
-
-        log.info("Type : {}", type);
-
+    @GetMapping("/training/sop/refresh-training")
+    public String refreshTraining(@PageableDefault(size = 25, sort = {"startDate"}, direction = Sort.Direction.DESC) Pageable pageable, Model model) {
         QTrainingPeriod qTrainingPeriod = QTrainingPeriod.trainingPeriod;
         BooleanBuilder builder = new BooleanBuilder();
-        builder.and(qTrainingPeriod.documentVersion.document.type.eq(type));
+        builder.and(qTrainingPeriod.documentVersion.document.type.eq(DocumentType.SOP));
         builder.and(qTrainingPeriod.trainingType.eq(TrainingType.REFRESH));
 
         model.addAttribute("refreshTraining", trainingPeriodService.findAll(builder, pageable));
@@ -136,21 +124,19 @@ public class AdminTrainingController {
     }
 
     //refresh 삭제 시,
-    @DeleteMapping("/training/{dType}/refresh-training")
-    public String removeRefreshTraining(@PathVariable("dType") DocumentType type,
-            @RequestParam("id") Integer id, RedirectAttributes attributes) {
-        trainingPeriodService.deleteByIdAndType(id, type);
+    @DeleteMapping("/training/sop/refresh-training")
+    public String removeRefreshTraining(@RequestParam("id") Integer id, RedirectAttributes attributes) {
+        trainingPeriodService.deleteById(id);
         attributes.addFlashAttribute("message", "삭제 되었습니다.");
         return "redirect:/admin/training/refresh-training";
     }
 
     //SOP 및 ISO refresh-training 신규 및 수정 화면 이동 시,
-    @GetMapping({"/training/{dType}/refresh-training/new", "/training/{dType}/refresh-training/{id}"})
-    public String refreshTraining(@PathVariable("dType") DocumentType documentType,
-                                  @PathVariable(value = "id", required = false) Integer id, Model model) {
+    @GetMapping({"/training/sop/refresh-training/new", "/training/sop/refresh-training/{id}"})
+    public String refreshTraining(@PathVariable(value = "id", required = false) Integer id, Model model) {
         QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
         BooleanBuilder builder = new BooleanBuilder();
-        builder.and(qDocumentVersion.document.type.eq(documentType)
+        builder.and(qDocumentVersion.document.type.eq(DocumentType.SOP)
                 .and(qDocumentVersion.status.in(DocumentStatus.EFFECTIVE)));
         Iterable<DocumentVersion> documentVersions = documentVersionService.findAll(builder);
 
@@ -163,9 +149,8 @@ public class AdminTrainingController {
     }
 
     //SOP 및 ISO refresh-training 신규 및 수정 작업 수행 시,
-    @PostMapping({"/training/{dType}/refresh-training/new", "/training/{dType}/refresh-training/{id}"})
-    public String refreshTraining(@PathVariable("dType") DocumentType documentType,
-                                @PathVariable(value = "id", required = false) Integer id, @ModelAttribute("trainingPeriod") TrainingPeriod trainingPeriod,
+    @PostMapping({"/training/sop/refresh-training/new", "/training/sop/refresh-training/{id}"})
+    public String refreshTraining(@PathVariable(value = "id", required = false) Integer id, @ModelAttribute("trainingPeriod") TrainingPeriod trainingPeriod,
                                 BindingResult result, SessionStatus status, RedirectAttributes attributes) {
         trainingPeriodValidator.validate(trainingPeriod, result);
 
@@ -174,7 +159,6 @@ public class AdminTrainingController {
         }
         if(!ObjectUtils.isEmpty(id)) {
             trainingPeriod.setId(id);
-            trainingPeriod.setDocumentType(documentType);
         }
 
         trainingPeriodService.saveOrUpdateRefreshTraining(trainingPeriod);
@@ -183,9 +167,8 @@ public class AdminTrainingController {
         return "redirect:/admin/training/refresh-training";
     }
 
-    @GetMapping("/training/{dType}/trainingLog")
-    public String teamDeptTrainingLog2(@PathVariable("dType") DocumentType documentType,
-                                       @PageableDefault(size = 25) Pageable pageable,
+    @GetMapping("/training/sop/trainingLog")
+    public String teamDeptTrainingLog2(@PageableDefault(size = 25) Pageable pageable,
 //                                       @CurrentUser User user,
                                        @RequestParam(value = "deptId", required = false) Integer deptId,
                                        @RequestParam(value = "teamId", required = false) Integer teamId,
@@ -213,7 +196,6 @@ public class AdminTrainingController {
         QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
 
         //Document Type을 지정. (ISO or SOP)
-        docStatus.and(qDocumentVersion.document.type.eq(documentType));
         docStatus.and(qDocumentVersion.status.in(DocumentStatus.APPROVED, DocumentStatus.EFFECTIVE));
         model.addAttribute("trainingLog", trainingMatrixRepository.getTrainingList(department, userId, docId, null, pageable, docStatus));
 
@@ -221,11 +203,10 @@ public class AdminTrainingController {
         return "training/teamDeptTrainingLog2";
     }
 
-    @PostMapping("/training/{dType}/trainingLog")
+    @PostMapping("/training/sop/trainingLog")
 //    @Transactional(readOnly = true)
     @Transactional
-    public void downloadTeamDeptTrainingLog(@PathVariable("dType") DocumentType documentType,
-                                            @RequestParam(value = "deptId", required = false) Integer deptId,
+    public void downloadTeamDeptTrainingLog(@RequestParam(value = "deptId", required = false) Integer deptId,
                                             @RequestParam(value = "teamId", required = false) Integer teamId,
                                             @RequestParam(value = "userId", required = false) Integer userId,
                                             @RequestParam(value = "docId", required = false) String docId,
@@ -248,16 +229,8 @@ public class AdminTrainingController {
             }
         }
 
-        //Document Type 별 분류 (ISO / SOP)
-        List<MyTraining> trainingList = trainingMatrixRepository.getDownloadTrainingList(department, userId, docId, null, documentType);
-        InputStream is = null;
-
-        //TODO :: 문서별 Training Log 양식이 나오면 분류.
-        if(documentType == DocumentType.ISO){
-            is = IndexReportService.class.getResourceAsStream("trainingLog.xlsx");
-        } else if(documentType == DocumentType.SOP) {
-            is = IndexReportService.class.getResourceAsStream("trainingLog.xlsx");
-        }
+        List<MyTraining> trainingList = trainingMatrixRepository.getDownloadTrainingList(department, userId, docId, null);
+        InputStream is = IndexReportService.class.getResourceAsStream("trainingLog.xlsx");
 
         Context context = new Context();
         context.putVar("trainings", trainingList);

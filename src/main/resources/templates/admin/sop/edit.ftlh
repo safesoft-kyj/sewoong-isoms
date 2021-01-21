@@ -9,10 +9,10 @@
     <#--    <script src="/static/plugins/chosen/chosen.jquery.min.js"></script>-->
     <link href="/static/plugins/select2/css/select2.min.css" rel="stylesheet">
     <script src="/static/plugins/select2/js/select2.min.js"></script>
-    <#if type == 'SOP' && (categoryList?has_content == false || categoryList?size == 0)>
+    <#if type == 'SOP' && (CategoryList?has_content == false || CategoryList?size == 0)>
         <script>
             alert('SOP Category 정보가 존재하지 않습니다. Category 관리 페이지로 이동 합니다.');
-            location.href = '/admin/sop/category';
+            location.href = '/admin/sop/Category';
         </script>
     <#elseif type == 'RD' && (sopList?has_content == false || sopList?size == 0)>
         <script>
@@ -28,22 +28,22 @@
         $(document).ready(function() {
             $("#document\\.documentNo").mask('${(type == 'SOP')?then('0000', '00')}', {placeholder:'${(type == 'SOP')?then('0000', '00')}'});
             <#if type == 'SOP'>
-            $('#document\\.category\\.shortName').select2({
+            $('#document\\.Category\\.shortName').select2({
                 placeholder: "Select a Category"
             });
             <#if readonly?has_content>
-            $('#document\\.category\\.shortName').select2({disabled:true});
+            $('#document\\.Category\\.shortName').select2({disabled:true});
             </#if>
 
 
-            $("#document\\.category\\.shortName").change(function() {
+            $("#document\\.Category\\.shortName").change(function() {
                 var categoryId = $(this).val();
                 var documentNo = $("#document\\.documentNo").val();
 
                 $("#document\\.docId").val("SOP-" + categoryId + documentNo);
             });
             $("#document\\.documentNo").keyup(function() {
-                var categoryId = $("#document\\.category\\.shortName").val();
+                var categoryId = $("#document\\.Category\\.shortName").val();
                 var documentNo = $(this).val();
 
                 $("#document\\.docId").val("SOP-" + categoryId + documentNo);
@@ -101,11 +101,11 @@
         <@spring.formHiddenInput "documentVersion.id"/>
         <@spring.formHiddenInput "documentVersion.document.type"/>
         <div class="panel-body">
-            <#if type == 'SOP'>
+            <#if type == 'SOP' || type == 'ISO'>
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Category</label>
                     <div class="col-sm-9">
-                        <@spring.formSingleSelect "documentVersion.document.category.shortName" categoryList "class='form-control'${readonly}"/>
+                        <@spring.formSingleSelect "documentVersion.document.Category.shortName" CategoryList "class='form-control'${readonly}"/>
                     </div>
                 </div>
             <#else>

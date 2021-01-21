@@ -167,7 +167,8 @@ public class ISOController {
     }
 
     @GetMapping("/iso-14155/{id}/downloadFile/{attachFileId:.+}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable("id") Integer id, @PathVariable("attachFileId") String attachFileId, HttpServletRequest request) {
+    public ResponseEntity<Resource> downloadFile(@PathVariable("id") Integer id, @PathVariable("attachFileId") String attachFileId,
+                                                 HttpServletRequest request) {
         // Load file as Resource
         Optional<ISOAttachFile> optionalAttachFile = isoService.getAttachFile(attachFileId);
         if(optionalAttachFile.isPresent()) {

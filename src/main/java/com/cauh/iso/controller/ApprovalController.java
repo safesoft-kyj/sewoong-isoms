@@ -222,9 +222,6 @@ public class ApprovalController {
             if("sop".equals(type)) {
                 sopRdDevelopmentDoc.setDocumentType(DocumentType.SOP);
                 approval.getSopRdRequestForm().getSopDevelopmentDocs().add(sopRdDevelopmentDoc);
-            } else if("iso".equals(type)) {
-                sopRdDevelopmentDoc.setDocumentType(DocumentType.ISO);
-                approval.getSopRdRequestForm().getRdDevelopmentDocs().add(sopRdDevelopmentDoc);
             } else {
                 sopRdDevelopmentDoc.setDocumentType(DocumentType.RF);
                 approval.getSopRdRequestForm().getRdDevelopmentDocs().add(sopRdDevelopmentDoc);
@@ -526,35 +523,35 @@ public class ApprovalController {
         model.addAttribute("purposeOfDisclosureMap", purposeOfDisclosureMap);
         // --start
 
-        List<Category> categoryList = categoryService.getCategoryList();
-        model.addAttribute("categoryList", categoryList);
+        List<Category> CategoryList = categoryService.getCategoryList();
+        model.addAttribute("categoryList", CategoryList);
 
         Map<String, Iterable<DocumentVersion>> currentSopCategoryMap = new HashMap<>();
         QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
-        for(Category category : categoryList) {
+        for(Category Category : CategoryList) {
             BooleanBuilder builder = new BooleanBuilder();
             builder.and(qDocumentVersion.document.type.eq(DocumentType.SOP));
-            builder.and(qDocumentVersion.document.category.id.eq(category.getId()));
+            builder.and(qDocumentVersion.document.category.id.eq(Category.getId()));
             builder.and(qDocumentVersion.status.eq(DocumentStatus.EFFECTIVE));
 
             Iterable<DocumentVersion> sopList = documentVersionRepository.findAll(builder, qDocumentVersion.document.docId.asc());
             if(!ObjectUtils.isEmpty(sopList)) {
-                currentSopCategoryMap.put(category.getId(), sopList);
+                currentSopCategoryMap.put(Category.getId(), sopList);
             }
         }
         model.addAttribute("currentSopCategoryMap", currentSopCategoryMap);
 
         Map<String, Iterable<DocumentVersion>> supersededSopCategoryMap = new HashMap<>();
-        for(Category category : categoryList) {
+        for(Category Category : CategoryList) {
             BooleanBuilder builder = new BooleanBuilder();
             builder.and(qDocumentVersion.document.type.eq(DocumentType.SOP));
-            builder.and(qDocumentVersion.document.category.id.eq(category.getId()));
+            builder.and(qDocumentVersion.document.category.id.eq(Category.getId()));
             builder.and(qDocumentVersion.status.eq(DocumentStatus.SUPERSEDED));
 
             Iterable<DocumentVersion> sopList = documentVersionRepository.findAll(builder, qDocumentVersion.document.docId.asc());
 
             if(!ObjectUtils.isEmpty(sopList)) {
-                supersededSopCategoryMap.put(category.getId(), sopList);
+                supersededSopCategoryMap.put(Category.getId(), sopList);
             }
         }
         model.addAttribute("supersededSopCategoryMap", supersededSopCategoryMap);
