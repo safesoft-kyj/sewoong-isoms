@@ -45,8 +45,16 @@
 
 <!--Nifty Admin [ RECOMMENDED ]-->
 <script src="/static/js/nifty.min.js"></script>
+
+
 <!--=================================================-->
 
+<!--Plugin===========================================-->
+<!-- select2 -->
+<link href="/static/plugins/select2/css/select2.min.css" rel="stylesheet">
+<!-- select2 -->
+<script src="/static/plugins/select2/js/select2.min.js"></script>
+<!--=================================================-->
 
 <link href="/static/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 
@@ -265,7 +273,7 @@ Detailed information and more samples can be found in the document.
     <c:if test="${empty param['admin']}">
     var pathname = location.pathname;
     // var paths = pathname.split("/");
-    if (pathname.indexOf("/notice/") == -1) {
+    if (pathname.indexOf("/notice/") == -1 || pathname.indexOf("/iso-14155/") == -1) {
         $(document).ready(function () {
             $(document).bind("contextmenu", function (e) {
                 return false;

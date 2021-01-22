@@ -1,5 +1,6 @@
 package com.cauh.iso.domain;
 
+import com.cauh.common.entity.Account;
 import com.cauh.common.entity.BaseEntity;
 import com.cauh.common.entity.JobDescription;
 import com.cauh.common.entity.Role;
@@ -18,8 +19,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Entity
 @Table(name = "s_iso_training_matrix",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"iso_id", "job_description_id"}),
-        indexes = @Index(columnList = "training_all, job_description_id")
+        uniqueConstraints = @UniqueConstraint(columnNames = {"iso_id", "user_id"}),
+        indexes = @Index(columnList = "training_all, user_id")
 )
 @Slf4j
 @ToString(of = {"id"})
@@ -31,7 +32,7 @@ public class ISOTrainingMatrix extends BaseEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ISO_TRAINING_MATRIX_SEQ_GENERATOR")
     private Integer id;
 
-    @ManyToOne(optional = false)
+    @OneToOne(optional = false)
     @JoinColumn(name = "iso_id", referencedColumnName = "id")
     @NotAudited
     private ISO iso;
@@ -44,14 +45,14 @@ public class ISOTrainingMatrix extends BaseEntity implements Serializable {
 //    private JobDescription jobDescription;
 
     @ManyToOne
-    @JoinColumn(name="job_description_id", referencedColumnName = "id")
-    private JobDescription jobDescription;
+    @JoinColumn(name="user_id", referencedColumnName = "id")
+    private Account user;
 
 
     @Builder
-    public ISOTrainingMatrix(ISO iso, boolean trainingAll, JobDescription jobDescription) {
+    public ISOTrainingMatrix(ISO iso, boolean trainingAll, Account user) {
         this.iso = iso;
         this.trainingAll = trainingAll;
-        this.jobDescription = jobDescription;
+        this.user = user;
     }
 }

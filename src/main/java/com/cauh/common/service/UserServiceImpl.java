@@ -16,8 +16,10 @@ import com.cauh.iso.component.CurrentUserComponent;
 import com.cauh.iso.domain.Mail;
 import com.cauh.iso.service.JobDescriptionService;
 import com.cauh.iso.service.MailService;
+import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Created by Dt&amp;SanoMedics <br>
@@ -392,5 +395,22 @@ public class UserServiceImpl implements UserService {
         }
 
         return sb.toString();
+    }
+
+    @Override
+    public TreeMap<String, String> getUserMap() {
+        //내부 사용자만 가지고 오기.
+        QAccount qAccount = QAccount.account;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qAccount.userType.eq(UserType.USER));
+
+        Iterable<Account> users = userRepository.findAll(builder, Sort.by(Sort.Direction.ASC, "deptName", "teamName"));
+        Map<String, String> userAscMap = StreamSupport.stream(users.spliterator(), false)
+                .collect(Collectors.toMap(u -> Integer.toString(u.getId()), u -> u.getName() + "[" + u.getTeamDept()  + "]"));
+
+        TreeMap<String, String> sortedUserMap = new TreeMap<>();
+        sortedUserMap.putAll(userAscMap);
+
+        return sortedUserMap;
     }
 }

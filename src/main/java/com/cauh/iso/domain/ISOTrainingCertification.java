@@ -1,16 +1,21 @@
 package com.cauh.iso.domain;
 
 import com.cauh.common.entity.Account;
+import com.cauh.common.entity.BaseEntity;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Data
 @Entity
 @Table(name = "s_iso_training_certification")
-public class ISOTrainingCertification {
+public class ISOTrainingCertification extends BaseEntity implements Serializable {
 
+    private static final long serialVersionUID = 1329010014950482889L;
+
+    //수료증 채번 ( 분류 + 년도 + 숫자 )
     @Id
     private String id;
 
@@ -18,9 +23,6 @@ public class ISOTrainingCertification {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private Account user;
 
-    @ManyToOne
-    @JoinColumn(name = "manager_id", referencedColumnName = "id")
-    private Account certManager;
 
 //    // 강사 정보
 //    private String cerManagerText1;

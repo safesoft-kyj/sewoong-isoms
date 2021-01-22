@@ -38,6 +38,7 @@ public class ISOService {
     public ISO save(ISO iso, MultipartFile[] files) {
         ISO savedISO = isoRepository.save(iso);
         if(!ObjectUtils.isEmpty(iso.getAttachFiles())) {
+            //TODO 수정필요.
             iso.getAttachFiles().stream().filter(f -> f.isDeleted()).forEach(removeFile ->
                     isoAttachFileRepository.deleteById(removeFile.getId()));
         }

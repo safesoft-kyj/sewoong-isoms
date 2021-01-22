@@ -2,9 +2,12 @@ package com.cauh.iso.controller;
 
 import com.cauh.common.entity.Account;
 import com.cauh.common.security.annotation.CurrentUser;
+import com.cauh.common.service.UserService;
 import com.cauh.iso.domain.*;
 import com.cauh.iso.domain.constant.ApprovalLineType;
+import com.cauh.iso.domain.constant.ISOType;
 import com.cauh.iso.domain.constant.PostStatus;
+import com.cauh.iso.domain.constant.TrainingType;
 import com.cauh.iso.security.annotation.IsAdmin;
 import com.cauh.iso.service.FileStorageService;
 import com.cauh.iso.service.ISOService;
@@ -48,6 +51,7 @@ public class ISOController {
     private final ISOService isoService;
     private final ISOValidator isoValidator;
     private final FileStorageService fileStorageService;
+    private final UserService userService;
 
     private final TrainingMatrixService trainingMatrixService;
 
@@ -73,13 +77,24 @@ public class ISOController {
 
     @GetMapping("/iso-14155/new")
     public String newISO(Model model){
-        model.addAttribute("iso", new ISO());
+
+        ISO iso = new ISO();
+        ISOTrainingMatrix isoTrainingMatrix = new ISOTrainingMatrix();
+        isoTrainingMatrix.setTrainingAll(true);
+        ISOTrainingPeriod isoTrainingPeriod = new ISOTrainingPeriod();
+        isoTrainingPeriod.setTrainingType(TrainingType.SELF);
+        iso.setIsoTrainingMatrix(isoTrainingMatrix);
+        iso.setIsoTrainingPeriod(isoTrainingPeriod);
+
+        model.addAttribute("userMap", userService.getUserMap());
+
+        model.addAttribute("iso", iso);
         return "iso/iso14155/edit";
     }
 
     @IsAdmin
     @GetMapping("/iso-14155/{isoId}/edit")
-    public String noticeEdit(@PathVariable("isoId") Integer isoId, Model model, RedirectAttributes attributes) {
+    public String isoEdit(@PathVariable("isoId") Integer isoId, Model model, RedirectAttributes attributes) {
         Optional<ISO> iso = isoService.getISO(isoId);
         if(iso.isPresent()) {
             model.addAttribute("iso", iso.get());
@@ -93,7 +108,7 @@ public class ISOController {
     @IsAdmin
     @Transactional
     @PostMapping({"/iso-14155/new", "/iso-14155/{isoId}/edit"})
-    public String saveNotice(@PathVariable(value = "isoId", required = false) Integer isoId,
+    public String saveISO(@PathVariable(value = "isoId", required = false) Integer isoId,
                              @ModelAttribute("iso") ISO iso,
                              BindingResult bindingResult, SessionStatus sessionStatus,
                              @RequestParam(value = "uploadingFiles") MultipartFile[] uploadingFiles,
@@ -104,8 +119,6 @@ public class ISOController {
         List<String> uploadFilnames = Arrays.stream(uploadingFiles).distinct().map(file -> file.getOriginalFilename()).collect(Collectors.toList());
         iso.setUploadFileNames(uploadFilnames);
 
-        log.info("File names : {}", uploadFilnames);
-
         isoValidator.validate(iso, bindingResult);
 
         if(bindingResult.hasErrors()) {
@@ -113,11 +126,14 @@ public class ISOController {
         }
 
         iso.setPostStatus(PostStatus.NONE);
-
+        iso.setIsoType(ISOType.ISO_14155);
         ISO savedISO = isoService.save(iso, uploadingFiles);
+
+        if(iso.isTraining()){
+
+        }
+
         sessionStatus.setComplete();
-
-
 
         if(ObjectUtils.isEmpty(isoId)) {
             attributes.addFlashAttribute("message", "ISO 14155가 저장 되었습니다.");
@@ -130,7 +146,7 @@ public class ISOController {
     }
 
     @GetMapping("/iso-14155/{isoId}")
-    public String noticeView(@PathVariable("isoId") Integer isoId, Model model, RedirectAttributes attributes) {
+    public String isoView(@PathVariable("isoId") Integer isoId, Model model, RedirectAttributes attributes) {
         Optional<ISO> iso = isoService.getISO(isoId);
         if(iso.isPresent()) {
             model.addAttribute("iso", iso.get());
@@ -154,7 +170,7 @@ public class ISOController {
 
     @IsAdmin
     @DeleteMapping("/iso-14155/{isoId}")
-    public String noticeRemove(@PathVariable("isoId") Integer isoId, RedirectAttributes attributes, HttpServletRequest request) {
+    public String isoRemove(@PathVariable("isoId") Integer isoId, RedirectAttributes attributes, HttpServletRequest request) {
         Optional<ISO> iso = isoService.getISO(isoId);
         if(iso.isPresent()) {
             isoService.remove(iso.get());

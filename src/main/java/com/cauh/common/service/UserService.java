@@ -34,12 +34,13 @@ public interface UserService {
     Account signUpReject(Account account);
 
     void userPasswordReset(Account account);
-
-
     void sync();
     void refresh();
     //Login Failure Handler Method
     void countFailure(String username);
     void lockedUser(String username);
+
     Integer checkFailureCount(String username);
+
+    TreeMap<String, String> getUserMap();
 }

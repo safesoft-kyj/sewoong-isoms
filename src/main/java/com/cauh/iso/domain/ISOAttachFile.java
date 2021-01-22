@@ -3,6 +3,7 @@ package com.cauh.iso.domain;
 import com.cauh.common.entity.BaseEntity;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 
@@ -37,6 +38,11 @@ public class ISOAttachFile extends BaseEntity implements Serializable {
 
     @Column(name = "file_type", columnDefinition = "nvarchar(255)", nullable = false)
     private String fileType;
+
+    //ISO 총 페이지 개수.
+    @Column(name= "total_page")
+    @ColumnDefault("0")
+    private int totalPage;
 
     @Column(name = "file_size")
     private long fileSize;

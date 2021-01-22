@@ -27,6 +27,9 @@ import java.util.List;
 public class ISO extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 765987308708693720L;
 
+
+    //=======게시글 속성========
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ISO_SEQ_GENERATOR")
     private Integer id;
@@ -51,10 +54,18 @@ public class ISO extends BaseEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private PostStatus postStatus;
 
+    //========================================
+
     //ISO 첨부 파일 (Training시, 강의 파일이 됨)
     @OneToMany(mappedBy = "iso")
     @AuditMappedBy(mappedBy = "iso")
     private List<ISOAttachFile> attachFiles;
+
+    @Transient
+    private List<String> removeFiles;
+
+    @Transient
+    private List<String> uploadFileNames;
 
     // 뷰 카운터
     @ColumnDefault("0")
@@ -69,24 +80,24 @@ public class ISO extends BaseEntity implements Serializable {
     private boolean active;
 
     //=============강의 정보===============
+    @Transient
+    String[] userIds;
 
-    //ISO 배정 정보
-    @OneToMany(mappedBy = "iso")
-    List<ISOTrainingMatrix> isoTrainingMatrixList;
+    //ISO Training 배정 정보
+    @OneToOne
+    ISOTrainingMatrix isoTrainingMatrix;
 
-    //ISO
+    //ISO Training 기간 정보
+    @OneToOne
+    ISOTrainingPeriod isoTrainingPeriod;
+
+    //ISO 학습 시간
+    @Column(name="hour", columnDefinition = "numeric(5,2)")
+    private Float hour;
 
     //퀴즈
     @Column(name = "quiz", columnDefinition = "nvarchar(MAX)")
     private String quiz;
-
-    //설문
-
-    @Transient
-    private List<String> removeFiles;
-
-    @Transient
-    private List<String> uploadFileNames;
 
     @Builder
     public ISO(String title, String content, Date topViewEndDate, PostStatus postStatus) {
