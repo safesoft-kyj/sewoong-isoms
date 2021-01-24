@@ -43,7 +43,7 @@ public class ISOValidator implements Validator {
                     errors.rejectValue("attachFiles[0].deleted", "message.file.no.pdf", "파일 형식이 맞지 않습니다.(PDF 파일)");
                 }
             }
-        } else if(ObjectUtils.isEmpty(iso.getAttachFiles()) && ObjectUtils.isEmpty(iso.getUploadFileName())) { // 처음 글 올릴 때 파일이 없으면
+        } else if(ObjectUtils.isEmpty(iso.getAttachFiles()) && StringUtils.isEmpty(iso.getUploadFileName())) { // 처음 글 올릴 때 파일이 없으면
             log.info("@@@@@@@@Check");
             errors.rejectValue("attachFiles", "message.file.no.upload", "파일을 첨부해 주세요.");
         }

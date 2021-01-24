@@ -86,7 +86,7 @@ public class ISOTrainingMatrixService {
                     List<String> ids = Arrays.asList(iso.getUserIds());
 
                     //기존 id명단에 없는 id 목록 -> 신규 대상
-                    List<String> newIds = ids.stream().filter(id -> !originIds.contains(Integer.parseInt(id))).collect(Collectors.toList());
+                    List<String> newIds = ids.stream().filter(id -> !originIds.contains(id)).collect(Collectors.toList());
 
                     //신규 id명단에 없는 ISOTrainingMatrix -> 삭제 대상
                     List<ISOTrainingMatrix> removeList = isoTrainingMatrixList.stream().filter(tm -> !ids.contains(Integer.toString(tm.getUser().getId()))).collect(Collectors.toList());
