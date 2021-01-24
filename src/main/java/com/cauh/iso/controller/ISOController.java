@@ -9,10 +9,7 @@ import com.cauh.iso.domain.constant.ISOType;
 import com.cauh.iso.domain.constant.PostStatus;
 import com.cauh.iso.domain.constant.TrainingType;
 import com.cauh.iso.security.annotation.IsAdmin;
-import com.cauh.iso.service.FileStorageService;
-import com.cauh.iso.service.ISOService;
-import com.cauh.iso.service.NoticeService;
-import com.cauh.iso.service.TrainingMatrixService;
+import com.cauh.iso.service.*;
 import com.cauh.iso.validator.ISOValidator;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
@@ -53,10 +50,9 @@ public class ISOController {
     private final FileStorageService fileStorageService;
     private final UserService userService;
 
-    private final TrainingMatrixService trainingMatrixService;
 
     @GetMapping("/iso-14155")
-    public String ISOlist(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable, @CurrentUser Account user, Model model){
+    public String ISOlist(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable, @CurrentUser Account user, Model model) {
         QISO qISO = QISO.iSO;
 
         //공지사항 리스트
@@ -70,34 +66,45 @@ public class ISOController {
         builder.and(qISO.topViewEndDate.goe(Date.valueOf(format.format(today))));
         model.addAttribute("topISOList", isoService.getTopISOs(builder));
 
-        Optional<TrainingMatrixFile> optionalTrainingMatrixFile = trainingMatrixService.findFirstByOrderByIdDesc();
-        model.addAttribute("trainingMatrixFile", optionalTrainingMatrixFile.isPresent() ? optionalTrainingMatrixFile.get() : null);
+//        Optional<ISOTrainingMatrixFile> optionalTrainingMatrixFile = isotrainingMatrixService.findFirstByOrderByIdDesc();
+//        model.addAttribute("isoTrainingMatrixFile", optionalTrainingMatrixFile.isPresent() ? optionalTrainingMatrixFile.get() : null);
+
         return "iso/iso14155/list";
     }
 
     @GetMapping("/iso-14155/new")
-    public String newISO(Model model){
-
+    public String newISO(Model model) {
         ISO iso = new ISO();
-        ISOTrainingMatrix isoTrainingMatrix = new ISOTrainingMatrix();
-        isoTrainingMatrix.setTrainingAll(true);
-        ISOTrainingPeriod isoTrainingPeriod = new ISOTrainingPeriod();
-        isoTrainingPeriod.setTrainingType(TrainingType.SELF);
-        iso.setIsoTrainingMatrix(isoTrainingMatrix);
-        iso.setIsoTrainingPeriod(isoTrainingPeriod);
-
+        iso.setTrainingAll(true);
         model.addAttribute("userMap", userService.getUserMap());
-
         model.addAttribute("iso", iso);
+
         return "iso/iso14155/edit";
     }
 
     @IsAdmin
     @GetMapping("/iso-14155/{isoId}/edit")
-    public String isoEdit(@PathVariable("isoId") Integer isoId, Model model, RedirectAttributes attributes) {
-        Optional<ISO> iso = isoService.getISO(isoId);
-        if(iso.isPresent()) {
-            model.addAttribute("iso", iso.get());
+    public String isoEdit(@PathVariable("isoId") String isoId, Model model, RedirectAttributes attributes) {
+        Optional<ISO> isoOptional = isoService.getISO(isoId);
+        if (isoOptional.isPresent()) {
+
+            ISO iso = isoOptional.get();
+            if (iso.isTraining()) {
+                ISOTrainingPeriod isoTrainingPeriod = iso.getIsoTrainingPeriod().size() > 0?iso.getIsoTrainingPeriod().get(0):null;
+                iso.setStartDate(isoTrainingPeriod.getStartDate());
+                iso.setEndDate(isoTrainingPeriod.getEndDate());
+
+                //TrainingAll이 있으면 trainingAll로 세팅 아니면 유저별 참석
+                if(iso.getIsoTrainingMatrix().stream().filter(d -> d.isTrainingAll()).count() > 0) {
+                    iso.setTrainingAll(true);
+                } else {
+                    List<String> ids = iso.getIsoTrainingMatrix().stream().map(im -> Integer.toString(im.getUser().getId())).collect(Collectors.toList());
+                    iso.setUserIds(ids.toArray(new String[ids.size()]));
+                }
+            }
+
+            model.addAttribute("iso", iso);
+            model.addAttribute("userMap", userService.getUserMap());
         } else {
             attributes.addFlashAttribute("message", "존재하지 않는 게시물 입니다.");
             return "redirect:/iso-14155";
@@ -108,36 +115,31 @@ public class ISOController {
     @IsAdmin
     @Transactional
     @PostMapping({"/iso-14155/new", "/iso-14155/{isoId}/edit"})
-    public String saveISO(@PathVariable(value = "isoId", required = false) Integer isoId,
-                             @ModelAttribute("iso") ISO iso,
-                             BindingResult bindingResult, SessionStatus sessionStatus,
-                             @RequestParam(value = "uploadingFiles") MultipartFile[] uploadingFiles,
-                             RedirectAttributes attributes,
-                             HttpServletRequest request) {
+    public String saveISO(@PathVariable(value = "isoId", required = false) String isoId,
+                          @ModelAttribute("iso") ISO iso,
+                          @RequestParam(value = "uploadingFile") MultipartFile uploadingFile,
+                          BindingResult bindingResult, SessionStatus sessionStatus,
+                          RedirectAttributes attributes, Model model,
+                          HttpServletRequest request) {
 
         //업로드 진행할 파일의 이름을 넣음.
-        List<String> uploadFilnames = Arrays.stream(uploadingFiles).distinct().map(file -> file.getOriginalFilename()).collect(Collectors.toList());
-        iso.setUploadFileNames(uploadFilnames);
-
+        iso.setUploadFileName(uploadingFile.getOriginalFilename());
         isoValidator.validate(iso, bindingResult);
 
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("userMap", userService.getUserMap());
             return "iso/iso14155/edit";
         }
 
         iso.setPostStatus(PostStatus.NONE);
         iso.setIsoType(ISOType.ISO_14155);
-        ISO savedISO = isoService.save(iso, uploadingFiles);
-
-        if(iso.isTraining()){
-
-        }
+        ISO savedISO = isoService.saveISO(iso, uploadingFile);
 
         sessionStatus.setComplete();
 
-        if(ObjectUtils.isEmpty(isoId)) {
+        if (ObjectUtils.isEmpty(isoId)) {
             attributes.addFlashAttribute("message", "ISO 14155가 저장 되었습니다.");
-            return "redirect:/iso-14155/" + savedISO.getId()  + (StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString());
+            return "redirect:/iso-14155/" + savedISO.getId() + (StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString());
         } else {
             attributes.addFlashAttribute("message", "ISO 14155가 수정 되었습니다.");
             return "redirect:/iso-14155/{isoId}" + (StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString());
@@ -146,9 +148,9 @@ public class ISOController {
     }
 
     @GetMapping("/iso-14155/{isoId}")
-    public String isoView(@PathVariable("isoId") Integer isoId, Model model, RedirectAttributes attributes) {
+    public String isoView(@PathVariable("isoId") String isoId, Model model, RedirectAttributes attributes) {
         Optional<ISO> iso = isoService.getISO(isoId);
-        if(iso.isPresent()) {
+        if (iso.isPresent()) {
             model.addAttribute("iso", iso.get());
         } else {
             attributes.addFlashAttribute("message", "존재하지 않는 ISO 게시물 입니다.");
@@ -160,19 +162,19 @@ public class ISOController {
     @IsAdmin
     @GetMapping("/ajax/iso-14155/{isoId}/send")
     @ResponseBody
-    public Map<String, String> sendEmail(@PathVariable("isoId") Integer isoId) {
+    public Map<String, String> sendEmail(@PathVariable("isoId") String isoId) {
         Map<String, String> model = new HashMap<>();
         isoService.sendMail(isoId);
         model.put("result", "success");
-        model.put("id", Integer.toString(isoId));
+        model.put("id", isoId);
         return model;
     }
 
     @IsAdmin
     @DeleteMapping("/iso-14155/{isoId}")
-    public String isoRemove(@PathVariable("isoId") Integer isoId, RedirectAttributes attributes, HttpServletRequest request) {
+    public String isoRemove(@PathVariable("isoId") String isoId, RedirectAttributes attributes, HttpServletRequest request) {
         Optional<ISO> iso = isoService.getISO(isoId);
-        if(iso.isPresent()) {
+        if (iso.isPresent()) {
             isoService.remove(iso.get());
             attributes.addFlashAttribute("message", "ISO-14155 게시물이 삭제 되었습니다.");
             return "redirect:/iso-14155?" + (StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString());
@@ -187,7 +189,7 @@ public class ISOController {
                                                  HttpServletRequest request) {
         // Load file as Resource
         Optional<ISOAttachFile> optionalAttachFile = isoService.getAttachFile(attachFileId);
-        if(optionalAttachFile.isPresent()) {
+        if (optionalAttachFile.isPresent()) {
             ISOAttachFile attachFile = optionalAttachFile.get();
             Resource resource = fileStorageService.loadFileAsResource(attachFile.getFileName());
 

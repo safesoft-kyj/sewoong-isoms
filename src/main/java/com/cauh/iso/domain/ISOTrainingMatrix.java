@@ -32,9 +32,8 @@ public class ISOTrainingMatrix extends BaseEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ISO_TRAINING_MATRIX_SEQ_GENERATOR")
     private Integer id;
 
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "iso_id", referencedColumnName = "id")
-    @NotAudited
     private ISO iso;
 
     @Column(name = "training_all")

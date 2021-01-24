@@ -39,6 +39,9 @@ public class ISOAttachFile extends BaseEntity implements Serializable {
     @Column(name = "file_type", columnDefinition = "nvarchar(255)", nullable = false)
     private String fileType;
 
+    @Column(name = "ext", length = 5)
+    private String ext;
+
     //ISO 총 페이지 개수.
     @Column(name= "total_page")
     @ColumnDefault("0")
@@ -51,10 +54,11 @@ public class ISOAttachFile extends BaseEntity implements Serializable {
     private boolean deleted;
 
     @Builder
-    public ISOAttachFile(ISO iso, String fileName, String originalFileName, String fileType, long fileSize) {
+    public ISOAttachFile(ISO iso, String fileName, String originalFileName, String ext, String fileType, long fileSize) {
         this.iso = iso;
         this.fileName = fileName;
         this.originalFileName = originalFileName;
+        this.ext = ext;
         this.fileType = fileType;
         this.fileSize = fileSize;
     }

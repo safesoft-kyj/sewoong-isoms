@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "s_offline_training_document")
+@Table(name = "s_iso_offline_training_document")
 @Slf4j
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id", "documentVersion"}, callSuper = false)

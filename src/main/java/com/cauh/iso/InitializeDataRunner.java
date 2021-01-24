@@ -189,6 +189,7 @@ public class InitializeDataRunner implements ApplicationRunner {
                 user.setUserStatus(UserStatus.ACTIVE);
                 user.setAdmin(admin);
                 user.setEmpNo(empNo);
+                user.setEmail("sh.yang@safesoft.co.kr");
 
         return userRepository.save(user);
     }

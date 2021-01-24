@@ -28,9 +28,6 @@ public class TrainingMatrixService {
 
     public void save(TrainingMatrixFile trainingMatrixFile) {
         String fileName = fileStorageService.storeFile(trainingMatrixFile.getUploadFile(), "trainingMatrix");
-
-
-
         trainingMatrixFile.setFileName(fileName);
         trainingMatrixFile.setFileType(trainingMatrixFile.getUploadFile().getContentType());
         trainingMatrixFile.setFileSize(trainingMatrixFile.getUploadFile().getSize());

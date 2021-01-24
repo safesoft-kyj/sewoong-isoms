@@ -159,6 +159,7 @@ public class UserController {
             Account signUpAccount = userService.signUpRequest(account);
             //계정정보 저장
             userRepository.save(signUpAccount);
+            currentUserComponent.updateCurrentUserList(); //현재 유저 업데이트.
 
             attributes.addFlashAttribute("type", "success");
             attributes.addFlashAttribute("message", "Sign up request is success");

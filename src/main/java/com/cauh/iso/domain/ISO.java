@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -20,7 +21,6 @@ import java.util.List;
 @Entity
 @Table(name = "s_iso")
 @Slf4j
-@SequenceGenerator(name = "ISO_SEQ_GENERATOR", sequenceName = "SEQ_ISO", initialValue = 1, allocationSize = 1)
 @ToString(of = {"id", "title"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Audited(withModifiedFlag = true)
@@ -31,8 +31,8 @@ public class ISO extends BaseEntity implements Serializable {
     //=======게시글 속성========
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ISO_SEQ_GENERATOR")
-    private Integer id;
+    @Column(name = "id", length = 40)
+    private String id;
 
     @Column(name = "title", columnDefinition = "nvarchar(255)", nullable = false)
     private String title;
@@ -65,7 +65,7 @@ public class ISO extends BaseEntity implements Serializable {
     private List<String> removeFiles;
 
     @Transient
-    private List<String> uploadFileNames;
+    private String uploadFileName;
 
     // 뷰 카운터
     @ColumnDefault("0")
@@ -81,15 +81,26 @@ public class ISO extends BaseEntity implements Serializable {
 
     //=============강의 정보===============
     @Transient
-    String[] userIds;
+    private String[] userIds;
 
     //ISO Training 배정 정보
-    @OneToOne
-    ISOTrainingMatrix isoTrainingMatrix;
+    @OneToMany(mappedBy = "iso")
+    @NotAudited
+    private List<ISOTrainingMatrix> isoTrainingMatrix;
 
     //ISO Training 기간 정보
-    @OneToOne
-    ISOTrainingPeriod isoTrainingPeriod;
+    @OneToMany(mappedBy = "iso")
+    @NotAudited
+    private List<ISOTrainingPeriod> isoTrainingPeriod;
+
+    @Transient
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date startDate;
+    @Transient
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date endDate;
+    @Transient
+    private boolean trainingAll;
 
     //ISO 학습 시간
     @Column(name="hour", columnDefinition = "numeric(5,2)")

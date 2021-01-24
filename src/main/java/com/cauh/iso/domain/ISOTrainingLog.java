@@ -17,7 +17,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "s_iso_training")
+@Table(name = "s_iso_training_log")
 @Slf4j
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)

@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "s_offline_training_iso_attendee", uniqueConstraints = {@UniqueConstraint(columnNames = {"iso_offline_training_id", "account_id"})})
+@Table(name = "s_iso_offline_training_attendee", uniqueConstraints = {@UniqueConstraint(columnNames = {"iso_offline_training_id", "account_id"})})
 @Slf4j
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)

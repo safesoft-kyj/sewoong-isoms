@@ -26,7 +26,7 @@
         <div class="pad-btm form-inline">
             <div class="row">
                 <div class="col-sm-6 table-toolbar-left">
-                    <a class="btn btn-primary" href="/admin/role?action=new#edit0"><i class="pli-pencil"></i> 직무 추가</a>
+                    <a class="btn btn-primary" href="/admin/role?action=new#edit0"><i class="pli-pencil"></i> ROLE 추가</a>
                 </div>
                 <div class="col-sm-6 table-toolbar-right">
                     <#--                    <div class="form-group">-->

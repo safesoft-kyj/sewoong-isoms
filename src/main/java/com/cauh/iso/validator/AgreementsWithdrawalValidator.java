@@ -1,8 +1,6 @@
 package com.cauh.iso.validator;
 
 import com.cauh.iso.domain.AgreementsWithdrawal;
-import com.cauh.iso.repository.AgreementsWithdrawalRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;

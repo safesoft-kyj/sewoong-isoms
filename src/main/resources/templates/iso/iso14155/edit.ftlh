@@ -35,9 +35,10 @@
                 clearBtn: true,
                 todayBtn: "linked",
                 todayHighlight: true,
-                zIndexOffset: 1000
+                zIndexOffset: 1000,
+                startDate: new Date()
             });
-            $('#isoTrainingPeriod\\.startDate').datepicker({
+            $('#startDate').datepicker({
                 format: 'yyyy-mm-dd',
                 autoclose: true,
                 clearBtn: true,
@@ -46,7 +47,7 @@
                 zIndexOffset: 1000,
                 startDate: new Date()
             });
-            $('#isoTrainingPeriod\\.endDate').datepicker({
+            $('#endDate').datepicker({
                 format: 'yyyy-mm-dd',
                 autoclose: true,
                 clearBtn: true,
@@ -72,12 +73,32 @@
             //     }
             // });\
 
-            $("#training").change(function (e) {
+            $("#training").change(function () {
                 if ($(this).is(":checked")) {
                     $("#formTraining").css("display", "block");
                 } else {
                     $("#formTraining").css("display", "none");
                 }
+            });
+
+            $("#trainingAll").change(function (e) {
+                if ($(this).is(":checked")) {
+                    $("#userIdArea").css("display", "none");
+                    ``
+                    $("#userIds").val("").trigger("change");
+                } else {
+                    $("#userIdArea").css("display", "block");
+                }
+            });
+
+            $("#isoForm").submit(function(e) {
+                //Submit 하기 직전 disabled 상태 해제.
+                $("#training").attr("disabled", false);
+
+                var $btn = $("#submitBtn").button('save');
+                setTimeout(function() {
+                    $btn.button('loading');
+                }, 1500);
             });
         });
     </script>
@@ -94,7 +115,7 @@
 <#--    </div>-->
 <#--</div>-->
 <!---------------------------------->
-<form role="form" method="post" enctype="multipart/form-data">
+<form role="form" method="post" id="isoForm" enctype="multipart/form-data">
     <div class="row">
         <div class="col-sm-9">
             <div class="panel">
@@ -102,51 +123,54 @@
                     <@spring.formHiddenInput "iso.id"/>
                     <!-- Edit Case -->
                     <#assign disabled = iso.id?has_content?then('disabled', '') />
-                    ]\<div class="form-group">
+                    <div class="form-group">
                         <@spring.formCheckbox "iso.training" "class='form-checkbox' ${disabled}" />
                         <label class="control-label" for="training">Training 등록</label>
                     </div>
 
-                    <!-- Edit인데 training 체크를 한 경우, -->
-                    <div id="formTraining" style="display:${iso.training?then('block', 'none')};">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group text-center">
-                                    <@spring.formCheckbox "iso.isoTrainingMatrix.trainingAll" "class='form-checkbox'" />
-                                    <label class="control-label" for="isoTrainingPeriod.trainingAll">전부</label>
+                    <!-- Edit인데 training 체크를 안한 경우일때만 예외, -->
+                    <#if !(iso.id?has_content && iso.training == false) >
+                        <div id="formTraining" style="display:${iso.training?then('block', 'none')};">
+                            <div class="row">
+                                <div class="col-lg-2 form-group">
+                                    <label class="control-label" for="isoTrainingPeriod.trainingAll">교육 참석 대상자</label>
+                                </div>
+                                <div class="col-lg-1 form-group">
+                                    <@spring.formCheckbox "iso.trainingAll" "class='form-checkbox'" />
+                                    <label class="control-label" for="isoTrainingMatrix.trainingAll">전부</label>
+                                </div>
+                                <div class="col-lg-9 form-group">
+                                    <div id="userIdArea" style="display:${iso.trainingAll?then('none', 'block')}">
+                                        <@spring.formMultiSelect "iso.userIds" userMap "class='form-control'" />
+                                        <@spring.showErrors "" "color:red;"/>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-lg-6">
-                                <label class="control-label col-sm-3" for="isoTrainingPeriod.trainingAll">교육 참석 대상자</label>
-                                <div class="col-sm-9">
-                                    <div class="form-group">
-                                        <@spring.formMultiSelect "iso.userIds" userMap "class='form-control'" />
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <label class="control-label col-sm-3" style="margin-top: 7px;">교육 기간</label>
+                                    <div class="form-group col-sm-4">
+                                        <@spring.formInput "iso.startDate" "class='form-control' placeholder='Start Date'" />
+                                        <@spring.showErrors "" "color:red;"/>
+                                    </div>
+                                    <div class="form-group col-sm-1 text-center">
+                                        <span class="text-2x">~</span>
+                                    </div>
+                                    <div class="form-group col-sm-4">
+                                        <@spring.formInput "iso.endDate" "class='form-control' placeholder='End Date'" />
+                                        <@spring.showErrors "" "color:red;"/>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label class="control-label col-sm-3" style="margin-top: 7px;">교육 시간</label>
+                                    <div class="form-group col-sm-9">
+                                        <@spring.formInput "iso.hour" "class='form-control' placeholder='Hour (#.##)' step='.01'" "number"/>
+                                        <@spring.showErrors "" "color:red;"/>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <label class="control-label col-sm-3" style="margin-top: 7px;">교육 기간</label>
-                                <div class="form-group col-sm-4">
-                                    <@spring.formInput "iso.isoTrainingPeriod.startDate" "class='form-control' placeholder='Start Date'" />
-                                </div>
-                                <div class="form-group col-sm-1 text-center">
-                                    <span class="text-2x">~</span>
-                                </div>
-                                <div class="form-group col-sm-4">
-                                    <@spring.formInput "iso.isoTrainingPeriod.endDate" "class='form-control' placeholder='End Date'" />
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <label class="control-label col-sm-3" style="margin-top: 7px;">교육 시간</label>
-                                <div class="form-group col-sm-9">
-                                    <@spring.formInput "iso.hour" "class='form-control' placeholder='Hour (#.##)' step='.01'" "number"/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                    </#if>
                     <div class="form-group">
                         <@spring.formInput "iso.title" "class='form-control input-lg' placeholder='Title'"/>
                         <@spring.showErrors "" "color:red;"/>
@@ -162,8 +186,7 @@
         <div class="col-sm-3">
             <div class="panel">
                 <div class="panel-body">
-                    <p class="text-main text-bold text-uppercase">
-                        첨부파일(ISO)<#if iso.attachFiles?has_content>(${iso.attachFiles?size})</#if></p>
+                    <p class="text-main text-bold text-uppercase">첨부파일(ISO)</p>
                     <#if iso.attachFiles?has_content>
                         <div class="form-group">
                             <table class="table table-bordered">
@@ -171,7 +194,6 @@
                                 <tr>
                                     <th>#</th>
                                     <th>File</th>
-                                    <th class="text-warning text-center"><i class="fa fa-trash-o fa-lg"></i></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -179,40 +201,35 @@
                                     <tr>
                                         <td>${attachFile?index + 1}</td>
                                         <td>${attachFile.originalFileName}</td>
-                                        <td class="text-center">
-                                            <@spring.formCheckbox "iso.attachFiles[" + attachFile?index + "].deleted", "class='form-checkbox'"/>
-                                            <#--                                <input type="checkbox" class="form-checkbox" value="${attachFile.id}"/>-->
-                                        </td>
                                     </tr>
                                 </#list>
                                 </tbody>
                             </table>
                         </div>
-                    <#else>
-                        <@spring.formHiddenInput "iso.attachFiles" />
                     </#if>
                     <div class="form-group">
-                        <input name="uploadingFiles" class="form-control" type="file" accept=".pdf">
-                        <#--                    <@spring.showErrors "" "color:red;"/>-->
+                        <input name="uploadingFile" class="form-control" type="file" accept=".pdf">
+                        <@spring.formHiddenInput "iso.attachFiles" />
+                        <@spring.showErrors "" "color:red;"/>
                     </div>
                     <hr>
                     <p class="text-main text-bold text-uppercase">상단공지</p>
-                    <#--                <div class="form-horizontal">-->
-                    <#--                    <div class="form-group">-->
-                    <#--                        <label class="col-sm-5 control-label text-left">종료일</label>-->
-                    <#--                        <div class="col-sm-7">-->
-                    <#--                            <div class="input-group date">-->
-                    <#--                                <@spring.formInput "iso.topViewEndDate" "class='form-control'"/>-->
-                    <#--                                <span class="input-group-addon"><i class="pli-calendar-4"></i></span>-->
-                    <#--                            </div>-->
-                    <#--                            <@spring.showErrors "" "color:red;"/>-->
-                    <#--                        </div>-->
-                    <#--                    </div>-->
-                    <#--                </div>-->
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-5 control-label text-left">종료일</label>
+                            <div class="col-sm-7">
+                                <div class="input-group date">
+                                    <@spring.formInput "iso.topViewEndDate" "class='form-control'"/>
+                                    <span class="input-group-addon"><i class="pli-calendar-4"></i></span>
+                                </div>
+                                <@spring.showErrors "" "color:red;"/>
+                            </div>
+                        </div>
+                    </div>
                     <hr/>
                     <div class="text-right">
                         <button type="button" class="btn btn-link" onclick="history.back();">Cancel</button>
-                        <button type="submit" class="btn btn-primary"> Save</button>
+                        <button type="submit" class="btn btn-primary" id="submitBtn" data-save-text="Saving.." data-loading-text="문서 변환 중.. 잠시만 기다려 주세요."> Save</button>
                     </div>
                 </div>
             </div>

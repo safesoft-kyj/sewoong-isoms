@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "s_iso_training")
+@Table(name = "s_iso_offline_training")
 @SequenceGenerator(name = "ISO_OFFLINE_TRAINING_SEQ_GENERATOR", sequenceName = "SEQ_ISO_COURSE", initialValue = 1, allocationSize = 1)
 @Audited(withModifiedFlag = true)
 public class ISOOfflineTraining {

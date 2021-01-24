@@ -67,7 +67,7 @@ public class FileStorageService {
         }
     }
 
-    public Integer conversionPdf2Img(MultipartFile uploadedPdfFile, String sopId) {
+    public Integer conversionPdf2Img(MultipartFile uploadedPdfFile, String id) {
 //        List<String> savedImgList = new ArrayList<>(); //저장된 이미지 경로를 저장하는 List 객체
         try (PDDocument pdfDoc = PDDocument.load(uploadedPdfFile.getInputStream())) {
 
@@ -75,7 +75,7 @@ public class FileStorageService {
 
             //순회하며 이미지로 변환 처리
             for (int i = 0; i < pdfDoc.getPages().getCount(); i++) {
-                String imgFileName = sopId + "-" +  + (i + 1) + ".jpg";
+                String imgFileName = id + "-" +  + (i + 1) + ".jpg";
                 log.debug("-> pdf2img[{}] = {}", i, imgFileName);
                 Path targetLocation = this.fileStorageLocation.resolve(imgFileName);
                 //DPI 설정

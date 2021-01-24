@@ -12,11 +12,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -27,7 +29,10 @@ public class ISOService {
     private final FileStorageService fileStorageService;
     private final MailService mailService;
 
-    public Iterable<ISO> getTopISOs(Predicate predicate){
+    private final ISOTrainingMatrixService isoTrainingMatrixService;
+    private final ISOTrainingPeriodService isoTrainingPeriodService;
+
+    public Iterable<ISO> getTopISOs(Predicate predicate) {
         return isoRepository.findAll(predicate, Sort.by(Sort.Direction.DESC, "id"));
     }
 
@@ -35,29 +40,50 @@ public class ISOService {
         return isoRepository.findAll(predicate, pageable);
     }
 
-    public ISO save(ISO iso, MultipartFile[] files) {
-        ISO savedISO = isoRepository.save(iso);
-        if(!ObjectUtils.isEmpty(iso.getAttachFiles())) {
-            //TODO 수정필요.
-            iso.getAttachFiles().stream().filter(f -> f.isDeleted()).forEach(removeFile ->
-                    isoAttachFileRepository.deleteById(removeFile.getId()));
+    public ISO saveISO(ISO iso, MultipartFile file) {
+        if(StringUtils.isEmpty(iso.getId())) {
+            iso.setId(UUID.randomUUID().toString());
+            log.debug("ISO Ver Id. 생성 : {}", iso.getId());
         }
-        if(!ObjectUtils.isEmpty(files)) {
-            for(MultipartFile file : files) {
-                if(file.isEmpty() == false) {
-                    String fileName = fileStorageService.storeFile(file, "iso_" + savedISO.getId());
-                    log.info("==> upload fileName : {}, contentType : {}, fileSize : {}", fileName, file.getContentType(), file.getSize());
 
-                    ISOAttachFile attacheFile = ISOAttachFile.builder()
-                            .iso(savedISO)
-                            .fileName(fileName)
-                            .originalFileName(file.getOriginalFilename())
-                            .fileType(file.getContentType())
-                            .fileSize(file.getSize())
-                            .build();
-                    isoAttachFileRepository.save(attacheFile);
-                }
+        ISO savedISO = isoRepository.save(iso);
+
+        if (!ObjectUtils.isEmpty(file.getOriginalFilename())) {
+
+            //파일 업로드 시, 기존에 있던 파일 삭제
+            if (!ObjectUtils.isEmpty(iso.getAttachFiles())) {
+                iso.getAttachFiles().stream().forEach(f -> f.setDeleted(true)); //기존 파일 Deleted 세팅
+                iso.getAttachFiles().stream().forEach(removeFile -> isoAttachFileRepository.deleteById(removeFile.getId())); //삭제 처리.
             }
+
+            String fileName = fileStorageService.storeFile(file, "iso_" + savedISO.getId());
+            //파일 확장자 확인
+            String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
+
+            ISOAttachFile attacheFile = ISOAttachFile.builder()
+                    .iso(savedISO)
+                    .fileName(fileName)
+                    .originalFileName(file.getOriginalFilename())
+                    .ext(ext)
+                    .fileType(file.getContentType())
+                    .fileSize(file.getSize())
+                    .build();
+
+            //강의 파일용으로 이미지 변환처리.
+            Integer totalPage = fileStorageService.conversionPdf2Img(file, savedISO.getId());
+            attacheFile.setTotalPage(totalPage);
+            attacheFile.setExt(ext);
+
+            isoAttachFileRepository.save(attacheFile);
+        }
+
+        if(iso.isTraining()) {
+            //ISO Training 기간 설정
+            isoTrainingPeriodService.saveAll(savedISO, iso);
+
+            //ISO Training 참석자 설정
+            isoTrainingMatrixService.saveAll(savedISO, iso);
+
         }
 
         return savedISO;
@@ -68,8 +94,8 @@ public class ISOService {
         isoRepository.save(iso);
     }
 
-    public Optional<ISO> getISO(Integer noticeId) {
-        return isoRepository.findById(noticeId);
+    public Optional<ISO> getISO(String isoId) {
+        return isoRepository.findById(isoId);
     }
 
     public Optional<ISOAttachFile> getAttachFile(String id) {
@@ -77,13 +103,13 @@ public class ISOService {
     }
 
 
-    public void sendMail(Integer isoId) {
+    public void sendMail(String isoId) {
         ISO iso = getISO(isoId).get();
 
         HashMap<String, Object> model = new HashMap<>();
         model.put("iso", iso);
         List<String> toList = mailService.getReceiveEmails();
-        if(ObjectUtils.isEmpty(toList) == false) {
+        if (ObjectUtils.isEmpty(toList) == false) {
 
             Mail mail = Mail.builder()
                     .to(toList.toArray(new String[toList.size()]))

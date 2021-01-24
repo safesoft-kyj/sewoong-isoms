@@ -31,7 +31,7 @@ public class ISOTrainingPeriod extends BaseEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ISO_TRAINING_PERIOD_SEQ_GENERATOR")
     private Integer id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "iso_id", referencedColumnName = "id")
     private ISO iso;
 
@@ -49,12 +49,11 @@ public class ISOTrainingPeriod extends BaseEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "retraining_user_id", referencedColumnName = "id")
-    @NotAudited
     private Account retrainingUser;
 
-    @OneToMany(mappedBy = "trainingPeriod")
+    @OneToMany(mappedBy = "isoTrainingPeriod")
     @NotAudited
-    private List<TrainingLog> trainingLogs;
+    private List<ISOTrainingLog> isoTrainingLogs;
 
 
     @Builder

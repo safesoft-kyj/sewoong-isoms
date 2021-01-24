@@ -64,7 +64,7 @@
                                 <#else><small class="text-danger"><i class="fa fa-exclamation-circle"></i> 직무 정보가 없습니다.</small></#if>
                             </td>
                             <td>
-                                <a href="/admin/role/user/${t.username}" class="btn btn-sm btn-info"><i class="fa fa-pencil"></i> 직무 정보 수정</a>
+                                <a href="/admin/role/user/${t.username}" class="btn btn-sm btn-info"><i class="fa fa-pencil"></i> ROLE 정보 수정</a>
                             </td>
                         </tr>
                     </#list>
