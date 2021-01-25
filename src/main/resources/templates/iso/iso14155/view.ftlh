@@ -1,24 +1,24 @@
 <#assign security=JspTaglibs["http://www.springframework.org/security/tags"] />
 <html>
-    <head>
-        <title>ISO-MS :: ${iso.title}</title>
-        <!--Bootbox Modals [ OPTIONAL ]-->
-        <script src="/static/plugins/bootbox/bootbox.min.js"></script>
+<head>
+    <title>ISO-MS :: ${viewIso.title}</title>
+    <!--Bootbox Modals [ OPTIONAL ]-->
+    <script src="/static/plugins/bootbox/bootbox.min.js"></script>
 
-        <style>
-            .modal-fullsize {
-                width: 80%;
-                height: 800px;
-                margin: 3px;
-                padding: 0;
-            }
+    <style>
+        .modal-fullsize {
+            width: 80%;
+            height: 800px;
+            margin: 3px;
+            padding: 0;
+        }
 
-            #iso-html {
-                height: 700px;
-            }
-        </style>
+        #iso-html {
+            height: 700px;
+        }
+    </style>
 
-    </head>
+</head>
 <body>
 
 
@@ -38,12 +38,12 @@
         // if(agent.indexOf("trident") > 0 || agent.indexOf("msie") > 0 ){
         //     preview_print();
         // } else {
-            window.print();
+        window.print();
         // }
     }
 
-    $(document).ready(function() {
-        $('#removeBtn').on('click', function() {
+    $(document).ready(function () {
+        $('#removeBtn').on('click', function () {
             bootbox.confirm("정말로 삭제 하시겠습니까?", function (result) {
                 if (result) {
                     $("#removeForm").submit();
@@ -60,13 +60,13 @@
             });
         });
 
-        $("#sendEmailBtn").click(function() {
-            if(confirm('알림 메일을 전송 하시겠습니까?')) {
+        $("#sendEmailBtn").click(function () {
+            if (confirm('알림 메일을 전송 하시겠습니까?')) {
                 var isoId = $(this).data("id");
                 $.ajax({
-                    url:'/ajax/iso-14155/' + isoId + '/send',
-                    data:{r:Math.random()},
-                    success:function(r) {
+                    url: '/ajax/iso-14155/' + isoId + '/send',
+                    data: {r: Math.random()},
+                    success: function (r) {
                         // alert(r);
                         // $("#sendEmailBtn").hide();
                         alert('이메일 전송 요청이 완료 되었습니다.');
@@ -92,55 +92,90 @@
 
                 <div class="mar-btm pad-btm bord-btm">
                     <h1 class="page-header text-overflow">
-                        ${iso.title}
+                        <span class="label label-${viewIso.training?then('info','warning')}">${viewIso.training?then('Training','Board')}</span>
+                        ${viewIso.title}
                     </h1>
                 </div>
 
+                <!-- Training ISO 인 경우, -->
+                <#if viewIso.training>
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th class="text-center">교육 참석</th>
+                            <th class="text-center">참석자</th>
+                            <th class="text-center">교육 기간</th>
+                            <th class="text-center">교육 시간 (Hour)</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td class="text-center">
+                                <span class="label label-${viewIso.trainingAll?then('info', 'purple')}">${viewIso.trainingAll?then('ALL', 'SOME PART')}</span>
+                            </td>
+                            <td class="text-center">
+                                <#if userList?has_content>
+                                    <button type="button" data-target="#attend-modal" class="btn btn-purple btn-sm">${userList?size}명</button>
+                                <#else>
+                                    -
+                                </#if>
+                            </td>
+                            <td class="text-center text-info">${viewIso.trainingDate}</td>
+                            <td class="text-center text-bold">
+                                <span class="badge badge-primary">${viewIso.hour?string('##0.00')} h</span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <hr>
+                </#if>
+
                 <div class="row">
                     <div class="col-sm-7 toolbar-left">
-
                         <!--Sender Information-->
                         <div class="media">
                             <div class="media-body text-left">
-                                <div class="text-bold"><i class="pli-user"></i> ${iso.createdBy?default('System')}</div>
-                                <small class="text-muted"><i class="pli-pencil"></i> ${iso.createdDate}</small>
+                                <div class="text-bold"><i class="pli-user"></i> ${viewIso.createdBy?default('System')}
+                                </div>
+                                <small class="text-muted"><i class="pli-pencil"></i> ${viewIso.createdDate}</small>
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-5 toolbar-right">
 
                         <!--Details Information-->
-<#--                        <p class="mar-no"><small class="text-muted">${notice.createdDate}</small></p>-->
-<#--                        <a href="#">-->
-<#--                            <strong>Holiday.zip</strong>-->
-<#--                            <i class="psi-paperclip icon-lg icon-fw"></i>-->
-<#--                        </a>-->
+                        <#--                        <p class="mar-no"><small class="text-muted">${notice.createdDate}</small></p>-->
+                        <#--                        <a href="#">-->
+                        <#--                            <strong>Holiday.zip</strong>-->
+                        <#--                            <i class="psi-paperclip icon-lg icon-fw"></i>-->
+                        <#--                        </a>-->
                     </div>
                 </div>
                 <div class="row pad-top hidden-print">
                     <div class="col-sm-7 toolbar-left">
 
                         <!--Mail toolbar-->
-                        <button class="btn btn-default" type="button" onclick="fnPrint();"><i class="pli-printer icon-lg"></i></button>
-<#--                        <div class="btn-group btn-group">-->
+                        <button class="btn btn-default" type="button" onclick="fnPrint();"><i
+                                    class="pli-printer icon-lg"></i></button>
+                        <#--                        <div class="btn-group btn-group">-->
                         <@security.authorize access="hasAnyAuthority('ADMIN')">
-                        <button class="btn btn-default" id="sendEmailBtn" data-id="${iso.id}"><i class="fa fa-send-o"></i> 메일 전송</button>
+                            <button class="btn btn-default" id="sendEmailBtn" data-id="${viewIso.id}"><i
+                                        class="fa fa-send-o"></i> 메일 전송
+                            </button>
                         </@security.authorize>
-<#--                        </div>-->
+                        <#--                        </div>-->
                     </div>
                     <div class="col-sm-5 toolbar-right">
                         <!--Reply & forward buttons-->
                         <@security.authorize access="hasAnyAuthority('ADMIN')">
-                        <a class="btn btn-default" href="javascript:goToURL('/iso-14155/${iso.id}/edit');"><i class="pli-pencil"></i> 수정</a>
-                        <button class="btn btn-default" id="removeBtn"><i class="pli-trash icon-lg"></i> 삭제</button>
+                            <a class="btn btn-default" href="javascript:goToURL('/iso-14155/${viewIso.id}/edit');"><i
+                                        class="pli-pencil"></i> 수정</a>
+                            <button class="btn btn-default" id="removeBtn"><i class="pli-trash icon-lg"></i> 삭제</button>
                         </@security.authorize>
                         <div class="btn-group btn-group">
                             <a class="btn btn-default" href="javascript:goToURL('/iso-14155');">
                                 <i class="psi-list-view"></i> 목록
                             </a>
-<#--                            <a class="btn btn-default" href="#">-->
-<#--                                <i class="psi-right-4"></i>-->
-<#--                            </a>-->
                         </div>
                     </div>
                 </div>
@@ -148,40 +183,46 @@
                 <!--Message-->
                 <!--===================================================-->
                 <div class="mail-message">
-                    ${iso.content?no_esc}
+                    ${viewIso.content?no_esc}
                 </div>
                 <!--===================================================-->
                 <!--End Message-->
 
                 <!-- Attach Files-->
                 <!--===================================================-->
-                <#if iso.attachFiles?has_content>
-                <div class="pad-ver">
-                    <p class="text-main text-bold box-inline"><i class="psi-paperclip icon-fw"></i> Attachments <span>(${iso.attachFiles?size})</span></p>
-<#--                    <a href="#" class="btn-link">Download all</a> | <a href="#" class="btn-link">View all images</a>-->
+                <#if viewIso.attachFiles?has_content>
+                    <div class="pad-ver">
+                        <p class="text-main text-bold box-inline"><i class="psi-paperclip icon-fw"></i> Attachments
+                            <span>(${viewIso.attachFiles?size})</span></p>
+                        <#--                    <a href="#" class="btn-link">Download all</a> | <a href="#" class="btn-link">View all images</a>-->
 
-                    <ul class="mail-attach-list list-ov">
-                        <#list iso.attachFiles as attachFile>
-                        <li>
-                            <a href="#iso-modal" data-toggle="modal" data-id="${iso.id}" data-file="${attachFile.id}" data-name="${attachFile.originalFileName}" class="thumbnail">
-                                <#if attachFile.fileType?index_of('image') == 0>
-                                <div class="mail-file-img">
-                                    <img class="image-responsive" src="/iso-14155/${iso.id}/downloadFile/${attachFile.id}" alt="image">
-                                </div>
-                                <#else>
-                                <div class="mail-file-icon">
-                                    <i class="pli-file-download"></i>
-                                </div>
-                                </#if>
-                                <div class="caption">
-                                    <p class="text-main mar-no" style="overflow-x: hidden;">${attachFile.originalFileName}</p>
-                                    <small class="text-muted">Added: ${attachFile.createdDate}</small>
-                                </div>
-                            </a>
-                        </li>
-                        </#list>
-                    </ul>
-                </div>
+                        <ul class="mail-attach-list list-ov">
+                            <#list viewIso.attachFiles as attachFile>
+                                <li>
+                                    <a href="#iso-modal" data-toggle="modal" data-id="${viewIso.id}"
+                                       data-file="${attachFile.id}" data-name="${attachFile.originalFileName}"
+                                       class="thumbnail">
+                                        <#if attachFile.fileType?index_of('image') == 0>
+                                            <div class="mail-file-img">
+                                                <img class="image-responsive"
+                                                     src="/iso-14155/${viewIso.id}/downloadFile/${attachFile.id}"
+                                                     alt="image">
+                                            </div>
+                                        <#else>
+                                            <div class="mail-file-icon">
+                                                <i class="pli-file-download"></i>
+                                            </div>
+                                        </#if>
+                                        <div class="caption">
+                                            <p class="text-main mar-no"
+                                               style="overflow-x: hidden;">${attachFile.originalFileName}</p>
+                                            <small class="text-muted">Added: ${attachFile.createdDate}</small>
+                                        </div>
+                                    </a>
+                                </li>
+                            </#list>
+                        </ul>
+                    </div>
                 </#if>
                 <!--===================================================-->
                 <!-- End Attach Files-->
@@ -192,23 +233,24 @@
                  aria-hidden="true">
                 <div class="modal-dialog modal-fullsize">
                     <div class="modal-content">
-
                         <!--Modal header-->
                         <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
+                            <button type="button" class="close" data-dismiss="modal"><i
+                                        class="pci-cross pci-circle"></i></button>
                             <h4 class="modal-title">ISO 14155</h4>
                         </div>
 
                         <!--Modal body-->
                         <div class="modal-body">
                             <div class="table-responsive">
-                                <div id="iso-html" style="" >내용을 불러오는 중입니다...</div>
+                                <div id="iso-html" style="">내용을 불러오는 중입니다...</div>
                             </div>
                         </div>
 
                         <!--Modal footer-->
                         <div class="modal-footer">
-                            <button data-dismiss="modal" class="btn btn-default" type="button"><i class="fa fa-times"></i> Close
+                            <button data-dismiss="modal" class="btn btn-default" type="button"><i
+                                        class="fa fa-times"></i> Close
                             </button>
                         </div>
                     </div>
@@ -242,10 +284,83 @@
                     };
 
                     //제일 처음 열리는 pdf파일 경로 설정.
-                    PDFObject.embed("/iso-14155/" + isoId + "/downloadFile/" + fileId , "#iso-html", options);
+                    PDFObject.embed("/iso-14155/" + isoId + "/downloadFile/" + fileId, "#iso-html", options);
                 });
             </script>
 
+            <!-- ISO Viewer -->
+            <div class="modal fade" id="iso-modal" role="dialog" tabindex="-1" aria-labelledby="iso-modal"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-fullsize">
+                    <div class="modal-content">
+                        <!--Modal header-->
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><i
+                                        class="pci-cross pci-circle"></i></button>
+                            <h4 class="modal-title">ISO 14155</h4>
+                        </div>
+
+                        <!--Modal body-->
+                        <div class="modal-body">
+                            <div class="table-responsive">
+                                <table id="roleRequests" class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">No.</th>
+                                        <th class="text-center">부서</th>
+                                        <th class="text-center">팀</th>
+                                        <th class="text-center">이름</th>
+                                        <th class="text-center">변경 전 ROLE</th>
+                                        <th class="text-center">변경 후 ROLE</th>
+                                        <th class="text-center">요청 일자</th>
+                                        <th class="text-center">배정 일자</th>
+                                        <th class="text-center">#Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+<#--                                    TODO -->
+                                    <#if roleRequestList.content?has_content>
+                                        <#list roleRequestList.content as roleRequest>
+                                            <tr>
+                                                <td class="text-center">${(roleRequestList.totalElements - (roleRequestList.size * roleRequestList.number)) - roleRequest?index}</td>
+                                                <td class="text-center">${roleRequest.user.deptName}</td>
+                                                <td class="text-center">${roleRequest.user.teamName}</td>
+                                                <td class="text-center">${roleRequest.user.name}</td>
+                                                <td class="text-center"><span
+                                                            class="label label-warning">${roleRequest.prevJobDescription}</span>
+                                                </td>
+                                                <td class="text-center"><span
+                                                            class="label label-purple">${roleRequest.nextJobDescription}</span>
+                                                </td>
+                                                <td class="text-center">${roleRequest.requestDate?string('yyyy-MM-dd')}</td>
+                                                <td class="text-center">${roleRequest.assignDate?string('yyyy-MM-dd')}</td>
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-info" id="roleAcceptBtn"
+                                                            data-value="${roleRequest.id}"
+                                                            data-name="${roleRequest.user.name}">Accept
+                                                    </button>
+                                                    <button type="button" class="btn btn-danger" id="roleRejectBtn"
+                                                            data-value="${roleRequest.id}"
+                                                            data-name="${roleRequest.user.name}">Reject
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </#list>
+                                    </#if>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!--Modal footer-->
+                        <div class="modal-footer">
+                            <button data-dismiss="modal" class="btn btn-default" type="button"><i
+                                        class="fa fa-times"></i> Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

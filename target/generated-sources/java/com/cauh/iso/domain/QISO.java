@@ -38,7 +38,7 @@ public class QISO extends EntityPathBase<ISO> {
 
     public final NumberPath<Float> hour = createNumber("hour", Float.class);
 
-    public final NumberPath<Integer> id = createNumber("id", Integer.class);
+    public final StringPath id = createString("id");
 
     public final ListPath<ISOTrainingMatrix, QISOTrainingMatrix> isoTrainingMatrix = this.<ISOTrainingMatrix, QISOTrainingMatrix>createList("isoTrainingMatrix", ISOTrainingMatrix.class, QISOTrainingMatrix.class, PathInits.DIRECT2);
 

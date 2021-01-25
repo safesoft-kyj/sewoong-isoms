@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends PagingAndSortingRepository<Account, Integer>, QuerydslPredicateExecutor<Account> {
-    @Override
+
     List<Account> findAll();
 
     Optional<Account> findByUsername(@Param("username") String username);

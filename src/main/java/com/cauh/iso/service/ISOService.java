@@ -4,6 +4,7 @@ import com.cauh.iso.domain.*;
 import com.cauh.iso.domain.constant.PostStatus;
 import com.cauh.iso.repository.ISOAttachFileRepository;
 import com.cauh.iso.repository.ISORepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +53,6 @@ public class ISOService {
 
             //파일 업로드 시, 기존에 있던 파일 삭제
             if (!ObjectUtils.isEmpty(iso.getAttachFiles())) {
-                iso.getAttachFiles().stream().forEach(f -> f.setDeleted(true)); //기존 파일 Deleted 세팅
                 iso.getAttachFiles().stream().forEach(removeFile -> isoAttachFileRepository.deleteById(removeFile.getId())); //삭제 처리.
             }
 
@@ -87,6 +87,18 @@ public class ISOService {
         }
 
         return savedISO;
+    }
+
+    public ISO saveQuiz(String isoId, Quiz quiz) throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        Optional<ISO> isoOptional = getISO(isoId);
+        if(isoOptional.isEmpty()){return null;}
+        ISO iso = isoOptional.get();
+
+        iso.setQuiz(objectMapper.writeValueAsString(quiz));
+        log.info("=> isoId : {}, Quiz 수정!", isoId);
+        return isoRepository.save(iso);
     }
 
     public void remove(ISO iso) {

@@ -50,9 +50,6 @@ public class ISOAttachFile extends BaseEntity implements Serializable {
     @Column(name = "file_size")
     private long fileSize;
 
-    @Column(name = "deleted")
-    private boolean deleted;
-
     @Builder
     public ISOAttachFile(ISO iso, String fileName, String originalFileName, String ext, String fileType, long fileSize) {
         this.iso = iso;

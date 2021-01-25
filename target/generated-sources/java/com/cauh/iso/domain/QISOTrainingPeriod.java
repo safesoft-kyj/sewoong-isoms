@@ -36,6 +36,8 @@ public class QISOTrainingPeriod extends EntityPathBase<ISOTrainingPeriod> {
 
     public final QISO iso;
 
+    public final ListPath<ISOTrainingLog, QISOTrainingLog> isoTrainingLogs = this.<ISOTrainingLog, QISOTrainingLog>createList("isoTrainingLogs", ISOTrainingLog.class, QISOTrainingLog.class, PathInits.DIRECT2);
+
     //inherited
     public final StringPath lastModifiedBy = _super.lastModifiedBy;
 
@@ -45,8 +47,6 @@ public class QISOTrainingPeriod extends EntityPathBase<ISOTrainingPeriod> {
     public final com.cauh.common.entity.QAccount retrainingUser;
 
     public final DateTimePath<java.util.Date> startDate = createDateTime("startDate", java.util.Date.class);
-
-    public final ListPath<TrainingLog, QTrainingLog> trainingLogs = this.<TrainingLog, QTrainingLog>createList("trainingLogs", TrainingLog.class, QTrainingLog.class, PathInits.DIRECT2);
 
     public final EnumPath<com.cauh.iso.domain.constant.TrainingType> trainingType = createEnum("trainingType", com.cauh.iso.domain.constant.TrainingType.class);
 

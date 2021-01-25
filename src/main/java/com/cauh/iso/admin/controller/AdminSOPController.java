@@ -256,7 +256,6 @@ public class AdminSOPController {
         DocumentVersion documentVersion = documentVersionService.findById(docVerId);
         model.addAttribute("documentVersion", documentVersion);
 
-
         Quiz quiz = null;
         if(!StringUtils.isEmpty(documentVersion.getQuiz())) {
             try {
@@ -280,7 +279,6 @@ public class AdminSOPController {
                 questions.add(quizQuestion);
             }
             quiz.setQuizQuestions(questions);
-
         }
         model.addAttribute("quiz", quiz);
 
@@ -308,8 +306,6 @@ public class AdminSOPController {
         if(result.hasErrors()) {
             return "admin/sop/quiz";
         }
-
-
 
         DocumentVersion documentVersion = documentVersionService.saveQuiz(docVerId, quiz);
         status.setComplete();

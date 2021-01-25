@@ -32,6 +32,8 @@ public class QISOAttachFile extends EntityPathBase<ISOAttachFile> {
 
     public final BooleanPath deleted = createBoolean("deleted");
 
+    public final StringPath ext = createString("ext");
+
     public final StringPath fileName = createString("fileName");
 
     public final NumberPath<Long> fileSize = createNumber("fileSize", Long.class);

@@ -4,16 +4,19 @@ import com.cauh.common.entity.Account;
 import com.cauh.common.security.annotation.CurrentUser;
 import com.cauh.common.service.UserService;
 import com.cauh.iso.domain.*;
-import com.cauh.iso.domain.constant.ApprovalLineType;
-import com.cauh.iso.domain.constant.ISOType;
-import com.cauh.iso.domain.constant.PostStatus;
-import com.cauh.iso.domain.constant.TrainingType;
+import com.cauh.iso.domain.constant.*;
 import com.cauh.iso.security.annotation.IsAdmin;
 import com.cauh.iso.service.*;
 import com.cauh.iso.validator.ISOValidator;
+import com.cauh.iso.validator.QuizValidator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -27,13 +30,16 @@ import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -41,7 +47,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @Slf4j
-@SessionAttributes({"iso"})
+@SessionAttributes({"iso", "quiz"})
 @RequiredArgsConstructor
 public class ISOController {
 
@@ -49,6 +55,7 @@ public class ISOController {
     private final ISOValidator isoValidator;
     private final FileStorageService fileStorageService;
     private final UserService userService;
+    private final QuizValidator quizValidator;
 
 
     @GetMapping("/iso-14155")
@@ -90,7 +97,7 @@ public class ISOController {
 
             ISO iso = isoOptional.get();
             if (iso.isTraining()) {
-                ISOTrainingPeriod isoTrainingPeriod = iso.getIsoTrainingPeriod().size() > 0?iso.getIsoTrainingPeriod().get(0):null;
+                ISOTrainingPeriod isoTrainingPeriod = iso.getIsoTrainingPeriods().size() > 0?iso.getIsoTrainingPeriods().get(0):null;
                 iso.setStartDate(isoTrainingPeriod.getStartDate());
                 iso.setEndDate(isoTrainingPeriod.getEndDate());
 
@@ -149,9 +156,24 @@ public class ISOController {
 
     @GetMapping("/iso-14155/{isoId}")
     public String isoView(@PathVariable("isoId") String isoId, Model model, RedirectAttributes attributes) {
-        Optional<ISO> iso = isoService.getISO(isoId);
-        if (iso.isPresent()) {
-            model.addAttribute("iso", iso.get());
+        Optional<ISO> isoOptional = isoService.getISO(isoId);
+        if (isoOptional.isPresent()) {
+            ISO iso = isoOptional.get();
+            if (iso.isTraining()) {
+                ISOTrainingPeriod isoTrainingPeriod = iso.getIsoTrainingPeriods().size() > 0?iso.getIsoTrainingPeriods().get(0):null;
+                iso.setStartDate(isoTrainingPeriod.getStartDate());
+                iso.setEndDate(isoTrainingPeriod.getEndDate());
+
+                //TrainingAll이 있으면 trainingAll로 세팅 아니면 유저별 참석
+                if(iso.getIsoTrainingMatrix().stream().filter(d -> d.isTrainingAll()).count() > 0) {
+                    iso.setTrainingAll(true);
+                } else {
+                    List<Account> userList = iso.getIsoTrainingMatrix().stream().map(tm -> tm.getUser()).collect(Collectors.toList());
+                    iso.setTrainingAll(false);
+                    model.addAttribute("userList", userList);
+                }
+            }
+            model.addAttribute("viewIso", iso);
         } else {
             attributes.addFlashAttribute("message", "존재하지 않는 ISO 게시물 입니다.");
             return "redirect:/iso-14155";
@@ -159,6 +181,11 @@ public class ISOController {
         return "iso/iso14155/view";
     }
 
+    /**
+     * 메일전송 대상자에게 메일 전송
+     * @param isoId
+     * @return
+     */
     @IsAdmin
     @GetMapping("/ajax/iso-14155/{isoId}/send")
     @ResponseBody
@@ -170,22 +197,278 @@ public class ISOController {
         return model;
     }
 
+    /**
+     * ISO 삭제.
+     * @param isoId
+     * @param attributes
+     * @param request
+     * @return
+     */
     @IsAdmin
     @DeleteMapping("/iso-14155/{isoId}")
     public String isoRemove(@PathVariable("isoId") String isoId, RedirectAttributes attributes, HttpServletRequest request) {
         Optional<ISO> iso = isoService.getISO(isoId);
-        if (iso.isPresent()) {
+        if(iso.isPresent() && iso.get().isActive()){
+            attributes.addFlashAttribute("type", "danger");
+            attributes.addFlashAttribute("message", "삭제 실패 :: 교육 진행중인 ISO입니다.");
+            return "redirect:/iso-14155";
+        }else if (iso.isPresent()) {
             isoService.remove(iso.get());
             attributes.addFlashAttribute("message", "ISO-14155 게시물이 삭제 되었습니다.");
             return "redirect:/iso-14155?" + (StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString());
         } else {
+            attributes.addFlashAttribute("type", "danger");
             attributes.addFlashAttribute("message", "존재하지 않는 ISO-14155 게시물 입니다.");
             return "redirect:/iso-14155";
         }
     }
 
+    /**
+     * 퀴즈 입력 화면
+     * @param isoId
+     * @param model
+     * @param attributes
+     * @return
+     */
+    @IsAdmin
+    @GetMapping("/iso-14155/{isoId}/quiz")
+    public String quizEdit(@PathVariable("isoId") String isoId, Model model, RedirectAttributes attributes){
+        Optional<ISO> isoOptional = isoService.getISO(isoId);
+
+        if(isoOptional.isEmpty()) {
+            attributes.addFlashAttribute("type", "danger");
+            attributes.addFlashAttribute("message", "존재하지 않는 ISO입니다.");
+            return "redirect:/iso-14155";
+        }
+
+        ISO iso = isoOptional.get();
+        model.addAttribute("iso", iso);
+
+        Quiz quiz = null;
+        if(!StringUtils.isEmpty(iso.getQuiz())) {
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                quiz = objectMapper.readValue(iso.getQuiz(), Quiz.class);
+            } catch (Exception error) {
+                log.error("error : ", error);
+            }
+        } else {
+            quiz = new Quiz();
+            List<QuizQuestion> questions = new ArrayList<>();
+
+            for (int i = 0; i < 5; i++) {
+                List<QuizAnswer> quizAnswers = new ArrayList<>();
+                for (int x = 0; x < 5; x++) {
+                    quizAnswers.add(new QuizAnswer(x + 1));
+                }
+
+                QuizQuestion quizQuestion = new QuizQuestion(i + 1);
+                quizQuestion.setAnswers(quizAnswers);
+                questions.add(quizQuestion);
+            }
+            quiz.setQuizQuestions(questions);
+        }
+        model.addAttribute("quiz", quiz);
+
+        return "iso/iso14155/quiz";
+    }
+
+    /**
+     * 퀴즈 등록
+     * @param isoId
+     * @param quiz
+     * @param result
+     * @param status
+     * @param request
+     * @param attributes
+     * @return
+     * @throws Exception
+     */
+    @IsAdmin
+    @PostMapping("/iso-14155/{isoId}/quiz")
+    public String saveQuiz(@PathVariable("isoId") String isoId,
+                           @ModelAttribute("quiz") Quiz quiz,
+                           BindingResult result, SessionStatus status,
+                           HttpServletRequest request,
+                           RedirectAttributes attributes) throws Exception {
+        boolean isRemove = WebUtils.hasSubmitParameter(request, "remove");
+
+        if(isRemove) {
+            String removeValue = ServletRequestUtils.getStringParameter(request, "remove");
+            String[] arr = removeValue.split("\\.");
+            quiz.getQuizQuestions().get(Integer.parseInt(arr[0])).getAnswers().remove(Integer.parseInt(arr[1]));
+            return "iso/iso14155/quiz";
+        }
+
+        quizValidator.validate(quiz, result);
+
+        if(result.hasErrors()) {
+            log.debug("Quiz Error : {}", result.getAllErrors());
+            return "iso/iso14155/quiz";
+        }
+
+        ISO savedIso = isoService.saveQuiz(isoId, quiz);
+        status.setComplete();
+
+        if(ObjectUtils.isEmpty(savedIso)) {
+            attributes.addFlashAttribute("type", "danger");
+            attributes.addFlashAttribute("message", "존재하지 않는 ISO입니다.");
+            return "redirect:/iso-14155";
+        }
+
+        attributes.addFlashAttribute("message", "[" + savedIso.getTitle() + "] 에 퀴즈 정보가 수정 되었습니다.");
+        return "redirect:/iso-14155";
+    }
+
+    /**
+     * 퀴즈 업로드
+     * @param isoId
+     * @param model
+     * @param attributes
+     * @return
+     */
+    @IsAdmin
+    @GetMapping("/iso-14155/{isoId}/quiz/upload")
+    public String quizUpload(@PathVariable("isoId") String isoId, Model model, RedirectAttributes attributes) {
+
+//        model.addAttribute("docVerId", docVerId);
+        Optional<ISO> isoOptional = isoService.getISO(isoId);
+
+        if(isoOptional.isEmpty()) {
+            attributes.addFlashAttribute("type", "danger");
+            attributes.addFlashAttribute("message", "존재하지 않는 ISO입니다.");
+            return "redirect:/iso-14155";
+        }
+
+        model.addAttribute("iso", isoOptional.get());
+        model.addAttribute("title", isoOptional.get().getTitle());
+
+        return "iso/iso14155/quiz-upload";
+    }
+
+
+    /**
+     * 업로드 된 Template 파일을 토대로 Quiz 풀기.
+     * @param isoId
+     * @param multipartFile
+     * @param model
+     * @param attributes
+     * @return
+     */
+    @PutMapping("/iso-14155/{isoId}/quiz")
+    public String quizUploaded(@PathVariable("isoId") String isoId,
+                               @RequestParam("quizTemplate") MultipartFile multipartFile,
+                               Model model, RedirectAttributes attributes) {
+
+        try {
+            Quiz quiz = new Quiz();
+            List<QuizQuestion> questions = new ArrayList<>();
+            InputStream is = multipartFile.getInputStream();
+            XSSFWorkbook workbook = new XSSFWorkbook(is);
+            XSSFSheet sheet = workbook.getSheetAt(0);
+
+            XSSFRow isoTypeRow = sheet.getRow(2);
+            isoTypeRow.getCell(1).setCellType(CellType.STRING);
+            String isoType = isoTypeRow.getCell(1).getStringCellValue();
+
+            XSSFRow titleRow = sheet.getRow(3);
+            titleRow.getCell(1).setCellType(CellType.STRING);
+            String title = titleRow.getCell(1).getStringCellValue();
+
+            log.debug("ISO Type : {}, title : {}", isoType, title);
+
+            //임시로 삭제.
+//            DocumentVersion documentVersion = documentVersionService.findById(docVerId);
+//            if(!documentVersion.getDocument().getDocId().equals(documentId) || !documentVersion.getVersion().equals(version)) {
+//                attributes.addFlashAttribute("message", "Template에 DocumentId/Version 정보와 SOP 정보와 일치하지 않습니다.");
+//                return "redirect:/admin/SOP/management/{stringStatus}";
+//            }
+
+            XSSFRow qRow = sheet.getRow(7);
+            XSSFRow a1Row = sheet.getRow(8);
+            XSSFRow a2Row = sheet.getRow(9);
+            XSSFRow a3Row = sheet.getRow(10);
+            XSSFRow a4Row = sheet.getRow(11);
+            XSSFRow a5Row = sheet.getRow(12);
+            XSSFRow correctRow = sheet.getRow(13);
+
+            for(int i = 1; i <= 5; i ++) {
+                qRow.getCell(i).setCellType(CellType.STRING);
+                a1Row.getCell(i).setCellType(CellType.STRING);
+                a2Row.getCell(i).setCellType(CellType.STRING);
+                a3Row.getCell(i).setCellType(CellType.STRING);
+                a4Row.getCell(i).setCellType(CellType.STRING);
+                a5Row.getCell(i).setCellType(CellType.STRING);
+
+                String q = qRow.getCell(i).getStringCellValue();
+                String a1 = a1Row.getCell(i).getStringCellValue();
+                String a2 = a2Row.getCell(i).getStringCellValue();
+                String a3 = a3Row.getCell(i).getStringCellValue();
+                String a4 = a4Row.getCell(i).getStringCellValue();
+                String a5 = a5Row.getCell(i).getStringCellValue();
+                correctRow.getCell(i).setCellType(CellType.STRING);
+                String correct = correctRow.getCell(i).getStringCellValue();
+                log.debug("Q : {}, a1 : {}, a2 : {}, a3 : {}, a4 : {}, a5 : {}, ## correct : {}", q, a1, a2, a3, a4, a5, correct);
+
+                QuizQuestion quizQuestion = new QuizQuestion(i + 1);
+                List<QuizAnswer> quizAnswers = new ArrayList<>();
+                quizQuestion.setText(q);
+                quizAnswers.add(new QuizAnswer(1, a1, eq("1", correct)));
+                quizAnswers.add(new QuizAnswer(2, a2, eq("2", correct)));
+                if(!StringUtils.isEmpty(a3)) {
+                    quizAnswers.add(new QuizAnswer(3, a3, eq("3", correct)));
+                }
+                if(!StringUtils.isEmpty(a4)) {
+                    quizAnswers.add(new QuizAnswer(4, a4, eq("4", correct)));
+                }
+                if(!StringUtils.isEmpty(a5)) {
+                    quizAnswers.add(new QuizAnswer(5, a5, eq("5", correct)));
+                }
+                quizQuestion.setAnswers(quizAnswers);
+                questions.add(quizQuestion);
+            }
+
+            quiz.setQuizQuestions(questions);
+            model.addAttribute("quiz", quiz);
+            return "iso/iso14155/quiz";
+        } catch (Exception error) {
+            log.error("error : {}", error.getMessage());
+            attributes.addFlashAttribute("type", "danger");
+            attributes.addFlashAttribute("message", "Quiz Upload 동작 중 에러가 발생하였습니다.");
+            return "redirect:/iso-14155/";
+        }
+    }
+
+    /**
+     * 퀴즈를 테스트 하는 화면 진입.
+     * @param isoId
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/iso-14155/{isoId}/quiz/test")
+    public String quizTest(@PathVariable("isoId") String isoId, Model model) throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        Quiz quiz = objectMapper.readValue(isoService.getISO(isoId).get().getQuiz(), Quiz.class);
+        Collections.shuffle(quiz.getQuizQuestions());
+        for(QuizQuestion quizQuestion : quiz.getQuizQuestions()) {
+            Collections.shuffle(quizQuestion.getAnswers());
+        }
+        model.addAttribute("quiz", quiz);
+        return "iso/iso14155/quiz-test";
+    }
+
+
+    /**
+     * 파일 다운로드
+     * @param id
+     * @param attachFileId
+     * @param request
+     * @return
+     */
     @GetMapping("/iso-14155/{id}/downloadFile/{attachFileId:.+}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable("id") Integer id, @PathVariable("attachFileId") String attachFileId,
+    public ResponseEntity<Resource> downloadFile(@PathVariable("id") String id, @PathVariable("attachFileId") String attachFileId,
                                                  HttpServletRequest request) {
         // Load file as Resource
         Optional<ISOAttachFile> optionalAttachFile = isoService.getAttachFile(attachFileId);
@@ -215,4 +498,21 @@ public class ISOController {
         }
     }
 
+    /**
+     *
+     * @param answerIndex
+     * @param correct ex) 1,2 or 4
+     * @return
+     */
+    private boolean eq(String answerIndex, String correct) {
+        if(correct.trim().length() == 1) {
+            return correct.trim().equals(answerIndex);
+        }
+        List<String> correctList = new ArrayList<>();
+        String[] correctArr = correct.split(",");
+        for(String str : correctArr) {
+            correctList.add(str.trim());
+        }
+        return correctList.contains(answerIndex);
+    }
 }

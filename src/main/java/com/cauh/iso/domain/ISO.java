@@ -3,6 +3,7 @@ package com.cauh.iso.domain;
 import com.cauh.common.entity.BaseEntity;
 import com.cauh.iso.domain.constant.ISOType;
 import com.cauh.iso.domain.constant.PostStatus;
+import com.cauh.iso.domain.constant.TrainingType;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.ColumnDefault;
@@ -10,11 +11,14 @@ import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Data
 @NoArgsConstructor
@@ -26,8 +30,6 @@ import java.util.List;
 @Audited(withModifiedFlag = true)
 public class ISO extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 765987308708693720L;
-
-
     //=======게시글 속성========
 
     @Id
@@ -91,7 +93,7 @@ public class ISO extends BaseEntity implements Serializable {
     //ISO Training 기간 정보
     @OneToMany(mappedBy = "iso")
     @NotAudited
-    private List<ISOTrainingPeriod> isoTrainingPeriod;
+    private List<ISOTrainingPeriod> isoTrainingPeriods;
 
     @Transient
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -103,12 +105,25 @@ public class ISO extends BaseEntity implements Serializable {
     private boolean trainingAll;
 
     //ISO 학습 시간
-    @Column(name="hour", columnDefinition = "numeric(5,2)")
+    @Column(name = "hour", columnDefinition = "numeric(5,2)")
     private Float hour;
 
     //퀴즈
     @Column(name = "quiz", columnDefinition = "nvarchar(MAX)")
     private String quiz;
+
+    public String getTrainingDate() {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+        Optional<ISOTrainingPeriod> isoTrainingPeriodOptional = isoTrainingPeriods.stream()
+                .filter(p -> !ObjectUtils.isEmpty(p))
+                .filter(p -> p.getTrainingType() == TrainingType.SELF).findFirst();
+        if(!isoTrainingPeriodOptional.isPresent()) {return "-";}
+        ISOTrainingPeriod isoTrainingPeriod = isoTrainingPeriodOptional.get();
+        startDate = isoTrainingPeriod.getStartDate();
+        endDate = isoTrainingPeriod.getEndDate();
+        return (startDate.compareTo(endDate) == 0) ? df.format(startDate) : df.format(startDate) + " ~ " + df.format(endDate);
+    }
 
     @Builder
     public ISO(String title, String content, Date topViewEndDate, PostStatus postStatus) {

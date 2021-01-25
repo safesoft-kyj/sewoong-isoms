@@ -23,7 +23,7 @@ public class ISOTrainingPeriodService {
     private final ISOTrainingPeriodRepository isoTrainingPeriodRepository;
 
     public void saveAll(ISO savedISO, ISO iso) {
-        if(ObjectUtils.isEmpty(iso.getIsoTrainingPeriod())) { //신규 생성 시
+        if(ObjectUtils.isEmpty(iso.getIsoTrainingPeriods())) { //신규 생성 시
             ISOTrainingPeriod isoTrainingPeriod = ISOTrainingPeriod.builder()
                     .iso(savedISO)
                     .trainingType(TrainingType.SELF)
@@ -32,7 +32,7 @@ public class ISOTrainingPeriodService {
             isoTrainingPeriodRepository.save(isoTrainingPeriod);
         } else { //수정 시,
             //ISO Training Period중에서 SELF Type인 것만 불러옴.
-            List<ISOTrainingPeriod> isoTrainingPeriodList = iso.getIsoTrainingPeriod().stream().filter(i -> i.getTrainingType() == TrainingType.SELF).collect(Collectors.toList());
+            List<ISOTrainingPeriod> isoTrainingPeriodList = iso.getIsoTrainingPeriods().stream().filter(i -> i.getTrainingType() == TrainingType.SELF).collect(Collectors.toList());
             for(ISOTrainingPeriod isoTrainingPeriod : isoTrainingPeriodList) {
                 isoTrainingPeriod.setStartDate(iso.getStartDate());
                 isoTrainingPeriod.setEndDate(iso.getEndDate());
