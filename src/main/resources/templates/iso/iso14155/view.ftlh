@@ -5,6 +5,13 @@
     <!--Bootbox Modals [ OPTIONAL ]-->
     <script src="/static/plugins/bootbox/bootbox.min.js"></script>
 
+    <!-- Data Table -->
+    <link href="/static/plugins/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="/static/plugins/datatables/media/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <!-- Data Table -->
+    <script src="/static/plugins/datatables/media/js/jquery.dataTables.min.js"></script>
+    <script src="/static/plugins/datatables/media/js/dataTables.bootstrap4.min.js"></script>
+
     <style>
         .modal-fullsize {
             width: 80%;
@@ -74,6 +81,42 @@
                 })
             }
         });
+
+        $('#attendUserList').dataTable({
+            "responsive": true,
+            "language": {
+                "decimal" : "",
+                "emptyTable" : "ROLE 신청 내역이 없습니다.",
+                "info" : "_START_ - _END_ (총 _TOTAL_ 명)",
+                "infoEmpty" : "0명",
+                "infoFiltered" : "(전체 _MAX_ 명 중 검색결과)",
+                "infoPostFix" : "",
+                "thousands" : ",",
+                "lengthMenu" : "_MENU_ 개씩 보기",
+                "loadingRecords" : "로딩중...",
+                "processing" : "처리중...",
+                "search" : "검색 : ",
+                "zeroRecords" : "검색된 데이터가 없습니다.",
+                "paginate" : {
+                    "previous": '<i class="pli-arrow-left"></i>',
+                    "next": '<i class="pli-arrow-right"></i>',
+                    "first" : '<i class="pli-arrow-left-2"></i>',
+                    "last" : '<i class="pli-arrow-right-2"></i>',
+                },
+                "aria" : {
+                    "sortAscending" : " :  오름차순 정렬",
+                    "sortDescending" : " :  내림차순 정렬"
+                }
+            },
+            "order":[[0, "desc"]],
+            "columns": [
+                {"orderable": false},
+                {"orderable": false},
+                {"orderable": false},
+                {"orderable": false},
+                {"orderable": false},
+            ]
+        });
     });
 
 
@@ -114,8 +157,8 @@
                                 <span class="label label-${viewIso.trainingAll?then('info', 'purple')}">${viewIso.trainingAll?then('ALL', 'SOME PART')}</span>
                             </td>
                             <td class="text-center">
-                                <#if userList?has_content>
-                                    <button type="button" data-target="#attend-modal" class="btn btn-purple btn-sm">${userList?size}명</button>
+                                <#if userPageList?has_content>
+                                    <button type="button" data-target="#attend-modal" data-toggle="modal" class="btn btn-purple btn-sm">${userPageList.content?size}명</button>
                                 <#else>
                                     -
                                 </#if>
@@ -289,7 +332,7 @@
             </script>
 
             <!-- ISO Viewer -->
-            <div class="modal fade" id="iso-modal" role="dialog" tabindex="-1" aria-labelledby="iso-modal"
+            <div class="modal fade" id="attend-modal" role="dialog" tabindex="-1" aria-labelledby="attend-modal"
                  aria-hidden="true">
                 <div class="modal-dialog modal-fullsize">
                     <div class="modal-content">
@@ -297,53 +340,32 @@
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal"><i
                                         class="pci-cross pci-circle"></i></button>
-                            <h4 class="modal-title">ISO 14155</h4>
+                            <h4 class="modal-title">Training 참석자 명단</h4>
                         </div>
 
                         <!--Modal body-->
                         <div class="modal-body">
                             <div class="table-responsive">
-                                <table id="roleRequests" class="table table-striped">
+                                <table id="attendUserList" class="table table-striped">
                                     <thead>
                                     <tr>
                                         <th class="text-center">No.</th>
                                         <th class="text-center">부서</th>
                                         <th class="text-center">팀</th>
                                         <th class="text-center">이름</th>
-                                        <th class="text-center">변경 전 ROLE</th>
-                                        <th class="text-center">변경 후 ROLE</th>
-                                        <th class="text-center">요청 일자</th>
                                         <th class="text-center">배정 일자</th>
-                                        <th class="text-center">#Actions</th>
                                     </tr>
                                     </thead>
                                     <tbody>
 <#--                                    TODO -->
-                                    <#if roleRequestList.content?has_content>
-                                        <#list roleRequestList.content as roleRequest>
+                                    <#if userPageList?has_content>
+                                        <#list userPageList.content as u>
                                             <tr>
-                                                <td class="text-center">${(roleRequestList.totalElements - (roleRequestList.size * roleRequestList.number)) - roleRequest?index}</td>
-                                                <td class="text-center">${roleRequest.user.deptName}</td>
-                                                <td class="text-center">${roleRequest.user.teamName}</td>
-                                                <td class="text-center">${roleRequest.user.name}</td>
-                                                <td class="text-center"><span
-                                                            class="label label-warning">${roleRequest.prevJobDescription}</span>
-                                                </td>
-                                                <td class="text-center"><span
-                                                            class="label label-purple">${roleRequest.nextJobDescription}</span>
-                                                </td>
-                                                <td class="text-center">${roleRequest.requestDate?string('yyyy-MM-dd')}</td>
-                                                <td class="text-center">${roleRequest.assignDate?string('yyyy-MM-dd')}</td>
-                                                <td class="text-center">
-                                                    <button type="button" class="btn btn-info" id="roleAcceptBtn"
-                                                            data-value="${roleRequest.id}"
-                                                            data-name="${roleRequest.user.name}">Accept
-                                                    </button>
-                                                    <button type="button" class="btn btn-danger" id="roleRejectBtn"
-                                                            data-value="${roleRequest.id}"
-                                                            data-name="${roleRequest.user.name}">Reject
-                                                    </button>
-                                                </td>
+                                                <td class="text-center">${(userPageList.totalElements - (userPageList.size * userPageList.number)) - u?index}</td>
+                                                <td class="text-center">${u.deptName}</td>
+                                                <td class="text-center">${u.teamName}</td>
+                                                <td class="text-center">${u.name}</td>
+                                                <td class="text-center">${u.createdDate?string('yyyy-MM-dd')}</td>
                                             </tr>
                                         </#list>
                                     </#if>

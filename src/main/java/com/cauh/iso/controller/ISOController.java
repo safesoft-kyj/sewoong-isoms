@@ -18,6 +18,8 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -155,7 +157,7 @@ public class ISOController {
     }
 
     @GetMapping("/iso-14155/{isoId}")
-    public String isoView(@PathVariable("isoId") String isoId, Model model, RedirectAttributes attributes) {
+    public String isoView(@PageableDefault(sort = {"createdDate"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable, @PathVariable("isoId") String isoId, Model model, RedirectAttributes attributes) {
         Optional<ISO> isoOptional = isoService.getISO(isoId);
         if (isoOptional.isPresent()) {
             ISO iso = isoOptional.get();
@@ -169,8 +171,10 @@ public class ISOController {
                     iso.setTrainingAll(true);
                 } else {
                     List<Account> userList = iso.getIsoTrainingMatrix().stream().map(tm -> tm.getUser()).collect(Collectors.toList());
+                    Page<Account> userPageList = new PageImpl<>(userList, pageable, userList.size());
+
                     iso.setTrainingAll(false);
-                    model.addAttribute("userList", userList);
+                    model.addAttribute("userPageList", userPageList);
                 }
             }
             model.addAttribute("viewIso", iso);
