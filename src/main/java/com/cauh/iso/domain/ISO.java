@@ -77,6 +77,12 @@ public class ISO extends BaseEntity implements Serializable {
     @ColumnDefault("0")
     private boolean training;
 
+    @ColumnDefault("0")
+    private boolean certification;
+
+    @Column(length = 20)
+    private String certificationHead;
+
     //강의 active 여부
     @ColumnDefault("0")
     private boolean active;
@@ -123,6 +129,15 @@ public class ISO extends BaseEntity implements Serializable {
         startDate = isoTrainingPeriod.getStartDate();
         endDate = isoTrainingPeriod.getEndDate();
         return (startDate.compareTo(endDate) == 0) ? df.format(startDate) : df.format(startDate) + " ~ " + df.format(endDate);
+    }
+
+    public String getAttendee() {
+        if(isoTrainingMatrix.stream().filter(tm -> tm.isTrainingAll()).count() > 0) {
+            return "ALL";
+        }
+
+        long cnt = isoTrainingMatrix.stream().filter(tm -> tm.isTrainingAll() == false).count();
+        return Long.toString(cnt);
     }
 
     @Builder

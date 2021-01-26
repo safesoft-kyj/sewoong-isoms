@@ -25,6 +25,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.cauh.iso.domain.QISOTrainingMatrix.iSOTrainingMatrix;
 import static com.cauh.iso.domain.QTrainingMatrix.trainingMatrix;
 import static com.querydsl.sql.SQLExpressions.min;
 
@@ -376,5 +377,44 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
             log.error("@Training Log List 동작 중 에러 발생 : {}", e.getMessage());
             return new ArrayList<>();
         }
+    }
+
+
+    @Override
+    public Page<MyTraining> getISOMyTraining(Pageable pageable, Account user) {
+
+        QISOTrainingPeriod qIsoTrainingPeriod = QISOTrainingPeriod.iSOTrainingPeriod;
+        QISOTrainingLog qIsoTrainingLog = QISOTrainingLog.iSOTrainingLog;
+        QISOAttachFile qisoAttachFile = QISOAttachFile.iSOAttachFile;
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+        builder.and(iSOTrainingMatrix.trainingAll.eq(true));
+        builder.or(iSOTrainingMatrix.user.eq(user));
+
+
+        QueryResults<MyTraining> results = queryFactory
+                .selectDistinct(Projections.constructor(MyTraining.class,
+                        iSOTrainingMatrix.iso,
+                        qisoAttachFile,
+                        qIsoTrainingPeriod,
+                        qIsoTrainingLog,
+                        qIsoTrainingPeriod.startDate,
+                        qIsoTrainingPeriod.endDate)
+                )
+                .from(iSOTrainingMatrix)
+                .where(builder)
+                .join(qIsoTrainingPeriod)
+                .on(iSOTrainingMatrix.iso.id.eq(qIsoTrainingPeriod.iso.id)
+                        .and(qIsoTrainingPeriod.trainingType.eq(TrainingType.SELF))
+                        .and(qIsoTrainingPeriod.startDate.loe(new Date()))
+                )
+                .leftJoin(qIsoTrainingLog).on(qIsoTrainingPeriod.id.eq(qIsoTrainingLog.isoTrainingPeriod.id).and(qIsoTrainingLog.user.id.eq(user.getId())))
+                .leftJoin(qisoAttachFile).on(qisoAttachFile.iso.id.eq(iSOTrainingMatrix.iso.id))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 }

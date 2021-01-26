@@ -39,12 +39,20 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.WebUtils;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.awt.*;
+import java.awt.font.GlyphVector;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
@@ -54,6 +62,7 @@ import java.util.stream.Collectors;
 public class ISOController {
 
     private final ISOService isoService;
+    private final ISOAccessLogService isoAccessLogService;
     private final ISOValidator isoValidator;
     private final FileStorageService fileStorageService;
     private final UserService userService;
@@ -184,6 +193,29 @@ public class ISOController {
         }
         return "iso/iso14155/view";
     }
+
+    @IsAdmin
+    @PutMapping("/iso-14155/active")
+    @Transactional
+    public String isoActive(@RequestParam("isoId") String isoId, RedirectAttributes attributes) {
+
+        Optional<ISO> isoOptional = isoService.getISO(isoId);
+        if(isoOptional.isPresent()) {
+            ISO iso = isoOptional.get();
+            String res = isoService.isoActivate(iso);
+
+            if(!res.equals("success")) {
+                attributes.addFlashAttribute("type", "danger");
+                attributes.addFlashAttribute("message", res);
+                return "redirect:/iso-14155";
+            }
+
+            attributes.addFlashAttribute("message", "[" + iso.getTitle() + "] Training이 Active되었습니다.");
+        }
+
+        return "redirect:/iso-14155";
+    }
+
 
     /**
      * 메일전송 대상자에게 메일 전송
@@ -463,6 +495,25 @@ public class ISOController {
         return "iso/iso14155/quiz-test";
     }
 
+    @GetMapping("/iso-14155/viewer/{isoId}")
+    public void viewer(@PathVariable("isoId") String isoId, @RequestParam("page") int page, @CurrentUser Account user,
+                       HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String fileName = isoId + "-" + page + ".jpg";
+        log.info("FileName : {}", fileName);
+        
+        //ISO 접속 기록 저장
+        isoAccessLogService.save(isoId, DocumentAccessType.TRAINING);
+        Resource resource = fileStorageService.loadFileAsResource(fileName);
+
+        // Try to determine file's content type
+        String contentType = "image/jpeg";
+
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName+ "\"");
+        response.setContentType(contentType);
+        imageDraw(resource.getInputStream(), response.getOutputStream());
+    }
+
+
 
     /**
      * 파일 다운로드
@@ -518,5 +569,22 @@ public class ISOController {
             correctList.add(str.trim());
         }
         return correctList.contains(answerIndex);
+    }
+
+    public static void imageDraw(InputStream inputStream, OutputStream os) {
+        try {
+            BufferedImage original = ImageIO.read(inputStream);
+            ImageIO.write(original, "jpg", os);
+        } catch (Exception error) {
+            log.error("Error : ", error);
+        } finally {
+            log.debug("SOP Viewer 이미지 생성 완료!");
+            try {
+                if (os != null) {
+                    os.flush();
+                    os.close();
+                }
+            } catch (IOException ioe) {}
+        }
     }
 }

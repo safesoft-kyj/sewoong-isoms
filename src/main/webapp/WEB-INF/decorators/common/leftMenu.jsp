@@ -64,9 +64,7 @@
         </a>
         <!--Submenu-->
         <ul class="collapse" aria-expanded="false">
-            <li><a href="/training/iso/my-training-matrix">My Training Matrix</a></li>
-            <li><a href="/training/iso/mandatory-training">My Training</a></li>
-            <li><a href="/training/iso/optional-training">Optional Training</a></li>
+            <li><a href="/training/iso/mytraining">My Training</a></li>
             <li><a href="/training/iso/offline-training">Off-line Training</a></li>
             <li><a href="/training/iso/trainingLog">Training Log(ISO)</a></li>
             <c:if test="${user.teamManager == true || user.deptManager == true}">

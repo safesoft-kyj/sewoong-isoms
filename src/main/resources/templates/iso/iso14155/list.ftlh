@@ -2,11 +2,13 @@
 <#import "/common/pagination.ftl" as pagination />
 <html>
 <head>
-    <title>CAUH ISO Managerment System > ISO-14155</title>
+    <title> ISO MS > ISO > ISO-14155</title>
     <#--    <script src="/static/plugins/jstree/jstree.min.js"></script>-->
     <#--    <link href="/static/plugins/jstree/themes/default/style.min.css" rel="stylesheet">-->
 
-    <#--    <script src='/static/js/pdfobject.min.js'></script>-->
+    <!--Bootbox Modals [ OPTIONAL ]-->
+    <script src="/static/plugins/bootbox/bootbox.min.js"></script>
+
     <style>
         .modal-dialog.modal-fullsize {
             width: 80%;
@@ -21,6 +23,80 @@
             border-radius: 0;
         }
     </style>
+    <script>
+        $(document).ready(function () {
+            $(document).on("click", "#activeBtn", function(){
+                let isoId = $(this).data("id");
+                let test = $(this).data('test');
+                let testColor = test=='Y'?'success':'warning';
+
+                let cert = $(this).data('cert');
+                let certColor = cert=='Y'?'success':'warning';
+
+                let attendee = $(this).data('attendee');
+                let attendeeColor = attendee=='ALL'?'info':'purple';
+
+                let date = $(this).data('date');
+                let strStartDate = date.indexOf('~')!=-1?date.substr(0,date.indexOf('~')).trim():date;
+                let today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+                let startDate = strToDate(strStartDate);
+                let error = startDate < today?"<br><span class='text-sm' style='color:red;'>*교육 일정에 대한 재 조정이 필요합니다.</span>":"";
+
+                bootbox.dialog({
+                    title: 'Training Activate',
+                    message: "<div>"
+                        + "<p>아래의 정보로 Training을 활성화 합니다. 계속 하시겠습니까?</p>"
+                        + "<table class='table table-striped'>"
+                        + "<tr>"
+                        + "<th>시험 여부 : </th>"
+                        + "<td><span class='label label-" + testColor + "'>" + test + "</span></td>"
+                        + "</tr>"
+                        + "<tr>"
+                        + "<th>수료증 여부 : </th>"
+                        + "<td><span class='label label-" + certColor + "'>" + cert + "</span></td>"
+                        + "</tr>"
+                        + "<tr>"
+                        + "<th>교육 참석자 : </th>"
+                        + "<td><span class='label label-" + attendeeColor + "'>" + attendee + "</span></td>"
+                        + "</tr>"
+                        + "<tr>"
+                        + "<th>교육 일정 : </th>"
+                        + "<td>"
+                        + "<span class='label label-default'>" + date + "</span>" + error
+                        + "</td>"
+                        + "</tr>"
+                        + "</table>"
+                        + "</div>",
+                    size: 'middle',
+                    buttons: {
+                        cancel: {
+                            label: "Cancel",
+                            className: 'btn-danger'
+                        },
+                        ok: {
+                            label: "OK",
+                            className: 'btn-info',
+                            callback: function(){
+                                $("#isoId").val(isoId);
+                                $("#activeForm").submit();
+                            }
+                        }
+                    }
+                });
+            });
+        });
+
+        function strToDate(date_str)
+        {
+            var yyyyMMdd = String(date_str);
+            var sYear = yyyyMMdd.substring(0,4);
+            var sMonth = yyyyMMdd.substring(5,7);
+            var sDate = yyyyMMdd.substring(8,10);
+
+            //alert("sYear :"+sYear +"   sMonth :"+sMonth + "   sDate :"+sDate);
+            return new Date(Number(sYear), Number(sMonth)-1, Number(sDate));
+        }
+    </script>
 </head>
 <body>
 
@@ -78,6 +154,7 @@
                     <@security.authorize access="hasAnyAuthority('ADMIN')">
                     <th class="text-center" style="width:90px;">시험</th>
                     </@security.authorize>
+                    <th class="text-center" style="width:90px;">수료증 여부</th>
                     <th class="text-center" style="width:200px;">교육 일정</th>
                     <th class="text-center" style="width:160px;">등록일</th>
                     <th class="text-center" style="width:140px;">작성자</th>
@@ -91,7 +168,7 @@
                     <#list topISOList as iso>
                         <tr class="bg-gray-light">
                             <td class="text-center"><i class="fa fa-exclamation-circle text-warning"></i></td>
-                            <td class="text-center"><span class="label label-${iso.training?then('info','warning')}">${iso.training?then('Training','Board')}</span></td>
+                            <td class="text-center"><span class="label label-${iso.training?then('info','mint')}">${iso.training?then('Training','Board')}</span></td>
                             <td><a class="btn-link" href="/iso-14155/${iso.id}">${iso.title}</a></td>
                             <@security.authorize access="hasAnyAuthority('ADMIN')">
                             <td class="text-center">
@@ -112,15 +189,20 @@
                                 <!--===================================================-->
                             </td>
                             </@security.authorize>
-                            <td class="text-center"><span class="text-info">${iso.training?then(iso.trainingDate, '-')}</span></td>
+                            <td class="text-center" style="width:90px;"><span class="label label-${iso.certification?then('success', 'warning')}">${iso.certification?then('Y', 'N')}</span></td>
+                            <td class="text-center"><span class="text-info">${iso.trainingDate}</span></td>
                             <td class="text-center"><span class="text-muted">${iso.createdDate?string('yyyy-MM-dd')}</span></td>
                             <td class="text-center">${iso.createdBy?default('System')}</td>
                             <td class="text-center">
                                 <#if iso.training>
                                     <#if iso.active>
-                                        <span class="label label-primery">Activated</span>
+                                        <span class="label label-primary">Activated</span>
                                     <#else>
-                                        <span class="label label-purple">Active</span>
+                                        <button id="activeBtn" data-cert="${iso.certification?then('Y', 'N')}"
+                                                data-date="${iso.trainingDate}" data-attendee="${iso.attendee}"
+                                                data-test="${iso.quiz?has_content?then('Y', 'N')}" data-id="${iso.id}"
+                                                class="btn btn-purple btn-sm">Active
+                                        </button>
                                     </#if>
                                 <#else>
                                     -
@@ -133,7 +215,7 @@
                     <#list isoList.content as iso>
                         <tr>
                             <td class="text-center">${(isoList.totalElements - (isoList.size * isoList.number)) - iso?index}</td>
-                            <td class="text-center"><span class="label label-${iso.training?then('info','warning')}">${iso.training?then('Training','Board')}</span></td>
+                            <td class="text-center"><span class="label label-${iso.training?then('info','mint')}">${iso.training?then('Training','Board')}</span></td>
                             <td><a class="btn-link" href="/iso-14155/${iso.id}<@pagination.getQueryString/>">${iso.title}</a></td>
                             <@security.authorize access="hasAnyAuthority('ADMIN')">
                             <td class="text-center">
@@ -158,15 +240,20 @@
                                 </#if>
                             </td>
                             </@security.authorize>
-                            <td class="text-center"><span class="text-info">${iso.trainingDate!'-'}</span></td>
+                            <td class="text-center" style="width:90px;"><span class="label label-${iso.certification?then('success', 'warning')}">${iso.certification?then('Y', 'N')}</span></td>
+                            <td class="text-center"><span class="text-info">${iso.trainingDate}</span></td>
                             <td class="text-center"><span class="text-muted">${iso.createdDate?string('yyyy-MM-dd')}</span></td>
                             <td class="text-center">${iso.createdBy?default('System')}</td>
                             <td class="text-center">
                                 <#if iso.training>
                                     <#if iso.active>
-                                        <span class="label label-primery">Activated</span>
+                                        <span class="label label-primary">Activated</span>
                                     <#else>
-                                        <span class="label label-purple">Active</span>
+                                        <button id="activeBtn" data-cert="${iso.certification?then('Y', 'N')}"
+                                                data-date="${iso.trainingDate}" data-attendee="${iso.attendee}"
+                                                data-test="${iso.quiz?has_content?then('Y', 'N')}" data-id="${iso.id}"
+                                                class="btn btn-purple btn-sm">Active
+                                        </button>
                                     </#if>
                                 <#else>
                                     -
@@ -174,6 +261,10 @@
                             </td>
                         </tr>
                     </#list>
+                    <form method="post" id="activeForm" action="/iso-14155/active">
+                        <input type="hidden" name="_method" value="put" />
+                        <input type="hidden" id="isoId" name="isoId" />
+                    </form>
                 <#else>
                     <tr>
                         <td colspan="5" class="text-center">등록된 ISO-14155가 없습니다.</td>
@@ -191,55 +282,6 @@
     </div>
     <!--===================================================-->
     <!--End Data Table-->
-
-</div>
-<script>
-    $(document).ready(function () {
-        $('#matrix-modal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget); // Button that triggered the modal
-            var title = button.data('title'); // Extract info from data-* attributes
-            var modal = $(this);
-            modal.find('.modal-title').text(title);
-            // var options = {
-            //     pdfOpenParams: { toolbar: '0', statusbar: '0', messages: '0', scrollbar: '1', view:'FitH'}
-            // };
-
-            // var $container = $("#pdfViewer");
-            $("#pdfViewer").html("문서를 불러오는 중입니다...");
-            $.ajax({
-                url: "/ajax/common/viewTrainingMatrix",
-                method: "GET",
-                data: {r: Math.random()},
-                dataType: "html"
-            }).done(function (response) {
-                $("#pdfViewer").html(response);
-            });
-            // PDFObject.embed("/common/download/trainingMatrix", $container, options);
-        });
-    });
-</script>
-<div class="modal fade" id="matrix-modal" role="dialog" tabindex="-1" aria-labelledby="matrix-modal" aria-hidden="true">
-    <div class="modal-dialog modal-fullsize">
-        <div class="modal-content modal-fullsize">
-
-            <!--Modal header-->
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
-                <h4 class="modal-title"></h4>
-            </div>
-
-            <!--Modal body-->
-            <div class="modal-body">
-                <div id="pdfViewer" style="width:100% !important;min-height:550px !important;">
-                </div>
-
-                <!--Modal footer-->
-                <div class="modal-footer">
-                    <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 </body>
 </html>

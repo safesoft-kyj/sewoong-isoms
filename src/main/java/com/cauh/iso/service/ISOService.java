@@ -2,6 +2,7 @@ package com.cauh.iso.service;
 
 import com.cauh.iso.domain.*;
 import com.cauh.iso.domain.constant.PostStatus;
+import com.cauh.iso.domain.constant.TrainingType;
 import com.cauh.iso.repository.ISOAttachFileRepository;
 import com.cauh.iso.repository.ISORepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,10 +17,10 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -39,6 +40,29 @@ public class ISOService {
 
     public Page<ISO> getList(Predicate predicate, Pageable pageable) {
         return isoRepository.findAll(predicate, pageable);
+    }
+
+    public String isoActivate(ISO iso) {
+
+        List<ISOTrainingPeriod> isoTrainingPeriods = iso.getIsoTrainingPeriods();
+        Optional<ISOTrainingPeriod> isoTrainingPeriodOptional = isoTrainingPeriods.stream().filter(p -> p.getTrainingType() == TrainingType.SELF).findFirst();
+
+        if(isoTrainingPeriodOptional.isPresent()) {
+            ISOTrainingPeriod isoTrainingPeriod = isoTrainingPeriodOptional.get();
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            Date startDate = isoTrainingPeriod.getStartDate();
+            //날짜 데이터만 추출
+            Date today = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+            if(startDate.before(today)) {
+                return "ISO 교육 Active 동작이 실패하였습니다.<br>교육 일정을 확인해주세요.(" + df.format(startDate) + "≤ TODAY )";
+            }
+        }
+
+        //ISO 상태를 Active로 한다.
+        iso.setActive(true);
+
+        return "success";
     }
 
     public ISO saveISO(ISO iso, MultipartFile file) {
@@ -135,6 +159,4 @@ public class ISOService {
         iso.setPostStatus(PostStatus.SENT);
         isoRepository.save(iso);
     }
-
-
 }

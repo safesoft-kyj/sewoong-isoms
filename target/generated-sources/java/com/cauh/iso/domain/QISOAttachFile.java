@@ -30,8 +30,6 @@ public class QISOAttachFile extends EntityPathBase<ISOAttachFile> {
     //inherited
     public final DateTimePath<java.sql.Timestamp> createdDate = _super.createdDate;
 
-    public final BooleanPath deleted = createBoolean("deleted");
-
     public final StringPath ext = createString("ext");
 
     public final StringPath fileName = createString("fileName");

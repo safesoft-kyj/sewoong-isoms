@@ -91,6 +91,16 @@
                 }
             });
 
+            $("#certification").change(function(e) {
+                if ($(this).is(":checked")) {
+                    $("#certificationHeadArea").css("display", "block");
+                    ``
+                    $("#certificationHead").val("").trigger("change");
+                } else {
+                    $("#certificationHeadArea").css("display", "none");
+                }
+            })
+
             $("#isoForm").submit(function(e) {
                 //Submit 하기 직전 disabled 상태 해제.
                 $("#training").attr("disabled", false);
@@ -133,15 +143,30 @@
                         <div id="formTraining" style="display:${iso.training?then('block', 'none')};">
                             <div class="row">
                                 <div class="col-lg-2 form-group">
-                                    <label class="control-label" for="isoTrainingPeriod.trainingAll">교육 참석 대상자</label>
+                                    <label class="control-label" for="trainingAll">교육 참석 대상자</label>
                                 </div>
                                 <div class="col-lg-1 form-group">
                                     <@spring.formCheckbox "iso.trainingAll" "class='form-checkbox'" />
-                                    <label class="control-label" for="isoTrainingMatrix.trainingAll">전부</label>
+                                    <label class="control-label" for="trainingAll">전부</label>
                                 </div>
                                 <div class="col-lg-9 form-group">
                                     <div id="userIdArea" style="display:${iso.trainingAll?then('none', 'block')}">
                                         <@spring.formMultiSelect "iso.userIds" userMap "class='form-control'" />
+                                        <@spring.showErrors "" "color:red;"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 form-group">
+                                    <label class="control-label" for="certification">수료증 사용 여부</label>
+                                </div>
+                                <div class="col-lg-1 form-group">
+                                    <@spring.formCheckbox "iso.certification" "class='form-checkbox'" />
+                                    <label class="control-label" for="certification">사용</label>
+                                </div>
+                                <div class="col-lg-9 form-group">
+                                    <div id="certificationHeadArea" style="display:${iso.certification?then('block', 'none')}">
+                                        <@spring.formInput "iso.certificationHead" "class='form-control'" />
                                         <@spring.showErrors "" "color:red;"/>
                                     </div>
                                 </div>

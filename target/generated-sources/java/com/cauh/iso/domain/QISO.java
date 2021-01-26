@@ -26,6 +26,10 @@ public class QISO extends EntityPathBase<ISO> {
 
     public final ListPath<ISOAttachFile, QISOAttachFile> attachFiles = this.<ISOAttachFile, QISOAttachFile>createList("attachFiles", ISOAttachFile.class, QISOAttachFile.class, PathInits.DIRECT2);
 
+    public final BooleanPath certification = createBoolean("certification");
+
+    public final StringPath certificationHead = createString("certificationHead");
+
     public final StringPath content = createString("content");
 
     //inherited
@@ -42,7 +46,7 @@ public class QISO extends EntityPathBase<ISO> {
 
     public final ListPath<ISOTrainingMatrix, QISOTrainingMatrix> isoTrainingMatrix = this.<ISOTrainingMatrix, QISOTrainingMatrix>createList("isoTrainingMatrix", ISOTrainingMatrix.class, QISOTrainingMatrix.class, PathInits.DIRECT2);
 
-    public final ListPath<ISOTrainingPeriod, QISOTrainingPeriod> isoTrainingPeriod = this.<ISOTrainingPeriod, QISOTrainingPeriod>createList("isoTrainingPeriod", ISOTrainingPeriod.class, QISOTrainingPeriod.class, PathInits.DIRECT2);
+    public final ListPath<ISOTrainingPeriod, QISOTrainingPeriod> isoTrainingPeriods = this.<ISOTrainingPeriod, QISOTrainingPeriod>createList("isoTrainingPeriods", ISOTrainingPeriod.class, QISOTrainingPeriod.class, PathInits.DIRECT2);
 
     public final EnumPath<com.cauh.iso.domain.constant.ISOType> isoType = createEnum("isoType", com.cauh.iso.domain.constant.ISOType.class);
 

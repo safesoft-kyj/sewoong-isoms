@@ -70,6 +70,10 @@ public class ISOValidator implements Validator {
                 errors.rejectValue("userIds", "message.iso.userIds.required", "교육 참석자를 등록해주세요");
             }
 
+            if (iso.isCertification() && StringUtils.isEmpty(iso.getCertificationHead())) {
+                errors.rejectValue("certificationHead", "message.iso.certificationHead.required", "수료을 채번을 입력해주세요");
+            }
+
         } else { //ISO Training이 아닌 경우, training 관련 필드 null처리
             iso.setHour(null);
         }

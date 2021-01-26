@@ -135,43 +135,10 @@
 
                 <div class="mar-btm pad-btm bord-btm">
                     <h1 class="page-header text-overflow">
-                        <span class="label label-${viewIso.training?then('info','warning')}">${viewIso.training?then('Training','Board')}</span>
+                        <span class="label label-${viewIso.training?then('info','mint')}">${viewIso.training?then('Training','Board')}</span>
                         ${viewIso.title}
                     </h1>
                 </div>
-
-                <!-- Training ISO 인 경우, -->
-                <#if viewIso.training>
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr>
-                            <th class="text-center">교육 참석</th>
-                            <th class="text-center">참석자</th>
-                            <th class="text-center">교육 기간</th>
-                            <th class="text-center">교육 시간 (Hour)</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td class="text-center">
-                                <span class="label label-${viewIso.trainingAll?then('info', 'purple')}">${viewIso.trainingAll?then('ALL', 'SOME PART')}</span>
-                            </td>
-                            <td class="text-center">
-                                <#if userPageList?has_content>
-                                    <button type="button" data-target="#attend-modal" data-toggle="modal" class="btn btn-purple btn-sm">${userPageList.content?size}명</button>
-                                <#else>
-                                    -
-                                </#if>
-                            </td>
-                            <td class="text-center text-info">${viewIso.trainingDate}</td>
-                            <td class="text-center text-bold">
-                                <span class="badge badge-primary">${viewIso.hour?string('##0.00')} h</span>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <hr>
-                </#if>
 
                 <div class="row">
                     <div class="col-sm-7 toolbar-left">
@@ -194,9 +161,42 @@
                         <#--                        </a>-->
                     </div>
                 </div>
+
+                <!-- Training ISO 인 경우, -->
+                <#if viewIso.training>
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th class="text-center">교육 참석</th>
+                            <th class="text-center">참석자</th>
+                            <th class="text-center">수료증 여부</th>
+                            <th class="text-center">교육 기간</th>
+                            <th class="text-center">교육 시간 (Hour)</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td class="text-center">
+                                <span class="label label-${viewIso.trainingAll?then('info', 'purple')}">${viewIso.trainingAll?then('ALL', 'SOME PART')}</span>
+                            </td>
+                            <td class="text-center">
+                                <#if userPageList?has_content>
+                                    <button type="button" data-target="#attend-modal" data-toggle="modal" class="btn btn-purple btn-sm">${userPageList.content?size}명</button>
+                                <#else>
+                                    -
+                                </#if>
+                            </td>
+                            <td class="text-center"><span class="label label-${viewIso.certification?then('success', 'warning')}">${viewIso.certification?then('Y', 'N')}</span></td>
+                            <td class="text-center text-info">${viewIso.trainingDate}</td>
+                            <td class="text-center text-bold">
+                                <span class="badge badge-primary">${viewIso.hour?string('##0.00')} h</span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </#if>
                 <div class="row pad-top hidden-print">
                     <div class="col-sm-7 toolbar-left">
-
                         <!--Mail toolbar-->
                         <button class="btn btn-default" type="button" onclick="fnPrint();"><i
                                     class="pli-printer icon-lg"></i></button>
@@ -334,7 +334,7 @@
             <!-- ISO Viewer -->
             <div class="modal fade" id="attend-modal" role="dialog" tabindex="-1" aria-labelledby="attend-modal"
                  aria-hidden="true">
-                <div class="modal-dialog modal-fullsize">
+                <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <!--Modal header-->
                         <div class="modal-header">

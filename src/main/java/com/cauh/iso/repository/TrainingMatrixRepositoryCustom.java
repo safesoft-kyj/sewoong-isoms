@@ -12,19 +12,17 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface TrainingMatrixRepositoryCustom {
-//    Page<MyTrainingMatrix> getMyTrainingMatrix(Pageable pageable, List<UserJobDescription> userJobDescriptions);
-//
-//    List<MyTrainingMatrix> getMyTrainingMatrix(List<UserJobDescription> userJobDescriptions);
 
-    //Page<MyTrainingMatrix> getMyTrainingMatrix(Pageable pageable, List<UserJobDescription> userJobDescriptions);
+
     Page<MyTrainingMatrix> getMyTrainingMatrix(Pageable pageable, List<UserJobDescription> userJobDescriptions);
-
     List<MyTrainingMatrix> getMyTrainingMatrix(List<UserJobDescription> userJobDescriptions);
 
-    //Page<MyTraining> getMyTraining(TrainingRequirement requirement,Pageable pageable, Account user);
+    //SOP Training
     Page<MyTraining> getMyTraining(TrainingRequirement requirement, Pageable pageable, Account user);
-
     Page<MyTraining> getTrainingList(Department department, Integer userId, String docId, Account user, Pageable pageable, BooleanBuilder docStatus);
-
     List<MyTraining> getDownloadTrainingList(Department department, Integer userId, String docId, Account user);
+
+
+    //ISO Training
+    Page<MyTraining> getISOMyTraining(Pageable pageable, Account user);
 }

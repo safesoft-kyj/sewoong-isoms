@@ -16,6 +16,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Optional;
 
+import static com.cauh.iso.domain.QISOTrainingMatrix.iSOTrainingMatrix;
+
 @Data
 @Slf4j
 public class MyTraining implements Serializable {
@@ -80,6 +82,16 @@ public class MyTraining implements Serializable {
         this.endDate = endDate;
     }
 
+    @QueryProjection
+    public MyTraining(ISO iso, ISOAttachFile isoAttachFile, ISOTrainingPeriod isoTrainingPeriod, ISOTrainingLog isoTrainingLog,  Date startDate, Date endDate){
+        this.iso = iso;
+        this.isoAttachFile = isoAttachFile;
+        this.isoTrainingPeriod = isoTrainingPeriod;
+        this.isoTrainingLog = isoTrainingLog;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
     public Date getInDateOrJobAssignDate() {
         if(ObjectUtils.isEmpty(user)) {
             return null;
@@ -113,26 +125,30 @@ public class MyTraining implements Serializable {
     }
 
     public Date getUserStartDate() {
-        if(trainingPeriod.getTrainingType() == TrainingType.SELF) {
-            Date inDateOrJobAssignDate = getInDateOrJobAssignDate();
-            if(ObjectUtils.isEmpty(inDateOrJobAssignDate)) {
-                return startDate;
-            }
-            if(this.startDate.compareTo(inDateOrJobAssignDate) == -1) {
-                log.info("@User : {} SOP[{}] Training 시작일[{}]이 입사일/직무 배정일[{}] 보다 이전 입니다. 입사일/직무 배정일로 대체",
-                        user.getUsername(), document.getDocId(), startDate, inDateOrJobAssignDate);
-                return inDateOrJobAssignDate;
-            }
-            if(!ObjectUtils.isEmpty(documentVersion.getApprovedDate())) {
-                if(this.startDate.compareTo(documentVersion.getApprovedDate()) == -1) {
-                    log.info("@User : {} SOP[{}] Training 시작일[{}]이 SOP Approved Date[{}] 보다 이전 입니다. Approved Date 로 대체",
-                            user.getUsername(), document.getDocId(), startDate, documentVersion.getApprovedDate());
-
-                    return documentVersion.getApprovedDate();
+        if(ObjectUtils.isEmpty(iso)) { //SOP 일때만 적용
+            if (trainingPeriod.getTrainingType() == TrainingType.SELF) {
+                Date inDateOrJobAssignDate = getInDateOrJobAssignDate();
+                if (ObjectUtils.isEmpty(inDateOrJobAssignDate)) {
+                    return startDate;
                 }
-            }
-            if (documentVersion.getEffectiveDate().compareTo(inDateOrJobAssignDate) <= 0) {
-                return DateUtils.addDay(inDateOrJobAssignDate, 1);
+                if (this.startDate.compareTo(inDateOrJobAssignDate) == -1) {
+                    log.info("@User : {} SOP[{}] Training 시작일[{}]이 입사일/직무 배정일[{}] 보다 이전 입니다. 입사일/직무 배정일로 대체",
+                            user.getUsername(), document.getDocId(), startDate, inDateOrJobAssignDate);
+                    return inDateOrJobAssignDate;
+                }
+                if (!ObjectUtils.isEmpty(documentVersion.getApprovedDate())) {
+                    if (this.startDate.compareTo(documentVersion.getApprovedDate()) == -1) {
+                        log.info("@User : {} SOP[{}] Training 시작일[{}]이 SOP Approved Date[{}] 보다 이전 입니다. Approved Date 로 대체",
+                                user.getUsername(), document.getDocId(), startDate, documentVersion.getApprovedDate());
+
+                        return documentVersion.getApprovedDate();
+                    }
+                }
+                if (documentVersion.getEffectiveDate().compareTo(inDateOrJobAssignDate) <= 0) {
+                    return DateUtils.addDay(inDateOrJobAssignDate, 1);
+                } else {
+                    return startDate;
+                }
             } else {
                 return startDate;
             }
@@ -142,15 +158,19 @@ public class MyTraining implements Serializable {
     }
 
     public Date getUserEndDate() {
-        if(trainingPeriod.getTrainingType() == TrainingType.SELF) {
-            Date inDateOrJobAssignDate = getInDateOrJobAssignDate();
-            if(ObjectUtils.isEmpty(inDateOrJobAssignDate)) {
-                return endDate;
-            }
-            Date plusEndDate = DateUtils.addDay(inDateOrJobAssignDate, 57);
-            if (documentVersion.getEffectiveDate().compareTo(plusEndDate) <= 0 || documentVersion.getEffectiveDate().compareTo(inDateOrJobAssignDate) <= 0) {
-                log.info("Effective Date 가 입사일/직무배정일 + 57보다 이전인 경우");
-                return plusEndDate;
+        if(ObjectUtils.isEmpty(iso)) { //SOP 일때만 적용
+            if(trainingPeriod.getTrainingType() == TrainingType.SELF) {
+                Date inDateOrJobAssignDate = getInDateOrJobAssignDate();
+                if(ObjectUtils.isEmpty(inDateOrJobAssignDate)) {
+                    return endDate;
+                }
+                Date plusEndDate = DateUtils.addDay(inDateOrJobAssignDate, 57);
+                if (documentVersion.getEffectiveDate().compareTo(plusEndDate) <= 0 || documentVersion.getEffectiveDate().compareTo(inDateOrJobAssignDate) <= 0) {
+                    log.info("Effective Date 가 입사일/직무배정일 + 57보다 이전인 경우");
+                    return plusEndDate;
+                } else {
+                    return endDate;
+                }
             } else {
                 return endDate;
             }
@@ -215,6 +235,7 @@ public class MyTraining implements Serializable {
                 .toHashCode();
     }
 
+
     private Account user;
 
     private Date inDate;
@@ -223,6 +244,7 @@ public class MyTraining implements Serializable {
 
     private Date endDate;
 
+    //SOP Training
     private Date jobAssignDate;
 
     private Document document;
@@ -232,5 +254,17 @@ public class MyTraining implements Serializable {
     private TrainingPeriod trainingPeriod;
 
     private TrainingLog trainingLog;
+
+
+    //ISO Training
+    private ISO iso;
+
+    private ISOAttachFile isoAttachFile;
+
+    private ISOTrainingPeriod isoTrainingPeriod;
+
+    private ISOTrainingLog isoTrainingLog;
+
+
 
 }
