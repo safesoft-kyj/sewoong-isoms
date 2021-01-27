@@ -71,11 +71,11 @@
                         <td>
                             <#if t.isoTrainingLog?has_content>
                                 <#if t.isoTrainingLog.status == "TEST_FAILED">
-                                <button class="btn btn-warning btn-xs" type="button" href="#test-modal" data-toggle="modal" data-title="${t.document.title} v${t.documentVersion.version}" data-id="${t.documentVersion.id}" data-logid="${t.trainingLog.id}"><i class="fa fa-check-square-o"></i> Re-test</button>
+                                <button class="btn btn-warning btn-xs" type="button" href="#test-modal" data-toggle="modal" data-title="[${t.iso.isoType.label}]${t.iso.title}" data-id="${t.iso.id}" data-logid="${t.isoTrainingLog.id}"><i class="fa fa-check-square-o"></i> Re-test</button>
                                 <#elseif t.isoTrainingLog.status == "TRAINING_COMPLETED">
-                                    <button class="btn btn-info btn-xs" type="button" href="#test-modal" data-toggle="modal"<#if t.documentVersion.quiz?has_content == false>disabled="disabled"</#if> id="testBtn${t.trainingLog.id}" data-title="${t.document.title} v${t.documentVersion.version}" data-id="${t.documentVersion.id}" data-logid="${t.trainingLog.id}"><i class="fa fa-check-square-o"></i> Test</button>
+                                    <button class="btn btn-info btn-xs" type="button" href="#test-modal" data-toggle="modal"<#if t.iso.quiz?has_content == false>disabled="disabled"</#if> id="testBtn${t.isoTrainingLog.id}" data-title="[${t.iso.isoType.label}]${t.iso.title}" data-id="${t.iso.id}" data-logid="${t.isoTrainingLog.id}"><i class="fa fa-check-square-o"></i> Test</button>
                                 <#elseif t.isoTrainingLog.status == "PROGRESS">
-                                    <button class="btn btn-info btn-xs" type="button" href="#training-modal" data-toggle="modal" data-title="${t.document.title} v${t.documentVersion.version}" data-id="${t.documentVersion.id}" data-pid="${t.trainingPeriod.id}"<#if t.trainingLog?has_content> data-logid="${t.isoTrainingLog.id}" data-page="${t.isoTrainingLog.lastPageNo?default(0)}" data-percent="${t.isoTrainingLog.progressPercent?default(0)}" data-time="${t.isoTrainingLog.trainingTime?default(0)}"</#if> data-total="${(t.isoAttachFile.totalPage?has_content)?then(t.isoAttachFile.totalPage, 0)}"<#if t.isoAttachFile.totalPage?has_content == false> disabled="disabled"</#if>><i class="fa fa-search"></i> Training</button>
+                                    <button class="btn btn-info btn-xs" type="button" href="#training-modal" data-toggle="modal" data-title="[${t.iso.isoType.label}]${t.iso.title}" data-id="${t.iso.id}" data-pid="${t.isoTrainingPeriod.id}"<#if t.isoTrainingLog?has_content> data-logid="${t.isoTrainingLog.id}" data-page="${t.isoTrainingLog.lastPageNo?default(0)}" data-percent="${t.isoTrainingLog.progressPercent?default(0)}" data-time="${t.isoTrainingLog.trainingTime?default(0)}"</#if> data-total="${(t.isoAttachFile.totalPage?has_content)?then(t.isoAttachFile.totalPage, 0)}"<#if t.isoAttachFile.totalPage?has_content == false> disabled="disabled"</#if>><i class="fa fa-search"></i> Training</button>
                                 </#if>
                             <#else>
 <#--                                <#if t.isoTrainingPeriod.trainingType == 'SELF' && t.isUserOutOfPeriod()>-->
@@ -103,11 +103,11 @@
 
 </div>
 <form id="trainingLogForm" method="post">
-    <input type="hidden" name="docVersionId" id="docVersionId">
+    <input type="hidden" name="isoId" id="isoId">
+    <input type="hidden" name="isoTrainingPeriodId" id="isoTrainingPeriodId">
+    <input type="hidden" name="isoTrainingLogId" id="isoTrainingLogId">
     <input type="hidden" name="progressPercent" id="progressPercent">
-    <input type="hidden" name="trainingPeriodId" id="trainingPeriodId">
     <input type="hidden" name="trainingTime" id="trainingTime">
-    <input type="hidden" name="trainingLogId" id="trainingLogId">
     <input type="hidden" name="lastPageNo" id="lastPageNo">
 </form>
 <div class="modal fade" id="training-modal" role="dialog" tabindex="-1" aria-labelledby="training-modal" aria-hidden="true">
@@ -117,7 +117,7 @@
             <!--Modal header-->
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
-                <h4 class="modal-title">ISO Self Training : <span id="sopInfo"></span> </h4>
+                <h4 class="modal-title">ISO Self Training : <span id="isoInfo"></span> </h4>
             </div>
 
             <!--Modal body-->
@@ -161,7 +161,7 @@
     var pageNo = 1;
     $(document).ready(function() {
         var modal;
-        var documentId;
+        var isoId;
         $('#training-modal').on('show.bs.modal', function (event) {
             current = 1;
             time.h = 0;
@@ -171,7 +171,8 @@
 
             var button = $(event.relatedTarget); // Button that triggered the modal
             isoId = button.data('id'); // Extract info from data-* attributes
-            $("#trainingPeriodId").val(button.data('pid'));
+            $("#isoId").val(isoId);
+            $("#isoTrainingPeriodId").val(button.data('pid'));
 
             if(button.data('time')) {
                 time.total = parseInt(button.data('time'));
@@ -188,7 +189,7 @@
                 percent = parseInt(button.data('percent'));
             }
             if(button.data('logid')) {
-                $("#trainingLogId").val(button.data('logid'));
+                $("#isoTrainingLogId").val(button.data('logid'));
             }
             total = parseInt(button.data('total')); // Extract info from data-* attributes
             if(button.data('page')) {
@@ -199,7 +200,7 @@
 
             modal = $(this);
             modal.find('#image-view').html("<img src='/iso-14155/viewer/" + isoId + "?page="+current+"' class='img-responsive'/>");
-            $("#sopInfo").text(button.data('title'));
+            $("#isoInfo").text(button.data('title'));
 
             intervalId = setInterval(trainingTime, 1000);
             progress();
@@ -344,7 +345,7 @@
 </script>
 <div class="modal fade" id="test-modal" role="dialog" tabindex="-1" aria-labelledby="test-modal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <form action="training/test" method="post" id="testForm">
+        <form action="mytraining/test" method="post" id="testForm">
         <div class="modal-content">
 
             <!--Modal header-->
@@ -377,14 +378,14 @@
     $(document).ready(function() {
         $('#test-modal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
-            var documentId = button.data('id'); // Extract info from data-* attributes
+            var isoId = button.data('id'); // Extract info from data-* attributes
             var title = button.data('title'); // Extract info from data-* attributes
             var modal = $(this);
             modal.find('.modal-body').html("Loading...");
             modal.find('.modal-title').html(title);
             $.ajax({
-                url:'/ajax/training/iso/training/test',
-                data:{docVerId:documentId,r:Math.random()},
+                url:'/ajax/training/iso/mytraining/test',
+                data:{isoId:isoId,r:Math.random()},
                 success:function(responseText) {
                     // console.log(res);
                     modal.find('.modal-body').html(responseText);

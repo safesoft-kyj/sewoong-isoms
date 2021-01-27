@@ -85,6 +85,8 @@ public class AgreementsWithdrawalService {
                 confidentialityPledgeRepository.save(confidentialityPledge);
             }
 
+            //TODO :: 회원탈퇴 절차 추가 필요.
+
             //위의 내역 반영 후 적용
             agreementsWithdrawal.setApply(true);
             agreementsWithdrawalRepository.save(agreementsWithdrawal);

@@ -2,15 +2,21 @@ package com.cauh.iso.domain;
 
 import com.cauh.common.entity.Account;
 import com.cauh.common.entity.BaseEntity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import org.hibernate.annotations.ColumnDefault;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 
 @Data
 @Entity
 @Table(name = "s_iso_training_certification")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ISOTrainingCertification extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1329010014950482889L;
@@ -22,6 +28,22 @@ public class ISOTrainingCertification extends BaseEntity implements Serializable
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private Account user;
+
+    @ManyToOne
+    @JoinColumn(name = "iso_id", referencedColumnName = "id")
+    private ISO iso;
+
+    @Column(name = "cert_html", columnDefinition = "nvarchar(MAX)")
+    String certHtml;
+
+    @Column(name = "file_name", columnDefinition = "nvarchar(255)")
+    String fileName;
+
+    @Transient
+    private String printDate;
+
+    @Transient
+    private ByteArrayInputStream sign;
 
 
 //    // 강사 정보

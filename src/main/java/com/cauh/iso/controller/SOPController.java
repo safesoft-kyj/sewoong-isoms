@@ -40,7 +40,11 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.*;
+import java.util.List;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -71,7 +75,7 @@ public class SOPController {
         return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 
-//    @IsAllowedSOP
+    //    @IsAllowedSOP
     @Transactional(readOnly = true)
     @GetMapping({
             "/sop/{status}",
@@ -86,26 +90,33 @@ public class SOPController {
         log.info("@SOP 조회 조건 : {}", builder);
         Iterable<DocumentVersion> iterable = documentVersionService.findAll(builder);
 
-        java.util.List<DocumentVersion> sopList = StreamSupport.stream(iterable.spliterator(), false)
-        .collect(toList());
+        log.info("Document Version : {}", iterable);
+
+        List<DocumentVersion> sopList = StreamSupport.stream(iterable.spliterator(), false)
+                .collect(toList());
+
+        log.info("Document Version List : {}", sopList);
 
         if(StringUtils.isEmpty(sopId)) {
-            java.util.List<DocumentVersion> rfSopLists = documentVersionRepository.getSOPFoldersByStatus(status, categoryId);
+            List<DocumentVersion> rfSopLists = documentVersionRepository.getSOPFoldersByStatus(status, categoryId);
             if (!ObjectUtils.isEmpty(rfSopLists)) {
                 sopList.addAll(rfSopLists);
             }
         }
 
-        java.util.List<DocumentVersion> filteredList = sopList.stream()
+        List<DocumentVersion> filteredList = sopList.stream()
                 .filter(distinctByKey(v -> v.getDocument().getId()))
                 .sorted(Comparator.comparing(d -> d.getDocument().getDocId()))
                 .collect(toList());
 
-        if (!ObjectUtils.isEmpty(filteredList) && StringUtils.isEmpty(categoryId)) {
-            model.addAttribute("categoryList", filteredList.stream().map(v -> v.getDocument().getCategory())
-                    .distinct().sorted(Comparator.comparing((Category::getShortName)))
+        if(!ObjectUtils.isEmpty(filteredList) && StringUtils.isEmpty(categoryId)) {
+            model.addAttribute("categoryList", filteredList.stream()
+                    .map(v -> v.getDocument().getCategory())
+                    .distinct()
+                    .sorted(Comparator.comparing((Category::getShortName)))
                     .collect(toList()));
         }
+
 //        }
 //            /**
 //             * 외부 사용자
@@ -113,20 +124,22 @@ public class SOPController {
 //            log.debug("@sopList : {}", sopList);
 //            if(StringUtils.isEmpty(categoryId)) {
         if(user.getUserType() == UserType.USER) {
+            log.info("User");
             if (!StringUtils.isEmpty(sopId)) {
-                BooleanBuilder rdBuilder = documentVersionService.getMainRFPredicate(status, Arrays.asList(sopId));
-                log.debug("@RD 조회 조건 : {}", rdBuilder);
-                Iterable<DocumentVersion> rdList = documentVersionService.findRDBySopId(rdBuilder);
-                model.addAttribute("rdList", rdList);
+                BooleanBuilder rfBuilder = documentVersionService.getMainRFPredicate(status, Arrays.asList(sopId));
+                log.debug("@RF 조회 조건 : {}", rfBuilder);
+                Iterable<DocumentVersion> rfList = documentVersionService.findRFBySopId(rfBuilder);
+                model.addAttribute("rfList", rfList);
             }
         } else if(!ObjectUtils.isEmpty(sopList)) {
-            java.util.List<String> sopIdList = StreamSupport.stream(sopList.spliterator(), false)
+            log.info("User2");
+            List<String> sopIdList = StreamSupport.stream(sopList.spliterator(), false)
                     .map(s -> s.getDocument().getId())
                     .collect(toList());
-            BooleanBuilder rdBuilder = documentVersionService.getMainRFPredicate(status, sopIdList);
-            log.debug("@RD 조회 조건 : {}", rdBuilder);
-            Iterable<DocumentVersion> rdList = documentVersionService.findRDBySopId(rdBuilder);
-            model.addAttribute("rdList", rdList);
+            BooleanBuilder rfBuilder = documentVersionService.getMainRFPredicate(status, sopIdList);
+            log.debug("@RF 조회 조건 : {}", rfBuilder);
+            Iterable<DocumentVersion> fdList = documentVersionService.findRFBySopId(rfBuilder);
+            model.addAttribute("fdList", fdList);
         }
 //            sopList = documentVersionService.findAll()
 
@@ -165,8 +178,8 @@ public class SOPController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + documentVersion.getOriginalFileName() + "\"")
                 .body(resource);
     }
-    @GetMapping("/rd/{status}/download/{docVerId}")
-    public ResponseEntity<Resource> downloadRdFile(@PathVariable("docVerId") String id, @RequestParam("lang") String lang, HttpServletRequest request) {
+    @GetMapping("/rf/{status}/download/{docVerId}")
+    public ResponseEntity<Resource> downloadRfFile(@PathVariable("docVerId") String id, @RequestParam("lang") String lang, HttpServletRequest request) {
         DocumentVersion documentVersion = documentVersionService.findById(id);
         documentAccessLogService.save(documentVersion, DocumentAccessType.DOWNLOAD);
         Resource resource;
@@ -197,7 +210,7 @@ public class SOPController {
                 .body(resource);
     }
 
-    @GetMapping("/rd/view/{docVerId}")
+    @GetMapping("/rf/view/{docVerId}")
     @ResponseBody
     public void viewer(@PathVariable("docVerId") String id, @RequestParam("lang") String lang, HttpServletResponse response) throws Exception {
         // Load file as Resource
@@ -247,6 +260,8 @@ public class SOPController {
 
 //            addTextWatermark(stringStatus.toUpperCase(), uuid, resource.getInputStream(), response.getOutputStream());
         watermark(status.name(), accessLog.isPresent() ? accessLog.get().getId() : "", resource.getInputStream(), response.getOutputStream());
+
+
 
 //            return ResponseEntity.ok()
 //                    .contentType(MediaType.parseMediaType(contentType))

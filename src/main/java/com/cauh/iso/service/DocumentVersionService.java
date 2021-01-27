@@ -11,7 +11,7 @@ import com.cauh.iso.domain.report.RetirementDocument;
 import com.cauh.iso.repository.DocumentRepository;
 import com.cauh.iso.repository.DocumentVersionRepository;
 import com.cauh.iso.repository.TrainingMatrixRepository;
-import com.cauh.iso.security.annotation.IsAllowedRD;
+import com.cauh.iso.security.annotation.IsAllowedRF;
 import com.cauh.iso.security.annotation.IsAllowedSOP;
 import com.cauh.iso.utils.DateUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -106,7 +106,7 @@ public class DocumentVersionService {
 
     @Transactional
     public void remove(String id) {
-        log.warn("==> SOP/RD 삭제 요청 ID : {}", id);
+        log.warn("==> SOP/RF 삭제 요청 ID : {}", id);
         Optional<DocumentVersion> optionalDocumentVersion = documentVersionRepository.findById(id);
         if(optionalDocumentVersion.isPresent()) {
             DocumentVersion documentVersion = optionalDocumentVersion.get();
@@ -115,7 +115,7 @@ public class DocumentVersionService {
                 Document document = documentVersion.getDocument();
                 String documentId = document.getId();
                 if(document.getType() == DocumentType.SOP) {
-                    log.info("@Development 상태이고 삭제하는 문서가 SOP 인 경우 관련 RD 까지 삭제 : {}", documentId);
+                    log.info("@Development 상태이고 삭제하는 문서가 SOP 인 경우 관련 RF 까지 삭제 : {}", documentId);
                     QDocument qDocument = QDocument.document;
                     BooleanBuilder builder = new BooleanBuilder();
                     builder.and(qDocument.sop.id.eq(documentId));
@@ -129,14 +129,14 @@ public class DocumentVersionService {
                                 Iterable<DocumentVersion> versions = documentVersionRepository.findAll(vbuilder);
                                 StreamSupport.stream(versions.spliterator(), false)
                                         .forEach(v -> {
-                                            log.info("==> RD DocumentVersion Delete By Id : {}", v.getId());
+                                            log.info("==> RF DocumentVersion Delete By Id : {}", v.getId());
                                             documentVersionRepository.deleteById(v.getId());
-                                            log.info("<== RD DocumentVersion  Delete By Id : {}", v.getId());
+                                            log.info("<== RF DocumentVersion  Delete By Id : {}", v.getId());
                                         });
 
-                                log.info("==> RD Document Delete By Id : {}", doc.getId());
+                                log.info("==> RF Document Delete By Id : {}", doc.getId());
                                 documentRepository.deleteById(doc.getId());
-                                log.info("<== RD Document Delete By Id : {}", doc.getId());
+                                log.info("<== RF Document Delete By Id : {}", doc.getId());
                             });
                 }
                 log.info("@Development 상태인 경우 DocumentVersion 삭제 : {}", id);
@@ -148,7 +148,7 @@ public class DocumentVersionService {
                 documentVersionRepository.deleteById(id);
             }
         }
-        log.info("<== SOP/RD 삭제 완료 ID : {}", id);
+        log.info("<== SOP/RF 삭제 완료 ID : {}", id);
     }
 
     public DocumentVersion retirement(String docVerId) {
@@ -195,26 +195,26 @@ public class DocumentVersionService {
             documentVersion.setFileSize(documentVersion.getUploadSopDocFile().getSize());
             documentVersion.setExt(ext);
         }
-        //RD(KOR)
-        if(!ObjectUtils.isEmpty(documentVersion.getUploadRdKorFile()) && !documentVersion.getUploadRdKorFile().isEmpty()) {
-            String fileName = fileStorageService.storeFile(documentVersion.getUploadRdKorFile(), documentVersion.getId()+"_KOR");
+        //RF(KOR)
+        if(!ObjectUtils.isEmpty(documentVersion.getUploadRfKorFile()) && !documentVersion.getUploadRfKorFile().isEmpty()) {
+            String fileName = fileStorageService.storeFile(documentVersion.getUploadRfKorFile(), documentVersion.getId()+"_KOR");
             String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
 
             documentVersion.setRfKorFileName(fileName);
-            documentVersion.setRfKorOriginalFileName(documentVersion.getUploadRdKorFile().getOriginalFilename());
-            documentVersion.setRfKorFileType(documentVersion.getUploadRdKorFile().getContentType());
-            documentVersion.setRfKorFileSize(documentVersion.getUploadRdKorFile().getSize());
+            documentVersion.setRfKorOriginalFileName(documentVersion.getUploadRfKorFile().getOriginalFilename());
+            documentVersion.setRfKorFileType(documentVersion.getUploadRfKorFile().getContentType());
+            documentVersion.setRfKorFileSize(documentVersion.getUploadRfKorFile().getSize());
             documentVersion.setRfKorExt(ext);
         }
-        //RD(ENG)
-        if(!ObjectUtils.isEmpty(documentVersion.getUploadRdEngFile()) && !documentVersion.getUploadRdEngFile().isEmpty()) {
-            String fileName = fileStorageService.storeFile(documentVersion.getUploadRdEngFile(), documentVersion.getId()+"_ENG");
+        //RF(ENG)
+        if(!ObjectUtils.isEmpty(documentVersion.getUploadRfEngFile()) && !documentVersion.getUploadRfEngFile().isEmpty()) {
+            String fileName = fileStorageService.storeFile(documentVersion.getUploadRfEngFile(), documentVersion.getId()+"_ENG");
             String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
 
             documentVersion.setRfEngFileName(fileName);
-            documentVersion.setRfEngOriginalFileName(documentVersion.getUploadRdEngFile().getOriginalFilename());
-            documentVersion.setRfEngFileType(documentVersion.getUploadRdEngFile().getContentType());
-            documentVersion.setRfEngFileSize(documentVersion.getUploadRdEngFile().getSize());
+            documentVersion.setRfEngOriginalFileName(documentVersion.getUploadRfEngFile().getOriginalFilename());
+            documentVersion.setRfEngFileType(documentVersion.getUploadRfEngFile().getContentType());
+            documentVersion.setRfEngFileSize(documentVersion.getUploadRfEngFile().getSize());
             documentVersion.setRfEngExt(ext);
         }
 
@@ -239,17 +239,17 @@ public class DocumentVersionService {
         return documentVersionRepository.findAll(builder, qDocumentVersion.document.docId.asc());
     }
 
-    @IsAllowedRD
-    public Iterable<DocumentVersion> findRDBySopId(BooleanBuilder builder) {
+    @IsAllowedRF
+    public Iterable<DocumentVersion> findRFBySopId(BooleanBuilder builder) {
         QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
         return documentVersionRepository.findAll(builder, qDocumentVersion.document.docId.asc());
     }
 
-    public Iterable<DocumentVersion> findAllCurrentRDList(List<String> rdIds) {
+    public Iterable<DocumentVersion> findAllCurrentRFList(List<String> rfIds) {
         BooleanBuilder builder = new BooleanBuilder();
         QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
         builder.and(qDocumentVersion.document.type.eq(DocumentType.RF));
-        builder.and(qDocumentVersion.document.id.in(rdIds));
+        builder.and(qDocumentVersion.document.id.in(rfIds));
         builder.and(qDocumentVersion.status.eq(DocumentStatus.EFFECTIVE));
         return documentVersionRepository.findAll(builder, qDocumentVersion.document.docId.asc());
     }
@@ -365,15 +365,15 @@ public class DocumentVersionService {
     @Async("threadPoolTaskExecutor")
     @Transactional
     public void approvedToEffective() {
-        log.info("==> Approved 상태인 SOP/RD를 Effective 상태로 변경 처리한다.");
+        log.info("==> Approved 상태인 SOP/RF를 Effective 상태로 변경 처리한다.");
         Date now = DateUtils.truncate(new Date());
 
         List<DocumentVersion> effectiveSOPs = getApprovedToEffectiveDocuments(DocumentType.SOP, now);
-        List<DocumentVersion> effectiveRDs = getApprovedToEffectiveDocuments(DocumentType.RF, now);
-        log.debug("현재 기준 approved -> effective 되어야 하는 대상 SOP:{}/RD:{}", effectiveSOPs.size(), effectiveRDs.size());
+        List<DocumentVersion> effectiveRFs = getApprovedToEffectiveDocuments(DocumentType.RF, now);
+        log.debug("현재 기준 approved -> effective 되어야 하는 대상 SOP:{}/RF:{}", effectiveSOPs.size(), effectiveRFs.size());
 
 //        StringBuilder sb = new StringBuilder("[SOP 공지]");
-        String subject = "[e-SOP] SOPs(RDs) Notification";
+        String subject = "[e-SOP] SOPs(RFs) Notification";
         if(!ObjectUtils.isEmpty(effectiveSOPs)) {
 //            String categoryNames = effectiveSOPs.stream().map(d -> d.getDocument().getCategory().getShortName()).distinct().sorted().collect(Collectors.joining(","));
 //            sb.append(categoryNames).append(" SOP");
@@ -385,26 +385,26 @@ public class DocumentVersionService {
 //            log.info("--> [DtnSM_QA 공지] {} SOP 및 RD Effective 공지", categoryNames);
         }
 
-        if(!ObjectUtils.isEmpty(effectiveRDs)) {
-//            sb.append(" 및 RD");
-            log.debug("-> RD effective 처리 시작");
-            updateDocumentVersionStatus(effectiveRDs);
-            log.debug("<- RD effective 처리 완료");
+        if(!ObjectUtils.isEmpty(effectiveRFs)) {
+//            sb.append(" 및 RF");
+            log.debug("-> RF effective 처리 시작");
+            updateDocumentVersionStatus(effectiveRFs);
+            log.debug("<- RF effective 처리 완료");
         }
 
         Iterable<RetirementDocument> retirementSOPDocuments = retirementDocumentService.findRetirementDocs(now, DocumentType.SOP);
         Iterable<RetirementDocument> retirementRFDocuments = retirementDocumentService.findRetirementDocs(now, DocumentType.RF);
 
         boolean hasRetirementSOPs = ObjectUtils.isEmpty(retirementSOPDocuments) == false;
-        boolean hasRetirementRDs = ObjectUtils.isEmpty(retirementRFDocuments) == false;
+        boolean hasRetirementRFs = ObjectUtils.isEmpty(retirementRFDocuments) == false;
         if(hasRetirementSOPs) {
             retirementDocumentService.retired(retirementSOPDocuments);
         }
-        if(hasRetirementRDs) {
+        if(hasRetirementRFs) {
             retirementDocumentService.retired(retirementRFDocuments);
         }
 
-        if(!ObjectUtils.isEmpty(effectiveSOPs) || !ObjectUtils.isEmpty(effectiveRDs) || hasRetirementSOPs || hasRetirementRDs) {
+        if(!ObjectUtils.isEmpty(effectiveSOPs) || !ObjectUtils.isEmpty(effectiveRFs) || hasRetirementSOPs || hasRetirementRFs) {
 //            if(!ObjectUtils.isEmpty(effectiveSOPs) || !ObjectUtils.isEmpty(effectiveRDs)) {
 //                sb.append(" Effective");
 //            }
@@ -421,9 +421,9 @@ public class DocumentVersionService {
             HashMap<String, Object> model = new HashMap<>();
             model.put("title", subject);
             model.put("effectiveSOPs", effectiveSOPs);
-            model.put("effectiveRDs", effectiveRDs);
+            model.put("effectiveRFs", effectiveRFs);
             model.put("retirementSOPs", retirementSOPDocuments);
-            model.put("retirementRDs", retirementRFDocuments);
+            model.put("retirementRFs", retirementRFDocuments);
 //            Mail mail = Mail.builder()
 //                    .to(new String[]{"jhseo@dtnsm.com"})
 //                    .subject(sb.toString())
@@ -446,7 +446,7 @@ public class DocumentVersionService {
 
 
             /**
-             * SOP/RD 공지사항 등록
+             * SOP/RF 공지사항 등록
              */
             if(!ObjectUtils.isEmpty(effectiveSOPs)) {
                 Iterable<DocumentVersion> iterable = findAll(getPredicate(DocumentType.SOP, DocumentStatus.EFFECTIVE, null, null, null));
@@ -463,20 +463,20 @@ public class DocumentVersionService {
                 Notice savedSopNotice = noticeService.save(sopNotice, null);
                 log.info("=> SOP Current Index 공지 등록");
             }
-            if(!ObjectUtils.isEmpty(effectiveRDs)) {
+            if(!ObjectUtils.isEmpty(effectiveRFs)) {
                 Iterable<DocumentVersion> iterable = findAll(getPredicate(DocumentType.RF, DocumentStatus.EFFECTIVE, null, null, null));
                 List<DocumentVersion> documentVersions = StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList());
                 model.clear();
-                model.put("currentRDs", documentVersions);
+                model.put("currentRFs", documentVersions);
                 Notice sopNotice = Notice.builder()
-                        .title("Current RD List("+ DateUtils.format(new Date(), "yyyy.MM.dd") +"일자)")
-                        .content(mailService.processTemplate("rd-index-notice.ftlh", model, null))
+                        .title("Current RF List("+ DateUtils.format(new Date(), "yyyy.MM.dd") +"일자)")
+                        .content(mailService.processTemplate("rf-index-notice.ftlh", model, null))
                         .postStatus(PostStatus.NONE)
                         .topViewEndDate(DateUtils.addDay(new Date(), 10))
                         .build();
 
                 Notice savedSopNotice = noticeService.save(sopNotice, null);
-                log.info("=> RD Current Index 공지 등록");
+                log.info("=> RF Current Index 공지 등록");
             }
         }
     }

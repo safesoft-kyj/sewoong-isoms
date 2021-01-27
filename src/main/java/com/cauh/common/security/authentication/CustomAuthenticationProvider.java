@@ -84,11 +84,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
     @Value("${file.upload-dir}")
     private String fileUploadDir;
 
-    @Value("${gw.userTbl}")
-    private String gwUserTbl;
-
-    @Value("${gw.deptTbl}")
-    private String gwDeptTbl;
+//    @Value("${gw.userTbl}")
+//    private String gwUserTbl;
+//
+//    @Value("${gw.deptTbl}")
+//    private String gwDeptTbl;
 
     private PasswordEncoder passwordEncoder;
 

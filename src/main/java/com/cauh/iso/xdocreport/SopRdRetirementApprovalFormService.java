@@ -45,8 +45,8 @@ public class SopRdRetirementApprovalFormService {
             if(!ObjectUtils.isEmpty(form.getRetirementDocumentSOPs())) {
                 retirementDocuments.addAll(form.getRetirementDocumentSOPs().stream().map(s -> s.getDocumentVersion()).collect(Collectors.toList()));
             }
-            if(!ObjectUtils.isEmpty(form.getRetirementDocumentRDs())) {
-                retirementDocuments.addAll(form.getRetirementDocumentRDs().stream().map(s -> s.getDocumentVersion()).collect(Collectors.toList()));
+            if(!ObjectUtils.isEmpty(form.getRetirementDocumentRFs())) {
+                retirementDocuments.addAll(form.getRetirementDocumentRFs().stream().map(s -> s.getDocumentVersion()).collect(Collectors.toList()));
             }
 
             SopRdRetirementFormDTO dto = new SopRdRetirementFormDTO();

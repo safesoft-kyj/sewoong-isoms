@@ -22,7 +22,15 @@ public class QISOTrainingLog extends EntityPathBase<ISOTrainingLog> {
 
     public static final QISOTrainingLog iSOTrainingLog = new QISOTrainingLog("iSOTrainingLog");
 
+    public final com.cauh.common.entity.QBaseEntity _super = new com.cauh.common.entity.QBaseEntity(this);
+
     public final DateTimePath<java.util.Date> completeDate = createDateTime("completeDate", java.util.Date.class);
+
+    //inherited
+    public final StringPath createdBy = _super.createdBy;
+
+    //inherited
+    public final DateTimePath<java.sql.Timestamp> createdDate = _super.createdDate;
 
     public final NumberPath<Integer> id = createNumber("id", Integer.class);
 
@@ -34,7 +42,15 @@ public class QISOTrainingLog extends EntityPathBase<ISOTrainingLog> {
 
     public final ListPath<ISOTrainingTestLog, QISOTrainingTestLog> isoTrainingTestLogs = this.<ISOTrainingTestLog, QISOTrainingTestLog>createList("isoTrainingTestLogs", ISOTrainingTestLog.class, QISOTrainingTestLog.class, PathInits.DIRECT2);
 
+    //inherited
+    public final StringPath lastModifiedBy = _super.lastModifiedBy;
+
+    //inherited
+    public final DateTimePath<java.sql.Timestamp> lastModifiedDate = _super.lastModifiedDate;
+
     public final NumberPath<Integer> lastPageNo = createNumber("lastPageNo", Integer.class);
+
+    public final StringPath organizationOther = createString("organizationOther");
 
     public final NumberPath<Double> progressPercent = createNumber("progressPercent", Double.class);
 

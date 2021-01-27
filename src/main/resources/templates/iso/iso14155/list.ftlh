@@ -37,6 +37,8 @@
                 let attendeeColor = attendee=='ALL'?'info':'purple';
 
                 let date = $(this).data('date');
+
+                //startDate 지점이 오늘날짜 기준 과거인 경우, 에러 문구 표시.
                 let strStartDate = date.indexOf('~')!=-1?date.substr(0,date.indexOf('~')).trim():date;
                 let today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
                 let startDate = strToDate(strStartDate);
@@ -193,6 +195,7 @@
                             <td class="text-center"><span class="text-info">${iso.trainingDate}</span></td>
                             <td class="text-center"><span class="text-muted">${iso.createdDate?string('yyyy-MM-dd')}</span></td>
                             <td class="text-center">${iso.createdBy?default('System')}</td>
+                            <@security.authorize access="hasAnyAuthority('ADMIN')">
                             <td class="text-center">
                                 <#if iso.training>
                                     <#if iso.active>
@@ -208,6 +211,7 @@
                                     -
                                 </#if>
                             </td>
+                            </@security.authorize>
                         </tr>
                     </#list>
                 </#if>
@@ -244,6 +248,7 @@
                             <td class="text-center"><span class="text-info">${iso.trainingDate}</span></td>
                             <td class="text-center"><span class="text-muted">${iso.createdDate?string('yyyy-MM-dd')}</span></td>
                             <td class="text-center">${iso.createdBy?default('System')}</td>
+                            <@security.authorize access="hasAnyAuthority('ADMIN')">
                             <td class="text-center">
                                 <#if iso.training>
                                     <#if iso.active>
@@ -259,6 +264,7 @@
                                     -
                                 </#if>
                             </td>
+                            </@security.authorize>
                         </tr>
                     </#list>
                     <form method="post" id="activeForm" action="/iso-14155/active">

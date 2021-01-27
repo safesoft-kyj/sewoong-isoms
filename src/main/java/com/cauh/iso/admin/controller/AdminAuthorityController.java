@@ -70,11 +70,11 @@ public class AdminAuthorityController {
     private final UserJobDescriptionChangeLogRepository userJobDescriptionChangeLogRepository;
     private final UserJobDescriptionChangeLogService userJobDescriptionChangeLogService;
 
-    @Value("${gw.userTbl}")
-    private String gwUserTbl;
-
-    @Value("${gw.deptTbl}")
-    private String gwDeptTbl;
+//    @Value("${gw.userTbl}")
+//    private String gwUserTbl;
+//
+//    @Value("${gw.deptTbl}")
+//    private String gwDeptTbl;
 
     @GetMapping("/authority/accounts")
     public String accounts(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable, Model model) {

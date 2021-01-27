@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping({"/admin/{type}", "/ajax/admin/{type}"})
 @RequiredArgsConstructor
-@SessionAttributes({"documentVersion", "categoryList", "sopList", "quiz", "jobDescriptionMap", "statusMap"})
+@SessionAttributes({"documentVersion", "CategoryList", "sopList", "quiz", "jobDescriptionMap", "statusMap"})
 @Slf4j
 public class AdminSOPController {
     private final DocumentService documentService;
@@ -152,7 +152,7 @@ public class AdminSOPController {
         }
 
         if(type == DocumentType.SOP) {
-            model.addAttribute("categoryList", categoryService.categoryMap());
+            model.addAttribute("CategoryList", categoryService.categoryMap());
         } else {
             model.addAttribute("sopList", documentService.getSortedMap(status));
 

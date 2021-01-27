@@ -9,7 +9,7 @@
     <#--    <script src="/static/plugins/chosen/chosen.jquery.min.js"></script>-->
     <link href="/static/plugins/select2/css/select2.min.css" rel="stylesheet">
     <script src="/static/plugins/select2/js/select2.min.js"></script>
-    <#if type == 'SOP' && (categoryList?has_content == false || categoryList?size == 0)>
+    <#if type == 'SOP' && (CategoryList?has_content == false || CategoryList?size == 0)>
         <script>
             alert('SOP Category 정보가 존재하지 않습니다. Category 관리 페이지로 이동 합니다.');
             location.href = '/admin/sop/category';
@@ -105,7 +105,7 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Category</label>
                     <div class="col-sm-9">
-                        <@spring.formSingleSelect "documentVersion.document.category.shortName" categoryList "class='form-control'${readonly}"/>
+                        <@spring.formSingleSelect "documentVersion.document.category.shortName" CategoryList "class='form-control'${readonly}"/>
                     </div>
                 </div>
             <#else>

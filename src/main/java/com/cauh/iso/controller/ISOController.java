@@ -571,6 +571,12 @@ public class ISOController {
         return correctList.contains(answerIndex);
     }
 
+
+    /**
+     * 이미지 그리기
+     * @param inputStream
+     * @param os
+     */
     public static void imageDraw(InputStream inputStream, OutputStream os) {
         try {
             BufferedImage original = ImageIO.read(inputStream);
@@ -578,7 +584,7 @@ public class ISOController {
         } catch (Exception error) {
             log.error("Error : ", error);
         } finally {
-            log.debug("SOP Viewer 이미지 생성 완료!");
+            log.debug("ISO Viewer 이미지 생성 완료!");
             try {
                 if (os != null) {
                     os.flush();

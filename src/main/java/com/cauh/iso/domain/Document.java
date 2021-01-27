@@ -47,17 +47,17 @@ public class Document extends BaseEntity implements Serializable {
     private Document sop;
 
     @OrderBy("docId asc")
-    @Where(clause = "type='RD'")
+    @Where(clause = "type='RF'")
     @OneToMany(mappedBy = "sop")
-    private List<Document> rdList;
+    private List<Document> rfList;
 
 //    @Where(clause = "status='CURRENT'")
 //    @ManyToOne(mappedBy = "document", fetch = FetchType.LAZY)
-//    private DocumentVersion currentRDVersion;
+//    private DocumentVersion currentRFVersion;
 //
 //    @Where(clause = "status='APPROVED'")
 //    @OneToOne(mappedBy = "document", fetch = FetchType.LAZY)
-//    private DocumentVersion approvedRDVersion;
+//    private DocumentVersion approvedRFVersion;
 //
 //    @Where(clause = "status='SUPERSEDED'")
 //    @OneToOne(mappedBy = "document", fetch = FetchType.LAZY)

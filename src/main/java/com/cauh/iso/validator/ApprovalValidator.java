@@ -52,8 +52,8 @@ public class ApprovalValidator implements Validator {
             if (StringUtils.isEmpty(r.getPreventiveAction())) {
                 errors.rejectValue("sopDeviationReport.preventiveAction", "message.required", "필수 입력 항목입니다.");
             }
-        } else if(approval.getType() == ReportType.SOP_RD_Request_Form) {
-            SopRdRequestForm form = approval.getSopRdRequestForm();
+        } else if(approval.getType() == ReportType.SOP_RF_Request_Form) {
+            SopRdRequestForm form = approval.getSopRfRequestForm();
 
             if(form.isNewSOPDevelopment()) {
                 int idx = 0;
@@ -258,10 +258,10 @@ public class ApprovalValidator implements Validator {
             if(ObjectUtils.isEmpty(r.getSopIds()) && ObjectUtils.isEmpty(r.getRdIds())) {
                 errors.rejectValue("sopDisclosureRequestForm.sopIds", "message.required", "필수 입력 항목입니다.");
             }
-        } else if(approval.getType() == ReportType.SOP_RD_Retirement_Form) {
+        } else if(approval.getType() == ReportType.SOP_RF_Retirement_Form) {
             RetirementApprovalForm r = approval.getRetirementApprovalForm();
 
-            if(ObjectUtils.isEmpty(r.getSopIds()) && ObjectUtils.isEmpty(r.getRdIds())) {
+            if(ObjectUtils.isEmpty(r.getSopIds()) && ObjectUtils.isEmpty(r.getRfIds())) {
 //                errors.rejectValue("retirementApprovalForm.sopIds", "message.required", "필수 입력 항목입니다.");
                 errors.rejectValue("retirementApprovalForm.rdIds", "message.required", "SOP/RD 중 하나는 선택 되어야 합니다.");
             }

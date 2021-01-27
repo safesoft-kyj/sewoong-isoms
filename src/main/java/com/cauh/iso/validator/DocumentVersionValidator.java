@@ -117,8 +117,8 @@ public class DocumentVersionValidator implements Validator {
             log.debug(" ==> RF check");
             if((StringUtils.isEmpty(documentVersion.getRfEngOriginalFileName()) && StringUtils.isEmpty(documentVersion.getRfKorOriginalFileName()))
                     || documentVersion.getAction() == SOPAction.revision) {
-                if ((ObjectUtils.isEmpty(documentVersion.getUploadRdEngFile()) || documentVersion.getUploadRdEngFile().isEmpty()) &&
-                        (ObjectUtils.isEmpty(documentVersion.getUploadRdKorFile()) || documentVersion.getUploadRdKorFile().isEmpty())) {
+                if ((ObjectUtils.isEmpty(documentVersion.getUploadRfEngFile()) || documentVersion.getUploadRfEngFile().isEmpty()) &&
+                        (ObjectUtils.isEmpty(documentVersion.getUploadRfKorFile()) || documentVersion.getUploadRfKorFile().isEmpty())) {
                     errors.rejectValue("uploadRdKorFile", "message.required", "[KOR/ENG] 중 하나는 필수 등록 되어야 합니다.");
                 }
             }

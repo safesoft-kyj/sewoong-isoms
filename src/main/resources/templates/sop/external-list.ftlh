@@ -16,7 +16,7 @@
     <#return returnValue/>
 </#function>
 
-<#macro sopRdList>
+<#macro sopRfList>
 <#--                            <li>-->
 <#--                                <div class="file-control">-->
 <#--                                </div>-->
@@ -202,7 +202,7 @@
                         </li>
                         </#list>
                     <#else>
-                        <@sopRdList/>
+                        <@sopRfList/>
                     </#if>
 
                 </ul>

@@ -59,8 +59,8 @@
                 </thead>
                 <tbody>
 
-                <#if categoryList?has_content>
-                    <#list categoryList as category>
+                <#if CategoryList?has_content>
+                    <#list CategoryList as Category>
                         <tr>
                             <td class="text-center">${category?index + 1}
                                 <a name="edit${category?index}"></a>

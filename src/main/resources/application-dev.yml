@@ -53,13 +53,14 @@ server:
   port: 8081
 
 file:
-  upload-dir: C:\UploadFiles\iso\cauh
-  training-log-upload-dir: C:\UploadFiles\cauh\binder\
-  binder-dir: C:\UploadFiles\cauh\binder\
+  upload-dir: C:\UploadFiles\iso
+  training-log-upload-dir: C:\UploadFiles\iso\binder\
+  certification-upload-dir: C:\UploadFiles\iso\cert\
+  binder-dir: C:\UploadFiles\iso\binder\
 
-gw:
-  userTbl: gw.GWareNet10_Dtnc.dbo.tblUser_1
-  deptTbl: gw.GWareNet10_Dtnc.dbo.tblDepart_1
+#gw:
+#  userTbl: gw.GWareNet10_Dtnc.dbo.tblUser_1
+#  deptTbl: gw.GWareNet10_Dtnc.dbo.tblDepart_1
 
 groupdocs:
   license: D:\\Servers\\deploy\\GroupDocs.Total.Java.lic

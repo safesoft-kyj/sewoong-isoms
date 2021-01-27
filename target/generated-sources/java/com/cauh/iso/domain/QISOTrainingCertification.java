@@ -24,13 +24,19 @@ public class QISOTrainingCertification extends EntityPathBase<ISOTrainingCertifi
 
     public final com.cauh.common.entity.QBaseEntity _super = new com.cauh.common.entity.QBaseEntity(this);
 
+    public final StringPath certHtml = createString("certHtml");
+
     //inherited
     public final StringPath createdBy = _super.createdBy;
 
     //inherited
     public final DateTimePath<java.sql.Timestamp> createdDate = _super.createdDate;
 
+    public final StringPath fileName = createString("fileName");
+
     public final StringPath id = createString("id");
+
+    public final QISO iso;
 
     //inherited
     public final StringPath lastModifiedBy = _super.lastModifiedBy;
@@ -58,6 +64,7 @@ public class QISOTrainingCertification extends EntityPathBase<ISOTrainingCertifi
 
     public QISOTrainingCertification(Class<? extends ISOTrainingCertification> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.iso = inits.isInitialized("iso") ? new QISO(forProperty("iso")) : null;
         this.user = inits.isInitialized("user") ? new com.cauh.common.entity.QAccount(forProperty("user"), inits.get("user")) : null;
     }
 

@@ -23,19 +23,19 @@ public class AdminCategoryController {
     private final DocumentService documentService;
 
     @GetMapping("/admin/sop/category")
-    public String categoryList(@RequestParam(value = "action", defaultValue = "list") String action,
+    public String CategoryList(@RequestParam(value = "action", defaultValue = "list") String action,
                                @RequestParam(value = "id", required = false) String id, Model model) {
-        List<Category> categoryList = categoryService.getCategoryList();
-        model.addAttribute("categoryList", categoryList);
+        List<Category> CategoryList = categoryService.getCategoryList();
+        model.addAttribute("CategoryList", CategoryList);
 
         if("new".equals(action)) {
             Category Category = new Category();
-            model.addAttribute("category", Category);
+            model.addAttribute("Category", Category);
         } else if ("edit".equals(action)) {
             long count = documentService.countByCategoryId(id);
             Category Category = categoryService.findById(id);
             Category.setReadonly(count > 0);
-            model.addAttribute("category", Category);
+            model.addAttribute("Category", Category);
         }
 
         model.addAttribute("action", action);

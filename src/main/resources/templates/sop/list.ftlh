@@ -16,7 +16,7 @@
     <#return returnValue/>
 </#function>
 
-<#macro sopRdList>
+<#macro sopRfList>
 <#--                            <li>-->
 <#--                                <div class="file-control">-->
 <#--                                </div>-->
@@ -55,10 +55,10 @@
         </#if>
     </#list>
 
-    <#if rdList?has_content>
-        <#list rdList as rdVer>
-            <#if rdVer.status == status>
-                <#if rdVer.rdEngFileName?has_content>
+    <#if rfList?has_content>
+        <#list rfList as rfVer>
+            <#if rfVer.status == status>
+                <#if rfVer.rdEngFileName?has_content>
                     <li>
                         <div class="file-control">
                         </div>
@@ -80,7 +80,7 @@
                                         </span>
                     </li>
                 </#if>
-                <#if rdVer.rdKorFileName?has_content>
+                <#if rfVer.rdKorFileName?has_content>
                     <li>
                         <div class="file-control">
                         </div>
@@ -88,15 +88,15 @@
                         <span class="file-details">
                                             <div class="media-block">
                                                 <div class="media-right">
-                                                    <#if user.userType == 'U'>
-                                                        <a href="/rd/${status.name()?lower_case}/download/${rdVer.id}?lang=kor" class="btn btn-default"><i class="fa fa-download"></i></a>
+                                                    <#if user.userType == 'USER'>
+                                                        <a href="/rd/${status.name()?lower_case}/download/${rfVer.id}?lang=kor" class="btn btn-default"><i class="fa fa-download"></i></a>
                                                     </#if>
-                                                    <a href="#rd-modal" data-toggle="modal" data-id="${rdVer.id}" data-lang="kor" class="btn btn-default"><i class="fa fa-search-plus"></i></a>
+                                                    <a href="#rd-modal" data-toggle="modal" data-id="${rfVer.id}" data-lang="kor" class="btn btn-default"><i class="fa fa-search-plus"></i></a>
                                                 </div>
-                                                <div class="media-left"><i class="fa ${getExtIcon(rdVer.ext?default('')?lower_case)}"></i></div>
+                                                <div class="media-left"><i class="fa ${getExtIcon(rfVer.ext?default('')?lower_case)}"></i></div>
                                                 <div class="media-body">
-                                                    <p class="file-name">${rdVer.rdKorOriginalFileName}</p>
-                                                    <small>${rdVer.document.docId} v${rdVer.version}_${rdVer.document.title} / Effective Date : ${rdVer.effectiveDate?string["dd/MMM/yyyy"]}</small>
+                                                    <p class="file-name">${rfVer.rfKorOriginalFileName}</p>
+                                                    <small>${rfVer.document.docId} v${rfVer.version}_${rfVer.document.title} / Effective Date : ${rfVer.effectiveDate?string["dd/MMM/yyyy"]}</small>
                                                 </div>
                                             </div>
                                         </span>
@@ -143,16 +143,13 @@
                             <a href="/sop/${status.name()?lower_case}" class="list-group-item<#if categoryId?has_content == false> text-bold</#if>">
                                 <span class="text-main"><i class="pli-folder-with-document icon-lg icon-fw"></i> ALL</span>
                             </a>
-                            <#if CategoryList?exists && CategoryList?has_content>
-                                <#list CategoryList as Category>
-                                    <a href="/sop/${status.name()?lower_case}/${Category.id}" class="list-group-item<#if categoryId?default('') == Category.id> text-bold</#if>">
-                                        <span class="text-main"><i class="pli-folder<#if categoryId?default('') == Category.id>-with-document</#if> icon-lg icon-fw"></i> ${Category.name}</span>
+                            <#if categoryList?exists && categoryList?has_content>
+                                <#list categoryList as category>
+                                    <a href="/sop/${status.name()?lower_case}/${category.id}" class="list-group-item<#if categoryId?default('') == category.id> text-bold</#if>">
+                                        <span class="text-main"><i class="pli-folder<#if categoryId?default('') == category.id>-with-document</#if> icon-lg icon-fw"></i> ${category.name}</span>
                                     </a>
                                 </#list>
                             </#if>
-
-
-
                         </div>
                 <div class="text-xs text-warning text-center">
                     <i class="fa fa-exclamation-circle"></i> 모든 이력은 시스템에 기록 됩니다.
@@ -165,8 +162,8 @@
                     <ol class="breadcrumb">
                         <li>SOP</li>
                         <li><a href="/sop/${status.name()?lower_case}">${status.label} SOP</a></li>
-                        <#if Category?has_content>
-                            <li><a href="/sop/${status.name()?lower_case}/${Category.id}">${Category.name}</a></li>
+                        <#if category?has_content>
+                            <li><a href="/sop/${status.name()?lower_case}/${category.id}">${category.name}</a></li>
                         </#if>
 
                         <#if sopId?has_content>
@@ -195,7 +192,7 @@
 <#--                </div>-->
                 <ul id="sop-list" class="file-list">
                     <#if user.userType == 'AUDITOR'>
-                        <@sopRdList/>
+                        <@sopRfList/>
                     <#else>
                         <!--File list item-->
                         <#if sopId?has_content == false>
@@ -204,7 +201,7 @@
                                     <div class="file-control">
                                     </div>
                                     <div class="file-attach-icon"></div>
-                                    <a href="/sop/${status.name()?lower_case}/${sopVer.document.Category.id}/${sopVer.document.id}" class="file-details">
+                                    <a href="/sop/${status.name()?lower_case}/${sopVer.document.category.id}/${sopVer.document.id}" class="file-details">
                                         <div class="media-block">
                                             <div class="media-left" style="color:#ffc848"><i class="psi-folder"></i></div>
                                             <div class="media-body">
@@ -215,7 +212,7 @@
                                 </li>
                             </#list>
                         <#else>
-                            <@sopRdList/>
+                            <@sopRfList/>
                         </#if>
                     </#if>
 

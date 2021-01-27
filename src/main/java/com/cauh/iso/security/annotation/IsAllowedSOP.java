@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@PostFilter("(authentication.principal.userType.name() == 'U') " +
+@PostFilter("(authentication.principal.userType.name() == 'USER') " +
         "or (authentication.principal.userType.name() == 'AUDITOR' and (authentication.principal.allowedSOP.contains(filterObject.id) " +
         "or authentication.principal.allowedRDMap.containsValue(filterObject.document.id)))")
 //@PreAuthorize("(authentication.principal.userType.name() == 'GROUP_WARE') " +

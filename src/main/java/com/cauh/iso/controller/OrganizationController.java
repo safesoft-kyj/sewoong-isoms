@@ -32,19 +32,19 @@ public class OrganizationController {
     private final DepartmentRepository departmentRepository;
     private final DepartmentService departmentService;
 
-    @Value("${gw.userTbl}")
-    private String gwUserTbl;
-
-    @Value("${gw.deptTbl}")
-    private String gwDeptTbl;
+//    @Value("${gw.userTbl}")
+//    private String gwUserTbl;
+//
+//    @Value("${gw.deptTbl}")
+//    private String gwDeptTbl;
 
     @GetMapping("/common/organization/chart")
     @ResponseBody
     public List<JsTreeNode> organization() {
-        Map<String, String> param = new HashMap<>();
-        param.put("gwUserTbl", gwUserTbl);
-        param.put("gwDeptTbl", gwDeptTbl);
-        param.put("state", "1");
+//        Map<String, String> param = new HashMap<>();
+//        param.put("gwUserTbl", gwUserTbl);
+//        param.put("gwDeptTbl", gwDeptTbl);
+//        param.put("state", "1");
 //        List<Map<String, String>> allUsers = deptUserMapper.getAllUsers(param);
         List<Account> accounts = userRepository.findAllByUserTypeAndEnabledOrderByNameAsc(UserType.USER, true);
         List<JsTreeNode> jsTreeNodes = new ArrayList<>();

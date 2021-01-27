@@ -105,7 +105,8 @@
         </a>
         <!--Submenu-->
         <ul class="collapse" aria-expanded="false">
-            <li><a href="/admin/document/accessLog">System Access Log</a></li>
+            <li><a href="/admin/iso/accessLog">ISO Access Log</a></li>
+            <li><a href="/admin/document/accessLog">SOP/RF Access Log</a></li>
             <li><a href="/admin/change-control">Change Control</a></li>
         </ul>
 

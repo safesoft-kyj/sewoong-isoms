@@ -76,11 +76,11 @@ public class TrainingController {
     private final TrainingRecordRepository trainingRecordRepository;
     private final TrainingService trainingService;
 
-    @Value("${gw.userTbl}")
-    private String gwUserTbl;
-
-    @Value("${gw.deptTbl}")
-    private String gwDeptTbl;
+//    @Value("${gw.userTbl}")
+//    private String gwUserTbl;
+//
+//    @Value("${gw.deptTbl}")
+//    private String gwDeptTbl;
 
 //    private final SOPTrainingMatrixRepositoryImpl sopTrainingMatrixRepositoryImpl;
 

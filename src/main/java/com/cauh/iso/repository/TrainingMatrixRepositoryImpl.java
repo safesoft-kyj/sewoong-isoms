@@ -411,6 +411,7 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
                 )
                 .leftJoin(qIsoTrainingLog).on(qIsoTrainingPeriod.id.eq(qIsoTrainingLog.isoTrainingPeriod.id).and(qIsoTrainingLog.user.id.eq(user.getId())))
                 .leftJoin(qisoAttachFile).on(qisoAttachFile.iso.id.eq(iSOTrainingMatrix.iso.id))
+                .where(qIsoTrainingLog.status.isNull().or(qIsoTrainingLog.status.ne(TrainingStatus.COMPLETED)))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();

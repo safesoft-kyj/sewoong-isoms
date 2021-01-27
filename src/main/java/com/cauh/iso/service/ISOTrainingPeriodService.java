@@ -22,6 +22,11 @@ public class ISOTrainingPeriodService {
 
     private final ISOTrainingPeriodRepository isoTrainingPeriodRepository;
 
+    public Optional<ISOTrainingPeriod> findById(Integer periodId) {
+        return isoTrainingPeriodRepository.findById(periodId);
+    }
+
+
     public void saveAll(ISO savedISO, ISO iso) {
         if(ObjectUtils.isEmpty(iso.getIsoTrainingPeriods())) { //신규 생성 시
             ISOTrainingPeriod isoTrainingPeriod = ISOTrainingPeriod.builder()

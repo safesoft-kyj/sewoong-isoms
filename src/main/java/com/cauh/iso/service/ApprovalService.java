@@ -169,8 +169,8 @@ public class ApprovalService {
         if(approval.getType() == ReportType.SOP_Deviation_Report) {
             DocumentVersion deviatedSOPDocument = documentVersionRepository.findById(approval.getSopDeviationReport().getDeviatedSOPDocument().getId()).get();
             model.put("deviatedSOPDocument", deviatedSOPDocument);
-        } else if(approval.getType() == ReportType.SOP_RD_Request_Form) {
-            SopRdRequestForm sopRdRequestForm = approval.getSopRdRequestForm();
+        } else if(approval.getType() == ReportType.SOP_RF_Request_Form) {
+            SopRdRequestForm sopRdRequestForm = approval.getSopRfRequestForm();
             if(sopRdRequestForm.isSopRevision()) {
                 QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
                 BooleanBuilder builder = new BooleanBuilder();
@@ -197,7 +197,7 @@ public class ApprovalService {
             }
         } else if(approval.getType() == ReportType.SOP_Waiver_Approval_Form) {
             model.put("deviatedSOP", documentVersionRepository.findById(approval.getSopWaiverApprovalForm().getDeviatedSOPDocument().getId()).get());
-        } else if(approval.getType() == ReportType.SOP_RD_Retirement_Form) {
+        } else if(approval.getType() == ReportType.SOP_RF_Retirement_Form) {
             if(!ObjectUtils.isEmpty(approval.getRetirementApprovalForm().getRetirementDocumentSOPs()) || !ObjectUtils.isEmpty(approval.getRetirementApprovalForm().getSopIds())) {
                 QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
                 BooleanBuilder builder = new BooleanBuilder();
@@ -210,14 +210,14 @@ public class ApprovalService {
 
                 model.put("retirementSOPs", documentVersionRepository.findAll(builder));
             }
-            if(!ObjectUtils.isEmpty(approval.getRetirementApprovalForm().getRetirementDocumentRDs()) || !ObjectUtils.isEmpty(approval.getRetirementApprovalForm().getRdIds())) {
+            if(!ObjectUtils.isEmpty(approval.getRetirementApprovalForm().getRetirementDocumentRFs()) || !ObjectUtils.isEmpty(approval.getRetirementApprovalForm().getRfIds())) {
                 QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
                 BooleanBuilder builder = new BooleanBuilder();
-                if (!ObjectUtils.isEmpty(approval.getRetirementApprovalForm().getRetirementDocumentRDs())) {
-                    List<String> rdIds = approval.getRetirementApprovalForm().getRetirementDocumentRDs().stream().map(s -> s.getDocumentVersion().getId()).collect(Collectors.toList());
+                if (!ObjectUtils.isEmpty(approval.getRetirementApprovalForm().getRetirementDocumentRFs())) {
+                    List<String> rdIds = approval.getRetirementApprovalForm().getRetirementDocumentRFs().stream().map(s -> s.getDocumentVersion().getId()).collect(Collectors.toList());
                     builder.and(qDocumentVersion.id.in(rdIds));
                 } else {
-                    builder.and(qDocumentVersion.id.in(approval.getRetirementApprovalForm().getRdIds()));
+                    builder.and(qDocumentVersion.id.in(approval.getRetirementApprovalForm().getRfIds()));
                 }
 
                 model.put("retirementRDs", documentVersionRepository.findAll(builder));
@@ -733,9 +733,9 @@ public class ApprovalService {
                 trainingLogReportStatus(approval);
 //            } else if(approval.getType() == ReportType.RD_Approval_Form && approval.getStatus() == ApprovalStatus.approved) {
 //                addRDRevisionDocument(approval);
-            } else if(approval.getType() == ReportType.SOP_RD_Retirement_Form && approval.getStatus() == ApprovalStatus.approved) {
+            } else if(approval.getType() == ReportType.SOP_RF_Retirement_Form && approval.getStatus() == ApprovalStatus.approved) {
                 retirementDocument(approval);
-            } else if(approval.getType() == ReportType.SOP_RD_Request_Form && approval.getStatus() == ApprovalStatus.approved) {
+            } else if(approval.getType() == ReportType.SOP_RF_Request_Form && approval.getStatus() == ApprovalStatus.approved) {
                 sopRfRequestForm(approval);
             } else if(approval.getType() == ReportType.SOP_Disclosure_Request_Form) {
                 sendEmailExternalCustomer(approval);
@@ -800,7 +800,7 @@ public class ApprovalService {
 //            documentVersionService.retirement(sopDocument);
         }
 
-        for(RetirementDocument retirementDocument : retirementApprovalForm.getRetirementDocumentRDs()) {
+        for(RetirementDocument retirementDocument : retirementApprovalForm.getRetirementDocumentRFs()) {
             DocumentVersion rdDocument = retirementDocument.getDocumentVersion();
             log.debug("RD {} retirement.", rdDocument.getId());
 //            documentVersionService.retirement(rdDocument);
@@ -808,7 +808,7 @@ public class ApprovalService {
     }
 
     private void sopRfRequestForm(Approval approval) {
-        SopRdRequestForm sopRfRequestForm = approval.getSopRdRequestForm();
+        SopRdRequestForm sopRfRequestForm = approval.getSopRfRequestForm();
 
         //신규 개발 SOP 등록
         Map<String, Document> newSOP = new HashMap<>();

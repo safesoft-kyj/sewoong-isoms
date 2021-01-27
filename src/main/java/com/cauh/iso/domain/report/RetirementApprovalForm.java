@@ -39,8 +39,8 @@ public class RetirementApprovalForm extends BaseEntity implements Serializable {
     private List<RetirementDocument> retirementDocumentSOPs = new ArrayList<>();
 
     @OneToMany(mappedBy = "retirementApprovalForm")
-    @Where(clause = "document_type='RD'")
-    private List<RetirementDocument> retirementDocumentRDs = new ArrayList<>();
+    @Where(clause = "document_type='RF'")
+    private List<RetirementDocument> retirementDocumentRFs = new ArrayList<>();
 
     @Column(name = "reason", columnDefinition = "nvarchar(500)")
     private String reason;
@@ -53,9 +53,9 @@ public class RetirementApprovalForm extends BaseEntity implements Serializable {
                 this.retirementDocumentSOPs.add(new RetirementDocument(this, sop));
             }
         }
-        if(!ObjectUtils.isEmpty(retirementApprovalForm.getRetirementDocumentRDs())) {
-            for(RetirementDocument rd : retirementApprovalForm.getRetirementDocumentRDs()) {
-                this.retirementDocumentRDs.add(new RetirementDocument(this, rd));
+        if(!ObjectUtils.isEmpty(retirementApprovalForm.getRetirementDocumentRFs())) {
+            for(RetirementDocument rf : retirementApprovalForm.getRetirementDocumentRFs()) {
+                this.retirementDocumentRFs.add(new RetirementDocument(this, rf));
             }
         }
     }
@@ -68,11 +68,11 @@ public class RetirementApprovalForm extends BaseEntity implements Serializable {
     private String[] sopIds;
 
     @Transient
-    private String[] rdIds;
+    private String[] rfIds;
 
     @Transient
     private List<DocumentVersion> retirementDocuments = new ArrayList<>();
 
     @Transient
-    private List<String> sopRdIds = new ArrayList<>();
+    private List<String> sopRfIds = new ArrayList<>();
 }

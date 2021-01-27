@@ -62,11 +62,11 @@ public class AdminTrainingController {
     private final UserRepository userRepository;
     private final TrainingMatrixRepository trainingMatrixRepository;
 
-    @Value("${gw.userTbl}")
-    private String gwUserTbl;
-
-    @Value("${gw.deptTbl}")
-    private String gwDeptTbl;
+//    @Value("${gw.userTbl}")
+//    private String gwUserTbl;
+//
+//    @Value("${gw.deptTbl}")
+//    private String gwDeptTbl;
 
     @GetMapping("/training/sop/matrix")
     public String trainingMatrix(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 20) Pageable pageable, Model model) {

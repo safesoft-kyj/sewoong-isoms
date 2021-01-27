@@ -93,7 +93,7 @@ public class AdminApprovalController {
             approval.getApprovalLines().forEach(a ->
                 a.setUser(userRepository.findByUsername(a.getUsername()).get()));
 
-            if(approval.getType() != ReportType.SOP_RD_Retirement_Form) {
+            if(approval.getType() != ReportType.SOP_RF_Retirement_Form) {
                 response.setContentType("application/pdf");
             }
 
@@ -101,11 +101,11 @@ public class AdminApprovalController {
                 sopDisclosureRequestFormService.generateReport(approval.getSopDisclosureRequestForm(), approval.getApprovalLines(), response.getOutputStream());
             } else if(approval.getType() == ReportType.SOP_Deviation_Report) {
                 sopDeviationReportService.generateReport(approval.getSopDeviationReport(), approval.getApprovalLines(), response.getOutputStream());
-            } else if(approval.getType() == ReportType.SOP_RD_Request_Form) {
-                sopRdRequestFormService.generateReport(approval.getSopRdRequestForm(), approval.getApprovalLines(), response.getOutputStream());
+            } else if(approval.getType() == ReportType.SOP_RF_Request_Form) {
+                sopRdRequestFormService.generateReport(approval.getSopRfRequestForm(), approval.getApprovalLines(), response.getOutputStream());
             } else if(approval.getType() == ReportType.SOP_Waiver_Approval_Form) {
                 sopWaiverRequestApprovalFormService.generateReport(approval.getSopWaiverApprovalForm(), approval.getApprovalLines(), response.getOutputStream());
-            } else if(approval.getType() == ReportType.SOP_RD_Retirement_Form) {
+            } else if(approval.getType() == ReportType.SOP_RF_Retirement_Form) {
 //                List<MyTraining> trainingList = sopTrainingMatrixRepository.getDownloadTrainingList(user.getDeptCode(), teamCode, userId, docId, user);
                 sopRdRetirementApprovalFormService.generateReport(approval.getRetirementApprovalForm(), approval.getApprovalLines(), response.getOutputStream());
 //                RetirementApprovalForm retirementApprovalForm = approval.getRetirementApprovalForm();

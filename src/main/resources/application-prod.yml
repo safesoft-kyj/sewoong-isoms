@@ -75,9 +75,10 @@ server:
   port: 8081
 
 file:
-  upload-dir: D:\UploadFiles\iso\cauh
-    training-log-upload-dir: D:\UploadFiles\cauh\binder\
-    binder-dir: D:\UploadFiles\cauh\binder\
+  upload-dir: C:\UploadFiles\iso
+  training-log-upload-dir: C:\UploadFiles\iso\binder\
+  certification-upload-dir: C:\UploadFiles\iso\cert\
+  binder-dir: C:\UploadFiles\iso\binder\
 
 gw:
   userTbl: gw.GWareNet10_Dtnc.dbo.tblUser_1

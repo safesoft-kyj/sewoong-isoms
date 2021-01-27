@@ -114,9 +114,9 @@ public class DocumentVersion extends BaseEntity implements Serializable {
     @Transient
     private MultipartFile uploadSopDocFile;
     @Transient
-    private MultipartFile uploadRdKorFile;
+    private MultipartFile uploadRfKorFile;
     @Transient
-    private MultipartFile uploadRdEngFile;
+    private MultipartFile uploadRfEngFile;
     @Transient
     private SOPAction action;
 
@@ -150,7 +150,7 @@ public class DocumentVersion extends BaseEntity implements Serializable {
 //    /** ISO Option end **/
 
 
-    /** sop / iso file **/
+    /** sop file **/
     @Column(name = "file_name", columnDefinition = "nvarchar(255)")
     private String fileName;
 
@@ -171,16 +171,16 @@ public class DocumentVersion extends BaseEntity implements Serializable {
     /** sop file end **/
 
     /** rf eng file **/
-    @Column(name = "rd_eng_file_name", columnDefinition = "nvarchar(255)")
+    @Column(name = "rf_eng_file_name", columnDefinition = "nvarchar(255)")
     private String rfEngFileName;
 
-    @Column(name = "rd_eng_original_file_name", columnDefinition = "nvarchar(255)")
+    @Column(name = "rf_eng_original_file_name", columnDefinition = "nvarchar(255)")
     private String rfEngOriginalFileName;
 
-    @Column(name = "rd_eng_file_type", columnDefinition = "nvarchar(255)")
+    @Column(name = "rf_eng_file_type", columnDefinition = "nvarchar(255)")
     private String rfEngFileType;
 
-    @Column(name = "rd_eng_file_size")
+    @Column(name = "rf_eng_file_size")
     private long rfEngFileSize;
 
     @Column(name = "rf_eng_ext", length = 5)

@@ -28,6 +28,10 @@
                 $("#department").val(${account.department.id});
             }
 
+            $("#deptSelect").change(function(){
+                departmentSelect($(this).val());
+            })
+
             $("#teamSelect").change(function(){
                 let res = $(this).val();
 

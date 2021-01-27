@@ -41,7 +41,7 @@ import java.util.stream.StreamSupport;
 @Controller
 @RequiredArgsConstructor
 @Slf4j
-@SessionAttributes({"sopMap", "rdMap", "approval", "lineType", "purposeOfDisclosureMap", "documentAccessMap", "currentSopCategoryMap", "supersededSopCategoryMap", "categoryList", "userMap"})
+@SessionAttributes({"sopMap", "rdMap", "approval", "lineType", "purposeOfDisclosureMap", "documentAccessMap", "currentSopCategoryMap", "supersededSopCategoryMap", "CategoryList", "userMap"})
 public class ApprovalController {
     private final TrainingMatrixRepository trainingMatrixRepository;
     private final ApprovalValidator approvalValidator;
@@ -91,7 +91,7 @@ public class ApprovalController {
             case SOP_Deviation_Report:
                 sopDeviationReport(approval, user, trainingPeriodId, sopId, model);
                 break;
-            case SOP_RD_Request_Form:
+            case SOP_RF_Request_Form:
                 sopRdRequestForm(approval, user, model);
                 break;
 //            case RD_Approval_Form:
@@ -103,7 +103,7 @@ public class ApprovalController {
             case SOP_Disclosure_Request_Form:
                 sopDisclosureRequestForm(approval, user, model);
                 break;
-            case SOP_RD_Retirement_Form:
+            case SOP_RF_Retirement_Form:
                 sopRetirementForm(approval, user, model);
                 break;
         }
@@ -126,7 +126,7 @@ public class ApprovalController {
                                        HttpServletRequest request) throws Exception {
 
         approval.getRetirementApprovalForm().setSopIds(ServletRequestUtils.getStringParameters(request, "retirementApprovalForm.sopIds"));
-        approval.getRetirementApprovalForm().setRdIds(ServletRequestUtils.getStringParameters(request, "retirementApprovalForm.rdIds"));
+        approval.getRetirementApprovalForm().setRfIds(ServletRequestUtils.getStringParameters(request, "retirementApprovalForm.rdIds"));
 
         if(StringUtils.isEmpty(selectedId) == false) {
             DocumentVersion documentVersion = documentVersionService.findById(selectedId);
@@ -134,22 +134,22 @@ public class ApprovalController {
                 approval.getRetirementApprovalForm().getRetirementDocuments().add(documentVersion);
 
                 if(documentVersion.getDocument().getType() == DocumentType.SOP) {
-                    for(Document rd : documentVersion.getDocument().getRdList()) {
+                    for(Document rd : documentVersion.getDocument().getRfList()) {
                         for(DocumentVersion rdVer : rd.getDocumentVersionList()) {
                             if(rdVer.getStatus() == DocumentStatus.EFFECTIVE) {
                                 if(!approval.getRetirementApprovalForm().getRetirementDocuments().contains(rdVer)) {
                                     approval.getRetirementApprovalForm().getRetirementDocuments().add(rdVer);
                                 }
-                                approval.getRetirementApprovalForm().getSopRdIds().add(rdVer.getId());
+                                approval.getRetirementApprovalForm().getSopRfIds().add(rdVer.getId());
                             }
                         }
                     }
 
-                    List<String> rdIds = Arrays.stream(approval.getRetirementApprovalForm().getRdIds())
+                    List<String> rdIds = Arrays.stream(approval.getRetirementApprovalForm().getRfIds())
                             .collect(Collectors.toList());
 
-                    log.info("@@ approval.getRetirementApprovalForm().getSopRdIds() : {}", approval.getRetirementApprovalForm().getSopRdIds());
-                    List<String> filtered = approval.getRetirementApprovalForm().getSopRdIds().stream()
+                    log.info("@@ approval.getRetirementApprovalForm().getSopRdIds() : {}", approval.getRetirementApprovalForm().getSopRfIds());
+                    List<String> filtered = approval.getRetirementApprovalForm().getSopRfIds().stream()
                             .filter(rdId -> rdIds.contains(rdId) == false)
                             .collect(Collectors.toList());
                     if(!ObjectUtils.isEmpty(filtered)) {
@@ -166,15 +166,15 @@ public class ApprovalController {
 
 //                    log.info("선택된 RD ID : {}", approval.getRetirementApprovalForm().getRdIds());
                     if(ObjectUtils.isEmpty(rdIds)) {
-                        approval.getRetirementApprovalForm().setRdIds(null);
+                        approval.getRetirementApprovalForm().setRfIds(null);
                     } else {
-                        approval.getRetirementApprovalForm().setRdIds(rdIds.toArray(new String[rdIds.size()]));
+                        approval.getRetirementApprovalForm().setRfIds(rdIds.toArray(new String[rdIds.size()]));
                     }
 
                 }
             }
         } else if (StringUtils.isEmpty(deselectedId) == false) {
-            if(approval.getRetirementApprovalForm().getSopRdIds().contains(deselectedId)) {
+            if(approval.getRetirementApprovalForm().getSopRfIds().contains(deselectedId)) {
                 log.info("현재 RD는 삭제 불가. 무보 SOP가 Retirement 대상임.");
             } else {
                 if (ObjectUtils.isEmpty(approval.getRetirementApprovalForm().getRetirementDocuments()) == false) {
@@ -182,12 +182,12 @@ public class ApprovalController {
                     approval.getRetirementApprovalForm().getRetirementDocuments().remove(documentVersion);
 
                     if (documentVersion.getDocument().getType() == DocumentType.SOP) {
-                        for (Document rd : documentVersion.getDocument().getRdList()) {
+                        for (Document rd : documentVersion.getDocument().getRfList()) {
                             for (DocumentVersion rdVer : rd.getDocumentVersionList()) {
                                 if (rdVer.getStatus() == DocumentStatus.EFFECTIVE) {
                                     if (approval.getRetirementApprovalForm().getRetirementDocuments().contains(rdVer)) {
                                         approval.getRetirementApprovalForm().getRetirementDocuments().remove(rdVer);
-                                        approval.getRetirementApprovalForm().getSopRdIds().remove(rdVer.getId());
+                                        approval.getRetirementApprovalForm().getSopRfIds().remove(rdVer.getId());
                                     }
                                 }
                             }
@@ -221,16 +221,16 @@ public class ApprovalController {
             SopRdDevelopmentDoc sopRdDevelopmentDoc = new SopRdDevelopmentDoc();
             if("sop".equals(type)) {
                 sopRdDevelopmentDoc.setDocumentType(DocumentType.SOP);
-                approval.getSopRdRequestForm().getSopDevelopmentDocs().add(sopRdDevelopmentDoc);
+                approval.getSopRfRequestForm().getSopDevelopmentDocs().add(sopRdDevelopmentDoc);
             } else {
                 sopRdDevelopmentDoc.setDocumentType(DocumentType.RF);
-                approval.getSopRdRequestForm().getRdDevelopmentDocs().add(sopRdDevelopmentDoc);
+                approval.getSopRfRequestForm().getRdDevelopmentDocs().add(sopRdDevelopmentDoc);
             }
         } else {
             if("sop".equals(type)) {
-                approval.getSopRdRequestForm().getSopDevelopmentDocs().remove(idx.intValue());
+                approval.getSopRfRequestForm().getSopDevelopmentDocs().remove(idx.intValue());
             } else {
-                approval.getSopRdRequestForm().getRdDevelopmentDocs().remove(idx.intValue());
+                approval.getSopRfRequestForm().getRdDevelopmentDocs().remove(idx.intValue());
             }
         }
 
@@ -266,9 +266,9 @@ public class ApprovalController {
 //        if(reportType == ReportType.SOP_Disclosure_Request_Form) {
 //            approval.getSopDisclosureRequestForm().setRdIds(ServletRequestUtils.getStringParameters(request, "sopDisclosureRequestForm.rdIds"));
 //        } else
-        if(reportType == ReportType.SOP_RD_Retirement_Form) {
+        if(reportType == ReportType.SOP_RF_Retirement_Form) {
             approval.getRetirementApprovalForm().setSopIds(ServletRequestUtils.getStringParameters(request, "retirementApprovalForm.sopIds"));
-            approval.getRetirementApprovalForm().setRdIds(ServletRequestUtils.getStringParameters(request, "retirementApprovalForm.rdIds"));
+            approval.getRetirementApprovalForm().setRfIds(ServletRequestUtils.getStringParameters(request, "retirementApprovalForm.rdIds"));
         }
 
         boolean isTemp = WebUtils.hasSubmitParameter(request, "_temp");
@@ -398,8 +398,8 @@ public class ApprovalController {
 
     private void sopRdRequestForm(Approval approval, Account user, Model model) {
         if (ObjectUtils.isEmpty(approval.getId()) && !approval.isRenew()) {
-            approval.setSopRdRequestForm(new SopRdRequestForm());
-            approval.getSopRdRequestForm().setNameOfRequester(user.getEngName());
+            approval.setSopRfRequestForm(new SopRdRequestForm());
+            approval.getSopRfRequestForm().setNameOfRequester(user.getEngName());
 
             String teamDept = "";
             if(!StringUtils.isEmpty(user.getTeamName())) {
@@ -411,16 +411,16 @@ public class ApprovalController {
                 }
                 teamDept += user.getDeptName();
             }
-            approval.getSopRdRequestForm().setNameOfTeamDept(teamDept);
+            approval.getSopRfRequestForm().setNameOfTeamDept(teamDept);
         } else {
-            if(approval.getSopRdRequestForm().isSopRevision()) {
-                approval.getSopRdRequestForm().setSopRevisionIds(approval.getSopRdRequestForm().getSopRevisionDocs()
+            if(approval.getSopRfRequestForm().isSopRevision()) {
+                approval.getSopRfRequestForm().setSopRevisionIds(approval.getSopRfRequestForm().getSopRevisionDocs()
                         .stream()
                         .map(d -> d.getDocumentVersion().getId())
                         .collect(Collectors.joining(",")).split(","));
             }
-            if(approval.getSopRdRequestForm().isRdRevision()) {
-                approval.getSopRdRequestForm().setRdRevisionIds(approval.getSopRdRequestForm().getRdRevisionDocs()
+            if(approval.getSopRfRequestForm().isRdRevision()) {
+                approval.getSopRfRequestForm().setRdRevisionIds(approval.getSopRfRequestForm().getRdRevisionDocs()
                         .stream()
                         .map(d -> d.getDocumentVersion().getId())
                         .collect(Collectors.joining(",")).split(","));
@@ -429,18 +429,18 @@ public class ApprovalController {
         List<MyTrainingMatrix> myTrainingMatrices = trainingMatrixRepository.getMyTrainingMatrix(user.getUserJobDescriptions());
         Map<String, String> sopMap = myTrainingMatrices.stream().collect(Collectors.toMap(m -> m.getDocumentVersion().getId(), m -> m.getDocument().getDocId() + "/" + m.getDocument().getTitle() + "/" + m.getDocumentVersion().getVersion()));
 
-        List<List<Document>> rdLists = myTrainingMatrices.stream()
-                .filter(m -> ObjectUtils.isEmpty(m.getDocument().getRdList()) == false)
-                .map(m -> m.getDocument().getRdList())
+        List<List<Document>> rfLists = myTrainingMatrices.stream()
+                .filter(m -> ObjectUtils.isEmpty(m.getDocument().getRfList()) == false)
+                .map(m -> m.getDocument().getRfList())
                 .collect(Collectors.toList());
 
-        List<String> rdIds = new ArrayList<>();
-        rdLists.forEach(rdList ->
-            rdIds.addAll(rdList.stream().map(r -> r.getId()).collect(Collectors.toList()))
+        List<String> rfIds = new ArrayList<>();
+        rfLists.forEach(rfList ->
+            rfIds.addAll(rfList.stream().map(r -> r.getId()).collect(Collectors.toList()))
         );
-        Iterable<DocumentVersion> rdList = documentVersionService.findAllCurrentRDList(rdIds);
+        Iterable<DocumentVersion> rfList = documentVersionService.findAllCurrentRFList(rfIds);
         model.addAttribute("sopMap", sopMap);
-        model.addAttribute("rdMap", StreamSupport.stream(rdList.spliterator(), false).collect(Collectors.toMap(m -> m.getId(), m -> m.getDocument().getDocId() + "/" + m.getDocument().getTitle() + "/" + m.getVersion())));
+        model.addAttribute("rfMap", StreamSupport.stream(rfList.spliterator(), false).collect(Collectors.toMap(m -> m.getId(), m -> m.getDocument().getDocId() + "/" + m.getDocument().getTitle() + "/" + m.getVersion())));
     }
 
 //    private void rdApprovalForm(Approval approval, User user, Model model) {
@@ -524,7 +524,7 @@ public class ApprovalController {
         // --start
 
         List<Category> CategoryList = categoryService.getCategoryList();
-        model.addAttribute("categoryList", CategoryList);
+        model.addAttribute("CategoryList", CategoryList);
 
         Map<String, Iterable<DocumentVersion>> currentSopCategoryMap = new HashMap<>();
         QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
@@ -588,24 +588,24 @@ public class ApprovalController {
                 log.debug("=> retirementApprovalForm sopIds : {}", approval.getRetirementApprovalForm().getSopIds());
                 approval.getRetirementApprovalForm().getRetirementDocumentSOPs().forEach(s -> {
                     approval.getRetirementApprovalForm().getRetirementDocuments().add(s.getDocumentVersion());
-                    for (Document rd : s.getDocumentVersion().getDocument().getRdList()) {
+                    for (Document rf : s.getDocumentVersion().getDocument().getRfList()) {
 
-                        rd.getDocumentVersionList()
+                        rf.getDocumentVersionList()
                                 .stream()
                                 .filter(r -> r.getStatus() == DocumentStatus.EFFECTIVE)
                                 .forEach(v -> {
                                     approval.getRetirementApprovalForm().getRetirementDocuments().add(v);
-                                    approval.getRetirementApprovalForm().getSopRdIds().add(v.getId());
+                                    approval.getRetirementApprovalForm().getSopRfIds().add(v.getId());
                                 });
                     }
                 });
             }
-            if(ObjectUtils.isEmpty(approval.getRetirementApprovalForm().getRetirementDocumentRDs()) == false) {
-                List<String> rdIdList = approval.getRetirementApprovalForm().getRetirementDocumentRDs().stream().map(r -> r.getDocumentVersion().getId()).collect(Collectors.toList());
-                approval.getRetirementApprovalForm().setRdIds(rdIdList.toArray(new String[rdIdList.size()]));
+            if(ObjectUtils.isEmpty(approval.getRetirementApprovalForm().getRetirementDocumentRFs()) == false) {
+                List<String> rdIdList = approval.getRetirementApprovalForm().getRetirementDocumentRFs().stream().map(r -> r.getDocumentVersion().getId()).collect(Collectors.toList());
+                approval.getRetirementApprovalForm().setRfIds(rdIdList.toArray(new String[rdIdList.size()]));
             }
 
-            log.debug("=> retirementApprovalForm rdIds : {}", approval.getRetirementApprovalForm().getRdIds());
+            log.debug("=> retirementApprovalForm rdIds : {}", approval.getRetirementApprovalForm().getRfIds());
         }
 
         Iterable<DocumentVersion> documentVersions = documentVersionService.findAll(documentVersionService.getMainSOPPredicate(DocumentType.SOP, DocumentStatus.EFFECTIVE, null, null, null));

@@ -49,7 +49,7 @@ import java.util.stream.StreamSupport;
  */
 @Controller
 @RequiredArgsConstructor
-@SessionAttributes({"agreementPersonalInformation", "confidentialityPledge", "nonDisclosureAgreement", "categoryList"})
+@SessionAttributes({"agreementPersonalInformation", "confidentialityPledge", "nonDisclosureAgreement", "CategoryList"})
 @Slf4j
 public class UserAgreementController {
     private final DocumentService documentService;
@@ -289,7 +289,7 @@ public class UserAgreementController {
              * Category 정보 설정
              */
             if(!ObjectUtils.isEmpty(disclosureSOPList) && StringUtils.isEmpty(categoryId)) {
-                model.addAttribute("categoryList", StreamSupport.stream(disclosureSOPList.spliterator(), false)
+                model.addAttribute("CategoryList", StreamSupport.stream(disclosureSOPList.spliterator(), false)
                         .map(v -> v.getDocumentVersion().getDocument().getType() == DocumentType.SOP ? v.getDocument().getCategory() : v.getSopDocument().getCategory())
                         .distinct()
                         .sorted(Comparator.comparing(Category::getId))
