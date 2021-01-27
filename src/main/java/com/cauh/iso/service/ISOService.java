@@ -38,8 +38,12 @@ public class ISOService {
         return isoRepository.findAll(predicate, Sort.by(Sort.Direction.DESC, "id"));
     }
 
-    public Page<ISO> getList(Predicate predicate, Pageable pageable) {
+    public Page<ISO> getPage(Predicate predicate, Pageable pageable) {
         return isoRepository.findAll(predicate, pageable);
+    }
+
+    public Iterable<ISO> findAll(Predicate predicate) {
+        return isoRepository.findAll(predicate);
     }
 
     public String isoActivate(ISO iso) {

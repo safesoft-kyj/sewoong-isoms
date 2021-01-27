@@ -310,7 +310,9 @@ public class TrainingController {
 
         QAccount qUser = QAccount.account;
         BooleanBuilder userBuilder = new BooleanBuilder();
-        userBuilder.and(qUser.empNo.isNotNull());
+
+        //TODO 2021-01-28 :: 사번 사용여부 확인 필요
+        //userBuilder.and(qUser.empNo.isNotNull());
         userBuilder.and(qUser.training.eq(true));
         userBuilder.and(qUser.enabled.eq(true));
         Iterable<Account> users = userRepository.findAll(userBuilder, qUser.name.asc());

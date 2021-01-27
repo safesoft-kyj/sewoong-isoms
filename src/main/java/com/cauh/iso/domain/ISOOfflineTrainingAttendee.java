@@ -30,7 +30,7 @@ public class ISOOfflineTrainingAttendee extends BaseEntity implements Serializab
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "iso_offline_training_id", referencedColumnName = "id")
-    private ISOOfflineTraining ISOOfflineTraining;
+    private ISOOfflineTraining isoOfflineTraining;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "account_id", referencedColumnName = "id")

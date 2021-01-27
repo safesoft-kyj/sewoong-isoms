@@ -178,6 +178,7 @@ public class SOPController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + documentVersion.getOriginalFileName() + "\"")
                 .body(resource);
     }
+    
     @GetMapping("/rf/{status}/download/{docVerId}")
     public ResponseEntity<Resource> downloadRfFile(@PathVariable("docVerId") String id, @RequestParam("lang") String lang, HttpServletRequest request) {
         DocumentVersion documentVersion = documentVersionService.findById(id);

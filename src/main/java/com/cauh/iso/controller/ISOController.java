@@ -42,9 +42,6 @@ import org.springframework.web.util.WebUtils;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
-import java.awt.font.GlyphVector;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -76,7 +73,7 @@ public class ISOController {
         //공지사항 리스트
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qISO.deleted.eq(false));
-        model.addAttribute("isoList", isoService.getList(builder, pageable));
+        model.addAttribute("isoList", isoService.getPage(builder, pageable));
 
         //공지사항(상단공지)
         Date today = new Date(System.currentTimeMillis());

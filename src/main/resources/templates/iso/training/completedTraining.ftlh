@@ -14,16 +14,34 @@
             //   }
             // });
 
-            $("#cert-modal").on("show.bs.modal", function(){
+            $("#cert-modal").on("show.bs.modal", function (event) {
+                let btn = $(event.relatedTarget);
+                let certId = btn.data("cert");
+
+                $("#certId").val(certId);
+
+                $.ajax({
+                    url: '/ajax/training/iso/certification/' + certId,
+                    method: 'post',
+                    data: {"_method": "put", r: Math.random()},
+                    success: function (certHtml) {
+                        $("#certHtml").html(certHtml);
+                    }
+                });
+
                 console.log("Cert");
             });
+
+            $("#downloadBtn").click(function (){
+                $("#downloadForm").submit();
+            })
         });
     </script>
 </head>
 <body>
 
-<form id="retrainingForm" method="post">
-    <input type="hidden" id="tid" name="id"/>
+<form id="downloadForm" action="/training/iso/mytraining/completed/downloadCertFile" method="post">
+    <input type="hidden" id="certId" name="isoCertId"/>
 </form>
 
 
@@ -87,7 +105,7 @@
                 if (row.certHead != '') {
                     return [
                         '<button type="button" id="certBtn" name="certificationBtn" data-target="#cert-modal" data-toggle="modal" class="btn btn-info btn-xs" data-id="'
-                        + row.id + '" data-cert="' + row.certId + '" data-html=\'' + row.certHtml + '\'>',
+                        + row.id + '" data-cert="' + row.certId + '">',
                         'Certification Output',
                         '</button>'
                     ].join('');
@@ -139,18 +157,17 @@
 
             <!--Modal body-->
             <div class="modal-body">
-                <div id="image-view"></div>
+                <div id="certHtml"></div>
             </div>
 
             <!--Modal footer-->
             <div class="modal-footer">
-                <button class="btn btn-danger" id="prevBtn"><i class="fa fa-file"></i> Download</button>
+                <button class="btn btn-danger" id="downloadBtn"><i class="fa fa-file"></i> Download</button>
                 <button class="btn btn-default" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
             </div>
         </div>
     </div>
 </div>
 </div>
-
 </body>
 </html>

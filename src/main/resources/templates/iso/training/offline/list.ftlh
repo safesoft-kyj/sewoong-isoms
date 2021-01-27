@@ -13,7 +13,7 @@
 
     <!--Data Table-->
     <!--===================================================-->
-    <@pagination.bind offlineTraining/>
+    <@pagination.bind isoOfflineTraining/>
     <div class="panel-body">
         <div class="pad-btm form-inline">
             <div class="row">
@@ -30,7 +30,7 @@
 <#--                        <input id="demo-input-search2" type="text" placeholder="Document ID" class="form-control" autocomplete="off">-->
 <#--                    </div>-->
                     <div class="btn-group">
-                        <a class="btn btn-primary" href="/training/sop/offline-training/request"><i class="fa fa-plus"></i> Off-line Training</a>
+                        <a class="btn btn-primary" href="/training/iso/offline-training/request"><i class="fa fa-plus"></i> Off-line Training</a>
                     </div>
                 </div>
             </div>
@@ -53,24 +53,28 @@
                 </tr>
                 </thead>
                 <tbody>
-                <#if offlineTraining.content?has_content>
-                <#list offlineTraining.content as t>
+                <#if isoOfflineTraining.content?has_content>
+                <#list isoOfflineTraining.content as t>
                     <tr>
-                        <td class="text-center">${(offlineTraining.totalElements - (offlineTraining.size * offlineTraining.number)) - t?index}</td>
-                        <td class="text-center">${t.offlineTraining.trainingDate?string('dd-MMM-yyyy')}</td>
+                        <td class="text-center">${(isoOfflineTraining.totalElements - (isoOfflineTraining.size * isoOfflineTraining.number)) - t?index}</td>
+                        <td class="text-center">${t.isoOfflineTraining.trainingDate?string('dd-MMM-yyyy')}</td>
                         <td>
-                            <a href="offline-training/${t.offlineTraining.id}">
-                            <#list t.offlineTraining.offlineTrainingDocuments as doc>
-                                <div<#if t.offlineTraining.status == 'DELETED'> style="text-decoration: line-through;color:indianred !important;" </#if>><i class="fa fa-file-pdf-o"></i> ${doc.documentVersion.document.docId} v${doc.documentVersion.version} ${doc.documentVersion.document.title} / <span class="label label-default"><i class="fa fa-clock-o"></i> ${doc.hour}</span></div>
+                            <a href="offline-training/${t.isoOfflineTraining.id}">
+                            <#list t.isoOfflineTraining.isoOfflineTrainingDocuments as doc>
+                                <div<#if t.isoOfflineTraining.status == 'DELETED'> style="text-decoration: line-through;color:indianred !important;" </#if>><i class="fa fa-file-pdf-o"></i> [${doc.iso.isoType.label}] ${doc.iso.title} / <span class="label label-default"><i class="fa fa-clock-o"></i> ${doc.hour}</span></div>
                         </#list>
                             </a>
                         </td>
 <#--                        <td>${t.hour}</td>-->
-                        <td class="text-center">${t.offlineTraining.organization}</td>
-                        <td class="text-center">${t.offlineTraining.createdBy}</td>
-                        <td class="text-center">${t.offlineTraining.createdDate?string('yyyy-MM-dd')}</td>
+                        <td class="text-center">${t.isoOfflineTraining.organization}</td>
+                        <td class="text-center">${t.isoOfflineTraining.createdBy}</td>
+                        <td class="text-center">${t.isoOfflineTraining.createdDate?string('yyyy-MM-dd')}</td>
                         <td class="text-center">
-                            <span class="label label-${t.offlineTraining.status.className} add-tooltip" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="<#if t.offlineTraining.status == 'APPROVED'>교육 이력이 반영 되었습니다.<#elseif t.offlineTraining.status == 'DELETED'>관리자의 의해 반려 처리 되었습니다.</#if>">${t.offlineTraining.status.label}</span>
+                            <span class="label label-${t.isoOfflineTraining.status.className} add-tooltip" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="
+                                <#if t.isoOfflineTraining.status == 'APPROVED'>교육 이력이 반영 되었습니다.
+                                <#elseif t.isoOfflineTraining.status == 'DELETED'>관리자의 의해 반려 처리 되었습니다.
+                                </#if>">
+                                ${t.isoOfflineTraining.status.label}</span>
                             </td>
 <#--                        <td>${(i % 3 == 0)?then('<span class="label label-info">승인대기</span>', '<span class="label label-success">승인완료</span><span class="label label-warning">반려</span>')}</td>-->
 <#--                        <td><#if i % 3 == 0>-->

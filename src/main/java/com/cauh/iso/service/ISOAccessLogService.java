@@ -1,10 +1,8 @@
 package com.cauh.iso.service;
 
-import com.cauh.iso.domain.DocumentAccessLog;
-import com.cauh.iso.domain.DocumentVersion;
-import com.cauh.iso.domain.ISO;
-import com.cauh.iso.domain.ISOAccessLog;
+import com.cauh.iso.domain.*;
 import com.cauh.iso.domain.constant.DocumentAccessType;
+import com.cauh.iso.domain.constant.ISOType;
 import com.cauh.iso.repository.ISOAccessLogRepository;
 import com.cauh.iso.repository.ISORepository;
 import lombok.RequiredArgsConstructor;
@@ -26,16 +24,52 @@ public class ISOAccessLogService {
         try {
             ISOAccessLog accessLog = ISOAccessLog.builder()
                     .iso(iso)
+                    .isoType(iso.getIsoType())
                     .accessType(accessType)
                     .build();
             return Optional.of(isoAccessLogRepository.save(accessLog));
         } catch (Exception error) {
-            log.warn("ISO / {} / 로그 저장 오류 DocVerId:{}", accessType, iso.getId());
+            log.warn("ISO / {} / 로그 저장 오류 isoId:{}", accessType, iso.getId());
             return Optional.empty();
         } finally {
-            log.debug("ISO / {} / 로그 저장[docVerId:{}]", accessType, iso.getId());
+            log.debug("ISO / {} / 로그 저장[isoId:{}]", accessType, iso.getId());
         }
     }
+
+    public Optional<ISOAccessLog> save(ISOCertification isoCertification, DocumentAccessType accessType) {
+        try {
+            ISOAccessLog accessLog = ISOAccessLog.builder()
+                    .isoCertification(isoCertification)
+                    .isoType(ISOType.ISO_CERT_STATUS)
+                    .accessType(accessType)
+                    .build();
+
+            return Optional.of(isoAccessLogRepository.save(accessLog));
+        } catch (Exception error) {
+            log.warn("ISO 인증 현황 / {} / 로그 저장 오류 isoCertification:{}", accessType, isoCertification.getId());
+            return Optional.empty();
+        } finally {
+            log.debug("ISO 인증 현황 / {} / 로그 저장[isoCertification:{}]", accessType, isoCertification.getId());
+        }
+    }
+
+    public Optional<ISOAccessLog> save(ISOTrainingCertification isoTrainingCertification, DocumentAccessType accessType) {
+        try {
+            ISOAccessLog accessLog = ISOAccessLog.builder()
+                    .isoTrainingCertification(isoTrainingCertification)
+                    .isoType(ISOType.ISO_14155_CERT)
+                    .accessType(accessType)
+                    .build();
+
+            return Optional.of(isoAccessLogRepository.save(accessLog));
+        } catch (Exception error) {
+            log.warn("ISO-14155 수료증 / {} / 로그 저장 오류 isoTrainingCertification ID:{}", accessType, isoTrainingCertification.getId());
+            return Optional.empty();
+        } finally {
+            log.debug("ISO-14155 수료증 / {} / 로그 저장[isoTrainingCertification ID :{}]", accessType, isoTrainingCertification.getId());
+        }
+    }
+
 
     public Optional<ISOAccessLog> save(String isoId, DocumentAccessType accessType) {
         return save(isoRepository.findById(isoId).get(), accessType);

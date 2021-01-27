@@ -14,6 +14,7 @@ import com.groupdocs.assembly.DataSourceInfo;
 import com.groupdocs.assembly.DocumentAssembler;
 import com.groupdocs.assembly.FileFormat;
 import com.groupdocs.assembly.LoadSaveOptions;
+import com.groupdocs.conversion.internal.c.a.ms.System.IO.Directory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +35,10 @@ public class ISOTrainingCertificationService {
 
     @Value("${file.certification-upload-dir}")
     private String fileUploadDir;
+
+    public ISOTrainingCertification findById(String certId) {
+        return isoTrainingCertificationRepository.findById(certId).get();
+    }
 
     public ISOTrainingCertification findByIsoAndUser(ISO iso, Account user){
         return isoTrainingCertificationRepository.findByIsoAndUser(iso, user).get();
@@ -72,6 +77,11 @@ public class ISOTrainingCertificationService {
 //        DocumentAssembler assembler = new DocumentAssembler();
 //        assembler.getKnownTypes().add(ISOCertificationDTO.class);
 //        assembler.assembleDocument(in, os, new LoadSaveOptions(FileFormat.PDF), dataSourceInfo);
+
+        //경로 확인 후 없으면 생성
+        if(!Directory.exists(fileUploadDir)) {
+            Directory.createDirectory(fileUploadDir);
+        }
 
         FileOutputStream output = new FileOutputStream(new File(fileUploadDir + File.separator + fileName));
         byte[] bt = os.toByteArray();

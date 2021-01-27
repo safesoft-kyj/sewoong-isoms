@@ -13,7 +13,7 @@ import java.io.Serializable;
 
 @Data
 @Entity
-@Table(name = "s_iso_training_certification")
+@Table(name = "s_iso_training_certification", uniqueConstraints = {@UniqueConstraint(columnNames = {"id", "user_id"})})
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

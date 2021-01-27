@@ -14,7 +14,7 @@
     </script>
 </head>
 <body>
-<@pagination.bind trainingLog/>
+<@pagination.bind isoTrainingLog/>
 <div class="tab-base">
 
     <!--Nav Tabs-->
@@ -30,10 +30,10 @@
     <div class="tab-content">
 
         <div class="tab-pane fade active in">
-            <#if trainingLog.content?has_content>
+            <#if isoTrainingLog.content?has_content>
             <div class="text-right">
                 <form method="post" action="/training/trainingLog/publish">
-                    <button class="btn btn-primary" id="publishBtn" data-loading-text="배포 진행중..." type="submit"><i class="fa fa-send-o"></i> Publish</button>
+                    <button class="btn btn-primary" id="exportBtn" type="button"><i class="fa fa-file"></i> Export</button>
                 </form>
             </div>
             <hr/>
@@ -51,7 +51,7 @@
                 <tr>
                     <th class="bg-gray-light">Department/Team:</th>
                     <td class="text-primary">
-                        <#if user.orgDepart?has_content>${user.orgDepart}</#if><#if user.orgTeam?has_content><#if user.orgDepart?has_content>/</#if>${user.orgTeam}</#if>
+                        <#if user.deptName?has_content>${user.deptName}</#if><#if user.teamName?has_content><#if user.deptName?has_content>/</#if>${user.teamName}</#if>
                     </td>
                     <th class="bg-gray-light">Employee No.:</th>
                     <td class="text-primary">${user.empNo}</td>
@@ -104,10 +104,10 @@
                 </tr>
                 </thead>
                 <tbody>
-                <#if trainingLog.content?has_content>
-                    <#list trainingLog.content as t>
+                <#if isoTrainingLog.content?has_content>
+                    <#list isoTrainingLog.content as t>
                         <tr>
-                            <td class="text-center">${(trainingLog.totalElements - (trainingLog.size * trainingLog.number)) - t?index}</td>
+                            <td class="text-center">${(isoTrainingLog.totalElements - (isoTrainingLog.size * isoTrainingLog.number)) - t?index}</td>
                             <td class="text-center"><#if t.completeDate?has_content>${t.completeDate?string('dd-MMM-yyyy')}</#if></td>
                             <td>${t.trainingCourse}</td>
                             <td class="text-center">${t.hour}</td>

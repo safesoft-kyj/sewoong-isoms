@@ -28,12 +28,10 @@
             <input type="hidden" name="deselectedId" id="deselectedId">
             <!--Text Input-->
             <div class="form-group">
-                <label class="col-md-3 control-label" for="demo-text-input">Training Date</label>
+                <label class="col-md-3 control-label" for="trainingDate">Training Date</label>
                 <div class="col-md-9">
-<#--                    <input type="text" id="demo-text-input" class="form-control" placeholder="Text">-->
-                    <@spring.formInput "offlineTraining.trainingDate" "class='form-control'"/>
+                    <@spring.formInput "isoOfflineTraining.trainingDate" "class='form-control'"/>
                     <@spring.showErrors "" "color:red;"/>
-<#--                    <small class="help-block">(DD-MMM-YYYY)</small>-->
                 </div>
             </div>
 
@@ -41,10 +39,8 @@
             <div class="form-group">
                 <label class="col-md-3 control-label">Organization</label>
                 <div class="col-md-9">
-<#--                    <input type="email" id="demo-email-input" class="form-control" placeholder="Enter your email">-->
-                    <@spring.formInput "offlineTraining.organization" "class='form-control' placeholder='Team/Department'"/>
+                    <@spring.formInput "isoOfflineTraining.organization" "class='form-control' placeholder='Team/Department'"/>
                     <@spring.showErrors "" "color:red;"/>
-<#--                    <small class="help-block">(Academy, Self-training, etc.)</small>-->
                 </div>
             </div>
 
@@ -61,28 +57,28 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <#if offlineTraining.offlineTrainingDocuments?has_content>
-                        <#list offlineTraining.offlineTrainingDocuments as sop>
-                        <tr>
-                            <td>${sop?index + 1}</td>
-                            <td>${sop.documentVersion.document.docId} ${sop.documentVersion.document.title} v${sop.documentVersion.version}</td>
-                            <td>
-                                <@spring.formInput "offlineTraining.offlineTrainingDocuments[${sop?index}].hour" "class='form-control input-sm' step='0.1' min='0.1'" "number"/>
-                                <@spring.showErrors "" "color:red;"/>
-<#--                                <input type="number" class="form-control input-sm"/>-->
-                            </td>
-                        </tr>
-                        </#list>
-<#--                        <#else>-->
-<#--                        <tr>-->
-<#--                            <td colspan="3" class="text-center">-->
-<#--&lt;#&ndash;                                <span class="text-danger"> <i class="fa fa-exclamation-circle"></i> SOP를 선택해 주세요.</span>&ndash;&gt;-->
-<#--                            </td>-->
-<#--                        </tr>-->
+                        <#if isoOfflineTraining.isoOfflineTrainingDocuments?has_content>
+                            <#list isoOfflineTraining.isoOfflineTrainingDocuments as doc>
+                                <tr>
+                                    <td>${doc?index + 1}</td>
+                                    <td>[${doc.iso.isoType.label}] ${doc.iso.title}</td>
+                                    <td>
+                                        <@spring.formInput "isoOfflineTraining.isoOfflineTrainingDocuments[${doc?index}].hour" "class='form-control input-sm' step='0.1' min='0.1'" "number"/>
+                                        <@spring.showErrors "" "color:red;"/>
+                                        <#--                                <input type="number" class="form-control input-sm"/>-->
+                                    </td>
+                                </tr>
+                            </#list>
+                        <#else>
+                            <tr>
+                                <td colspan="3" class="text-center">
+                                    <#--                                <span class="text-danger"> <i class="fa fa-exclamation-circle"></i> SOP를 선택해 주세요.</span>-->
+                                </td>
+                            </tr>
                         </#if>
                         <tr>
                             <td colspan="3">
-                                <@spring.formMultiSelect "offlineTraining.sopIds" sopMap "class='form-control'"/>
+                                <@spring.formMultiSelect "isoOfflineTraining.isoIds" isoMap "class='form-control'"/>
                                 <@spring.showErrors "" "color:red;"/>
                             </td>
                         </tr>
@@ -95,7 +91,7 @@
             <div class="form-group">
                 <label class="col-md-3 control-label">Attendee</label>
                 <div class="col-md-9">
-                    <@spring.formMultiSelect "offlineTraining.attendees" userMap "class='form-control'"/>
+                    <@spring.formMultiSelect "isoOfflineTraining.attendees" userMap "class='form-control'"/>
                     <@spring.showErrors "" "color:red;"/>
                     <small class="help-block">* 오프라인 교육 이력은 관리자 확인 후 반영 됩니다.</small>
                 </div>
@@ -113,9 +109,9 @@
 
 <script>
     $(function() {
-        $('#sopIds,#attendees').chosen({width:'100%'});
+        $('#isoIds,#attendees').chosen({width:'100%'});
 
-        $("#sopIds").on("change", function(evt, params) {
+        $("#isoIds").on("change", function(evt, params) {
            if(params.selected) {
                $("#selectedId").val(params.selected);
            } else if(params.deselected) {

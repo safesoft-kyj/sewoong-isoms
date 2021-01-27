@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Billing e.g. invoices and receipts</title>
-    <link href="http://kcsgesop.safesoft.co.kr/static/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="http://iso.cauh.ac.kr/static/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />
 </head>
 
 <body itemscope itemtype="http://schema.org/EmailMessage">
@@ -38,11 +38,11 @@
                                                         </tr>
                                                         <tr>
                                                             <td>Training Date</td>
-                                                            <td class="alignleft">${offlineTraining.trainingDate?string('yyyy-MM-dd')}</td>
+                                                            <td class="alignleft">${isoOfflineTraining.trainingDate?string('yyyy-MM-dd')}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Organization</td>
-                                                            <td class="alignleft">${offlineTraining.organization}</td>
+                                                            <td class="alignleft">${isoOfflineTraining.organization}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Training SOP</td>
@@ -52,9 +52,9 @@
 <#--                                                                        <th>SOP</th>-->
 <#--                                                                        <th class="aligncenter">Training Hr.</th>-->
 <#--                                                                    </tr>-->
-                                                                    <#list offlineTraining.offlineTrainingDocuments as doc>
+                                                                    <#list isoOfflineTraining.isoOfflineTrainingDocuments as doc>
 <#--                                                                    <tr>-->
-                                                                        ${doc.documentVersion.document.docId} ${doc.documentVersion.document.title} v${doc.documentVersion.version} / (${doc.hour}H)<br/>
+                                                                        [${doc.iso.isoType.label}] ${doc.iso.title} / (${doc.hour}H)<br/>
                                                                     </#list>
                                                                 <!--                                                                 / 1.0<br/>-->
                                                                 <!--                                                                SOP-QM0001 Audit Procedure v1.0 / 1.0<br/>-->
@@ -72,7 +72,7 @@
                                             </tr>
                                             <tr>
                                                 <td class="content-block aligncenter">
-                                                    <a href="http://kcsgesop.safesoft.co.kr" target="_blank">e-SOP 바로가기</a>
+                                                    <a href="http://iso.cauh.ac.kr" target="_blank">e-SOP 바로가기</a>
                                                 </td>
                                             </tr>
                                         </table>
@@ -87,7 +87,7 @@
                         <tr>
                             <td class="aligncenter">
                                 <small>본 이메일의 발신자 주소는 발신전용으로 회신되지 않습니다.<br/>
-                                    COPYRIGHT© CAUH. CO. LTD. ALL RIGHTS RESERVED.
+                                    COPYRIGHT© CHUNG-ANG UNIVERSITY. ALL RIGHTS RESERVED.
                                 </small></td>
                         </tr>
                     </table>

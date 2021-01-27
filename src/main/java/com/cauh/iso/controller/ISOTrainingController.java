@@ -1,31 +1,42 @@
 package com.cauh.iso.controller;
 
 import com.cauh.common.entity.Account;
+import com.cauh.common.entity.QAccount;
+import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.annotation.CurrentUser;
 import com.cauh.iso.domain.*;
-import com.cauh.iso.domain.constant.TrainingStatus;
+import com.cauh.iso.domain.constant.*;
 import com.cauh.iso.repository.TrainingMatrixRepository;
-import com.cauh.iso.service.ISOService;
+import com.cauh.iso.service.*;
+import com.cauh.iso.validator.ISOOfflineTrainingValidator;
 import com.cauh.iso.xdocreport.ISOTrainingCertificationService;
-import com.cauh.iso.service.ISOTrainingLogService;
-import com.cauh.iso.service.ISOTrainingPeriodService;
 import com.cauh.iso.utils.DateUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -34,14 +45,21 @@ import java.util.stream.StreamSupport;
 @Controller
 @RequiredArgsConstructor
 @Slf4j
-@SessionAttributes({"quiz", "isoTrainingLogs"})
+@SessionAttributes({"quiz", "isoMap", "userMap", "isoTrainingLogs", "isoOfflineTraining"})
 public class ISOTrainingController {
 
     private final TrainingMatrixRepository trainingMatrixRepository;
     private final ISOTrainingLogService isoTrainingLogService;
     private final ISOTrainingPeriodService isoTrainingPeriodService;
     private final ISOTrainingCertificationService isoTrainingCertificationService;
+    private final ISOAccessLogService isoAccessLogService;
     private final ISOService isoService;
+    private final ISOOfflineTrainingService isoOfflineTrainingService;
+    private final ISOOfflineTrainingAttendeeService isoOfflineTrainingAttendeeService;
+    private final ISOOfflineTrainingValidator isoOfflineTrainingValidator;
+    private final UserRepository userRepository;
+
+    private final FileStorageService fileStorageService;
 
     @GetMapping("/training/iso/mytraining")
     public String myTraining(@PageableDefault(size = 25) Pageable pageable, @CurrentUser Account user, Model model) {
@@ -157,6 +175,39 @@ public class ISOTrainingController {
         return isoTrainingLogDTOS;
     }
 
+    //수료증 html .return
+    @PutMapping("/ajax/training/iso/certification/{isoCertId}")
+    @ResponseBody
+    public String ajaxCompletedTraining(@PathVariable("isoCertId") String isoCertId) {
+        ISOTrainingCertification isoTrainingCertification = isoTrainingCertificationService.findById(isoCertId);
+        return isoTrainingCertification.getCertHtml();
+    }
+
+    @PostMapping("/training/iso/mytraining/completed/downloadCertFile")
+    public ResponseEntity<Resource> downloadCertification(@RequestParam("isoCertId") String isoCertId, @CurrentUser Account user, HttpServletRequest request) {
+        ISOTrainingCertification isoTrainingCertification = isoTrainingCertificationService.findById(isoCertId);
+
+        //AccessLog 저장
+        isoAccessLogService.save(isoTrainingCertification, DocumentAccessType.DOWNLOAD);
+
+        Resource resource = fileStorageService.loadFileAsResource("cert/" + isoTrainingCertification.getFileName());
+        String contentType = null;
+        try {
+            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+        } catch (IOException ex) {
+            log.info("Could not determine file type.");
+        }
+
+        if (contentType == null) {
+            contentType = "application/octet-stream";
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + user.getName() +  "_Cert_" + isoTrainingCertification.getId() + ".pdf\"")
+                .body(resource);
+    }
+
     /**
      * Training Test 출력
      * @param isoId
@@ -232,6 +283,101 @@ public class ISOTrainingController {
         status.setComplete();
 
         return "redirect:/training/iso/mytraining";
+    }
+
+    @GetMapping("/training/iso/offline-training")
+    public String offlineTraining(@PageableDefault(size = 25, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable,
+                                  @CurrentUser Account user, Model model) {
+
+        QISOOfflineTrainingAttendee qisoOfflineTrainingAttendee = QISOOfflineTrainingAttendee.iSOOfflineTrainingAttendee;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qisoOfflineTrainingAttendee.account.id.in(user.getId()));
+
+        model.addAttribute("isoOfflineTraining", isoOfflineTrainingAttendeeService.findAll(builder, pageable));
+        return "iso/training/offline/list";
+    }
+
+    @GetMapping("/training/iso/offline-training/request")
+    public String isoOfflineTrainingRequest(Model model) {
+        model.addAttribute("isoOfflineTraining", new ISOOfflineTraining());
+
+        QISO qiso = QISO.iSO;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qiso.training.eq(true).and(qiso.active.eq(true)));
+        Iterable<ISO> isos = isoService.findAll(builder);
+
+        model.addAttribute("isoMap", StreamSupport.stream(isos.spliterator(), false)
+                .collect(Collectors.toMap(s -> s.getId(), s -> "[" + s.getIsoType().getLabel() + "] " + s.getTitle())));
+
+
+        QAccount qUser = QAccount.account;
+        BooleanBuilder userBuilder = new BooleanBuilder();
+//        userBuilder.and(qUser.empNo.isNotNull());
+        userBuilder.and(qUser.training.eq(true));
+        userBuilder.and(qUser.enabled.eq(true));
+        Iterable<Account> users = userRepository.findAll(userBuilder, qUser.name.asc());
+        ;
+
+        model.addAttribute("userMap", StreamSupport.stream(users.spliterator(), false)
+                .collect(Collectors.toMap(s -> Integer.toString(s.getId()), s -> s.getName())));
+
+        return "iso/training/offline/request";
+    }
+
+    @PutMapping("/training/iso/offline-training/request")
+    public String offlineTrainingRequest(@ModelAttribute("isoOfflineTraining") ISOOfflineTraining isoOfflineTraining,
+                                         @RequestParam(value = "selectedId", required = false) String selectedId,
+                                         @RequestParam(value = "deselectedId", required = false) String deselectedId
+    ) {
+        if(StringUtils.isEmpty(selectedId) == false) {
+            ISOOfflineTrainingDocument offlineTrainingDocument = new ISOOfflineTrainingDocument();
+            offlineTrainingDocument.setIso(isoService.getISO(selectedId).get());
+            if(isoOfflineTraining.getIsoOfflineTrainingDocuments().contains(offlineTrainingDocument) == false) {
+                isoOfflineTraining.getIsoOfflineTrainingDocuments().add(offlineTrainingDocument);
+            }
+        } else if(StringUtils.isEmpty(deselectedId) == false) {
+            isoOfflineTraining.getIsoOfflineTrainingDocuments().removeAll(isoOfflineTraining.getIsoOfflineTrainingDocuments().stream().filter(s -> s.getIso().getId().equals(deselectedId)).collect(Collectors.toList()));
+        }
+
+        if(ObjectUtils.isEmpty(isoOfflineTraining.getIsoOfflineTrainingDocuments())) {
+            isoOfflineTraining.setIsoIds(null);
+        }
+
+        return "iso/training/offline/request";
+    }
+
+    @PostMapping("/training/iso/offline-training/request")
+    public String offlineTrainingRequest(@ModelAttribute("isoOfflineTraining") ISOOfflineTraining isoOfflineTraining, BindingResult result,
+                                         SessionStatus status, RedirectAttributes attributes, @CurrentUser Account user) {
+        isoOfflineTrainingValidator.validate(isoOfflineTraining, result);
+
+        if(result.hasErrors()) {
+            return "iso/training/offline/request";
+        }
+
+        isoOfflineTraining.setStatus(OfflineTrainingStatus.SUBMITTED);
+        isoOfflineTraining.setEmpNo(user.getEmpNo());
+        isoOfflineTrainingService.save(isoOfflineTraining);
+        isoOfflineTrainingService.sendSubmittedEmail(user, isoOfflineTraining);
+
+        status.setComplete();
+
+        attributes.addFlashAttribute("message", "오프라인 교육 신청이 완료 되었습니다.");
+        return "redirect:/training/offline-training";
+    }
+
+    @GetMapping("/training/iso/trainingLog")
+    public String uploadTrainingLog(@PageableDefault(size = 15, sort = {"completeDate"}, direction = Sort.Direction.DESC) Pageable pageable,
+                                    @CurrentUser Account user, Model model) {
+
+        QISOTrainingLog qIsoTrainingLog = QISOTrainingLog.iSOTrainingLog;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qIsoTrainingLog.user.id.eq(user.getId()));
+        builder.and(qIsoTrainingLog.status.eq(TrainingStatus.COMPLETED));
+
+        model.addAttribute("isoTrainingLog", isoTrainingLogService.findAll(builder, pageable));
+        return "iso/training/trainingLog";
+
     }
 
 }

@@ -251,6 +251,7 @@
             $("#trainingLogForm").submit();
         });
 
+
         $(document).on("mousemove", "#image-view img", function(e) {
             var width = $(this).width();
             var half = width / 2;
@@ -365,7 +366,7 @@
                     </div>
                     <div class="col-xs-6">
                         <button data-dismiss="modal" class="btn btn-default" type="button"><i class="fa fa-times"></i> Cancel</button>
-                        <button class="btn btn-info" type="submit"><i class="fa fa-check"></i> Submit</button>
+                        <button class="btn btn-info" id="testSubmitBtn" data-save-text="Saving.." data-loading-text="수료중 생성 중.. 잠시만 기다려 주세요." type="submit"><i class="fa fa-check"></i> Submit</button>
                     </div>
                 </div>
             </div>
@@ -422,6 +423,16 @@
                 return false;
             }
         }
+
+        $("#testSubmitBtn").attr("disabled", "disabled");
+        var $btn = $("#testSubmitBtn").button('save');
+        setTimeout(function() {
+            $btn.button('loading');
+            // setTimeout(function() {
+            //     $('#submitBtn').attr("disabled", "disabled");
+            // }, 250);
+
+        }, 1500);
 
         return true;
     }

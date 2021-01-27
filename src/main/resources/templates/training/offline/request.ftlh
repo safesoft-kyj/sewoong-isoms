@@ -18,8 +18,7 @@
         <div class="panel-heading">
             <h3 class="panel-title">Off-line Training</h3>
         </div>
-
-
+        
         <!-- BASIC FORM ELEMENTS -->
         <!--===================================================-->
         <form class="panel-body form-horizontal form-padding" id="offlineForm" method="post">
