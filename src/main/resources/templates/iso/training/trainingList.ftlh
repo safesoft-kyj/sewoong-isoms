@@ -25,14 +25,14 @@
             <table class="table table-bordered table-hover">
                 <thead>
                 <tr class="bg-gray-light">
-                    <th class="text-center">No.</th>
-                    <th class="text-center">ISO Type</th>
+                    <th class="text-center" style="width: 80px;">No.</th>
+                    <th class="text-center" style="width: 150px;">ISO Type</th>
                     <th>Title</th>
-                    <th class="text-center">Training period</th>
-                    <th class="text-center">Progress</th>
-                    <th class="text-center">Status</th>
+                    <th class="text-center" style="width: 200px;">Training period</th>
+                    <th class="text-center" style="width: 200px;">Progress</th>
+                    <th class="text-center" style="width: 140px;">Status</th>
 <#--                    <th class="text-center">Complete date</th>-->
-                    <th>#Actions</th>
+                    <th class="text-center" style="width: 140px;">#Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -68,7 +68,7 @@
 <#--                        <td class="text-center"><#if t.trainingLog?has_content && t.trainingLog.completeDate?has_content>-->
 <#--                            <span class="text-mint">${t.trainingLog.completeDate?string('yyyy.MM.dd')}</span>-->
 <#--                        </#if></td>-->
-                        <td>
+                        <td class="text-center">
                             <#if t.isoTrainingLog?has_content>
                                 <#if t.isoTrainingLog.status == "TEST_FAILED">
                                 <button class="btn btn-warning btn-xs" type="button" href="#test-modal" data-toggle="modal" data-title="[${t.iso.isoType.label}]${t.iso.title}" data-id="${t.iso.id}" data-logid="${t.isoTrainingLog.id}"><i class="fa fa-check-square-o"></i> Re-test</button>

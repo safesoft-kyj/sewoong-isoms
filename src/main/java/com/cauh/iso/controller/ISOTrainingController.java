@@ -285,6 +285,7 @@ public class ISOTrainingController {
         return "redirect:/training/iso/mytraining";
     }
 
+    //Offline Training 신청 목록
     @GetMapping("/training/iso/offline-training")
     public String offlineTraining(@PageableDefault(size = 25, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable,
                                   @CurrentUser Account user, Model model) {
@@ -297,6 +298,11 @@ public class ISOTrainingController {
         return "iso/training/offline/list";
     }
 
+    /**
+     * ISO Offline Training 신청
+     * @param model
+     * @return
+     */
     @GetMapping("/training/iso/offline-training/request")
     public String isoOfflineTrainingRequest(Model model) {
         model.addAttribute("isoOfflineTraining", new ISOOfflineTraining());
@@ -324,6 +330,13 @@ public class ISOTrainingController {
         return "iso/training/offline/request";
     }
 
+    /**
+     * Training 항목 추가/삭제 시 동작
+     * @param isoOfflineTraining
+     * @param selectedId
+     * @param deselectedId
+     * @return
+     */
     @PutMapping("/training/iso/offline-training/request")
     public String offlineTrainingRequest(@ModelAttribute("isoOfflineTraining") ISOOfflineTraining isoOfflineTraining,
                                          @RequestParam(value = "selectedId", required = false) String selectedId,
@@ -346,6 +359,15 @@ public class ISOTrainingController {
         return "iso/training/offline/request";
     }
 
+    /**
+     * 오프라인 교육 신청 (ISO)
+     * @param isoOfflineTraining
+     * @param result
+     * @param status
+     * @param attributes
+     * @param user
+     * @return
+     */
     @PostMapping("/training/iso/offline-training/request")
     public String offlineTrainingRequest(@ModelAttribute("isoOfflineTraining") ISOOfflineTraining isoOfflineTraining, BindingResult result,
                                          SessionStatus status, RedirectAttributes attributes, @CurrentUser Account user) {
@@ -359,13 +381,26 @@ public class ISOTrainingController {
         isoOfflineTraining.setEmpNo(user.getEmpNo());
         isoOfflineTrainingService.save(isoOfflineTraining);
         isoOfflineTrainingService.sendSubmittedEmail(user, isoOfflineTraining);
-
         status.setComplete();
 
         attributes.addFlashAttribute("message", "오프라인 교육 신청이 완료 되었습니다.");
-        return "redirect:/training/offline-training";
+        return "redirect:/training/iso/offline-training";
     }
 
+    @GetMapping("/training/iso/offline-training/{id}")
+    public String offlineTrainingRequest(@PathVariable("id") Integer id, Model model) {
+        model.addAttribute("isoOfflineTraining", isoOfflineTrainingService.findById(id).get());
+
+        return "iso/training/offline/view";
+    }
+
+    /**
+     * Training Log 화면 열람
+     * @param pageable
+     * @param user
+     * @param model
+     * @return
+     */
     @GetMapping("/training/iso/trainingLog")
     public String uploadTrainingLog(@PageableDefault(size = 15, sort = {"completeDate"}, direction = Sort.Direction.DESC) Pageable pageable,
                                     @CurrentUser Account user, Model model) {

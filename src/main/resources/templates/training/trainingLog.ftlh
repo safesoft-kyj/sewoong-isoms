@@ -114,6 +114,12 @@
                             <td class="text-center">${t.organization}</td>
                         </tr>
                     </#list>
+                <#else>
+                    <tr>
+                        <td colspan="5" class="text-center">
+                            Training Log 내용이 없습니다.
+                        </td>
+                    </tr>
 <#--                <#else>-->
 <#--                    <tr>-->
 <#--                        <td colspan="5">-->

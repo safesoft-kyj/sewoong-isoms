@@ -87,6 +87,7 @@ public class ISOController {
         return "iso/iso14155/list";
     }
 
+    @IsAdmin
     @GetMapping("/iso-14155/new")
     public String newISO(Model model) {
         ISO iso = new ISO();

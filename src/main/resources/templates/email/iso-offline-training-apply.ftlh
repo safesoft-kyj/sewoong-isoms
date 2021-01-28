@@ -17,7 +17,7 @@
                 <table class="main" width="100%" cellpadding="0" cellspacing="0" style="background-color: #fff; border-bottom: 2px solid #d7d7d7;">
                     <tr>
                         <td class="alert alert-good" style="color: #fff; text-decoration: none; font-weight: 500; font-size: 16px; background-color: #8BC34A;">
-                            <strong>[ISO-MS] Off-line Training 등록 요청</strong>
+                            <strong>[ISO-MS] ISO Off-line Training 반영 알림</strong>
                         </td>
                     </tr>
                     <tr>
@@ -30,12 +30,8 @@
                                             <!--                                                <td>[e-SOP] SOP Off-line Training 등록 요청</td>-->
                                             <!--                                            </tr>-->
                                             <tr>
-                                                <td>
+                                                <td style="vertical-align: top;">
                                                     <table class="invoice-items" cellpadding="0" cellspacing="0" style="width: 100%;">
-                                                        <tr>
-                                                            <td style="padding: 5px 0;">Requester</td>
-                                                            <td class="alignleft" style="padding: 5px 0; text-align: left;">${requester.name}</td>
-                                                        </tr>
                                                         <tr>
                                                             <td style="padding: 5px 0;">Training Date</td>
                                                             <td class="alignleft" style="padding: 5px 0; text-align: left;">${isoOfflineTraining.trainingDate?string('yyyy-MM-dd')}</td>
@@ -47,24 +43,19 @@
                                                         <tr>
                                                             <td style="padding: 5px 0;">Training SOP</td>
                                                             <td class="alignleft" style="padding: 5px 0; text-align: left;">
-<#--                                                                <table width="100%">-->
-<#--                                                                    <tr>-->
-<#--                                                                        <th>SOP</th>-->
-<#--                                                                        <th class="aligncenter">Training Hr.</th>-->
-<#--                                                                    </tr>-->
-                                                                    <#list isoOfflineTraining.isoOfflineTrainingDocuments as doc>
-<#--                                                                    <tr>-->
-                                                                        [${doc.iso.isoType.label}] ${doc.iso.title} / (${doc.hour}H)<br/>
-                                                                    </#list>
+                                                                <#--                                                                <table width="100%">-->
+                                                                <#--                                                                    <tr>-->
+                                                                <#--                                                                        <th>SOP</th>-->
+                                                                <#--                                                                        <th class="aligncenter">Training Hr.</th>-->
+                                                                <#--                                                                    </tr>-->
+                                                                <#list isoOfflineTraining.isoOfflineTrainingDocuments as doc>
+                                                                <#--                                                                    <tr>-->
+                                                                    [${doc.iso.isoType.label}] ${doc.iso.title} / (${doc.hour}H)<br/>
+                                                                </#list>
                                                                 <!--                                                                 / 1.0<br/>-->
                                                                 <!--                                                                SOP-QM0001 Audit Procedure v1.0 / 1.0<br/>-->
                                                                 <!--                                                                SOP-QM0001 Audit Procedure v1.0 / 1.0<br/>-->
                                                                 <!--                                                                SOP-QM0001 Audit Procedure v1.0 / 1.0-->
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td style="padding: 5px 0;">Trainee</td>
-                                                            <td class="alignleft" style="padding: 5px 0; text-align: left;"><#list attendees as attendee><#if attendee?is_first == false>, </#if>${attendee.name?default('')}</#list>
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -87,13 +78,14 @@
                         <tr>
                             <td class="aligncenter" style="color: #999; font-size: 12px; text-align: center;">
                                 <small>본 이메일의 발신자 주소는 발신전용으로 회신되지 않습니다.<br/>
-                                    COPYRIGHT© CHUNG-ANG UNIVERSITY. ALL RIGHTS RESERVED.
-                                </small></td>
+                                    COPYRIGHT© Chung-Ang University Hospital. ALL RIGHTS RESERVED.
+                                </small>
+                            </td>
                         </tr>
                     </table>
-                </div></div>
+                </div>
+            </div>
         </td>
-        <!--        <td></td>-->
     </tr>
 </table>
 

@@ -20,30 +20,22 @@
     <div class="tab-content">
         <div class="tab-pane fade active in">
             <form class="form-horizontal form-padding" method="post" id="signForm">
-
                 <!--Static-->
                 <div class="form-group">
-                    <label class="col-md-3 control-label">Name</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control" value="${user.engName!''}" readonly="readonly">
+                    <label class="control-label">Name</label>
+                    <input type="text" class="form-control" value="${user.engName!''}" readonly="readonly">
+                    <label class="control-label">Team</label>
+                    <input type="text" class="form-control" value="${user.teamName!''}" readonly="readonly">
+                    <label class="control-label">Department</label>
+                    <input type="text" class="form-control" value="${user.deptName!''}" readonly="readonly">
+                    <label class="control-label">Email</label>
+                    <input type="text" class="form-control" value="${user.email!''}" readonly="readonly">
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Team</label>
-                    <div class="col-md-9">
-                        <input type="text" class="form-control" value="${user.teamName!''}" readonly="readonly">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Department</label>
-                    <div class="col-md-9">
-                        <input type="text" class="form-control" value="${user.deptName!''}" readonly="readonly">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Email</label>
-                    <div class="col-md-9">
-                        <input type="text" class="form-control" value="${user.email!''}" readonly="readonly">
+                    <div class="col-md-3">
+                        <a href="/agreements-withdrawal" style="margin: 0px; padding: 0px;">
+                            <img class="menu-title" src="/static/img/withdrawal.png" alt="철회신청">
+                        </a>
                     </div>
                 </div>
             </form>

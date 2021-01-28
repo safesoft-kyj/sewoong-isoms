@@ -92,6 +92,17 @@ public class MyTraining implements Serializable {
         this.endDate = endDate;
     }
 
+
+    @QueryProjection
+    public MyTraining(Account user, ISO iso, ISOTrainingPeriod isoTrainingPeriod, ISOTrainingLog isoTrainingLog,  Date startDate, Date endDate){
+        this.user = user;
+        this.iso = iso;
+        this.isoTrainingPeriod = isoTrainingPeriod;
+        this.isoTrainingLog = isoTrainingLog;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
     public Date getInDateOrJobAssignDate() {
         if(ObjectUtils.isEmpty(user)) {
             return null;

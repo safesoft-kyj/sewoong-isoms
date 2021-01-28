@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -19,9 +20,29 @@ public class QISOOfflineTraining extends EntityPathBase<ISOOfflineTraining> {
 
     public static final QISOOfflineTraining iSOOfflineTraining = new QISOOfflineTraining("iSOOfflineTraining");
 
+    public final com.cauh.common.entity.QBaseEntity _super = new com.cauh.common.entity.QBaseEntity(this);
+
+    //inherited
+    public final StringPath createdBy = _super.createdBy;
+
+    //inherited
+    public final DateTimePath<java.sql.Timestamp> createdDate = _super.createdDate;
+
     public final StringPath empNo = createString("empNo");
 
     public final NumberPath<Integer> id = createNumber("id", Integer.class);
+
+    public final ListPath<ISOOfflineTrainingAttendee, QISOOfflineTrainingAttendee> isoOfflineTrainingAttendees = this.<ISOOfflineTrainingAttendee, QISOOfflineTrainingAttendee>createList("isoOfflineTrainingAttendees", ISOOfflineTrainingAttendee.class, QISOOfflineTrainingAttendee.class, PathInits.DIRECT2);
+
+    public final ListPath<ISOOfflineTrainingDocument, QISOOfflineTrainingDocument> isoOfflineTrainingDocuments = this.<ISOOfflineTrainingDocument, QISOOfflineTrainingDocument>createList("isoOfflineTrainingDocuments", ISOOfflineTrainingDocument.class, QISOOfflineTrainingDocument.class, PathInits.DIRECT2);
+
+    public final EnumPath<com.cauh.iso.domain.constant.ISOType> isoType = createEnum("isoType", com.cauh.iso.domain.constant.ISOType.class);
+
+    //inherited
+    public final StringPath lastModifiedBy = _super.lastModifiedBy;
+
+    //inherited
+    public final DateTimePath<java.sql.Timestamp> lastModifiedDate = _super.lastModifiedDate;
 
     public final StringPath organization = createString("organization");
 

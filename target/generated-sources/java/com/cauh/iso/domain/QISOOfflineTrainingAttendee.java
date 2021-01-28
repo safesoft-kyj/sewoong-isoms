@@ -34,7 +34,7 @@ public class QISOOfflineTrainingAttendee extends EntityPathBase<ISOOfflineTraini
 
     public final NumberPath<Integer> id = createNumber("id", Integer.class);
 
-    public final QISOOfflineTraining ISOOfflineTraining;
+    public final QISOOfflineTraining isoOfflineTraining;
 
     //inherited
     public final StringPath lastModifiedBy = _super.lastModifiedBy;
@@ -61,7 +61,7 @@ public class QISOOfflineTrainingAttendee extends EntityPathBase<ISOOfflineTraini
     public QISOOfflineTrainingAttendee(Class<? extends ISOOfflineTrainingAttendee> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.account = inits.isInitialized("account") ? new com.cauh.common.entity.QAccount(forProperty("account"), inits.get("account")) : null;
-        this.ISOOfflineTraining = inits.isInitialized("ISOOfflineTraining") ? new QISOOfflineTraining(forProperty("ISOOfflineTraining")) : null;
+        this.isoOfflineTraining = inits.isInitialized("isoOfflineTraining") ? new QISOOfflineTraining(forProperty("isoOfflineTraining")) : null;
     }
 
 }

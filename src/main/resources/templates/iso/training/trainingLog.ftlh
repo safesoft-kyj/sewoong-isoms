@@ -114,7 +114,12 @@
                             <td class="text-center">${t.organization}</td>
                         </tr>
                     </#list>
-<#--                <#else>-->
+                <#else>
+                    <tr>
+                        <td colspan="5" class="text-center">
+                            Training Log 내용이 없습니다.
+                        </td>
+                    </tr>
 <#--                    <tr>-->
 <#--                        <td colspan="5">-->
 <#--                            <div class="text-info pad-top pad-btm"><i class="fa fa-exclamation-circle"></i> 최초 1회만 Training Log 를 가져오기 할 수 있습니다.</div>-->

@@ -1,5 +1,6 @@
 package com.cauh.iso.domain;
 
+import com.cauh.common.entity.BaseEntity;
 import com.cauh.iso.domain.constant.ISOType;
 import com.cauh.iso.domain.constant.OfflineTrainingStatus;
 import lombok.Data;
@@ -12,6 +13,7 @@ import org.hibernate.envers.Audited;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,7 +27,8 @@ import java.util.List;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @SequenceGenerator(name = "ISO_OFFLINE_TRAINING_SEQ_GENERATOR", sequenceName = "SEQ_ISO_COURSE", initialValue = 1, allocationSize = 1)
 @Audited(withModifiedFlag = true)
-public class ISOOfflineTraining {
+public class ISOOfflineTraining extends BaseEntity implements Serializable {
+    private static final long serialVersionUID = 8729435689355715487L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ISO_OFFLINE_TRAINING_SEQ_GENERATOR")

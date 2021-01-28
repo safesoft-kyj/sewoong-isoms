@@ -93,7 +93,7 @@ public class AdminTrainingController {
         return "admin/training/offline/view";
     }
 
-    //TODO :: YSH
+
     @PostMapping("/training/sop/offline-training/{id}")
     public String offlineTraining(@PathVariable("id") Integer id, RedirectAttributes attributes) {
         OfflineTraining savedOfflineTraining = offlineTrainingService.offlineTrainingApply(id);

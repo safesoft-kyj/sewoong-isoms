@@ -66,6 +66,11 @@
         <li>
             <a href="/user/profile/role">Role</a>
         </li>
+        <li>
+            <a href="/agreements-withdrawal" style="margin: 0px; padding: 0px;">
+                <img class="menu-title" src="/static/img/withdrawal.jpg" alt="철회신청">
+            </a>
+        </li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane fade active in">

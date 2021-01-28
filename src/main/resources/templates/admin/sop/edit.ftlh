@@ -14,9 +14,9 @@
             alert('SOP Category 정보가 존재하지 않습니다. Category 관리 페이지로 이동 합니다.');
             location.href = '/admin/sop/category';
         </script>
-    <#elseif type == 'RD' && (sopList?has_content == false || sopList?size == 0)>
+    <#elseif type == 'RF' && (sopList?has_content == false || sopList?size == 0)>
         <script>
-            alert('SOP 등록 후 RD 등록을 진행해 주세요.');
+            alert('SOP 등록 후 RF 등록을 진행해 주세요.');
             history.back();
         </script>
     </#if>
@@ -59,13 +59,13 @@
                 var prefix = $(this).val();
                 var documentNo = $("#document\\.documentNo").val();
 
-                $("#document\\.docId").val(prefix + "_RD" + documentNo);
+                $("#document\\.docId").val(prefix + "_RF" + documentNo);
             });
             $("#document\\.documentNo").keyup(function() {
                 var prefix = $("#document\\.sop\\.docId").val();
                 var documentNo = $(this).val();
 
-                $("#document\\.docId").val(prefix + "_RD" + documentNo);
+                $("#document\\.docId").val(prefix + "_RF" + documentNo);
             });
             </#if>
 
@@ -156,7 +156,6 @@
                 </div>
             </div>
             <#if type == 'SOP'>
-
                 <div class="form-group">
                     <label class="col-sm-3 control-label">SOP Document File</label>
                     <div class="col-sm-9">
@@ -167,17 +166,17 @@
                 </div>
             <#else>
                 <div class="form-group">
-                    <label class="col-sm-3 control-label">RD Document File(ENG)</label>
+                    <label class="col-sm-3 control-label">RF Document File(ENG)</label>
                     <div class="col-sm-9">
                         <#assign accept = '.xls,.xlsx,.doc,.docx'/>
-                        <@spring.formInput "documentVersion.uploadRdEngFile" "class='form-control' placeholder='RD Document File(ENG)' accept='${accept}'" "file"/>
+                        <@spring.formInput "documentVersion.uploadRfEngFile" "class='form-control' placeholder='RF Document File(ENG)' accept='${accept}'" "file"/>
                         <@spring.showErrors "" "color:red;"/>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-3 control-label">RD Document File(KOR)</label>
+                    <label class="col-sm-3 control-label">RF Document File(KOR)</label>
                     <div class="col-sm-9">
-                        <@spring.formInput "documentVersion.uploadRdKorFile" "class='form-control' placeholder='RD Document File(KOR)' accept='${accept}'" "file"/>
+                        <@spring.formInput "documentVersion.uploadRfEngFile" "class='form-control' placeholder='RF Document File(KOR)' accept='${accept}'" "file"/>
                         <@spring.showErrors "" "color:red;"/>
                     </div>
                 </div>

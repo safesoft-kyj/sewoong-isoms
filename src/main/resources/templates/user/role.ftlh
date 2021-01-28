@@ -17,6 +17,11 @@
         <li class="active">
             <a href="/user/profile/role">Role</a>
         </li>
+        <li>
+            <a href="/agreements-withdrawal" style="margin: 0px; padding: 0px;">
+                <img class="menu-title" src="/static/img/withdrawal.jpg" alt="철회신청">
+            </a>
+        </li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane fade active in">
@@ -78,7 +83,7 @@
                         </#list>
                     <#else>
                         <tr>
-                            <td colspan="6" class="text-center">ROLE 변경 이력이 없습니다.</td>
+                            <td colspan="8" class="text-center">ROLE 변경 이력이 없습니다.</td>
                         </tr>
                     </#if>
                     </tbody>

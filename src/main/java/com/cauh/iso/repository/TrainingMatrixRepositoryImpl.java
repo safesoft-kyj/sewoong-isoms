@@ -412,9 +412,78 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
                 .leftJoin(qIsoTrainingLog).on(qIsoTrainingPeriod.id.eq(qIsoTrainingLog.isoTrainingPeriod.id).and(qIsoTrainingLog.user.id.eq(user.getId())))
                 .leftJoin(qisoAttachFile).on(qisoAttachFile.iso.id.eq(iSOTrainingMatrix.iso.id))
                 .where(qIsoTrainingLog.status.isNull().or(qIsoTrainingLog.status.ne(TrainingStatus.COMPLETED)))
+                .where(qIsoTrainingLog.iso.active.eq(true))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
+
+        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+    }
+
+    /**
+     * ISO 트레이닝 이며, Training을 완료한 경우는 제외하고 리스트를 가져온다.
+     */
+    private JPAQuery getMyISOTrainingListJpaQuery(Department department, Integer userId, ISOType isoType) {
+        QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
+        QISO qISO = QISO.iSO;
+        QISOAttachFile qISOAttachFile = QISOAttachFile.iSOAttachFile;
+        QISOTrainingPeriod qISOTrainingPeriod = QISOTrainingPeriod.iSOTrainingPeriod;
+        QISOTrainingLog qISOTrainingLog = QISOTrainingLog.iSOTrainingLog;
+        QAccount qUser = QAccount.account;
+
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qUser.enabled.eq(true));
+        builder.and(qUser.indate.isNotNull());
+//        builder.and(qUser.empNo.isNotNull());
+//        if(ObjectUtils.isEmpty(loginUser) == false) builder.and(qUser.id.ne(loginUser.getId()));
+        if (!StringUtils.isEmpty(department)) {
+            builder.and(qUser.department.eq(department));
+        }
+        if(!ObjectUtils.isEmpty(userId)) {
+            builder.and(qUser.id.eq(userId));
+        }
+
+        if(!ObjectUtils.isEmpty(isoType)) {
+            log.info("@isoType : {}", isoType);
+            builder.and(qISO.isoType.eq(isoType));
+        }
+
+        JPAQuery<MyTraining> jpaQuery = queryFactory.select(Projections.constructor(MyTraining.class,
+                qUser,
+                qISO,
+                qISOTrainingPeriod,
+                qISOTrainingLog,
+                qISOTrainingPeriod.startDate,
+                qISOTrainingPeriod.endDate))
+                .from(qUser)
+                .join(iSOTrainingMatrix).on(qUser.id.eq(iSOTrainingMatrix.user.id).or(iSOTrainingMatrix.trainingAll.eq(true).and(iSOTrainingMatrix.user.id.isNull())))
+                .join(qISO).on(qISO.id.eq(iSOTrainingMatrix.iso.id).and(qISO.active.eq(true).and(qISO.training.eq(true)))) //Active 된 Training인 경우,
+                .join(qISOTrainingPeriod).on(qISOTrainingPeriod.iso.id.eq(qISO.id))
+                .leftJoin(qISOTrainingLog)
+                .on(qISOTrainingLog.user.id.eq(qUser.id)
+                        .and(qISOTrainingLog.iso.id.eq(qISO.id))
+                        .and(qISOTrainingLog.isoTrainingPeriod.id.eq(qISOTrainingPeriod.id)))
+                .where(builder)
+//                .where(qISOTrainingLog.status.isNull().or(qISOTrainingLog.status.ne(TrainingStatus.COMPLETED)))
+                .orderBy(qISO.id.asc());
+
+        return jpaQuery;
+    }
+
+    @Override
+    public Page<MyTraining> getISOTrainingList(Department department, Integer userId, ISOType isoType, Pageable pageable) {
+
+        JPAQuery<MyTraining> jpaQuery = getMyISOTrainingListJpaQuery(department, userId, isoType);
+        QueryResults<MyTraining> results;
+
+        try{
+            results = jpaQuery.offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .fetchResults();
+        }catch(Exception e) {
+            log.error("@Training Log List 동작 중 에러 발생 : {}", e.getMessage());
+            return new PageImpl<>(new ArrayList<>(), pageable, 0);
+        }
 
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
