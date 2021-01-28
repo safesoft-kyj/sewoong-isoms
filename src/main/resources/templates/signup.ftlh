@@ -177,6 +177,14 @@
                             }
                         }
                     },
+                    birthDate: {
+                        message: '> The birthDate is not valid',
+                        validators: {
+                            notEmpty: {
+                                message: '> The birthDate is required'
+                            }
+                        }
+                    },
                     email: {
                         validators: {
                             remote: {
@@ -295,7 +303,7 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label class="control-label" for="email">Birth Date : </label>
+                            <label class="control-label" for="email">Birth Date* : </label>
                             <@spring.formInput "account.birthDate" "class='form-control'" />
                             <@spring.showErrors "" "color:red;"/>
                         </div>
@@ -328,7 +336,7 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label class="control-label">Job Descriptions* : </label>
+                            <label class="control-label">ROLE* : </label>
                             <@spring.formMultiSelect "account.jdIds" jobDescriptionMap "class='form-control'"/>
                             <@spring.showErrors "" "color:red;"/>
                         </div>

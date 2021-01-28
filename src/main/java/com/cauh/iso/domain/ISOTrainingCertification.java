@@ -33,6 +33,10 @@ public class ISOTrainingCertification extends BaseEntity implements Serializable
     @JoinColumn(name = "iso_id", referencedColumnName = "id")
     private ISO iso;
 
+    @ManyToOne
+    @JoinColumn(name = "iso_training_log_id", referencedColumnName = "id")
+    private ISOTrainingLog isoTrainingLog;
+
     @Column(name = "cert_html", columnDefinition = "nvarchar(MAX)")
     String certHtml;
 

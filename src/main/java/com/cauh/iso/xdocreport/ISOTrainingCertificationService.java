@@ -6,6 +6,7 @@ import com.cauh.common.utils.Base64Utils;
 import com.cauh.iso.component.DocumentAssembly;
 import com.cauh.iso.component.DocumentViewer;
 import com.cauh.iso.domain.ISO;
+import com.cauh.iso.domain.TrainingLog;
 import com.cauh.iso.xdocreport.dto.ISOCertificationDTO;
 import com.cauh.iso.domain.ISOTrainingCertification;
 import com.cauh.iso.repository.ISOTrainingCertificationRepository;
@@ -15,9 +16,14 @@ import com.groupdocs.assembly.DocumentAssembler;
 import com.groupdocs.assembly.FileFormat;
 import com.groupdocs.assembly.LoadSaveOptions;
 import com.groupdocs.conversion.internal.c.a.ms.System.IO.Directory;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -35,6 +41,14 @@ public class ISOTrainingCertificationService {
 
     @Value("${file.certification-upload-dir}")
     private String fileUploadDir;
+
+    public Iterable<ISOTrainingCertification> findAll(Predicate predicate, OrderSpecifier<?> order) {
+        return isoTrainingCertificationRepository.findAll(predicate, order);
+    }
+
+    public Page<ISOTrainingCertification> findAll(Predicate predicate, Pageable pageable) {
+        return isoTrainingCertificationRepository.findAll(predicate, pageable);
+    }
 
     public ISOTrainingCertification findById(String certId) {
         return isoTrainingCertificationRepository.findById(certId).get();
