@@ -384,38 +384,49 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
     public Page<MyTraining> getISOMyTraining(Pageable pageable, Account user) {
 
         QISOTrainingPeriod qIsoTrainingPeriod = QISOTrainingPeriod.iSOTrainingPeriod;
+        QISO qISO = QISO.iSO;
         QISOTrainingLog qIsoTrainingLog = QISOTrainingLog.iSOTrainingLog;
-        QISOAttachFile qisoAttachFile = QISOAttachFile.iSOAttachFile;
+        QISOAttachFile qIsoAttachFile = QISOAttachFile.iSOAttachFile;
 
         BooleanBuilder builder = new BooleanBuilder();
 
         builder.and(iSOTrainingMatrix.trainingAll.eq(true));
-        builder.or(iSOTrainingMatrix.user.eq(user));
+        builder.or(iSOTrainingMatrix.trainingAll.eq(false).and(iSOTrainingMatrix.user.eq(user)));
 
 
         QueryResults<MyTraining> results = queryFactory
-                .selectDistinct(Projections.constructor(MyTraining.class,
+                .select(Projections.constructor(MyTraining.class,
                         iSOTrainingMatrix.iso,
-                        qisoAttachFile,
+                        qIsoAttachFile,
                         qIsoTrainingPeriod,
                         qIsoTrainingLog,
                         qIsoTrainingPeriod.startDate,
                         qIsoTrainingPeriod.endDate)
                 )
                 .from(iSOTrainingMatrix)
-                .where(builder)
-                .join(qIsoTrainingPeriod)
-                .on(iSOTrainingMatrix.iso.id.eq(qIsoTrainingPeriod.iso.id)
-                        .and(qIsoTrainingPeriod.trainingType.eq(TrainingType.SELF))
-                        .and(qIsoTrainingPeriod.startDate.loe(new Date()))
-                )
-                .leftJoin(qIsoTrainingLog).on(qIsoTrainingPeriod.id.eq(qIsoTrainingLog.isoTrainingPeriod.id).and(qIsoTrainingLog.user.id.eq(user.getId())))
-                .leftJoin(qisoAttachFile).on(qisoAttachFile.iso.id.eq(iSOTrainingMatrix.iso.id))
-                .where(qIsoTrainingLog.status.isNull().or(qIsoTrainingLog.status.ne(TrainingStatus.COMPLETED)))
-                .where(qIsoTrainingLog.iso.active.eq(true))
+                .join(qISO).on(iSOTrainingMatrix.iso.id.eq(qISO.id))
+                .join(qIsoAttachFile).on(qISO.id.eq(qIsoAttachFile.iso.id))
+                .join(qIsoTrainingPeriod).on(qISO.id.eq(qIsoTrainingPeriod.iso.id)
+                        .and(qISO.training.eq(true).and(qISO.active.eq(true))
+                                .and(qIsoTrainingPeriod.trainingType.eq(TrainingType.SELF)
+                                .and(qIsoTrainingPeriod.startDate.loe(new Date())))))
+                .leftJoin(qIsoTrainingLog).on(qISO.id.eq(qIsoTrainingLog.iso.id)
+                        .and(qIsoTrainingLog.type.eq(TrainingType.SELF)
+                                .and(qIsoTrainingLog.status.ne(TrainingStatus.COMPLETED))))
+                .where(iSOTrainingMatrix.user.id.eq(user.getId())
+                        .or(iSOTrainingMatrix.trainingAll.eq(true).and(iSOTrainingMatrix.user.id.isNull())))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
+
+        //                .on(qISO.id.eq(qIsoTrainingPeriod.iso.id)
+//                        .and(qIsoTrainingPeriod.trainingType.eq(TrainingType.SELF))
+//                        .and(qIsoTrainingPeriod.startDate.loe(new Date()))
+//                )
+//                .leftJoin(qIsoTrainingLog)
+//                        .on(qIsoTrainingPeriod.id.eq(qIsoTrainingLog.isoTrainingPeriod.id)
+//                        .and(qIsoTrainingLog.user.id.eq(user.getId())))
+//                .leftJoin(qisoAttachFile).on(qisoAttachFile.iso.id.eq(iSOTrainingMatrix.iso.id))
 
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }

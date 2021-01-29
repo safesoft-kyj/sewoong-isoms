@@ -69,10 +69,6 @@ public class ISO extends BaseEntity implements Serializable {
     @Transient
     private String uploadFileName;
 
-    // 뷰 카운터
-    @ColumnDefault("0")
-    private int viewCnt;
-
     //강의 여부
     @ColumnDefault("0")
     private boolean training;
@@ -109,10 +105,6 @@ public class ISO extends BaseEntity implements Serializable {
     private Date endDate;
     @Transient
     private boolean trainingAll;
-
-    //ISO 학습 시간
-    @Column(name = "hour", columnDefinition = "numeric(5,2)")
-    private Float hour;
 
     //퀴즈
     @Column(name = "quiz", columnDefinition = "nvarchar(MAX)")

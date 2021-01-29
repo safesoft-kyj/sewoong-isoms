@@ -91,22 +91,23 @@
                 }
             });
 
-            $("#certification").change(function(e) {
+            $("#certification").change(function (e) {
                 if ($(this).is(":checked")) {
                     $("#certificationHeadArea").css("display", "block");
-                    ``
-                    $("#certificationHead").val("").trigger("change");
+                    if($("#certificationHead").val() == ""){
+                        $("#certificationHead").val("CAUH-ISO 14155 GCP").trigger("change");
+                    }
                 } else {
                     $("#certificationHeadArea").css("display", "none");
                 }
             })
 
-            $("#isoForm").submit(function(e) {
+            $("#isoForm").submit(function (e) {
                 //Submit 하기 직전 disabled 상태 해제.
                 $("#training").attr("disabled", false);
 
                 var $btn = $("#submitBtn").button('save');
-                setTimeout(function() {
+                setTimeout(function () {
                     $btn.button('loading');
                 }, 1500);
             });
@@ -165,33 +166,25 @@
                                     <label class="control-label" for="certification">사용</label>
                                 </div>
                                 <div class="col-lg-9 form-group">
-                                    <div id="certificationHeadArea" style="display:${iso.certification?then('block', 'none')}">
-                                        <@spring.formInput "iso.certificationHead" "class='form-control'" />
+                                    <div id="certificationHeadArea"
+                                         style="display:${iso.certification?then('block', 'none')}">
+                                        <@spring.formInput "iso.certificationHead" "class='form-control' placeholder='CAUH-ISO 14155 GCP'" />
                                         <@spring.showErrors "" "color:red;"/>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-6">
-                                    <label class="control-label col-sm-3" style="margin-top: 7px;">교육 기간</label>
-                                    <div class="form-group col-sm-4">
-                                        <@spring.formInput "iso.startDate" "class='form-control' placeholder='Start Date'" />
-                                        <@spring.showErrors "" "color:red;"/>
-                                    </div>
-                                    <div class="form-group col-sm-1 text-center">
-                                        <span class="text-2x">~</span>
-                                    </div>
-                                    <div class="form-group col-sm-4">
-                                        <@spring.formInput "iso.endDate" "class='form-control' placeholder='End Date'" />
-                                        <@spring.showErrors "" "color:red;"/>
-                                    </div>
+                                <label class="control-label col-sm-3" style="margin-top: 7px;">교육 기간</label>
+                                <div class="form-group col-sm-4">
+                                    <@spring.formInput "iso.startDate" "class='form-control' placeholder='Start Date'" />
+                                    <@spring.showErrors "" "color:red;"/>
                                 </div>
-                                <div class="col-lg-6">
-                                    <label class="control-label col-sm-3" style="margin-top: 7px;">교육 시간</label>
-                                    <div class="form-group col-sm-9">
-                                        <@spring.formInput "iso.hour" "class='form-control' placeholder='Hour (#.##)' step='.01'" "number"/>
-                                        <@spring.showErrors "" "color:red;"/>
-                                    </div>
+                                <div class="form-group col-sm-1 text-center">
+                                    <span class="text-2x">~</span>
+                                </div>
+                                <div class="form-group col-sm-4">
+                                    <@spring.formInput "iso.endDate" "class='form-control' placeholder='End Date'" />
+                                    <@spring.showErrors "" "color:red;"/>
                                 </div>
                             </div>
                         </div>
@@ -254,7 +247,9 @@
                     <hr/>
                     <div class="text-right">
                         <button type="button" class="btn btn-link" onclick="history.back();">Cancel</button>
-                        <button type="submit" class="btn btn-primary" id="submitBtn" data-save-text="Saving.." data-loading-text="문서 변환 중.. 잠시만 기다려 주세요."> Save</button>
+                        <button type="submit" class="btn btn-primary" id="submitBtn" data-save-text="Saving.."
+                                data-loading-text="문서 변환 중.. 잠시만 기다려 주세요."> Save
+                        </button>
                     </div>
                 </div>
             </div>

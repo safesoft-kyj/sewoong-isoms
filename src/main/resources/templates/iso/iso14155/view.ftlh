@@ -171,7 +171,6 @@
                             <th class="text-center">참석자</th>
                             <th class="text-center">수료증 여부</th>
                             <th class="text-center">교육 기간</th>
-                            <th class="text-center">교육 시간 (Hour)</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -188,27 +187,24 @@
                             </td>
                             <td class="text-center"><span class="label label-${viewIso.certification?then('success', 'warning')}">${viewIso.certification?then('Y', 'N')}</span></td>
                             <td class="text-center text-info">${viewIso.trainingDate}</td>
-                            <td class="text-center text-bold">
-                                <span class="badge badge-primary">${viewIso.hour?string('##0.00')} h</span>
-                            </td>
                         </tr>
                         </tbody>
                     </table>
                 </#if>
                 <div class="row pad-top hidden-print">
-                    <div class="col-sm-7 toolbar-left">
-                        <!--Mail toolbar-->
-                        <button class="btn btn-default" type="button" onclick="fnPrint();"><i
-                                    class="pli-printer icon-lg"></i></button>
-                        <#--                        <div class="btn-group btn-group">-->
-                        <@security.authorize access="hasAnyAuthority('ADMIN')">
-                            <button class="btn btn-default" id="sendEmailBtn" data-id="${viewIso.id}"><i
-                                        class="fa fa-send-o"></i> 메일 전송
-                            </button>
-                        </@security.authorize>
-                        <#--                        </div>-->
-                    </div>
-                    <div class="col-sm-5 toolbar-right">
+<#--                    <div class="col-sm-7 toolbar-left">-->
+<#--                        <!--Mail toolbar&ndash;&gt;-->
+<#--                        <button class="btn btn-default" type="button" onclick="fnPrint();"><i-->
+<#--                                    class="pli-printer icon-lg"></i></button>-->
+<#--                        &lt;#&ndash;                        <div class="btn-group btn-group">&ndash;&gt;-->
+<#--                        <@security.authorize access="hasAnyAuthority('ADMIN')">-->
+<#--                            <button class="btn btn-default" id="sendEmailBtn" data-id="${viewIso.id}"><i-->
+<#--                                        class="fa fa-send-o"></i> 메일 전송-->
+<#--                            </button>-->
+<#--                        </@security.authorize>-->
+<#--                        &lt;#&ndash;                        </div>&ndash;&gt;-->
+<#--                    </div>-->
+                    <div class="col-sm-offset-7 col-sm-5 toolbar-right">
                         <!--Reply & forward buttons-->
                         <@security.authorize access="hasAnyAuthority('ADMIN')">
                             <a class="btn btn-default" href="javascript:goToURL('/iso-14155/${viewIso.id}/edit');"><i

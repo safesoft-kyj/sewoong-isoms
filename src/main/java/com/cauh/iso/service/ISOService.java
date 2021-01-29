@@ -35,7 +35,7 @@ public class ISOService {
     private final ISOTrainingPeriodService isoTrainingPeriodService;
 
     public Iterable<ISO> getTopISOs(Predicate predicate) {
-        return isoRepository.findAll(predicate, Sort.by(Sort.Direction.DESC, "id"));
+        return isoRepository.findAll(predicate, Sort.by(Sort.Direction.DESC, "createdDate"));
     }
 
     public Page<ISO> getPage(Predicate predicate, Pageable pageable) {

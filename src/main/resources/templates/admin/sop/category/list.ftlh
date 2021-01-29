@@ -8,8 +8,8 @@
 
             //삭제 버튼 동적 이벤트 할당.
             $(document).on("click", "#deleteBtn", function(){
-                let categoryName = $(this).data("value");
-                let res = confirm("정말로 [" + categoryName + "]을(를) 삭제하시겠습니까?");
+                let CategoryName = $(this).data("value");
+                let res = confirm("정말로 [" + CategoryName + "]을(를) 삭제하시겠습니까?");
                 if(res) {
                     console.log("삭제");
                 }
@@ -62,33 +62,33 @@
                 <#if CategoryList?has_content>
                     <#list CategoryList as Category>
                         <tr>
-                            <td class="text-center">${category?index + 1}
-                                <a name="edit${category?index}"></a>
-                                <#if action == "edit" && id == category.id>
-                                    <@spring.formHiddenInput "category.id"/>
+                            <td class="text-center">${Category?index + 1}
+                                <a name="edit${Category?index}"></a>
+                                <#if action == "edit" && id == Category.id>
+                                    <@spring.formHiddenInput "Category.id"/>
                                 </#if>
                             </td>
                             <td>
-                                <#if action == "edit" && id == category.id>
-                                    <#assign readonly = category.readonly?then(" readonly='readonly'", "")/>
-                                <@spring.formInput "category.shortName" "class='form-control' ${readonly}"/>
+                                <#if action == "edit" && id == Category.id>
+                                    <#assign readonly = Category.readonly?then(" readonly='readonly'", "")/>
+                                <@spring.formInput "Category.shortName" "class='form-control' ${readonly}"/>
                                 <#else>
-                                ${category.shortName}
+                                ${Category.shortName}
                                 </#if>
                             </td>
                             <td>
-                                <#if action == "edit" && id == category.id>
-                                    <@spring.formInput "category.name" "class='form-control'"/>
+                                <#if action == "edit" && id == Category.id>
+                                    <@spring.formInput "Category.name" "class='form-control'"/>
                                 <#else>
-                                    ${category.name}
+                                    ${Category.name}
                                 </#if>
                             </td>
                             <td class="text-center">
-                                <#if action == "edit" && id == category.id>
+                                <#if action == "edit" && id == Category.id>
                                     <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 저장</button>
                                 <#else>
-                                    <a class="btn btn-sm btn-mint" href="/admin/sop/category?action=edit&id=${category.id}#edit${category?index}"><i class="fa fa-pencil"> 수정</i></a>
-                                    <button class="btn btn-sm btn-danger" data-value="${category.name}" type="button" id="deleteBtn"><i class="fa fa-trash"> 삭제</i></button>
+                                    <a class="btn btn-sm btn-mint" href="/admin/sop/category?action=edit&id=${Category.id}#edit${Category?index}"><i class="fa fa-pencil"> 수정</i></a>
+                                    <button class="btn btn-sm btn-danger" data-value="${Category.name}" type="button" id="deleteBtn"><i class="fa fa-trash"> 삭제</i></button>
                                 </#if>
                             </td>
                         </tr>
@@ -102,10 +102,10 @@
                     <tr>
                         <td class="text-center">#<a name="edit0"></a></td>
                         <td>
-                            <@spring.formInput "category.shortName" "class='form-control' placeholder='Short Name'"/>
+                            <@spring.formInput "Category.shortName" "class='form-control' placeholder='Short Name'"/>
                             <@spring.showErrors "" "color:red;"/></td>
                         <td>
-                            <@spring.formInput "category.name" "class='form-control' placeholder='Name'"/>
+                            <@spring.formInput "Category.name" "class='form-control' placeholder='Name'"/>
                             <@spring.showErrors "" "color:red;"/></td>
                         <td class="text-center">
                             <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 저장</button>

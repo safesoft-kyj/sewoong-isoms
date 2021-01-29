@@ -51,9 +51,9 @@ public class ISOTrainingPeriod extends BaseEntity implements Serializable {
     @JoinColumn(name = "retraining_user_id", referencedColumnName = "id")
     private Account retrainingUser;
 
-    @OneToMany(mappedBy = "isoTrainingPeriod")
-    @NotAudited
-    private List<ISOTrainingLog> isoTrainingLogs;
+//    @OneToMany(mappedBy = "isoTrainingPeriod")
+//    @NotAudited
+//    private List<ISOTrainingLog> isoTrainingLogs;
 
 
     @Builder

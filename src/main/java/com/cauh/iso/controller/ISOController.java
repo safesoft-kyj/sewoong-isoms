@@ -67,7 +67,7 @@ public class ISOController {
 
 
     @GetMapping("/iso-14155")
-    public String ISOlist(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable, @CurrentUser Account user, Model model) {
+    public String ISOlist(@PageableDefault(sort = {"createdDate"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable, @CurrentUser Account user, Model model) {
         QISO qISO = QISO.iSO;
 
         //공지사항 리스트

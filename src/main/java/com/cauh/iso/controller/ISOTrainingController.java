@@ -93,7 +93,7 @@ public class ISOTrainingController {
             isoTrainingLog = new ISOTrainingLog();
             isoTrainingLog.setIso(iso);
             isoTrainingLog.setUser(user);
-            isoTrainingLog.setIsoTrainingPeriod(isoTrainingPeriod);
+//            isoTrainingLog.setIsoTrainingPeriod(isoTrainingPeriod);
             isoTrainingLog.setType(isoTrainingPeriod.getTrainingType());
         } else {
             isoTrainingLog = isoTrainingLogService.findById(isoTrainingLogId).get();

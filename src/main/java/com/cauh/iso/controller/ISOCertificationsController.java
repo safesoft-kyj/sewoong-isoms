@@ -222,7 +222,8 @@ public class ISOCertificationsController {
                 }
 
                 //ISO Access Log 추가
-                isoAccessLogService.save(isoCertification, DocumentAccessType.VIEWER);
+                //isoAccessLogService.save(isoCertification, DocumentAccessType.VIEWER);
+                //log.info("@Viewer 실행 : {}", isoCertification);
 
                 return ResponseEntity.ok()
                         .contentType(MediaType.parseMediaType(contentType))
@@ -245,6 +246,8 @@ public class ISOCertificationsController {
             if(!ObjectUtils.isEmpty(isoCertification.getAttachFiles())){
                 try{
                     Resource resource = fileStorageService.loadFileAsResource(isoCertification.getAttachFiles().get(0).getFileName());
+                    Optional<ISOAccessLog> isoAcessLog = isoAccessLogService.save(isoCertification, DocumentAccessType.VIEWER);
+                    log.info("ISO 접속 로그 생성 여부 : {}", isoAcessLog.isPresent());
                 } catch(MyFileNotFoundException e){
                     log.info("File is Not Found");
                     return false;

@@ -62,21 +62,14 @@ public class ISOValidator implements Validator {
                 errors.rejectValue("endDate", "message.iso.startDate.futured", "종료 날짜는 시작 날짜보다 과거일 수 없습니다.");
             }
 
-            if (ObjectUtils.isEmpty(iso.getHour())) {
-                errors.rejectValue("hour", "message.iso.endDate.required", "교육 시간을 입력해주세요");
-            }
-
             if (!iso.isTrainingAll() && ObjectUtils.isEmpty(iso.getUserIds())) {
                 errors.rejectValue("userIds", "message.iso.userIds.required", "교육 참석자를 등록해주세요");
             }
 
             if (iso.isCertification() && StringUtils.isEmpty(iso.getCertificationHead())) {
-                errors.rejectValue("certificationHead", "message.iso.certificationHead.required", "수료을 채번을 입력해주세요");
+                iso.setCertificationHead("CAUH-ISO 14155 GCP");
+                //errors.rejectValue("certificationHead", "message.iso.certificationHead.required", "수료을 채번을 입력해주세요");
             }
-
-        } else { //ISO Training이 아닌 경우, training 관련 필드 null처리
-            iso.setHour(null);
         }
-
     }
 }
