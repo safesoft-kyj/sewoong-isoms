@@ -40,8 +40,6 @@ public class QISO extends EntityPathBase<ISO> {
 
     public final BooleanPath deleted = createBoolean("deleted");
 
-    public final NumberPath<Float> hour = createNumber("hour", Float.class);
-
     public final StringPath id = createString("id");
 
     public final ListPath<ISOTrainingMatrix, QISOTrainingMatrix> isoTrainingMatrix = this.<ISOTrainingMatrix, QISOTrainingMatrix>createList("isoTrainingMatrix", ISOTrainingMatrix.class, QISOTrainingMatrix.class, PathInits.DIRECT2);
@@ -65,8 +63,6 @@ public class QISO extends EntityPathBase<ISO> {
     public final DateTimePath<java.util.Date> topViewEndDate = createDateTime("topViewEndDate", java.util.Date.class);
 
     public final BooleanPath training = createBoolean("training");
-
-    public final NumberPath<Integer> viewCnt = createNumber("viewCnt", Integer.class);
 
     public QISO(String variable) {
         super(ISO.class, forVariable(variable));

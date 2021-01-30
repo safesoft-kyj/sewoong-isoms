@@ -38,6 +38,8 @@ public class QISOTrainingCertification extends EntityPathBase<ISOTrainingCertifi
 
     public final QISO iso;
 
+    public final QISOTrainingLog isoTrainingLog;
+
     //inherited
     public final StringPath lastModifiedBy = _super.lastModifiedBy;
 
@@ -65,6 +67,7 @@ public class QISOTrainingCertification extends EntityPathBase<ISOTrainingCertifi
     public QISOTrainingCertification(Class<? extends ISOTrainingCertification> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.iso = inits.isInitialized("iso") ? new QISO(forProperty("iso")) : null;
+        this.isoTrainingLog = inits.isInitialized("isoTrainingLog") ? new QISOTrainingLog(forProperty("isoTrainingLog"), inits.get("isoTrainingLog")) : null;
         this.user = inits.isInitialized("user") ? new com.cauh.common.entity.QAccount(forProperty("user"), inits.get("user")) : null;
     }
 

@@ -66,9 +66,11 @@
         <li>
             <a href="/user/profile/role">Role</a>
         </li>
-        <li>
-            <a href="/agreements-withdrawal" style="margin: 0px; padding: 0px;">
-                <img class="menu-title" src="/static/img/withdrawal.jpg" alt="철회신청">
+        <li style="float:right;">
+            <a href="/agreements-withdrawal">
+                <i class="pli-file-trash"></i>
+                개인정보 동의 철회 신청 바로가기
+                <#--                <img class="menu-title" src="/static/img/withdrawal.jpg" alt="철회신청">-->
             </a>
         </li>
     </ul>

@@ -43,18 +43,18 @@
             <table class="table table-bordered">
                 <tbody>
                 <tr>
-                    <th class="col-xs-2 bg-gray-light">Job Title:</th>
-                    <td class="col-xs-4 text-primary">${user.commaJobDescription}</td>
-                    <th class="col-xs-2 bg-gray-light">Start Date in CAUH:</th>
-                    <td class="col-xs-4 text-primary">${user.indate?string('dd-MMM-yyyy')?upper_case}</td>
+                    <th class="col-xs-2 bg-gray-light">Affiliation:</th>
+                    <td class="col-xs-4 text-primary">Chung-ang University Hospital</td>
+                    <th class="col-xs-2 bg-gray-light">Department:</th>
+                    <td class="col-xs-4 text-primary">${user.deptName!'N/A'}</td>
                 </tr>
                 <tr>
-                    <th class="bg-gray-light">Department/Team:</th>
+                    <th class="bg-gray-light">Date of Birth:</th>
                     <td class="text-primary">
-                        <#if user.deptName?has_content>${user.deptName}</#if><#if user.teamName?has_content><#if user.deptName?has_content>/</#if>${user.teamName}</#if>
+                        ${user.birthDate?string('dd-MMM-yyyy')?upper_case!'N/A'}
                     </td>
-                    <th class="bg-gray-light">Employee No.:</th>
-                    <td class="text-primary">${user.empNo}</td>
+                    <th class="bg-gray-light">Name:</th>
+                    <td class="text-primary">${user.name!'N/A'}</td>
                 </tr>
                 </tbody>
             </table>

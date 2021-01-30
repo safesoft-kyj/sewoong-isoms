@@ -31,9 +31,9 @@ public class ISOTrainingLog extends BaseEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ISO_TRAINING_LOG_SEQ_GENERATOR")
     private Integer id;
 
-//    @ManyToOne
-//    @JoinColumn(name = "iso_training_period_id", referencedColumnName = "id")
-//    private ISOTrainingPeriod isoTrainingPeriod;
+    @ManyToOne
+    @JoinColumn(name = "iso_training_period_id", referencedColumnName = "id")
+    private ISOTrainingPeriod isoTrainingPeriod;
 
     @ManyToOne
     @JoinColumn(name = "iso_offline_training_id", referencedColumnName = "id")

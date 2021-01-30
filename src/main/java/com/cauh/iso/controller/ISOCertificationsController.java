@@ -247,7 +247,7 @@ public class ISOCertificationsController {
                 try{
                     Resource resource = fileStorageService.loadFileAsResource(isoCertification.getAttachFiles().get(0).getFileName());
                     Optional<ISOAccessLog> isoAcessLog = isoAccessLogService.save(isoCertification, DocumentAccessType.VIEWER);
-                    log.info("ISO 접속 로그 생성 여부 : {}", isoAcessLog.isPresent());
+                    log.debug("ISO 접속 로그 생성 여부 : {}, Resource : {}", isoAcessLog.isPresent(), resource);
                 } catch(MyFileNotFoundException e){
                     log.info("File is Not Found");
                     return false;

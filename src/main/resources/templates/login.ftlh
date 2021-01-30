@@ -787,7 +787,7 @@
             var userInputId = getCookie("userInputId");
             $("#register-form input[name='username']").val(userInputId);
 
-            $("register-form #username").keyup(function () {
+            $("#register-form #username").keyup(function () {
                 if ($(this).val().indexOf('@') != -1) {
                     $("#div_pwd").hide();
                 } else {

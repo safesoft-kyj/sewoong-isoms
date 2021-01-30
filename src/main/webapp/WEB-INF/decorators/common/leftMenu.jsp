@@ -27,11 +27,6 @@
             <li><a href="/user/signature">Signature</a></li>
         </ul>
     </li>
-<%--    <li class="text-center mar-btm mar-top">--%>
-<%--        <a href="/agreements-withdrawal">--%>
-<%--            <img class="menu-title" src="/static/img/withdrawal.png" alt="철회신청">--%>
-<%--        </a>--%>
-<%--    </li>--%>
     <li>
         <%-- Profile Area --%>
         <a href="#" aria-expanded="true">

@@ -103,6 +103,7 @@ public class ISOTrainingController {
         isoTrainingLog.setProgressPercent(progressPercent);
         isoTrainingLog.setTrainingTime(trainingTime);
         isoTrainingLog.setStatus(progressPercent >= 100 ? (!StringUtils.isEmpty(iso.getQuiz()) ? TrainingStatus.TRAINING_COMPLETED : TrainingStatus.COMPLETED) : TrainingStatus.PROGRESS);
+        isoTrainingLog.setCompleteDate(isoTrainingLog.getStatus()==TrainingStatus.COMPLETED?new Date():null);
 
         ISOTrainingLog savedTrainingLog = isoTrainingLogService.saveOrUpdate(isoTrainingLog, null);
         log.debug("=> SavedTrainingLog Id : {}", savedTrainingLog.getId());

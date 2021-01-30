@@ -133,7 +133,10 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
                                     .and(qTrainingPeriod.trainingType.eq(TrainingType.REFRESH))
                                     .and(qTrainingPeriod.startDate.goe(user.getIndate())))
                     )
-                    .leftJoin(qTrainingLog).on(qTrainingPeriod.id.eq(qTrainingLog.trainingPeriod.id).and(qTrainingLog.user.id.eq(user.getId())).and(qTrainingLog.reportStatus.ne(DeviationReportStatus.REJECTED)))
+                    .leftJoin(qTrainingLog)
+                    .on(qTrainingPeriod.id.eq(qTrainingLog.trainingPeriod.id)
+                            .and(qTrainingLog.user.id.eq(user.getId()))
+                            .and(qTrainingLog.reportStatus.ne(DeviationReportStatus.REJECTED)))
                     .where(trainingMatrix.documentVersion.document.type.eq(DocumentType.SOP))
                     .where(trainingMatrix.documentVersion.status.in(DocumentStatus.EFFECTIVE, DocumentStatus.APPROVED))
                     .where(trainingMatrix.documentVersion.id.notIn(
@@ -391,11 +394,62 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
         BooleanBuilder builder = new BooleanBuilder();
 
         builder.and(iSOTrainingMatrix.trainingAll.eq(true));
-        builder.or(iSOTrainingMatrix.trainingAll.eq(false).and(iSOTrainingMatrix.user.eq(user)));
-
+        builder.or(iSOTrainingMatrix.trainingAll.eq(false).and(iSOTrainingMatrix.user.id.eq(user.getId())));
 
         QueryResults<MyTraining> results = queryFactory
-                .select(Projections.constructor(MyTraining.class,
+                .selectDistinct(Projections.constructor(MyTraining.class,
+                        iSOTrainingMatrix.iso,
+                        qIsoAttachFile,
+                        qIsoTrainingPeriod,
+                        qIsoTrainingLog,
+                        qIsoTrainingPeriod.startDate,
+                        qIsoTrainingPeriod.endDate)
+                )
+                .from(iSOTrainingMatrix)
+                .where(builder)
+                .join(qISO).on(iSOTrainingMatrix.iso.id.eq(qISO.id))
+                .join(qIsoAttachFile).on(qISO.id.eq(qIsoAttachFile.iso.id))
+                .join(qIsoTrainingPeriod).on(qISO.id.eq(qIsoTrainingPeriod.iso.id)
+                        .and(qISO.training.eq(true).and(qISO.active.eq(true))
+                                .and(qIsoTrainingPeriod.trainingType.eq(TrainingType.SELF)
+                                        .and(qIsoTrainingPeriod.startDate.loe(new Date())))))
+                .leftJoin(qIsoTrainingLog).on(qISO.id.eq(qIsoTrainingLog.iso.id)
+                        .and(qIsoTrainingLog.user.id.eq(user.getId())))
+                .where(qIsoTrainingLog.status.ne(TrainingStatus.COMPLETED)
+                        .or(qIsoTrainingLog.isNull()))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        /*queryFactory.selectDistinct(Projections.constructor(MyTraining.class,
+                iSOTrainingMatrix.iso,
+                qIsoAttachFile,
+                qIsoTrainingPeriod,
+                qIsoTrainingLog,
+                qIsoTrainingPeriod.startDate,
+                qIsoTrainingPeriod.endDate)
+        )
+                .from(iSOTrainingMatrix)
+                .where(builder)
+                .join(qIsoAttachFile)
+                .on(iSOTrainingMatrix.iso.id.eq(qIsoAttachFile.iso.id))
+                .join(qIsoTrainingPeriod)
+                .on(iSOTrainingMatrix.iso.id.eq(qIsoTrainingPeriod.iso.id)
+                        .and(qIsoTrainingPeriod.trainingType.eq(TrainingType.SELF))
+                        .and(qIsoTrainingPeriod.startDate.loe(new Date()))
+                )
+                .leftJoin(qIsoTrainingLog)
+                .on(qIsoTrainingPeriod.id.eq(qIsoTrainingLog.isoTrainingPeriod.id)
+                        .and(qIsoTrainingLog.user.id.eq(user.getId()))
+                        .and(qIsoTrainingLog.status.ne(TrainingStatus.COMPLETED))
+                )
+                .where(iSOTrainingMatrix.iso.training.eq(true).and(iSOTrainingMatrix.iso.active.eq(true)))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();*/
+
+        /*queryFactory
+                .selectDistinct(Projections.constructor(MyTraining.class,
                         iSOTrainingMatrix.iso,
                         qIsoAttachFile,
                         qIsoTrainingPeriod,
@@ -417,16 +471,9 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
                         .or(iSOTrainingMatrix.trainingAll.eq(true).and(iSOTrainingMatrix.user.id.isNull())))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .fetchResults();
+                .fetchResults();*/
 
-        //                .on(qISO.id.eq(qIsoTrainingPeriod.iso.id)
-//                        .and(qIsoTrainingPeriod.trainingType.eq(TrainingType.SELF))
-//                        .and(qIsoTrainingPeriod.startDate.loe(new Date()))
-//                )
-//                .leftJoin(qIsoTrainingLog)
-//                        .on(qIsoTrainingPeriod.id.eq(qIsoTrainingLog.isoTrainingPeriod.id)
-//                        .and(qIsoTrainingLog.user.id.eq(user.getId())))
-//                .leftJoin(qisoAttachFile).on(qisoAttachFile.iso.id.eq(iSOTrainingMatrix.iso.id))
+
 
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }

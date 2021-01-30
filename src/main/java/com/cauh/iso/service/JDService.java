@@ -85,8 +85,10 @@ public class JDService {
 
     public TreeMap<String, String> getJDMap() {
         Iterable<JobDescription> jobDescriptions = jobDescriptionRepository.findAll(Sort.by(Sort.Direction.ASC, "shortName"));
+
+        //Eanbled된 JD만 출력
         Map<String, String> jobDescMap = StreamSupport.stream(jobDescriptions.spliterator(), false)
-                .collect(Collectors.toMap(j -> Integer.toString(j.getId()), j -> j.getShortName()));
+                .filter(j -> j.isEnabled()).collect(Collectors.toMap(j -> Integer.toString(j.getId()), j -> j.getShortName()));
 
         TreeMap<String, String> sortedJDMap = new TreeMap<>();
         sortedJDMap.putAll(jobDescMap);

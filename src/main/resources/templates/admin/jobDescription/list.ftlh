@@ -45,53 +45,62 @@
                     <thead>
                     <tr>
                         <th class="text-center" style="width:70px;">No.</th>
-                        <th>Abbreviation Name</th>
-                        <th>Job Title</th>
-                        <th class="text-center">Status</th>
+                        <th style="width:240px;">ROLE</th>
+                        <th>ROLE Alias</th>
+                        <th class="text-center" style="width:300px;">Manager</th>
+                        <th class="text-center" style="width:300px;">Status</th>
                         <th style="width:180px">#actions</th>
                     </tr>
                     </thead>
                     <tbody>
 
                     <#if jobDescriptions?has_content>
-                        <#list jobDescriptions as jd>
+                        <#list jobDescriptions as role>
                             <tr>
-                                <td class="text-center">${jd?index + 1}
-                                    <a name="edit${jd?index}"></a>
-                                    <#if action == "edit" && id == jd.id>
+                                <td class="text-center">${role?index + 1}
+                                    <a name="edit${role?index}"></a>
+                                    <#if action == "edit" && id == role.id>
                                         <@spring.formHiddenInput "jobDescription.id"/>
                                     </#if>
                                 </td>
                                 <td>
-                                    <#if action == "edit" && id == jd.id>
+                                    <#if action == "edit" && id == role.id>
                                         <@spring.formInput "jobDescription.shortName" "class='form-control'"/>
                                         <@spring.showErrors "" "color:red;"/>
                                     <#else>
-                                        ${jd.shortName}
+                                        ${role.shortName}
                                     </#if>
                                 </td>
                                 <td>
-                                    <#if action == "edit" && id == jd.id>
+                                    <#if action == "edit" && id == role.id>
                                         <@spring.formInput "jobDescription.title" "class='form-control'"/>
                                         <@spring.showErrors "" "color:red;"/>
                                     <#else>
-                                        ${jd.title}
+                                        ${role.title}
                                     </#if>
                                 </td>
                                 <td class="text-center">
-                                    <#if action == "edit" && id == jd.id>
-                                        <@spring.formCheckbox "jobDescription.enabled" ""/>
+                                    <#if action == "edit" && id == role.id>
+                                        <@spring.formCheckbox "jobDescription.manager" "class="/>
                                         <@spring.showErrors "" "color:red;"/>
                                     <#else>
-                                        <span class="label label-${jd.enabled?then('success', 'warning')}">${jd.enabled?then('Active', 'Inactive')}</span>
+                                        <span class="label label-${role.manager?then('success', 'warning')}">${role.manager?then('Y', 'N')}</span>
+                                    </#if>
+                                </td>
+                                <td class="text-center">
+                                    <#if action == "edit" && id == role.id>
+                                        <@spring.formCheckbox "jobDescription.enabled" />
+                                        <@spring.showErrors "" "color:red;"/>
+                                    <#else>
+                                        <span class="label label-${role.enabled?then('success', 'warning')}">${role.enabled?then('Active', 'Inactive')}</span>
                                     </#if>
                                 </td>
                                 <td>
-                                    <#if action == "edit" && id == jd.id>
+                                    <#if action == "edit" && id == role.id>
                                         <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-check"></i> 저장</button>
                                         <a class="btn btn-sm btn-warning" href="?action=list"><i class="fa fa-times"></i> 취소</a>
                                     <#else>
-                                        <a class="btn btn-sm btn-mint" href="/admin/jobDescription?action=edit&id=${jd.id}#edit${jd?index}"><i class="fa fa-pencil"> 수정</i></a>
+                                        <a class="btn btn-sm btn-mint" href="/admin/role?action=edit&id=${role.id}#edit${role?index}"><i class="fa fa-pencil"> 수정</i></a>
                                     </#if>
                                 </td>
                             </tr>
@@ -110,6 +119,10 @@
                             <td>
                                 <@spring.formInput "jobDescription.title" "class='form-control' placeholder='Job Title'"/>
                                 <@spring.showErrors "" "color:red;"/></td>
+                            <td class="text-center">
+                                <@spring.formCheckbox "jobDescription.manager" />
+                                <@spring.showErrors "" "color:red;"/>
+                            </td>
                             <td class="text-center">
                                 <@spring.formCheckbox "jobDescription.enabled" "checked"/>
                                 <@spring.showErrors "" "color:red;"/></td>

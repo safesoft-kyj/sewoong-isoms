@@ -27,6 +27,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -45,6 +46,8 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Controller
 @Slf4j
@@ -64,7 +67,8 @@ public class NoticeController {
         model.addAttribute("reviewCount", approvalLineRepository.countApproval(ApprovalLineType.reviewer, user));
         model.addAttribute("approvalCount", approvalLineRepository.countApproval(ApprovalLineType.approver, user));
 
-        if(user.getCommaJobTitle().contains("ADMIN")) {
+        //갖고있는 권한에 Admin이 있으면
+        if(user.getAuthorities().stream().map(a -> a.getAuthority()).collect(Collectors.joining(",")).contains("ADMIN")) {
             model.addAttribute("signUpRequestCount", userRepository.countByUserStatus(UserStatus.SIGNUP_REQUEST));
         }
 

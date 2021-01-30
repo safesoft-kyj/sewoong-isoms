@@ -268,7 +268,7 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right panel-default">
                         <ul class="head-list">
-                            <c:if test="${user.userType eq 'USER'}">
+                            <c:if test="${user.userType eq 'USER' || user.userType eq 'ADMIN'}">
                             <li>
                                 <a href="/user/profile" data-toggle="modal"><i class="pli-male icon-lg icon-fw"></i> Profile</a>
                             </li>

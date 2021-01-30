@@ -32,6 +32,7 @@ import org.springframework.security.core.userdetails.UserDetailsChecker;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -170,7 +171,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
              * LOGIN USER의 JOB Description 설정
              */
             preAuthenticationChecks(userDetails);
-            userDetails.setUserType(UserType.USER);
+            // userDetails.setUserType(UserType.USER);
 
             userDetails.setSignature(signatureRepository.findById(username).isPresent());
 
@@ -291,11 +292,23 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
         /**
          * Job Description 의 Short Name 을 사용자의 권한(role) 로 설정한다.
          */
-        if (userDetails.getUserType() == UserType.USER) {
-            if (!ObjectUtils.isEmpty(userDetails.getUserJobDescriptions())) {
-                String commaStringAuthorities = userDetails.getUserJobDescriptions().stream().map(jd -> jd.getJobDescription().getShortName()).collect(Collectors.joining(","));
-                authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(commaStringAuthorities);
+        if(userDetails.getUserType() == UserType.ADMIN) { //초기 ADMIN 계정
+            authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(UserType.ADMIN.name());
+            log.info("===> ADMIN : {}", authorities);
 
+        } else if (userDetails.getUserType() == UserType.USER) {
+            if (!ObjectUtils.isEmpty(userDetails.getUserJobDescriptions())) {
+
+                //Enabled Y / Manager Y 된 role이 있으면 ADMIN으로 적용, 아니면 USER로 적용
+                String managerAuthorities = userDetails.getUserJobDescriptions().stream()
+                        .filter(role -> role.getJobDescription().isEnabled() && role.getJobDescription().isManager())
+                        .map(role -> role.getJobDescription().getShortName()).collect(Collectors.joining(","));
+
+                if(!StringUtils.isEmpty(managerAuthorities)) {
+                    authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(UserType.ADMIN.name());
+                } else {
+                    authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(UserType.USER.name());
+                }
                 log.debug("==> Username : {}, Role : {}", username, authorities);
             }
         } else if (userDetails.getUserType() == UserType.AUDITOR) {
