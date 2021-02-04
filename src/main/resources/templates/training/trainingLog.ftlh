@@ -4,7 +4,7 @@
 <#setting locale="en_US">
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <title>e-SOP > SOP > Training Log</title>
+    <title>ISO Management System > SOP > Training Log</title>
     <script>
         $(document).ready(function() {
             $('#publishBtn').on('click', function () {
@@ -51,7 +51,7 @@
                 <tr>
                     <th class="bg-gray-light">Date of Birth:</th>
                     <td class="text-primary">
-                        ${user.birthDate?string('dd-MMM-yyyy')?upper_case!'N/A'}
+                        ${user.birthDate?has_content?then(user.birthDate?string('dd-MMM-yyyy')?upper_case, 'N/A')}
                     </td>
                     <th class="bg-gray-light">Name:</th>
                     <td class="text-primary">${user.name!'N/A'}</td>

@@ -2,7 +2,7 @@
 <#assign security=JspTaglibs["http://www.springframework.org/security/tags"] />
 <html>
 <head>
-    <title>e-SOP > Training > Employee Training</title>
+    <title>ISO Management System > Training > Employee Training</title>
     <script>
         $(document).ready(function() {
             location.href

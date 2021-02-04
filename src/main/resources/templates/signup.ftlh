@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>CAUH ISO Management System > Sign Up</title>
+    <title>ISO Management System > Sign Up</title>
 
     <!--Premium Icons [ OPTIONAL ]-->
     <link href="/static/premium/icon-sets/icons/line-icons/premium-line-icons.min.css" rel="stylesheet">

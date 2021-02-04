@@ -43,6 +43,9 @@ public class AgreementPersonalInformation extends BaseEntity implements Serializ
     @Column(name = "agree")
     private boolean agree;
 
+    @Transient
+    private String strAgree;
+
     @Column(name = "base64signature", columnDefinition = "varchar(max)")
     private String base64signature; //외부 사용자 전용 서명란.
 

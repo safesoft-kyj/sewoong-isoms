@@ -3,7 +3,7 @@
 <#setting locale="en_US">
 <html>
 <head>
-    <title>e-SOP > Training > Off-line Training</title>
+    <title>Admin > Training > Off-line Training</title>
 </head>
 <body>
 <div class="panel">

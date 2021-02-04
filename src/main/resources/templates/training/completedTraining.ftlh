@@ -3,7 +3,7 @@
 <#assign security=JspTaglibs["http://www.springframework.org/security/tags"] />
 <html>
 <head>
-    <title>e-SOP > Training > Mandatory Training> Completed</title>
+    <title>ISO Management System > Training > Mandatory Training> Completed</title>
     <script>
         $(document).ready(function() {
            $(document).on("click", "button[name='retrainingBtn']", function() {

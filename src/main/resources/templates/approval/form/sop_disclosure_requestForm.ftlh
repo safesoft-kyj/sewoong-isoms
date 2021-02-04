@@ -137,7 +137,7 @@
         </td>
     </tr>
     <tr>
-        <td class="bg-gray-light">Request Date<br/><small>(Date or Period to access e-SOP system)</small></td>
+        <td class="bg-gray-light">Request Date<br/><small>(Date or Period to access ISO Management System)</small></td>
         <td>
             <div id="training-period">
                 <div class="input-daterange input-group" id="datepicker">

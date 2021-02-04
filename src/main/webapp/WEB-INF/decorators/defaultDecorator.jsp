@@ -177,7 +177,7 @@
         <!-- Remove the class "show-fixed" and "hide-fixed" to make the content always appears. -->
         <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
-        <p class="pad-lft">COPYRIGHT© CHUNG-ANG UNIVERSITY. ALL RIGHT RESERVED.</p>
+        <p class="pad-lft">COPYRIGHT© Chung-Ang University Hospital. ALL RIGHTS RESERVED.</p>
 
 
 

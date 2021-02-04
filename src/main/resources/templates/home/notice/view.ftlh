@@ -1,7 +1,7 @@
 <#assign security=JspTaglibs["http://www.springframework.org/security/tags"] />
 <html>
     <head>
-        <title>e-SOP :: ${notice.title}</title>
+        <title>ISO Management System :: ${notice.title}</title>
         <!--Bootbox Modals [ OPTIONAL ]-->
         <script src="/static/plugins/bootbox/bootbox.min.js"></script>
     </head>

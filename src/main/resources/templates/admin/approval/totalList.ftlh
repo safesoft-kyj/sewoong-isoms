@@ -2,15 +2,14 @@
 <#import "/spring.ftl" as spring />
 <html>
 <head>
-    <title>eSOP > 전자결재</title>
+    <title>ISO Management System > 전자결재</title>
     <script>
         $(document).ready(function() {
            $("a[name='removeBtn']").click(function(e) {
               e.preventDefault();
 
                if(confirm('정말로 삭제 하시겠습니까?')) {
-                    $("#removeForm").attr("action", $(this).attr("href"))
-                        .submit();
+                    $("#removeForm").attr("action", $(this).attr("href")).submit();
                }
            });
         });

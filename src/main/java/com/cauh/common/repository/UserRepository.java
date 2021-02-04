@@ -2,6 +2,7 @@ package com.cauh.common.repository;
 
 import com.cauh.common.entity.Account;
 import com.cauh.common.entity.Department;
+import com.cauh.common.entity.UserJobDescription;
 import com.cauh.common.entity.constant.UserStatus;
 import com.cauh.common.entity.constant.UserType;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;

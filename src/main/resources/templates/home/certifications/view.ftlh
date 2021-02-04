@@ -1,7 +1,7 @@
 <#assign security=JspTaglibs["http://www.springframework.org/security/tags"] />
 <html>
     <head>
-        <title>CAUH ISO Management System :: ${isoCertification.title}</title>
+        <title>ISO Management System :: ${isoCertification.title}</title>
         <!--Bootbox Modals [ OPTIONAL ]-->
         <script src="/static/plugins/bootbox/bootbox.min.js"></script>
     </head>

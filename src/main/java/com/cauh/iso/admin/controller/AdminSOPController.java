@@ -10,6 +10,7 @@ import com.cauh.iso.domain.constant.DocumentStatus;
 import com.cauh.iso.domain.constant.DocumentType;
 import com.cauh.iso.domain.report.QRetirementDocument;
 import com.cauh.iso.domain.report.RetirementDocument;
+import com.cauh.iso.repository.DocumentVersionRepository;
 import com.cauh.iso.repository.RetirementDocumentRepository;
 import com.cauh.iso.service.*;
 import com.cauh.iso.validator.DocumentVersionValidator;
@@ -22,6 +23,7 @@ import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.xpath.operations.Bool;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -40,6 +42,7 @@ import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -55,7 +58,8 @@ public class AdminSOPController {
     private final CategoryService categoryService;
     private final QuizValidator quizValidator;
     private final JDService jdService;
-    private final RetirementDocumentRepository retirementDocumentRepository;
+    //private final RetirementDocumentRepository retirementDocumentRepository;
+    private final DocumentVersionRepository documentVersionRepository;
 
     @GetMapping("/management/{status}")
     public String management(@PathVariable("type") DocumentType type,
@@ -208,11 +212,21 @@ public class AdminSOPController {
     public String retirement(@PathVariable("type") DocumentType type,
                              @PathVariable("stringStatus") String stringStatus,
                              @PathVariable(value = "id") String id,
-                             RedirectAttributes attributes) {
+                             @RequestParam(value = "retirementDate", required = false) String strRetirementDate,
+                             RedirectAttributes attributes) throws Exception {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
-        DocumentVersion documentVersion = documentVersionService.retirement(id);
+        Date retirementDate = StringUtils.isEmpty(strRetirementDate)?null:df.parse(strRetirementDate);
+        DocumentVersion savedDocumentVersion = documentVersionService.retirement(id, retirementDate);
 
-        attributes.addFlashAttribute("message", documentVersion.getDocument().getDocId() +" " + documentVersion.getVersion() + " 이 Superseded 처리 되었습니다.");
+        if(ObjectUtils.isEmpty(retirementDate)) {
+            attributes.addFlashAttribute("message", savedDocumentVersion.getDocument().getDocId() +" " + savedDocumentVersion.getVersion() + " 이 Retirement 처리 되었습니다.");
+        } else {
+            attributes.addFlashAttribute("message", savedDocumentVersion.getDocument().getDocId() +" " + savedDocumentVersion.getVersion() + " 이 Retirement Date가 지정되었습니다. (" + strRetirementDate + ")");
+        }
+
+        //        attributes.addFlashAttribute("message", savedDocumentVersion.getDocument().getDocId() +" " + savedDocumentVersion.getVersion() + " 이 Superseded 처리 되었습니다.");
+
         return "redirect:/admin/{type}/management/{stringStatus}";
     }
 
@@ -453,33 +467,38 @@ public class AdminSOPController {
                              @PageableDefault(sort = {"retirementDate", "id"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable,
                              Model model) {
 //        approvalService.find
-        QRetirementDocument qRetirementDocument = QRetirementDocument.retirementDocument;
-        BooleanBuilder builder = new BooleanBuilder();
-        builder.and(qRetirementDocument.retirementApprovalForm.approval.status.eq(ApprovalStatus.approved));
-        builder.and(qRetirementDocument.documentType.eq(documentType));
-        builder.and(qRetirementDocument.retired.eq(false));
+//        QRetirementDocument qRetirementDocument = QRetirementDocument.retirementDocument;
+//        BooleanBuilder builder = new BooleanBuilder();
+//        builder.and(qRetirementDocument.retirementApprovalForm.approval.status.eq(ApprovalStatus.approved));
+//        builder.and(qRetirementDocument.documentType.eq(documentType));
+//        builder.and(qRetirementDocument.retired.eq(false));
 
-        model.addAttribute("retirement", retirementDocumentRepository.findAll(builder, pageable));
+        QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qDocumentVersion.status.eq(DocumentStatus.RETIREMENT));
+        builder.and(qDocumentVersion.retirement.eq(true));
+
+        model.addAttribute("retirement", documentVersionRepository.findAll(builder, pageable));
 
         return "admin/sop/retirement";
     }
 
-    @PostMapping("/management/retirement/setRetirementDate")
-    @ResponseBody
-    public Map<String, Object> retirementDate(@PathVariable("type") DocumentType documentType,
-                             RetirementDocument retirementDocument) {
-        Map<String, Object> res = new HashMap<>();
-        Optional<RetirementDocument> optionalRetirementDocument = retirementDocumentRepository.findById(retirementDocument.getId());
-        if(optionalRetirementDocument.isPresent()) {
-            RetirementDocument doc = optionalRetirementDocument.get();
-            doc.setRetirementDate(retirementDocument.getRetirementDate());
-            retirementDocumentRepository.save(doc);
-
-            res.put("result", "success");
-            res.put("id", doc.getId());
-        } else {
-            res.put("result", "fail");
-        }
-        return res;
-    }
+//    @PostMapping("/management/retirement/setRetirementDate")
+//    @ResponseBody
+//    public Map<String, Object> retirementDate(@PathVariable("type") DocumentType documentType,
+//                             RetirementDocument retirementDocument) {
+//        Map<String, Object> res = new HashMap<>();
+//        Optional<RetirementDocument> optionalRetirementDocument = retirementDocumentRepository.findById(retirementDocument.getId());
+//        if(optionalRetirementDocument.isPresent()) {
+//            RetirementDocument doc = optionalRetirementDocument.get();
+//            doc.setRetirementDate(retirementDocument.getRetirementDate());
+//            retirementDocumentRepository.save(doc);
+//
+//            res.put("result", "success");
+//            res.put("id", doc.getId());
+//        } else {
+//            res.put("result", "fail");
+//        }
+//        return res;
+//    }
 }

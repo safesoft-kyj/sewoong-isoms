@@ -463,11 +463,11 @@
                                 <thead>
                                 <tr>
                                     <th class="text-center">No.</th>
-                                    <th class="text-center">부서</th>
-                                    <th class="text-center">팀</th>
+                                    <th class="text-center">팀/부서</th>
                                     <th class="text-center">이름</th>
                                     <th class="text-center">변경 전 ROLE</th>
                                     <th class="text-center">변경 후 ROLE</th>
+                                    <th class="text-center">사유</th>
                                     <th class="text-center">요청 일자</th>
                                     <th class="text-center">배정 일자</th>
                                     <th class="text-center">#Actions</th>
@@ -478,14 +478,16 @@
                                     <#list roleRequestList.content as roleRequest>
                                         <tr>
                                             <td class="text-center">${(roleRequestList.totalElements - (roleRequestList.size * roleRequestList.number)) - roleRequest?index}</td>
-                                            <td class="text-center">${roleRequest.user.deptName}</td>
-                                            <td class="text-center">${roleRequest.user.teamName}</td>
+                                            <td class="text-center">${roleRequest.user.teamDept}</td>
                                             <td class="text-center">${roleRequest.user.name}</td>
                                             <td class="text-center"><span
                                                         class="label label-warning">${roleRequest.prevJobDescription}</span>
                                             </td>
                                             <td class="text-center"><span
                                                         class="label label-purple">${roleRequest.nextJobDescription}</span>
+                                            </td>
+                                            <td class="text-center">
+                                                ${roleRequest.reason}
                                             </td>
                                             <td class="text-center">${roleRequest.requestDate?string('yyyy-MM-dd')}</td>
                                             <td class="text-center">${roleRequest.assignDate?string('yyyy-MM-dd')}</td>

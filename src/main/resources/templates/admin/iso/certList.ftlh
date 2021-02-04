@@ -3,7 +3,7 @@
 <#assign security=JspTaglibs["http://www.springframework.org/security/tags"] />
 <html>
 <head>
-    <title> ISO MS > Training Management > ISO Cert 발행</title>
+    <title> Admin > Training Management > ISO Cert 발행</title>
     <script>
         $(document).ready(function () {
             // $(document).on("click", "button[name='retrainingBtn']", function() {

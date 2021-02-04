@@ -494,9 +494,14 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
         builder.and(qUser.indate.isNotNull());
 //        builder.and(qUser.empNo.isNotNull());
 //        if(ObjectUtils.isEmpty(loginUser) == false) builder.and(qUser.id.ne(loginUser.getId()));
-        if (!StringUtils.isEmpty(department)) {
+        if (!ObjectUtils.isEmpty(department)) {
             builder.and(qUser.department.eq(department));
+            
+            if (!ObjectUtils.isEmpty(department.getChildDepartments())){
+                builder.or(qUser.department.in(department.getChildDepartments()));
+            }
         }
+
         if(!ObjectUtils.isEmpty(userId)) {
             builder.and(qUser.id.eq(userId));
         }

@@ -3,7 +3,7 @@
 <#import "/common/pagination.ftl" as pagination />
 <html>
 <head>
-    <title>e-SOP > 관리자 > SOP Management</title>
+    <title>ISO Management System > 관리자 > SOP Management</title>
     <script src="/static/plugins/bootbox/bootbox.min.js"></script>
     <link href="/static/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
     <script src="/static/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
@@ -72,8 +72,8 @@
                     <th class="text-center">Doc Id.</th>
                     <th>Title</th>
                     <th class="text-center">Version</th>
-                    <th class="text-center">승인</th>
-                    <th class="text-center">승인일</th>
+<#--                    <th class="text-center">승인</th>-->
+<#--                    <th class="text-center">승인일</th>-->
                     <th class="text-center">Retirement Date</th>
                 </tr>
                 </thead>
@@ -83,18 +83,19 @@
                         <tr>
                             <td class="text-center">${(retirement.totalElements - (retirement.size * retirement.number)) - r?index}</td>
 <#--                            <td class="text-center">${r.documentType.name()}</td>-->
-                            <td class="text-center">${r.documentVersion.document.docId}</td>
-                            <td>${r.documentVersion.document.title}</td>
-                            <td class="text-center">${r.documentVersion.version}</td>
-                            <td class="text-center">${r.retirementApprovalForm.approval.lastModifiedBy?default('')}</td>
-                            <td class="text-center">${r.retirementApprovalForm.approval.lastModifiedDate?string('yyyy-MM-dd')}</td>
+                            <td class="text-center">${r.document.docId}</td>
+                            <td>${r.document.title}</td>
+                            <td class="text-center">${r.version}</td>
+<#--                            <td class="text-center">${r.retirementApprovalForm.approval.lastModifiedBy?default('')}</td>-->
+<#--                            <td class="text-center">${r.retirementApprovalForm.approval.lastModifiedDate?string('yyyy-MM-dd')}</td>-->
                             <td class="text-center" style="width:240px;">
-                                <div class="input-group">
-                                <input type="text" class="form-control" id="rdate${r.id}" name="retirementDate" data-id="${r.id}" value="${r.retirementDate?has_content?then(r.retirementDate?string('yyyy-MM-dd'), '')}"/>
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-success" id="rdateBtn${r.id}" name="rdateBtn" data-id="${r.id}" type="button" disabled><i class="fa fa-check"></i></button>
-                                    </span>
-                                </div>
+                                ${r.retirementDate?has_content?then(r.retirementDate?string('yyyy-MM-dd'), '-')}
+<#--                                <div class="input-group">-->
+<#--                                <input type="text" class="form-control" id="rdate${r.id}" name="retirementDate" data-id="${r.id}" value="${r.retirementDate?has_content?then(r.retirementDate?string('yyyy-MM-dd'), '')}"/>-->
+<#--                                    <span class="input-group-btn">-->
+<#--                                        <button class="btn btn-success" id="rdateBtn${r.id}" name="rdateBtn" data-id="${r.id}" type="button" disabled><i class="fa fa-check"></i></button>-->
+<#--                                    </span>-->
+<#--                                </div>-->
                             </td>
                         </tr>
                     </#list>

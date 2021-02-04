@@ -1,7 +1,7 @@
 <#import "/common/pagination.ftl" as pagination />
 <html>
 <head>
-    <title>Training Management > Refresh Training</title>
+    <title>Admin > Training Management > Refresh Training</title>
     <script>
         $(document).ready(function() {
             $("button[name='removeBtn']").click(function() {
@@ -30,7 +30,7 @@
             </div>
             <div class="col-sm-6 table-toolbar-right">
                 <div class="btn-group">
-                    <a class="btn btn-primary" href="/admin/training/refresh-training/new"><i class="fa fa-plus"></i> Add Refresh Training</a>
+                    <a class="btn btn-primary" href="/admin/training/sop/refresh-training/new"><i class="fa fa-plus"></i> Add Refresh Training</a>
                 </div>
             </div>
         </div>

@@ -89,6 +89,7 @@ public class SOPController {
         BooleanBuilder builder = documentVersionService.getMainSOPPredicate(status, categoryId, sopId, null);
         log.info("@SOP 조회 조건 : {}", builder);
         Iterable<DocumentVersion> iterable = documentVersionService.findAll(builder);
+        //Iterable<DocumentVersion> iterable = documentVersionRepository.findAll();
 
         log.info("Document Version : {}", iterable);
 

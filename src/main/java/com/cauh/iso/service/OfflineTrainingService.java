@@ -134,7 +134,7 @@ public class OfflineTrainingService {
 
                 model.put("requester", requester);
                 Mail mail = Mail.builder()
-                        .subject("[e-SOP] SOP Off-line Training 등록 요청")
+                        .subject("[ISO MS] SOP Off-line Training 등록 요청")
                         .to(toList.toArray(new String[toList.size()]))
                         .cc(ccList.toArray(new String[ccList.size()]))
                         .templateName("offline-training-submitted")
@@ -208,7 +208,7 @@ public class OfflineTrainingService {
                 HashMap<String, Object> model = new HashMap<>();
                 model.put("offlineTraining", offlineTraining);
                 Mail mail = Mail.builder()
-                        .subject("[e-SOP] SOP Off-line Training 반영 알림")
+                        .subject("[ISO MS] SOP Off-line Training 반영 알림")
                         .to(toList.toArray(new String[toList.size()]))
 //                        .cc(ccList.toArray(new String[ccList.size()]))
                         .templateName("offline-training-apply")

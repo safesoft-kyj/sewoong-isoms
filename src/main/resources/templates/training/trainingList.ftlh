@@ -3,7 +3,7 @@
 <#assign security=JspTaglibs["http://www.springframework.org/security/tags"] />
 <html>
 <head>
-    <title>e-SOP > Training > ${requirement.label} Training</title>
+    <title>ISO Management System > Training > ${requirement.label} Training</title>
 </head>
 <body>
 
@@ -394,7 +394,7 @@
             modal.find('.modal-body').html("Loading...");
             modal.find('.modal-title').html(title);
             $.ajax({
-                url:'/ajax/training/${requirement.name()}-training/test',
+                url:'/ajax/training/sop/${requirement.name()}-training/test',
                 data:{docVerId:documentId,r:Math.random()},
                 success:function(responseText) {
                     // console.log(res);

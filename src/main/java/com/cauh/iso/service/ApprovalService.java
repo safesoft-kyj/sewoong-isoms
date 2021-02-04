@@ -9,6 +9,7 @@ import com.cauh.iso.domain.report.*;
 import com.cauh.iso.repository.*;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -157,7 +158,7 @@ public class ApprovalService {
 
         Mail mail = Mail.builder()
                 .to(new String[]{toUser.getEmail()})
-                .subject(String.format("[e-SOP/전자결재/%s] %s %s 요청", fromUser.getName(), approval.getType().getLabel(), strLineType))
+                .subject(String.format("[ISO MS/전자결재/%s] %s %s 요청", fromUser.getName(), approval.getType().getLabel(), strLineType))
                 .model(model)
                 .templateName("approval-request")
                 .build();
@@ -769,7 +770,7 @@ public class ApprovalService {
             model.put("customer", customer);
             Mail mail = new Mail();
             mail.setTo(new String[]{customer.getEmail()});
-            mail.setSubject("[KCSG] e-SOP Invitation");
+            mail.setSubject("[CAUH] ISO MS Invitation");
             mail.setModel(model);
             mail.setTemplateName("external-customer-template");
 

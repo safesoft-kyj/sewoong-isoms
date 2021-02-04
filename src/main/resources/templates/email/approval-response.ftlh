@@ -42,7 +42,7 @@
                                             </tr>
                                             <tr>
                                                 <td class="content-block aligncenter">
-                                                    <a href="http://iso.cauh.ac.kr" target="_blank">CAUH ISO-MS 바로가기</a>
+                                                    <a href="http://${domain}" target="_blank">CAUH ISO-MS 바로가기</a>
                                                 </td>
                                             </tr>
                                         </table>
@@ -57,7 +57,7 @@
                         <tr>
                             <td class="aligncenter">
                                 <small>본 이메일의 발신자 주소는 발신전용으로 회신되지 않습니다.<br/>
-                                    COPYRIGHT© CHUNG-ANG UNIVERSITY. ALL RIGHTS RESERVED.
+                                    COPYRIGHT© Chung-Ang University Hospital. ALL RIGHTS RESERVED.
                                 </small></td>
                         </tr>
                     </table>

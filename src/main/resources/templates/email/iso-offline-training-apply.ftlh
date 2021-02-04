@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Billing e.g. invoices and receipts</title>
-    <link href="http://iso.cauh.ac.kr/static/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="http://${domain}/static/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />
 </head>
 
 <body itemscope itemtype="http://schema.org/EmailMessage">
@@ -63,7 +63,7 @@
                                             </tr>
                                             <tr>
                                                 <td class="content-block aligncenter" style="padding: 0 0 20px; text-align: center;">
-                                                    <a href="http://iso.cauh.ac.kr" target="_blank">ISO-MS 바로가기</a>
+                                                    <a href="http://${domain}" target="_blank">CAUH ISO-MS 바로가기</a>
                                                 </td>
                                             </tr>
                                         </table>

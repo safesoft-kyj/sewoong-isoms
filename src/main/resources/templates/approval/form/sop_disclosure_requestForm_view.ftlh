@@ -62,7 +62,7 @@
         </td>
     </tr>
     <tr>
-        <td class="bg-gray-light">Request Date<br/><small>(Date or Period to access e-SOP system)</small></td>
+        <td class="bg-gray-light">Request Date<br/><small>(Date or Period to access ISO Management System)</small></td>
         <td>
             ${approvalView.sopDisclosureRequestForm.requestStartDate?string('dd-MMM-yyyy')} ~ ${approvalView.sopDisclosureRequestForm.requestEndDate?string('dd-MMM-yyyy')}
         </td>

@@ -142,7 +142,13 @@ public class ISOCertificationsController {
 //            return "redirect:/certifications/{certId}" + (StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString());
 //        }
 
-        attributes.addFlashAttribute("message", "ISO Certification이 저장 되었습니다.");
+        if(ObjectUtils.isEmpty(certId)) {
+            attributes.addFlashAttribute("message", "ISO Certification이 저장 되었습니다.");
+            isoCertificationService.sendMail(savedISOCertification);
+        } else {
+            attributes.addFlashAttribute("message", "ISO Certification이 수정 되었습니다.");
+        }
+
         return "redirect:/certifications/";
     }
 

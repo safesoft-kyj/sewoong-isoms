@@ -2,7 +2,7 @@
 <#setting locale="en_US">
 <html>
 <head>
-    <title>전자결재 > SOP Deviation Report</title>
+    <title>Admin > 전자결재 > SOP Deviation Report</title>
     <link href="/static/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
     <script src="/static/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
     <#--        <link href="/static/plugins/chosen/chosen.min.css" rel="stylesheet">-->

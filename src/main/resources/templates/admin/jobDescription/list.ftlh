@@ -2,7 +2,7 @@
 <#import "/spring.ftl" as spring />
 <html>
 <head>
-    <title>ISO-MS > User Management > ROLE 관리</title>
+    <title>Admin > User Management > ROLE 관리</title>
 </head>
 <body>
 <div class="tab-base">

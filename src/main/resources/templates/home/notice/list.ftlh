@@ -3,7 +3,7 @@
 <@security.authentication property="principal" var="user"/>
 <html>
 <head>
-    <title>CAUH ISO Management System > 공지사항</title>
+    <title>ISO Management System > 공지사항</title>
 <#--    <script src="/static/plugins/jstree/jstree.min.js"></script>-->
 <#--    <link href="/static/plugins/jstree/themes/default/style.min.css" rel="stylesheet">-->
 

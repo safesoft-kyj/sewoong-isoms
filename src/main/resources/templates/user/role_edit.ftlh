@@ -3,7 +3,7 @@
 <#import "/spring.ftl" as spring />
 <html>
 <head>
-    <title>CAUH ISO Management System > User > Profile</title>
+    <title>ISO Management System > User > Profile</title>
 
     <!-- select2 -->
     <link href="/static/plugins/select2/css/select2.min.css" rel="stylesheet">

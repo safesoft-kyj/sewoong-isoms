@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @Slf4j
@@ -46,10 +47,16 @@ public class OrganizationController {
 //        param.put("gwDeptTbl", gwDeptTbl);
 //        param.put("state", "1");
 //        List<Map<String, String>> allUsers = deptUserMapper.getAllUsers(param);
+
+
         List<Account> accounts = userRepository.findAllByUserTypeAndEnabledOrderByNameAsc(UserType.USER, true);
+        List<Account> managers = accounts.stream().filter(user -> user.getUserJobDescriptions().stream()
+                                //해당 유저가 관리자인지 (Manager권한을 가진 JD가 1개 이상 있으면)
+                                .filter(uj -> uj.getJobDescription().isManager()).count() > 0).collect(Collectors.toList());
+
         List<JsTreeNode> jsTreeNodes = new ArrayList<>();
         String mainCode = "CAUH";
-        String mainName = "CAUH(" + accounts.size() + ")";
+        String mainName = "CAUH(" + managers.size() + ")";
 
         JsTreeNode rootNode = new JsTreeNode(mainCode, mainName);
 //        rootNode.setIcon("jstree-folder");
@@ -64,7 +71,7 @@ public class OrganizationController {
         int lev;
         boolean sex;
 
-        for(Account u : accounts) {
+        for(Account u : managers) {
             log.trace(" -- user : {}", u);
             deptCode = ObjectUtils.isEmpty(u.getDepartment().getParentDepartment()) ? mainCode : Integer.toString(u.getDepartment().getParentDepartment().getId());
             teamCode = Integer.toString(u.getDepartment().getId());

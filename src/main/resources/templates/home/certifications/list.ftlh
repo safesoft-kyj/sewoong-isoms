@@ -2,7 +2,7 @@
 <#import "/common/pagination.ftl" as pagination />
 <html>
 <head>
-    <title>e-SOP > 인증현황</title>
+    <title>ISO Management System > 인증현황</title>
     <#--    <script src="/static/plugins/jstree/jstree.min.js"></script>-->
     <#--    <link href="/static/plugins/jstree/themes/default/style.min.css" rel="stylesheet">-->
     <#--    <script src='/static/js/pdfobject.min.js'></script>-->
@@ -71,7 +71,9 @@
                     <th class="text-center" style="width:160px;">인증일자</i> </th>
                     <th class="text-center" style="width:160px;">등록일</th>
                     <th class="text-center" style="width:140px">작성자</th>
+                    <@security.authorize access="hasAnyAuthority('ADMIN')">
                     <th class="text-center" style="width:180px">#actions</th>
+                    </@security.authorize>
                 </tr>
                 </thead>
                 <tbody>
@@ -203,6 +205,5 @@
     </div>
 </div>
 <!-- Certification viewer end -->
-</div>
 </body>
 </html>

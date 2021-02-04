@@ -151,12 +151,24 @@ public class DocumentVersionService {
         log.info("<== SOP/RF 삭제 완료 ID : {}", id);
     }
 
-    public DocumentVersion retirement(String docVerId) {
+    public DocumentVersion retirement(String docVerId, Date retirementDate) {
         log.debug("Retirement Id : {}", docVerId);
-        DocumentVersion supersededDocumentVersion = findById(docVerId);
-        supersededDocumentVersion.setStatus(DocumentStatus.SUPERSEDED);
 
-        return documentVersionRepository.save(supersededDocumentVersion);
+        //Retirement Form 미사용으로 RetirementDocumentVersion은 더 이상 사용되지 않음.
+
+        //retirementDate가 없으면 바로 적용, 있으면 날짜만 지정
+        //바로 적용
+        DocumentVersion retirementDocumentVersion = findById(docVerId);
+
+        if(ObjectUtils.isEmpty(retirementDate)) {
+            retirementDocumentVersion.setStatus(DocumentStatus.SUPERSEDED);
+            retirementDocumentVersion.setRetirement(true);
+            retirementDocumentVersion.setRetirementDate(new Date());
+        } else { //날짜를 지정
+            retirementDocumentVersion.setRetirementDate(retirementDate);
+        }
+
+        return documentVersionRepository.save(retirementDocumentVersion);
     }
 
 //    public DocumentVersion retirement(DocumentVersion documentVersion) {
@@ -373,7 +385,7 @@ public class DocumentVersionService {
         log.debug("현재 기준 approved -> effective 되어야 하는 대상 SOP:{}/RF:{}", effectiveSOPs.size(), effectiveRFs.size());
 
 //        StringBuilder sb = new StringBuilder("[SOP 공지]");
-        String subject = "[e-SOP] SOPs(RFs) Notification";
+        String subject = "[ISO MS] SOPs(RFs) Notification";
         if(!ObjectUtils.isEmpty(effectiveSOPs)) {
 //            String categoryNames = effectiveSOPs.stream().map(d -> d.getDocument().getCategory().getShortName()).distinct().sorted().collect(Collectors.joining(","));
 //            sb.append(categoryNames).append(" SOP");
@@ -392,16 +404,26 @@ public class DocumentVersionService {
             log.debug("<- RF effective 처리 완료");
         }
 
-        Iterable<RetirementDocument> retirementSOPDocuments = retirementDocumentService.findRetirementDocs(now, DocumentType.SOP);
-        Iterable<RetirementDocument> retirementRFDocuments = retirementDocumentService.findRetirementDocs(now, DocumentType.RF);
+//        Iterable<RetirementDocument> retirementSOPDocuments = retirementDocumentService.findRetirementDocs(now, DocumentType.SOP);
+//        Iterable<RetirementDocument> retirementRFDocuments = retirementDocumentService.findRetirementDocs(now, DocumentType.RF);
+
+        //2021-02-04 : Retirement 작업
+        List<DocumentVersion> retirementSOPDocuments = getEffectiveToSupersededDocuments(DocumentType.SOP, now);
+        List<DocumentVersion> retirementRFDocuments = getEffectiveToSupersededDocuments(DocumentType.RF, now);
 
         boolean hasRetirementSOPs = ObjectUtils.isEmpty(retirementSOPDocuments) == false;
         boolean hasRetirementRFs = ObjectUtils.isEmpty(retirementRFDocuments) == false;
+
         if(hasRetirementSOPs) {
-            retirementDocumentService.retired(retirementSOPDocuments);
+            log.debug("-> SOP retirement 처리 시작");
+            retirementDocumentStatus(retirementSOPDocuments);
+            log.debug("-> SOP retirement 처리 완료");
         }
+
         if(hasRetirementRFs) {
-            retirementDocumentService.retired(retirementRFDocuments);
+            log.debug("-> RF retirement 처리 시작");
+            retirementDocumentStatus(retirementRFDocuments);
+            log.debug("-> RF retirement 처리 완료");
         }
 
         if(!ObjectUtils.isEmpty(effectiveSOPs) || !ObjectUtils.isEmpty(effectiveRFs) || hasRetirementSOPs || hasRetirementRFs) {
@@ -409,8 +431,8 @@ public class DocumentVersionService {
 //                sb.append(" Effective");
 //            }
 //
-//            if(hasRetirementSOPs || hasRetirementRDs) {
-//                if(!ObjectUtils.isEmpty(effectiveSOPs) || !ObjectUtils.isEmpty(effectiveRDs)) {
+//            if(hasRetirementSOPs || hasRetirementRFs) {
+//                if(!ObjectUtils.isEmpty(effectiveSOPs) || !ObjectUtils.isEmpty(effectiveRFs)) {
 //                    sb.append(" 및");
 //                }
 //                sb.append(" 폐기 SOP");
@@ -496,6 +518,21 @@ public class DocumentVersionService {
         return effectiveDocuments;
     }
 
+    protected List<DocumentVersion> getEffectiveToSupersededDocuments(DocumentType documentType, Date now) {
+
+        QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qDocumentVersion.document.type.eq(documentType));
+        builder.and(qDocumentVersion.status.eq(DocumentStatus.EFFECTIVE));
+        builder.and(qDocumentVersion.retirementDate.eq(now));
+        Iterable<DocumentVersion> documentVersions = documentVersionRepository.findAll(builder);
+
+        List<DocumentVersion> retirementDocuments = StreamSupport.stream(documentVersions.spliterator(), false)
+                .collect(Collectors.toList());
+
+        return retirementDocuments;
+    }
+
     protected void updateDocumentVersionStatus(List<DocumentVersion> approvedToEffectiveDocuments) {
         for (DocumentVersion documentVersion : approvedToEffectiveDocuments) {
             if (!ObjectUtils.isEmpty(documentVersion.getParentVersion())) {
@@ -506,6 +543,14 @@ public class DocumentVersionService {
 
             log.debug("** Effective 상태로 변경 : {}", documentVersion.getId());
             documentVersion.setStatus(DocumentStatus.EFFECTIVE);
+            documentVersionRepository.save(documentVersion);
+        }
+    }
+
+    protected void retirementDocumentStatus(List<DocumentVersion> effectiveToSupersededDocuments) {
+        for(DocumentVersion documentVersion : effectiveToSupersededDocuments) {
+            documentVersion.setRetirement(true);
+            documentVersion.setStatus(DocumentStatus.SUPERSEDED);
             documentVersionRepository.save(documentVersion);
         }
     }

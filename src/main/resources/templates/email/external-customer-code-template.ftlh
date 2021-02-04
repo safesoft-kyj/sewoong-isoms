@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Billing e.g. invoices and receipts</title>
-    <link href="http://kcsgesop.safesoft.co.kr/static/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="http://${domain}/static/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />
 </head>
 
 <body itemscope itemtype="http://schema.org/EmailMessage">
@@ -39,7 +39,7 @@
                                                         </tr>
                                                         <tr>
                                                             <td>URL : </td>
-                                                            <td class="alignleft"><a href="http://kcsgesop.safesoft.co.kr" target="_blank">http://kcsgesop.safesoft.co.kr</a></td>
+                                                            <td class="alignleft"><a href="http://${domain}" target="_blank">http://${domain}</a></td>
                                                         </tr>
                                                     </table>
                                                 </td>

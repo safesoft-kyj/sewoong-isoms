@@ -75,7 +75,7 @@
     </table>
 </#if>
 <#if retirementRDs?has_content>
-    <h5>Retirement RD Information</h5>
+    <h5>Retirement RF Information</h5>
     <table class="table table-bordered">
         <thead>
         <tr>
@@ -87,7 +87,7 @@
         </tr>
         </thead>
         <tbody>
-        <#list retirementRDs as rd>
+        <#list retirementRFs as rd>
             <tr>
                 <td>${rd.documentVersion.document.docId}</td>
                 <td>${rd.documentVersion.version}</td>

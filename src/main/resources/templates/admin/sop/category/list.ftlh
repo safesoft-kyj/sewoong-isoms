@@ -2,7 +2,7 @@
 <#import "/spring.ftl" as spring />
 <html>
 <head>
-    <title>e-SOP > SOP > Category 관리</title>
+    <title>ISO Management System > SOP > Category 관리</title>
     <script>
         $(document).ready(function(){
 

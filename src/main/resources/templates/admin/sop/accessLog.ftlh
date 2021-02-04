@@ -2,7 +2,7 @@
 <#import "/common/pagination.ftl" as pagination />
 <html>
 <head>
-    <title>ISO-MS > Admin > Acess Log</title>
+    <title>ISO Management System > Admin > SOP/RD Access Log</title>
 
 </head>
 <body>

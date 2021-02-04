@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Billing e.g. invoices and receipts</title>
-    <link href="http://kcsgesop.safesoft.co.kr/static/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="http://${domain}/static/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />
 </head>
 
 <body itemscope itemtype="http://schema.org/EmailMessage">
@@ -17,7 +17,7 @@
                 <table class="main" width="100%" cellpadding="0" cellspacing="0">
                     <tr>
                         <td class="alert alert-good">
-                            <strong>[e-SOP] Off-line Training 반영 알림</strong>
+                            <strong>[ISO MS] Off-line Training 반영 알림</strong>
                         </td>
                     </tr>
                     <tr>
@@ -63,7 +63,7 @@
                                             </tr>
                                             <tr>
                                                 <td class="content-block aligncenter">
-                                                    <a href="http://kcsgesop.safesoft.co.kr" target="_blank">e-SOP 바로가기</a>
+                                                    <a href="http://${domain}" target="_blank">CAUH ISO-MS 바로가기</a>
                                                 </td>
                                             </tr>
                                         </table>

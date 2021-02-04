@@ -3,7 +3,7 @@
 <#setting locale="en_US">
 <html>
 <head>
-    <title>Chung Ang University Hospital - ISO Management System</title>
+    <title>ISO Management System</title>
     <script src="/static/js/signature_pad.min.js"></script>
     <script>
         $(document).ready(function() {
@@ -69,10 +69,10 @@
             <div class="mar-top mar-btm">I fully understand the contents written below, and agree to the collection and use of personal information in accordance with the Personal Information Protection Act.</div>
 
             <div class="text-bold">1. Purpose of Collection and Use of Personal Information</div>
-            <div class="mar-btm text-muted">&nbsp;&nbsp;&nbsp;&nbsp;: To access KCSG SOP/RD as per request by the External Customer.</div>
+            <div class="mar-btm text-muted">&nbsp;&nbsp;&nbsp;&nbsp;To access “Chung-Ang University Hospital-ISO 14155” SOP/RF as per request by the External Customer.)</div>
 
             <div class="text-bold">2. Items of Personal Information to be Collected and Used</div>
-            <div class="mar-btm text-muted">&nbsp;&nbsp;&nbsp;&nbsp;: Name, Affiliation, E-mail and Job Title/Position.</div>
+            <div class="mar-btm text-muted">&nbsp;&nbsp;&nbsp;&nbsp;: Name, Affiliation, E-mail and Role.</div>
 
             <div class="text-bold">3. Period to Retain and Use of Personal Information</div>
             <div class="mar-btm text-muted">&nbsp;&nbsp;&nbsp;&nbsp;: 5 years from the date of the Agreement.</div>
@@ -81,11 +81,11 @@
             <div class="mar-btm text-muted">&nbsp;&nbsp;&nbsp;&nbsp;: Personal Information shall not be provided to the Third Parties.</div>
 
             <div class="text-bold">5. Right to Refuse</div>
-            <div class="mar-btm text-muted">&nbsp;&nbsp;&nbsp;&nbsp;: The External Customer has the right to refuse the collection and use of personal information, however, he or she shall be prohibited access to KCSG SOP/RD if refusing to provide its personal information.</div>
+            <div class="mar-btm text-muted">&nbsp;&nbsp;&nbsp;&nbsp;: The External Customer has the right to refuse the collection and use of personal information, however, he or she shall be prohibited access to “Chung-Ang University Hospital-ISO 14155” SOP/RF if refusing to provide its personal information.</div>
 
-            <div class="text-bold mar-btm">6. KCSG shall not use the collected information without the consent of the External Customer for anything other than the original purpose aforementioned, and shall not provide it to the Third Parties.</div>
+            <div class="text-bold mar-btm">6. Chung-Ang University Hospital shall not use the collected information without the consent of the External Customer for anything other than the original purpose aforementioned, and shall not provide it to the Third Parties.</div>
 
-            <div class="mar-btm mar-top">I hereby confirm that I shall provide personal information (name, affiliation, e-mail and job title/position) for the access to KCSG SOP/RD.</div>
+            <div class="mar-btm mar-top">I hereby confirm that I shall provide personal information (name, affiliation, e-mail and job title/position) for the access to “Chung-Ang University Hospital-ISO 14155” SOP/RF</div>
 <#--            <div class="mar-top mar-btm">-->
 <#--                <label class="checkbox-inline">-->
 <#--                    <input type="checkbox" name="agree" value="1"> I agree-->

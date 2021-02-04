@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Billing e.g. invoices and receipts</title>
-    <link href="http://iso.cauh.ac.kr/static/plugins/transactional-email-templates/templates/styles.css" media="all"
+    <link href="http://${domain}/static/plugins/transactional-email-templates/templates/styles.css" media="all"
           rel="stylesheet" type="text/css"/>
 </head>
 
@@ -22,14 +22,14 @@
                     <tr>
                         <td class="alert alert-good"
                             style="vertical-align: top; font-size: 16px; color: #fff; font-weight: 500; padding: 20px; text-align: center; background-color: #8BC34A;">
-                            <strong>${iso.title}</strong>
+                            <strong>${title}</strong>
                         </td>
                     </tr>
                     <tr>
                         <td class="content-block aligncenter"
                             style="vertical-align: top; padding: 0 0 20px; text-align: center;">
-                            <div>[ISO-MS] 새로운 ISO 항목이 등록 되었습니다.</div>
-                            <a href="http://iso.cauh.ac.kr" target="_blank"
+                            <div>${content}</div>
+                            <a href="http://${domain}" target="_blank"
                                style="color: #348eda; text-decoration: underline;">CAUH ISO-MS 바로가기</a>
                         </td>
                     </tr>
@@ -39,7 +39,7 @@
                         <tr>
                             <td class="aligncenter" style="text-align: center;">
                                 <small>본 이메일의 발신자 주소는 발신전용으로 회신되지 않습니다.<br/>
-                                    COPYRIGHT© CHUNG-ANG UNIVERSITY. ALL RIGHTS RESERVED.
+                                    COPYRIGHT© Chung-Ang University Hospital. ALL RIGHTS RESERVED.
                                 </small>approval/box/requester
                             </td>
                         </tr>

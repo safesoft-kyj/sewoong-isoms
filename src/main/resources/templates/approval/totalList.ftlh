@@ -2,7 +2,7 @@
 <#import "/spring.ftl" as spring />
 <html>
 <head>
-    <title>eSOP > 전자결재</title>
+    <title>Admin > 전자결재</title>
 </head>
 <body>
 

@@ -29,6 +29,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -120,6 +121,7 @@ public class UserAgreementController {
             agreementPersonalInformation.setExternalCustomer(ExternalCustomer.builder().id(user.getExternalCustomerId()).build());
         }
 
+        model.addAttribute("agreeMaps", agreementPersonalInformationService.getAgreeMap());
         model.addAttribute("agreementPersonalInformation", agreementPersonalInformation);
         return "common/agreementCollectUse";
     }
@@ -134,14 +136,14 @@ public class UserAgreementController {
     @PostMapping("/agreement-to-collect-and-use-personal-information")
     @Transactional
     public String agreementCollectUse(@ModelAttribute("agreementPersonalInformation") AgreementPersonalInformation agreementPersonalInformation,
-                                      SessionStatus status,
-                                      @CurrentUser Account user) {
+                                      BindingResult result, SessionStatus status, @CurrentUser Account user) {
 
         //기존 내역이 존재하면, 새로 저장하려는 동의 정보에 동의 여부를 true로 하여 재지정.
         Optional<AgreementPersonalInformation> agreementPersonalInformationOptional = agreementPersonalInformationService.findByInternalUser(user);
         if(agreementPersonalInformationOptional.isPresent()) {
             AgreementPersonalInformation originAgreementPersonalInformation = agreementPersonalInformationOptional.get();
             agreementPersonalInformation.setId(originAgreementPersonalInformation.getId());
+            agreementPersonalInformation.setAgree(true);
         }
 
         AgreementPersonalInformation savedAgreementPersonalInformation = agreementPersonalInformationService.save(agreementPersonalInformation);

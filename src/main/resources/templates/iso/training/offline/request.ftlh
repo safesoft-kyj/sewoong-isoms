@@ -46,13 +46,13 @@
 
             <!--Password-->
             <div class="form-group">
-                <label class="col-md-3 control-label" for="demo-password-input">Training SOP</label>
+                <label class="col-md-3 control-label" for="demo-password-input">Training ISO</label>
                 <div class="col-md-9">
                     <table class="table table-bordered">
                         <thead>
                         <tr class="bg-gray-light">
                             <th class="col-xs-1">No.</th>
-                            <th>SOP</th>
+                            <th>ISO</th>
                             <th class="col-xs-2">Training Hr.</th>
                         </tr>
                         </thead>

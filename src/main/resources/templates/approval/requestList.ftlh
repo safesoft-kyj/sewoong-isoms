@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>SOP & RD Request Form</title>
+    <title>Admin > SOP & RD Request Form</title>
     <script src="/static/plugins/chosen/chosen.jquery.min.js"></script>
     <link href="/static/plugins/chosen/chosen.min.css" rel="stylesheet">
     <script src="/static/plugins/nestable-list/jquery.nestable.js"></script>

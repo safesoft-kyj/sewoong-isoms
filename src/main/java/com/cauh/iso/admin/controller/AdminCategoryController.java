@@ -16,7 +16,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@SessionAttributes({"category"})
+@SessionAttributes({"Category"})
 public class AdminCategoryController {
     private final CategoryService categoryService;
     private final CategoryValidator categoryValidator;

@@ -60,6 +60,8 @@ public class QDocumentVersion extends EntityPathBase<DocumentVersion> {
 
     public final BooleanPath retirement = createBoolean("retirement");
 
+    public final DateTimePath<java.util.Date> retirementDate = createDateTime("retirementDate", java.util.Date.class);
+
     public final StringPath rfEngExt = createString("rfEngExt");
 
     public final StringPath rfEngFileName = createString("rfEngFileName");

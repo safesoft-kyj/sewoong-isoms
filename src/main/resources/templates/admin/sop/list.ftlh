@@ -2,13 +2,13 @@
 <#import "/common/pagination.ftl" as pagination />
 <html>
 <head>
-    <title>e-SOP > 관리자 > SOP Management</title>
+    <title>ISO Management System > 관리자 > SOP Management</title>
     <script src="/static/plugins/bootbox/bootbox.min.js"></script>
     <script>
         $(document).ready(function() {
             $('button[name=retirement]').on('click', function () {
                 var docVerId = $(this).data("id");
-                bootbox.confirm("Superseded 상태로 변경 하시겠습니까?", function (result) {
+                bootbox.confirm("Retirement 상태로 변경 하시겠습니까?", function (result) {
                     if (result) {
                         $("#statusChangeForm").attr("action", '/admin/${type.name()}/management/${status.name()?lower_case}/'+docVerId+'/retirement');
                         $("#statusChangeForm").submit();

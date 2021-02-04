@@ -100,7 +100,8 @@ public class AdminISOTrainingController {
 
         if(!ObjectUtils.isEmpty(deptId)) {
             department = new Department(deptId);
-            model.addAttribute("teamList", departmentService.getChildDepartment(department));
+            department.setChildDepartments(departmentService.getChildDepartment(department));
+            model.addAttribute("teamList", department.getChildDepartments());
 
             if (!ObjectUtils.isEmpty(teamId)) {
                 department = new Department(teamId);

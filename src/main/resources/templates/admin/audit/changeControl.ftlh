@@ -2,7 +2,7 @@
 <#import "/common/pagination.ftl" as pagination />
 <html>
 <head>
-    <title>ISO-MS > Admin > Change Control</title>
+    <title>Admin > Change Control</title>
 
 </head>
 <body>

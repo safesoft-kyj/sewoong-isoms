@@ -2,6 +2,7 @@ package com.cauh.iso.service;
 
 import com.cauh.iso.domain.ISOCertification;
 import com.cauh.iso.domain.ISOCertificationAttachFile;
+import com.cauh.iso.domain.Mail;
 import com.cauh.iso.repository.ISOCertificationAttachFileRepository;
 import com.cauh.iso.repository.ISOCertificationRepository;
 import com.querydsl.core.types.Predicate;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +26,7 @@ public class ISOCertificationService {
     private final ISOCertificationRepository isoCertificationRepository;
     private final ISOCertificationAttachFileRepository isoCertificationAttachFileRepository;
     private final FileStorageService fileStorageService;
+    private final MailService mailService;
 
     public Page<ISOCertification> getList(Predicate predicate, Pageable pageable) {
         return isoCertificationRepository.findAll(predicate, pageable);
@@ -35,6 +38,23 @@ public class ISOCertificationService {
 
     public Optional<ISOCertificationAttachFile> getAttachFile(String id) {
         return isoCertificationAttachFileRepository.findById(id);
+    }
+
+    public void sendMail(ISOCertification isoCertification){
+        HashMap<String, Object> model = new HashMap<>();
+        model.put("title", isoCertification.getTitle());
+        model.put("content", "[ISO-MS] 새로운 ISO 인증 현황이 등록 되었습니다.");
+
+        List<String> toList = mailService.getReceiveEmails();
+        if (ObjectUtils.isEmpty(toList) == false) {
+            Mail mail = Mail.builder()
+                    .to(toList.toArray(new String[toList.size()]))
+                    .subject("[ISO-MS/System/ISO 인증현황] " + isoCertification.getTitle())
+                    .model(model)
+                    .templateName("iso-template")
+                    .build();
+            mailService.sendMail(mail);
+        }
     }
 
     public void remove(ISOCertification isoCertification) {

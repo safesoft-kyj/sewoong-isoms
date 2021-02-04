@@ -37,14 +37,13 @@ public class AgreementsWithdrawalService {
     public AgreementsWithdrawal withdrawalRequest(Account user, AgreementsWithdrawal withdrawal) {
         //현재 접속중인 유저 정보 추가.
         withdrawal.setUser(user);
-        AgreementsWithdrawal result = agreementsWithdrawalRepository.save(withdrawal);
 
         HashMap<String, Object> model = new HashMap<>();
         model.put("message", "철회 신청 알림");
         model.put("teamDept", user.getTeamDept());
         model.put("username", user.getUsername());
         model.put("name", user.getName());
-        model.put("withdrawalDate", result.getWithdrawalDate());
+        model.put("withdrawalDate", withdrawal.getWithdrawalDate());
 
         Mail mail = Mail.builder()
                 .to(new String[]{withdrawal.getEmail()})
@@ -54,6 +53,10 @@ public class AgreementsWithdrawalService {
                 .build();
 
         mailService.sendMail(mail);
+
+
+        AgreementsWithdrawal result = agreementsWithdrawalRepository.save(withdrawal);
+
         return result;
     }
 

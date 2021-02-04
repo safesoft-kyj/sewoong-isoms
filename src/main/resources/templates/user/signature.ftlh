@@ -2,7 +2,7 @@
 <@security.authentication property="principal" var="user"/>
 <html>
 <head>
-    <title>eSOP > User > Signature</title>
+    <title>ISO Management System > User > Signature</title>
     <script src="/static/js/signature_pad.min.js"></script>
     <script>
         $(document).ready(function() {

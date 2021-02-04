@@ -4,7 +4,7 @@
 <#setting locale="en_US">
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <title>e-SOP > SOP > Training Log(Import)</title>
+    <title>ISO Management System > SOP > Training Log(Import)</title>
 
 </head>
 <body>

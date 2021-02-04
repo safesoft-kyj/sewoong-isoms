@@ -19,7 +19,7 @@
             <a href="/admin/dashboard" class="navbar-brand">
                 <%--                <img src="/static/img/logo.png" alt="Nifty Logo" class="brand-icon">--%>
                 <div class="brand-title">
-                    <span class="brand-text">e-SOP(Admin)</span>
+                    <span class="brand-text" style="font-size:18px;">ISO MS(Admin)</span>
                     <%--                    <span class="brand-text">--%>
                     <%--                        <sec:authorize access="isAuthenticated()">--%>
                     <%--                            <sec:authentication var="companyId" property="principal.companyId" />--%>

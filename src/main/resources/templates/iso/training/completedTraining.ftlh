@@ -102,7 +102,7 @@
         <script src="/static/plugins/bootstrap-table/bootstrap-table.min.js"></script>
         <script>
             function tableActions(value, row, index) {
-                if (row.certHead != '') {
+                if (row.certId != null) {
                     return [
                         '<button type="button" id="certBtn" name="certificationBtn" data-target="#cert-modal" data-toggle="modal" class="btn btn-info btn-xs" data-id="'
                         + row.id + '" data-cert="' + row.certId + '">',
@@ -167,7 +167,6 @@
             </div>
         </div>
     </div>
-</div>
 </div>
 </body>
 </html>

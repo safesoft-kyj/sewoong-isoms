@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Billing e.g. invoices and receipts</title>
-    <link href="http://kcsgesop.safesoft.co.kr/static/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="http://${domain}/static/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />
 </head>
 
 <body itemscope itemtype="http://schema.org/EmailMessage">
@@ -18,7 +18,7 @@
                 <table class="main" width="100%" cellpadding="0" cellspacing="0">
                     <tr>
                         <td class="alert alert-good">
-                            <strong>[KCSG] e-SOP Invitation</strong>
+                            <strong>[CAUH] ISO Management System Invitation</strong>
                         </td>
                     </tr>
                     <tr>
@@ -28,7 +28,7 @@
                                     <td class="content-block aligncenter">
                                         <table class="invoice">
                                             <tr>
-                                            <td>Welcome to Chung-Ang Unitersity Hospital ISO Management System. You have been invited to access the e-SOP system.<br/>
+                                            <td>Welcome to Chung-Ang University Hospital ISO Management System. You have been invited to access the ISO Management System.<br/>
                                                 In order to use the ISO Management System, you will need the following software;<br/>
                                                 - Microsoft Internet Explorer 9.0 and above OR Mozilla Firefox and Google Chrome.<br/>
                                             </td>
@@ -45,7 +45,7 @@
                                                             <td class="alignleft">${customer.email}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>Date of Period to access e-SOP</td>
+                                                            <td>Date of Period to access ISO MS</td>
                                                             <td class="alignleft">
                                                                 ${form.requestStartDate?string('dd-MMM-yyyy')} ~ ${form.requestEndDate?string('dd-MMM-yyyy')}
                                                             </td>
@@ -53,7 +53,7 @@
                                                         <tr>
                                                             <td>URL</td>
                                                             <td class="alignleft">
-                                                                <a href="http://kcsgesop.safesoft.co.kr" target="_blank">http://kcsgesop.safesoft.co.kr</a>
+                                                                <a href="http://${domain}" target="_blank">http://${domain}</a>
                                                             </td>
                                                         </tr>
                                                     </table>

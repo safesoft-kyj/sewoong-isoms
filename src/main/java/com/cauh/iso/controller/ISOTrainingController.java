@@ -167,7 +167,6 @@ public class ISOTrainingController {
             if(log.getIso().isCertification()) {
                 ISOTrainingCertification certification = isoTrainingCertificationService.findByIsoAndUser(log.getIso(), user);
                 dto.setCertId(certification.getId());
-                dto.setCertHtml(certification.getCertHtml());
             }
 
             isoTrainingLogDTOS.add(dto);

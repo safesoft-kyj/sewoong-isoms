@@ -1,7 +1,7 @@
 <#import "/spring.ftl" as spring />
 <html>
 <head>
-    <title>Chung Ang University Hospital - ISO Management System</title>
+    <title>ISO Management System</title>
 
     <!--BootstrapJS [ RECOMMENDED ]-->
     <script src="/static/js/bootstrap.min.js"></script>

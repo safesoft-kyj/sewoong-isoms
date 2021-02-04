@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Chung Ang University Hospital - ISO Management System</title>
+    <title>ISO Management System</title>
     <script>
         $(document).ready(function() {
            $("#authForm").submit(function(e) {

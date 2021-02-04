@@ -68,7 +68,7 @@
                             <#list t.documentVersion.trainingMatrixList as m>
                                 <#if m.trainingAll == true>
                                     <i class="fa fa-check text-success"></i>
-                                <#elseif m.jobDescription.id = jd.jobDescriptionVersion.jobDescription.id>
+                                <#elseif m.jobDescription.id = jd.jobDescription.id>
                                     <i class="fa fa-check text-success"></i>
                                 </#if>
                             </#list>

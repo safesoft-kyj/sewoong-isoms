@@ -2,7 +2,7 @@
 <#import "/common/pagination.ftl" as pagination />
 <html>
 <head>
-    <title> ISO MS > ISO > ISO-14155</title>
+    <title> ISO Management System > ISO > ISO-14155</title>
     <#--    <script src="/static/plugins/jstree/jstree.min.js"></script>-->
     <#--    <link href="/static/plugins/jstree/themes/default/style.min.css" rel="stylesheet">-->
 
@@ -158,8 +158,8 @@
                     </@security.authorize>
                     <th class="text-center" style="width:90px;">수료증 여부</th>
                     <th class="text-center" style="width:200px;">교육 일정</th>
-                    <th class="text-center" style="width:160px;">등록일</th>
-                    <th class="text-center" style="width:140px;">작성자</th>
+                    <th class="text-center" style="width:120px;">등록일</th>
+                    <th class="text-center" style="width:100px;">작성자</th>
                     <@security.authorize access="hasAnyAuthority('ADMIN')">
                         <th class="text-center" style="width:140px">Active</th>
                     </@security.authorize>
@@ -171,7 +171,14 @@
                         <tr class="bg-gray-light">
                             <td class="text-center"><i class="fa fa-exclamation-circle text-warning"></i></td>
                             <td class="text-center"><span class="label label-${iso.training?then('info','mint')}">${iso.training?then('Training','Board')}</span></td>
-                            <td><a class="btn-link" href="/iso-14155/${iso.id}">${iso.title}</a></td>
+                            <td>
+                                <a class="btn-link" href="/iso-14155/${iso.id}">
+                                    ${iso.title}
+                                </a>
+<#--                                <#if iso.active?has_content && iso.active>-->
+<#--                                    &nbsp;<span class="label label-purple">Active</span>-->
+<#--                                </#if>-->
+                            </td>
                             <@security.authorize access="hasAnyAuthority('ADMIN')">
                             <td class="text-center">
                                 <!--===================================================-->
@@ -220,7 +227,12 @@
                         <tr>
                             <td class="text-center">${(isoList.totalElements - (isoList.size * isoList.number)) - iso?index}</td>
                             <td class="text-center"><span class="label label-${iso.training?then('info','mint')}">${iso.training?then('Training','Board')}</span></td>
-                            <td><a class="btn-link" href="/iso-14155/${iso.id}<@pagination.getQueryString/>">${iso.title}</a></td>
+                            <td>
+                                <a class="btn-link" href="/iso-14155/${iso.id}">${iso.title}</a>
+<#--                                <#if iso.active?has_content && iso.active>-->
+<#--                                    &nbsp;<span class="label label-purple">Active</span>-->
+<#--                                </#if>-->
+                            </td>
                             <@security.authorize access="hasAnyAuthority('ADMIN')">
                             <td class="text-center">
                                 <#if iso.training>

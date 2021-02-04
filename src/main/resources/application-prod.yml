@@ -51,7 +51,8 @@ spring:
     table: flyway_sop_schema_history
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: jdbc:sqlserver://183.111.104.67:20170;DatabaseName=kcsg_dev_20200703
+#    url: jdbc:sqlserver://183.111.104.67:20170;DatabaseName=dtnc
+    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=cauh_dev
     username: sa
     password: safe123!@#
 
@@ -72,7 +73,7 @@ logging.level:
 
 server:
   domain: esop.safesoft.co.kr
-  port: 8081
+  port: 9090
 
 file:
   upload-dir: C:\UploadFiles\iso
@@ -85,5 +86,6 @@ gw:
   deptTbl: gw.GWareNet10_Dtnc.dbo.tblDepart_1
 
 groupdocs:
-  license: D:\\Servers\\deploy\\GroupDocs.Total.Java.lic
+  license: C:\\Servers\\deploy\\GroupDocs.Total.Java.lic
+#  license: D:\\Servers\\deploy\\GroupDocs.Total.Java.lic
 

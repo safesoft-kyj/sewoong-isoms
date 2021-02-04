@@ -99,7 +99,7 @@ public class WithdrawalController {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         attributes.addFlashAttribute("message", "[" + df.format(agreementsWithdrawal.getWithdrawalDate())  + "] 일자로 약관 동의에 대한 철회 신청이 완료되었습니다.");
 
-        return "redirect:/notice";
+        return "redirect:/";
     }
 
 

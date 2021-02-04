@@ -60,7 +60,7 @@ logging.level.org.hibernate.type.descriptor.sql:  info
 
 
 server:
-  domain: iso.cauh.org
+  domain: cauhiso.safesoft.co.kr
   port: 8081
 
 

@@ -2,7 +2,7 @@
 <@security.authentication property="principal" var="user"/>
 <html>
 <head>
-    <title>CAUH ISO Management System > User > Profile</title>
+    <title>ISO Management System > User > Profile</title>
 </head>
 <body>
 <div class="tab-base">

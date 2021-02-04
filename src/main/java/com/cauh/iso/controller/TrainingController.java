@@ -138,6 +138,7 @@ public class TrainingController {
         trainingLog.setTrainingTime(trainingTime);
 //        trainingLog.setType(TrainingType.SELF);
         trainingLog.setStatus(progressPercent >= 100 ? (!StringUtils.isEmpty(documentVersion.getQuiz()) ? TrainingStatus.TRAINING_COMPLETED : TrainingStatus.COMPLETED) : TrainingStatus.PROGRESS);
+        trainingLog.setCompleteDate(trainingLog.getStatus()==TrainingStatus.COMPLETED?new Date():null);
 
         TrainingLog savedTrainingLog = trainingLogService.saveOrUpdate(trainingLog, null);
         log.debug("=> SavedTrainingLog Id : {}", savedTrainingLog.getId());
@@ -148,10 +149,10 @@ public class TrainingController {
         } else {
             attributes.addFlashAttribute("message", "진행 중인 교육 정보가 업데이트 되었습니다.");
         }
-        return "redirect:/training/{requirement}-training";
+        return "redirect:/training/sop/{requirement}-training";
     }
 
-    @GetMapping("/ajax/training/{requirement}-training/test")
+    @GetMapping("/ajax/training/sop/{requirement}-training/test")
     public String test(@PathVariable("requirement") TrainingRequirement requirement, @RequestParam("docVerId") String docVerId, Model model) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         Quiz quiz = objectMapper.readValue(documentVersionService.findById(docVerId).getQuiz(), Quiz.class);
@@ -168,7 +169,7 @@ public class TrainingController {
 
 
 
-    @PostMapping("/training/{requirement}-training/test")
+    @PostMapping("/training/sop/{requirement}-training/test")
     @Transactional
     public String test(@PathVariable("requirement") TrainingRequirement requirement, @RequestParam("trainingLogId") Integer trainingLogId, @CurrentUser Account user, @ModelAttribute("quiz") Quiz quiz, SessionStatus status, RedirectAttributes attributes) {
 
@@ -209,10 +210,10 @@ public class TrainingController {
         trainingLogService.saveOrUpdate(trainingLog, quiz);
         status.setComplete();
 
-        return "redirect:/training/{requirement}-training";
+        return "redirect:/training/sop/{requirement}-training";
     }
 
-    @GetMapping("/ajax/training/{requirement}-training/{trainingTestLogId}/testLog")
+    @GetMapping("/ajax/training/sop/{requirement}-training/{trainingTestLogId}/testLog")
     public String test(@PathVariable("requirement") TrainingRequirement requirement, @PathVariable("trainingTestLogId") Integer trainingTestLogId, Model model) throws Exception {
 
         QTrainingTestLog qTrainingTestLog = QTrainingTestLog.trainingTestLog;
@@ -366,7 +367,7 @@ public class TrainingController {
 
         offlineTrainingService.sendSubmittedEmail(user, offlineTraining);
         attributes.addFlashAttribute("message", "오프라인 교육 신청이 완료 되었습니다.");
-        return "redirect:/training/offline-training";
+        return "redirect:/training/sop/offline-training";
     }
 
     @GetMapping("/training/sop/trainingLog")
@@ -485,7 +486,7 @@ public class TrainingController {
         }
 
         attributes.addFlashAttribute("message", "Training Log 정보를 확인 할 수 없습니다.");
-        return "redirect:/training/trainingLog";
+        return "redirect:/training/sop/trainingLog";
     }
 
     @PutMapping("/training/sop/trainingLog")
@@ -497,7 +498,7 @@ public class TrainingController {
         trainingLogService.saveAll(trainingLogs, user);
         status.setComplete();
         attributes.addFlashAttribute("message", "Training Log가 등록 되었습니다.");
-        return "redirect:/training/trainingLog";
+        return "redirect:/training/sop/trainingLog";
     }
 
     @GetMapping("/training/sop/teamDeptTrainingLog")

@@ -77,7 +77,8 @@ public class ISOService {
 
         ISO savedISO = isoRepository.save(iso);
 
-        if (!ObjectUtils.isEmpty(file.getOriginalFilename())) {
+        //저장된 ISO의 속성이 Training인 경우 pdf파일을 image로 parsing,
+        if (!ObjectUtils.isEmpty(file.getOriginalFilename()) && savedISO.isTraining()) {
 
             //파일 업로드 시, 기존에 있던 파일 삭제
             if (!ObjectUtils.isEmpty(iso.getAttachFiles())) {
@@ -147,7 +148,9 @@ public class ISOService {
         ISO iso = getISO(isoId).get();
 
         HashMap<String, Object> model = new HashMap<>();
-        model.put("iso", iso);
+        model.put("title", iso.getTitle());
+        model.put("content", "[ISO-MS] 새로운 ISO 항목이 등록 되었습니다.");
+
         List<String> toList = mailService.getReceiveEmails();
         if (ObjectUtils.isEmpty(toList) == false) {
 

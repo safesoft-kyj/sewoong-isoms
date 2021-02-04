@@ -296,7 +296,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
             authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(UserType.ADMIN.name());
             log.info("===> ADMIN : {}", authorities);
 
-        } else if (userDetails.getUserType() == UserType.USER) {
+        } else if (userDetails.getUserType() == UserType.USER) { // 내부 사용자 인 경우,
             if (!ObjectUtils.isEmpty(userDetails.getUserJobDescriptions())) {
 
                 //Enabled Y / Manager Y 된 role이 있으면 ADMIN으로 적용, 아니면 USER로 적용

@@ -60,6 +60,11 @@ public class DocumentVersion extends BaseEntity implements Serializable {
     @Column(name = "effective_date")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date effectiveDate;
+    
+    //2021-02-04 추가 : Retirement를 관리자에서만 컨트롤
+    @Column(name = "retirement_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date retirementDate;
 
     @Column(name = "retirement")
     private boolean retirement;

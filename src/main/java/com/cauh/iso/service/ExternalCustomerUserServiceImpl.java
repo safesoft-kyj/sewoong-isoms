@@ -100,7 +100,7 @@ public class ExternalCustomerUserServiceImpl implements ExternalCustomUserServic
                 model.put("code", randomNo);
                 Mail mail = Mail.builder()
                         .to(new String[]{email})
-                        .subject("[KCSG] e-SOP Access Code")
+                        .subject("[CAUH] ISO Management System Access Code")
                         .model(model)
                         .templateName("external-customer-code-template")
                         .build();
