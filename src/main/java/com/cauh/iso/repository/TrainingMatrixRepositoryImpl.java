@@ -182,7 +182,7 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qUser.enabled.eq(true));
         builder.and(qUser.indate.isNotNull());
-        builder.and(qUser.empNo.isNotNull());
+//        builder.and(qUser.empNo.isNotNull());
 //        if(ObjectUtils.isEmpty(loginUser) == false) builder.and(qUser.id.ne(loginUser.getId()));
         if (!StringUtils.isEmpty(department)) {
             builder.and(qUser.department.eq(department));

@@ -131,6 +131,7 @@ public class AdminISOTrainingController {
 
         Iterable<ISOTrainingCertification> isoTrainingCertifications = isoTrainingCertificationService.findAll(builder, qisoTrainingCertification.id.desc());
         List<ISOTrainingCertification> isoTrainingCertificationList = StreamSupport.stream(isoTrainingCertifications.spliterator(), false).collect(Collectors.toList());
+        log.info("@Test : {}", isoTrainingCertificationList);
 
         int size = isoTrainingCertificationList.size();
         AtomicInteger atomicInteger = new AtomicInteger();
@@ -138,11 +139,12 @@ public class AdminISOTrainingController {
         List<ISOTrainingCertificationDTO> isoTrainingCertificationDTOS = new ArrayList<>();
         isoTrainingCertificationList.forEach(cert -> {
             ISOTrainingCertificationDTO dto = new ISOTrainingCertificationDTO();
+
             dto.setIndex(atomicInteger.getAndDecrement());
             dto.setCertNo(cert.getId());
-            dto.setName(cert.getIsoTrainingLog().getUser().getName());
-            dto.setTeamDept(cert.getIsoTrainingLog().getUser().getTeamDept());
-            dto.setRole(cert.getIsoTrainingLog().getUser().getCommaJobTitle());
+            dto.setName(cert.getUser().getName());
+            dto.setTeamDept(cert.getUser().getTeamDept());
+            dto.setRole(cert.getUser().getCommaJobTitle());
             dto.setIsoType(cert.getIso().getIsoType().getLabel());
             dto.setTrainingTitle(cert.getIso().getTitle());
             dto.setCompletionDate(DateUtils.format(cert.getIsoTrainingLog().getCompleteDate(), "dd-MMM-yyyy").toUpperCase());

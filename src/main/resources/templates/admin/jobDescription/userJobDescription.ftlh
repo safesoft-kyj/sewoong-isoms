@@ -27,13 +27,13 @@
                         <td class="bg-gray-light">이름</td><td>${user.name}</td>
                     </tr>
                     <tr>
-                        <td class="bg-gray-light">직무</td><td>
+                        <td class="bg-gray-light">ROLE</td><td>
                             <table class="table table-bordered">
                                 <thead>
                                 <tr class="bg-gray-light">
                                     <th>No.</th>
-                                    <th>직무</th>
-                                    <th>직무 배정일</th>
+                                    <th>Role</th>
+                                    <th>Role 배정일</th>
                                     <th>#actions</th>
                                 </tr>
                                 </thead>

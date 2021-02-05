@@ -82,7 +82,8 @@ public class AdminSOPController {
 
     @GetMapping({"/management/{stringStatus}/new", "/management/{stringStatus}/{id}/{action}"})
     public String edit(@PathVariable("type") DocumentType type,
-                       @PathVariable("stringStatus") String stringStatus, @PathVariable(value = "id", required = false) String id,
+                       @PathVariable("stringStatus") String stringStatus,
+                       @PathVariable(value = "id", required = false) String id,
                        @PathVariable(value = "action", required = false) SOPAction action,
                        Model model) {
         DocumentStatus status = DocumentStatus.valueOf(stringStatus.toUpperCase());
@@ -115,7 +116,7 @@ public class AdminSOPController {
                     documentVersion.setTrainingAll(true);
                 }
             } else {
-                //RD 파일이면서 개정(revision) 인경우
+                //RF 파일이면서 개정(revision) 인경우
                 if(!ObjectUtils.isEmpty(action)) {
                     if (action == SOPAction.revision) {
                         log.info("==> revision : {} 기존 파일정보 초기화", id);
@@ -202,7 +203,7 @@ public class AdminSOPController {
             return "redirect:/admin/{type}/management/{stringStatus}";
         } catch (Exception error) {
             attributes.addFlashAttribute("message", "문서 정보 등록 중 오류가 발생 하였습니다. 관리자에게 문의해 주세요.");
-            log.error("==> SOP/RD 업로드 중 오류 발생 : {}", error);
+            log.error("==> SOP/RF 업로드 중 오류 발생 : {}", error);
             return "redirect:/admin/{type}/management/{stringStatus}";
         }
     }

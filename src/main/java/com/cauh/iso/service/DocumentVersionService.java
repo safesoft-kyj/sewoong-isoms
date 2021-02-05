@@ -155,7 +155,6 @@ public class DocumentVersionService {
         log.debug("Retirement Id : {}", docVerId);
 
         //Retirement Form 미사용으로 RetirementDocumentVersion은 더 이상 사용되지 않음.
-
         //retirementDate가 없으면 바로 적용, 있으면 날짜만 지정
         //바로 적용
         DocumentVersion retirementDocumentVersion = findById(docVerId);

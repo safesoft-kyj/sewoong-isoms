@@ -112,7 +112,7 @@ public class ISOTrainingController {
         if(isoTrainingLog.getStatus() == TrainingStatus.COMPLETED && iso.isCertification()) {
             ISOTrainingCertification certification = ISOTrainingCertification.builder()
                     .id(isoTrainingCertificationService.getCertId(iso))
-                    .iso(iso).user(user).build();
+                    .iso(iso).user(user).isoTrainingLog(savedTrainingLog).build();
             isoTrainingCertificationService.createCertificationFile(certification);
         }else if(isoTrainingLog.getStatus() == TrainingStatus.TRAINING_COMPLETED) {
             attributes.addFlashAttribute("message", "Training 완료! Test를 진행 해 주세요.");
@@ -266,6 +266,7 @@ public class ISOTrainingController {
             if(trainingLog.getIso().isCertification()) {
                 ISOTrainingCertification certification = ISOTrainingCertification.builder()
                         .id(isoTrainingCertificationService.getCertId(trainingLog.getIso()))
+                        .isoTrainingLog(trainingLog)
                         .iso(trainingLog.getIso()).user(user).build();
 
                 log.info("@Certification 생성 : {}", certification.getId());

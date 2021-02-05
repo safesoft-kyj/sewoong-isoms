@@ -38,19 +38,19 @@
                 </div>
                 <div class="file-attach-icon"></div>
                 <span  class="file-details">
-                                    <div class="media-block">
-                                        <div class="media-right">
-                                            <a class="btn btn-default" href="#document-modal" data-toggle="modal" data-document-id="${sopVer.id}" data-total="${(sopVer.totalPage?has_content)?then(sopVer.totalPage, 0)}">
-                                                <i class="fa fa-search-plus"></i>
-                                            </a>
-                                        </div>
-                                        <div class="media-left"><i class="fa fa-file-pdf-o text-danger"></i></div>
-                                        <div class="media-body">
-                                            <p class="file-name">${sopVer.document.docId} v${sopVer.version?has_content?then(sopVer.version, ' N/A')}_${sopVer.document.title}</p>
-                                            <small>Effective Date : ${sopVer.effectiveDate?string["dd/MMM/yyyy"]}</small>
-                                        </div>
-                                    </div>
-                                </span>
+                    <div class="media-block">
+                        <div class="media-right">
+                            <a class="btn btn-default" href="#document-modal" data-toggle="modal" data-document-id="${sopVer.id}" data-total="${(sopVer.totalPage?has_content)?then(sopVer.totalPage, 0)}">
+                                <i class="fa fa-search-plus"></i>
+                            </a>
+                        </div>
+                        <div class="media-left"><i class="fa fa-file-pdf-o text-danger"></i></div>
+                        <div class="media-body">
+                            <p class="file-name">${sopVer.document.docId} v${sopVer.version?has_content?then(sopVer.version, ' N/A')}_${sopVer.document.title}</p>
+                            <small>Effective Date : ${sopVer.effectiveDate?string["dd/MMM/yyyy"]}</small>
+                        </div>
+                    </div>
+                </span>
             </li>
         </#if>
     </#list>
@@ -58,7 +58,7 @@
     <#if rfList?has_content>
         <#list rfList as rfVer>
             <#if rfVer.status == status>
-                <#if rfVer.rdEngFileName?has_content>
+                <#if rfVer.rfEngFileName?has_content>
                     <li>
                         <div class="file-control">
                         </div>
@@ -66,40 +66,40 @@
                         <span class="file-details">
                                             <div class="media-block">
                                                 <div class="media-right">
-                                                    <#if user.userType == 'U'>
-                                                        <a href="/rd/${status.name()?lower_case}/download/${rdVer.id}?lang=eng" class="btn btn-default"><i class="fa fa-download"></i></a>
+                                                    <#if user.userType != 'AUDITOR'>
+                                                        <a href="/rf/${status.name()?lower_case}/download/${rfVer.id}?lang=eng" class="btn btn-default"><i class="fa fa-download"></i></a>
                                                     </#if>
-                                                    <a href="#rd-modal" data-toggle="modal" data-id="${rdVer.id}" data-lang="eng" class="btn btn-default"><i class="fa fa-search-plus"></i></a>
+                                                    <a href="#rf-modal" data-toggle="modal" data-id="${rfVer.id}" data-lang="eng" class="btn btn-default"><i class="fa fa-search-plus"></i></a>
                                                 </div>
-                                                <div class="media-left"><i class="fa ${getExtIcon(rdVer.ext?default('')?lower_case)}"></i></div>
+                                                <div class="media-left"><i class="fa ${getExtIcon(rfVer.ext?default('')?lower_case)}"></i></div>
                                                 <div class="media-body">
-                                                    <p class="file-name">${rdVer.rdEngOriginalFileName}</p>
-                                                    <small>${rdVer.document.docId} v${rdVer.version}_${rdVer.document.title} / Effective Date : ${rdVer.effectiveDate?string["dd/MMM/yyyy"]}</small>
+                                                    <p class="file-name">${rfVer.rfEngOriginalFileName}</p>
+                                                    <small>${rfVer.document.docId} v${rfVer.version}_${rfVer.document.title} / Effective Date : ${rfVer.effectiveDate?string["dd/MMM/yyyy"]}</small>
                                                 </div>
                                             </div>
                                         </span>
                     </li>
                 </#if>
-                <#if rfVer.rdKorFileName?has_content>
+                <#if rfVer.rfKorFileName?has_content>
                     <li>
                         <div class="file-control">
                         </div>
                         <div class="file-attach-icon"></div>
                         <span class="file-details">
-                                            <div class="media-block">
-                                                <div class="media-right">
-                                                    <#if user.userType == 'USER'>
-                                                        <a href="/rd/${status.name()?lower_case}/download/${rfVer.id}?lang=kor" class="btn btn-default"><i class="fa fa-download"></i></a>
-                                                    </#if>
-                                                    <a href="#rd-modal" data-toggle="modal" data-id="${rfVer.id}" data-lang="kor" class="btn btn-default"><i class="fa fa-search-plus"></i></a>
-                                                </div>
-                                                <div class="media-left"><i class="fa ${getExtIcon(rfVer.ext?default('')?lower_case)}"></i></div>
-                                                <div class="media-body">
-                                                    <p class="file-name">${rfVer.rfKorOriginalFileName}</p>
-                                                    <small>${rfVer.document.docId} v${rfVer.version}_${rfVer.document.title} / Effective Date : ${rfVer.effectiveDate?string["dd/MMM/yyyy"]}</small>
-                                                </div>
-                                            </div>
-                                        </span>
+                            <div class="media-block">
+                                <div class="media-right">
+                                    <#if user.userType != 'AUDITOR'>
+                                        <a href="/rf/${status.name()?lower_case}/download/${rfVer.id}?lang=kor" class="btn btn-default"><i class="fa fa-download"></i></a>
+                                    </#if>
+                                    <a href="#rf-modal" data-toggle="modal" data-id="${rfVer.id}" data-lang="kor" class="btn btn-default"><i class="fa fa-search-plus"></i></a>
+                                </div>
+                                <div class="media-left"><i class="fa ${getExtIcon(rfVer.ext?default('')?lower_case)}"></i></div>
+                                <div class="media-body">
+                                    <p class="file-name">${rfVer.rfKorOriginalFileName}</p>
+                                    <small>${rfVer.document.docId} v${rfVer.version}_${rfVer.document.title} / Effective Date : ${rfVer.effectiveDate?string["dd/MMM/yyyy"]}</small>
+                                </div>
+                            </div>
+                        </span>
                     </li>
                 </#if>
             </#if>
@@ -224,14 +224,14 @@
 </div>
 
 <!-- RD Viewer -->
-<div class="modal fade" id="rd-modal" role="dialog" tabindex="-1" aria-labelledby="rd-modal" aria-hidden="true">
+<div class="modal fade" id="rf-modal" role="dialog" tabindex="-1" aria-labelledby="rf-modal" aria-hidden="true">
     <div class="modal-dialog modal-fullsize">
         <div class="modal-content">
 
             <!--Modal header-->
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
-                <h4 class="modal-title">RD Viewer</h4>
+                <h4 class="modal-title">RF Viewer</h4>
             </div>
 
             <!--Modal body-->
@@ -280,13 +280,13 @@
 
 <script>
     $(document).ready(function() {
-        $('#rd-modal').on('show.bs.modal', function (event) {
+        $('#rf-modal').on('show.bs.modal', function (event) {
             $("#rd-html").html('<string>문서를 불러오는 중입니다...</string>');
             var button = $(event.relatedTarget); // Button that triggered the modal
             var rdId = button.data('id');
             var langTag = button.data('lang');
             $.ajax({
-                url: '/rd/view/' + rdId+'?lang=' + langTag,
+                url: '/rf/view/' + rdId+'?lang=' + langTag,
                 method: 'get',
                 data: {r: Math.random()},
                 success: function (res) {

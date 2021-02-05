@@ -61,7 +61,7 @@ public class Document extends BaseEntity implements Serializable {
 //
 //    @Where(clause = "status='SUPERSEDED'")
 //    @OneToOne(mappedBy = "document", fetch = FetchType.LAZY)
-//    private DocumentVersion supersededRDVersion;
+//    private DocumentVersion supersededRFVersion;
 
     @OneToMany(mappedBy = "document")
     private List<DocumentVersion> documentVersionList;

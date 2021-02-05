@@ -90,16 +90,14 @@ public class SOPController {
         log.info("@SOP 조회 조건 : {}", builder);
         Iterable<DocumentVersion> iterable = documentVersionService.findAll(builder);
         //Iterable<DocumentVersion> iterable = documentVersionRepository.findAll();
-
-        log.info("Document Version : {}", iterable);
-
         List<DocumentVersion> sopList = StreamSupport.stream(iterable.spliterator(), false)
                 .collect(toList());
 
-        log.info("Document Version List : {}", sopList);
+        log.info("SOP List : {}", sopList);
 
         if(StringUtils.isEmpty(sopId)) {
             List<DocumentVersion> rfSopLists = documentVersionRepository.getSOPFoldersByStatus(status, categoryId);
+
             if (!ObjectUtils.isEmpty(rfSopLists)) {
                 sopList.addAll(rfSopLists);
             }
@@ -117,19 +115,19 @@ public class SOPController {
                     .sorted(Comparator.comparing((Category::getShortName)))
                     .collect(toList()));
         }
-
 //        }
 //            /**
 //             * 외부 사용자
 //             */
 //            log.debug("@sopList : {}", sopList);
 //            if(StringUtils.isEmpty(categoryId)) {
-        if(user.getUserType() == UserType.USER) {
-            log.info("User");
+        if(user.getUserType() != UserType.AUDITOR) {
+            log.info("User : {}", sopId);
             if (!StringUtils.isEmpty(sopId)) {
                 BooleanBuilder rfBuilder = documentVersionService.getMainRFPredicate(status, Arrays.asList(sopId));
                 log.debug("@RF 조회 조건 : {}", rfBuilder);
                 Iterable<DocumentVersion> rfList = documentVersionService.findRFBySopId(rfBuilder);
+                log.debug("RF List : {}", rfList);
                 model.addAttribute("rfList", rfList);
             }
         } else if(!ObjectUtils.isEmpty(sopList)) {
@@ -139,8 +137,8 @@ public class SOPController {
                     .collect(toList());
             BooleanBuilder rfBuilder = documentVersionService.getMainRFPredicate(status, sopIdList);
             log.debug("@RF 조회 조건 : {}", rfBuilder);
-            Iterable<DocumentVersion> fdList = documentVersionService.findRFBySopId(rfBuilder);
-            model.addAttribute("fdList", fdList);
+            Iterable<DocumentVersion> rfList = documentVersionService.findRFBySopId(rfBuilder);
+            model.addAttribute("rfList", rfList);
         }
 //            sopList = documentVersionService.findAll()
 

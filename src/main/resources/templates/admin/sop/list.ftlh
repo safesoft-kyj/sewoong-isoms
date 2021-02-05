@@ -8,11 +8,12 @@
         $(document).ready(function() {
             $('button[name=retirement]').on('click', function () {
                 var docVerId = $(this).data("id");
-                bootbox.confirm("Retirement 상태로 변경 하시겠습니까?", function (result) {
+                bootbox.confirm("Superseded 상태로 변경 하시겠습니까?", function (result) {
                     if (result) {
                         $("#statusChangeForm").attr("action", '/admin/${type.name()}/management/${status.name()?lower_case}/'+docVerId+'/retirement');
                         $("#statusChangeForm").submit();
                     } else {
+
                     }
                 });
             });
@@ -43,6 +44,7 @@
 <body>
 <form id="statusChangeForm" method="post">
     <input type="hidden" name="_method" value="PUT"/>
+    <input type="hidden" name="retirementDate" />
 </form>
 <form id="removeForm" method="post">
     <input type="hidden" name="_method" value="DELETE"/>

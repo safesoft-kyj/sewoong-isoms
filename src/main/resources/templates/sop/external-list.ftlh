@@ -79,7 +79,7 @@
                     <span class="file-details">
                         <div class="media-block">
                             <div class="media-right">
-                                <#if user.userType == 'U'>
+                                <#if user.userType == 'USER'>
                                     <a href="/rd/${status.name()?lower_case}/download/${doc.documentVersion.id}?lang=kor" class="btn btn-default"><i class="fa fa-download"></i></a>
                                 </#if>
                                 <a href="#rd-modal" data-toggle="modal" data-id="${doc.documentVersion.id}" data-lang="kor" class="btn btn-default"><i class="fa fa-search-plus"></i></a>

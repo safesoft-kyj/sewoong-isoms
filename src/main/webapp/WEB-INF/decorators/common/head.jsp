@@ -61,6 +61,7 @@
 <c:choose>
     <c:when test="${not empty param['admin']}">
         <link href="/static/css/themes/type-c/theme-ocean.min.css" rel="stylesheet">
+<%--        <link href="/static/css/themes/type-c/theme-lime.min.css" rel="stylesheet">--%>
     </c:when>
     <c:otherwise>
         <link href="/static/css/themes/type-d/theme-dark.min.css" rel="stylesheet">

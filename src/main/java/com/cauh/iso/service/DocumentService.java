@@ -41,6 +41,9 @@ public class DocumentService {
     public TreeMap<String, String> getSortedMap(DocumentStatus status) {
         Map<String, String> sopMap = StreamSupport.stream(findAll(getPredicate(status, null, null)).spliterator(), false)
                 .collect(Collectors.toMap(d -> d.getDocId(), d -> "[" + d.getDocId() + "] " + d.getTitle()));
+
+        log.info("@GetSortedMap : {}", sopMap);
+
         TreeMap treeMap = new TreeMap();
         treeMap.putAll(sopMap);
 
@@ -73,7 +76,7 @@ public class DocumentService {
         QDocument qDocument = QDocument.document;
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qDocument.type.eq(DocumentType.SOP));
-//        builder.and(qDocument.status.eq(status));
+        //builder.and(qDocument.status.eq(status));
         if(StringUtils.isEmpty(categoryId) == false) {
             builder.and(qDocument.category.eq(Category.builder().id(categoryId).build()));
         }

@@ -14,7 +14,7 @@ logging:
         core:
           JdbcTemplate: INFO
           StatementCreatorUtils: TRACE
-    com.dtnsm: DEBUG
+    com.cauh: DEBUG
     org.apache.tiles: DEBUG
 
 spring.jndi.ignore: true

@@ -32,7 +32,6 @@ public class DocumentVersionRepositoryImpl implements DocumentVersionRepositoryC
         builder.and(qDocumentVersion.document.type.eq(DocumentType.RF));
         builder.and(qDocumentVersion.status.eq(status));
 
-
         List<Document> sopDocuments =  queryFactory
                 .select(qDocumentVersion.document.sop)
                 .from(qDocumentVersion)

@@ -40,8 +40,8 @@
                     <th class="text-center">이름</th>
                     <th class="text-center">Email</th>
                     <th class="text-center">ROLE</th>
-                    <th class="text-center">Agreement Date</th>
-                    <th class="text-center">Agree</th>
+                    <th class="text-center">Withdrawal Date</th>
+                    <th class="text-center">Status</th>
 <#--                    <th style="width:80px;">#Actions</th>-->
                 </tr>
                 </thead>

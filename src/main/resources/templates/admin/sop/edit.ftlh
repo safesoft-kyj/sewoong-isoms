@@ -176,7 +176,7 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label">RF Document File(KOR)</label>
                     <div class="col-sm-9">
-                        <@spring.formInput "documentVersion.uploadRfEngFile" "class='form-control' placeholder='RF Document File(KOR)' accept='${accept}'" "file"/>
+                        <@spring.formInput "documentVersion.uploadRfKorFile" "class='form-control' placeholder='RF Document File(KOR)' accept='${accept}'" "file"/>
                         <@spring.showErrors "" "color:red;"/>
                     </div>
                 </div>
