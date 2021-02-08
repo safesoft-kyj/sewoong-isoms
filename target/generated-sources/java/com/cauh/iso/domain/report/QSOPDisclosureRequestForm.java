@@ -60,7 +60,7 @@ public class QSOPDisclosureRequestForm extends EntityPathBase<SOPDisclosureReque
 
     public final StringPath purposeOfDisclosureOther = createString("purposeOfDisclosureOther");
 
-    public final ListPath<RequestedDocument, QRequestedDocument> requestedDocumentRDs = this.<RequestedDocument, QRequestedDocument>createList("requestedDocumentRDs", RequestedDocument.class, QRequestedDocument.class, PathInits.DIRECT2);
+    public final ListPath<RequestedDocument, QRequestedDocument> requestedDocumentRFs = this.<RequestedDocument, QRequestedDocument>createList("requestedDocumentRFs", RequestedDocument.class, QRequestedDocument.class, PathInits.DIRECT2);
 
     public final ListPath<RequestedDocument, QRequestedDocument> requestedDocumentSOPs = this.<RequestedDocument, QRequestedDocument>createList("requestedDocumentSOPs", RequestedDocument.class, QRequestedDocument.class, PathInits.DIRECT2);
 

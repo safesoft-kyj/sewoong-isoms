@@ -3,7 +3,7 @@ package com.cauh.iso.xdocreport;
 import com.cauh.iso.component.DocumentAssembly;
 import com.cauh.iso.domain.ApprovalLine;
 import com.cauh.iso.domain.constant.ApprovalLineType;
-import com.cauh.iso.domain.report.SopRdRequestForm;
+import com.cauh.iso.domain.report.SopRfRequestForm;
 import com.cauh.iso.admin.service.UserJobDescriptionService;
 import com.cauh.iso.utils.DateUtils;
 import com.cauh.iso.xdocreport.dto.ApprovalLineDTO;
@@ -23,13 +23,13 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class SopRdRequestFormService {
+public class SopRfRequestFormService {
     private final DocumentAssembly documentAssembly;
     private final UserJobDescriptionService userJobDescriptionService;
 
-    public void generateReport(SopRdRequestForm form, List<ApprovalLine> approvalLines, OutputStream os) {
+    public void generateReport(SopRfRequestForm form, List<ApprovalLine> approvalLines, OutputStream os) {
         try {
-            InputStream in = SopRdRequestFormService.class.getResourceAsStream("SOP_RD_Request_Form_01.docx");
+            InputStream in = SopRfRequestFormService.class.getResourceAsStream("SOP_RD_Request_Form_01.docx");
 
             List<ApprovalLineDTO> approvalLineDTOList = approvalLines.stream()
                     .map(a -> new ApprovalLineDTO(a.getLineType(), a.getLineType().getLabel(), a.getUser().getEngName(), userJobDescriptionService.getUserShortJobD(a.getUser().getUsername()),

@@ -23,7 +23,7 @@ public class AdminController {
     @Transactional(readOnly = true)
     public String dashboard(Model model) {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
-        ;
+
         model.addAttribute("approvalList", approvalRepository.findTop10());
         model.addAttribute("offlineTrainingList", offlineTrainingRepository.findAll(pageable));
         return "admin/dashboard";

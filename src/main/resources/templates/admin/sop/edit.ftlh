@@ -26,7 +26,7 @@
     </#if>
     <script>
         $(document).ready(function() {
-            $("#document\\.documentNo").mask('${(type == 'SOP')?then('0000', '00')}', {placeholder:'${(type == 'SOP')?then('0000', '00')}'});
+            $("#document\\.documentNo").mask('${(type == 'SOP')?then('000', '00')}', {placeholder:'${(type == 'SOP')?then('000', '00')}'});
             <#if type == 'SOP'>
             $('#document\\.category\\.shortName').select2({
                 placeholder: "Select a Category"
@@ -40,13 +40,13 @@
                 var categoryId = $(this).val();
                 var documentNo = $("#document\\.documentNo").val();
 
-                $("#document\\.docId").val("SOP-" + categoryId + documentNo);
+                $("#document\\.docId").val("CAUH-" + categoryId + documentNo);
             });
             $("#document\\.documentNo").keyup(function() {
                 var categoryId = $("#document\\.category\\.shortName").val();
                 var documentNo = $(this).val();
 
-                $("#document\\.docId").val("SOP-" + categoryId + documentNo);
+                $("#document\\.docId").val("CAUH-" + categoryId + documentNo);
             });
             <#else>
             $('#document\\.sop\\.docId').select2({
@@ -59,13 +59,13 @@
                 var prefix = $(this).val();
                 var documentNo = $("#document\\.documentNo").val();
 
-                $("#document\\.docId").val(prefix + "_RF" + documentNo);
+                $("#document\\.docId").val(prefix + "-RF" + documentNo);
             });
             $("#document\\.documentNo").keyup(function() {
                 var prefix = $("#document\\.sop\\.docId").val();
                 var documentNo = $(this).val();
 
-                $("#document\\.docId").val(prefix + "_RF" + documentNo);
+                $("#document\\.docId").val(prefix + "-RF" + documentNo);
             });
             </#if>
 

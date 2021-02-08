@@ -50,7 +50,7 @@ public class Approval extends BaseEntity implements Serializable, Cloneable {
     private SOPDeviationReport sopDeviationReport;
 
     @OneToOne(mappedBy = "approval")
-    private SopRdRequestForm sopRfRequestForm;
+    private SopRfRequestForm sopRfRequestForm;
 
 //    @OneToOne
 //    private RDApprovalForm rdApprovalForm;
@@ -120,10 +120,10 @@ public class Approval extends BaseEntity implements Serializable, Cloneable {
             }
         }
         if(approval.getType() == ReportType.SOP_RF_Request_Form) {
-            this.sopRfRequestForm = new SopRdRequestForm(this, approval.getSopRfRequestForm());
+            this.sopRfRequestForm = new SopRfRequestForm(this, approval.getSopRfRequestForm());
         } else if(approval.getType() == ReportType.SOP_RF_Retirement_Form) {
             this.retirementApprovalForm = new RetirementApprovalForm(this, approval.getRetirementApprovalForm());
-        } else if(approval.getType() == ReportType.SOP_Deviation_Report) {
+        } else if(approval.getType() == ReportType.SOP_Training_Deviation_Report) {
             this.sopDeviationReport = new SOPDeviationReport(this, approval.getSopDeviationReport());
         } else if(approval.getType() == ReportType.SOP_Disclosure_Request_Form) {
             this.sopDisclosureRequestForm = new SOPDisclosureRequestForm(this, approval.getSopDisclosureRequestForm());

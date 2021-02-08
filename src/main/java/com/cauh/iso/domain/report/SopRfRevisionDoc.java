@@ -8,7 +8,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -21,7 +20,7 @@ import java.io.Serializable;
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @SequenceGenerator(name = "SOP_REV_DOC_SEQ_GENERATOR", sequenceName = "SEQ_SOP_REV_DOC", initialValue = 1, allocationSize = 1)
-public class SopRdRevisionDoc extends BaseEntity implements Serializable {
+public class SopRfRevisionDoc extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 3602687788455784829L;
 
     @Id
@@ -30,7 +29,7 @@ public class SopRdRevisionDoc extends BaseEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "sop_rd_request_form_id", referencedColumnName = "id")
-    private SopRdRequestForm sopRdRequestForm;
+    private SopRfRequestForm sopRfRequestForm;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "document_type", length = 3)
@@ -44,9 +43,9 @@ public class SopRdRevisionDoc extends BaseEntity implements Serializable {
         return documentVersion.getDocument().getDocId() + "/" + documentVersion.getDocument().getTitle() + "/" + documentVersion.getVersion();
     }
 
-    public SopRdRevisionDoc(SopRdRequestForm sopRdRequestForm, SopRdRevisionDoc sopRdRevisionDoc) {
-        this.sopRdRequestForm = sopRdRequestForm;
-        this.documentType = sopRdRevisionDoc.getDocumentType();
-        this.documentVersion = sopRdRevisionDoc.getDocumentVersion();
+    public SopRfRevisionDoc(SopRfRequestForm sopRfRequestForm, SopRfRevisionDoc sopRfRevisionDoc) {
+        this.sopRfRequestForm = sopRfRequestForm;
+        this.documentType = sopRfRevisionDoc.getDocumentType();
+        this.documentVersion = sopRfRevisionDoc.getDocumentVersion();
     }
 }

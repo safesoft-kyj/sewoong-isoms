@@ -35,19 +35,23 @@ public class SOPDeviationReport extends BaseEntity implements Serializable {
     @JoinColumn(name = "approval_id", referencedColumnName = "id")
     private Approval approval;
 
-    @Column(name = "project_no", columnDefinition = "nvarchar(255)")
-    private String projectNo;
-
-    @Column(name = "protocol_no", columnDefinition = "nvarchar(255)")
-    private String protocolNo;
+//    @Column(name = "project_no", columnDefinition = "nvarchar(255)")
+//    private String projectNo;
+//
+//    @Column(name = "protocol_no", columnDefinition = "nvarchar(255)")
+//    private String protocolNo;
+//
+//    @DateTimeFormat(pattern = "yyyy-MM-dd")
+//    @Column(name = "date_of_occurrence")
+//    private Date dateOfOccurrence;
+//
+//    @DateTimeFormat(pattern = "yyyy-MM-dd")
+//    @Column(name = "date_of_discovery")
+//    private Date dateOfDiscovery;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Column(name = "date_of_occurrence")
-    private Date dateOfOccurrence;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Column(name = "date_of_discovery")
-    private Date dateOfDiscovery;
+    @Column(name = "confirmation_date")
+    private Date confirmationDate;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "deviated_sop_document_id", referencedColumnName = "id")
@@ -78,12 +82,17 @@ public class SOPDeviationReport extends BaseEntity implements Serializable {
     @Column(name = "training_log_id", updatable = false)
     private Integer trainingLogId;
 
+    //교육 기간 위반 SOP
+    @Column(name = "tr_deviated_sop_document_id", length = 40)
+    private String trDeviatedSOPDocumentId;
+
     public SOPDeviationReport(Approval approval, SOPDeviationReport sopDeviationReport) {
         this.approval = approval;
-        this.projectNo = sopDeviationReport.getProjectNo();
-        this.protocolNo = sopDeviationReport.getProtocolNo();
-        this.dateOfOccurrence = sopDeviationReport.getDateOfOccurrence();
-        this.dateOfDiscovery = sopDeviationReport.getDateOfDiscovery();
+//        this.projectNo = sopDeviationReport.getProjectNo();
+//        this.protocolNo = sopDeviationReport.getProtocolNo();
+//        this.dateOfOccurrence = sopDeviationReport.getDateOfOccurrence();
+//        this.dateOfDiscovery = sopDeviationReport.getDateOfDiscovery();
+        this.confirmationDate = sopDeviationReport.getConfirmationDate();
         this.deviatedSOPDocument = sopDeviationReport.getDeviatedSOPDocument();
         this.deviationDetails = sopDeviationReport.getDeviationDetails();
         this.correctiveCompletionDate = sopDeviationReport.getCorrectiveCompletionDate();
@@ -94,13 +103,16 @@ public class SOPDeviationReport extends BaseEntity implements Serializable {
         this.trainingLogId = sopDeviationReport.getTrainingLogId();
     }
 
-    public String getStrDateOfOccurrence() {
-        return toDateString(dateOfOccurrence);
-    }
-    public String getStrDateOfDiscovery() {
-        return toDateString(dateOfDiscovery);
-    }
+//    public String getStrDateOfOccurrence() {
+//        return toDateString(dateOfOccurrence);
+//    }
+//    public String getStrDateOfDiscovery() {
+//        return toDateString(dateOfDiscovery);
+//    }
 
+    public String getStrConfirmationDate() {
+        return toDateString(confirmationDate);
+    }
     public String getStrCorrectiveCompletionDate() {
         return toDateString(correctiveCompletionDate);
     }

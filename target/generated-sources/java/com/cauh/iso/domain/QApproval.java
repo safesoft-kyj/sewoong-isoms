@@ -59,7 +59,7 @@ public class QApproval extends EntityPathBase<Approval> {
 
     public final com.cauh.iso.domain.report.QSOPDisclosureRequestForm sopDisclosureRequestForm;
 
-    public final com.cauh.iso.domain.report.QSopRdRequestForm sopRfRequestForm;
+    public final com.cauh.iso.domain.report.QSopRfRequestForm sopRfRequestForm;
 
     public final com.cauh.iso.domain.report.QSOPWaiverApprovalForm sopWaiverApprovalForm;
 
@@ -90,7 +90,7 @@ public class QApproval extends EntityPathBase<Approval> {
         this.retirementApprovalForm = inits.isInitialized("retirementApprovalForm") ? new com.cauh.iso.domain.report.QRetirementApprovalForm(forProperty("retirementApprovalForm"), inits.get("retirementApprovalForm")) : null;
         this.sopDeviationReport = inits.isInitialized("sopDeviationReport") ? new com.cauh.iso.domain.report.QSOPDeviationReport(forProperty("sopDeviationReport"), inits.get("sopDeviationReport")) : null;
         this.sopDisclosureRequestForm = inits.isInitialized("sopDisclosureRequestForm") ? new com.cauh.iso.domain.report.QSOPDisclosureRequestForm(forProperty("sopDisclosureRequestForm"), inits.get("sopDisclosureRequestForm")) : null;
-        this.sopRfRequestForm = inits.isInitialized("sopRfRequestForm") ? new com.cauh.iso.domain.report.QSopRdRequestForm(forProperty("sopRfRequestForm"), inits.get("sopRfRequestForm")) : null;
+        this.sopRfRequestForm = inits.isInitialized("sopRfRequestForm") ? new com.cauh.iso.domain.report.QSopRfRequestForm(forProperty("sopRfRequestForm"), inits.get("sopRfRequestForm")) : null;
         this.sopWaiverApprovalForm = inits.isInitialized("sopWaiverApprovalForm") ? new com.cauh.iso.domain.report.QSOPWaiverApprovalForm(forProperty("sopWaiverApprovalForm"), inits.get("sopWaiverApprovalForm")) : null;
     }
 

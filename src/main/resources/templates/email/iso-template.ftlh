@@ -14,8 +14,7 @@
 <table class="body-wrap" style="background-color: #ecf0f5; width: 100%;">
     <tr>
         <td></td>
-        <td class="container"
-            style="display: block !important; max-width: 800px !important; margin: 0 auto !important; clear: both !important;">
+        <td class="container" style="display: block !important; max-width: 800px !important; margin: 0 auto !important; clear: both !important;">
             <div class="content" style="max-width: 800px; margin: 0 auto; display: block; padding: 20px;">
                 <table class="main" width="100%" cellpadding="0" cellspacing="0"
                        style="background-color: #fff; border-bottom: 2px solid #d7d7d7;">

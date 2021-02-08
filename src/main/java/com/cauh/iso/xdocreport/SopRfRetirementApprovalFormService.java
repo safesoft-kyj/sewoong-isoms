@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class SopRdRetirementApprovalFormService {
+public class SopRfRetirementApprovalFormService {
     private final DocumentAssembly documentAssembly;
     private final UserJobDescriptionService userJobDescriptionService;
 

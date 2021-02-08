@@ -51,7 +51,7 @@ public class DocumentVersionValidator implements Validator {
         if (StringUtils.isEmpty(documentVersion.getDocument().getDocumentNo())) {
             errors.rejectValue("document.documentNo", "message.required", "필수 입력 항목 입니다.");
         } else {
-            int maxLength = documentVersion.getDocument().getType() == DocumentType.SOP ? 4 : 2;
+            int maxLength = documentVersion.getDocument().getType() == DocumentType.SOP ? 3 : 2;
             if(documentVersion.getDocument().getDocumentNo().length() != maxLength) {
                 errors.rejectValue("document.documentNo", "message.length", maxLength+"자리에 맞춰 입력해 주세요.");
             } else if(!NumberUtils.isNumberOnly(documentVersion.getDocument().getDocumentNo())) {

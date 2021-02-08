@@ -75,11 +75,11 @@ public class ExternalCustomerUserServiceImpl implements ExternalCustomUserServic
                 user.setDisclosureEndDate(sopDisclosureRequestForm.getRequestEndDate());
 
                 List<String> sopIds = sopDisclosureRequestForm.getRequestedDocumentSOPs().stream().map(s -> s.getDocumentVersion().getId()).collect(Collectors.toList());
-                Map<String, String> allowedRFMap = sopDisclosureRequestForm.getRequestedDocumentRDs().stream()
+                Map<String, String> allowedRFMap = sopDisclosureRequestForm.getRequestedDocumentRFs().stream()
                         .map(s -> s.getDocumentVersion())
                         .distinct()
                         .collect(Collectors.toMap(s -> s.getId(), s -> s.getDocument().getSop().getId()));
-                log.debug("==> allowedRDMap : {}", allowedRFMap);
+                log.debug("==> allowedRFMap : {}", allowedRFMap);
                 if (ObjectUtils.isEmpty(sopIds) == false) {
                     user.getAllowedSOP().addAll(sopIds);
                 }

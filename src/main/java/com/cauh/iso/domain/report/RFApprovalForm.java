@@ -17,16 +17,16 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "s_rd_approval_form", uniqueConstraints = @UniqueConstraint(columnNames = {"id", "approval_id"}))
+@Table(name = "s_rf_approval_form", uniqueConstraints = @UniqueConstraint(columnNames = {"id", "approval_id"}))
 @Slf4j
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
-@SequenceGenerator(name = "RD_APPROVAL_SEQ_GENERATOR", sequenceName = "SEQ_RD_APPROVAL_FORM", initialValue = 1, allocationSize = 1)
-public class RDApprovalForm extends BaseEntity implements Serializable {
+@SequenceGenerator(name = "RF_APPROVAL_SEQ_GENERATOR", sequenceName = "SEQ_RF_APPROVAL_FORM", initialValue = 1, allocationSize = 1)
+public class RFApprovalForm extends BaseEntity implements Serializable {
     private static final long serialVersionUID = -2434920234671478604L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RD_APPROVAL_SEQ_GENERATOR")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RF_APPROVAL_SEQ_GENERATOR")
     private Integer id;
 
     @ManyToOne

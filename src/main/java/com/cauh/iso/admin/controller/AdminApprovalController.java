@@ -33,10 +33,10 @@ public class AdminApprovalController {
     private final SOPDisclosureRequestFormService sopDisclosureRequestFormService;
     private final SOPDeviationReportService sopDeviationReportService;
     private final UserRepository userRepository;
-    private final SopRdRequestFormService sopRdRequestFormService;
+    private final SopRfRequestFormService sopRfRequestFormService;
     private final SOPWaiverRequestApprovalFormService sopWaiverRequestApprovalFormService;
     private final UserJobDescriptionService userJobDescriptionService;
-    private final SopRdRetirementApprovalFormService sopRdRetirementApprovalFormService;
+    private final SopRfRetirementApprovalFormService sopRfRetirementApprovalFormService;
 
     @GetMapping({"/approval", "/approval/{status}"})
     public String totalList(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable,
@@ -99,15 +99,15 @@ public class AdminApprovalController {
 
             if(approval.getType() == ReportType.SOP_Disclosure_Request_Form) {
                 sopDisclosureRequestFormService.generateReport(approval.getSopDisclosureRequestForm(), approval.getApprovalLines(), response.getOutputStream());
-            } else if(approval.getType() == ReportType.SOP_Deviation_Report) {
+            } else if(approval.getType() == ReportType.SOP_Training_Deviation_Report) {
                 sopDeviationReportService.generateReport(approval.getSopDeviationReport(), approval.getApprovalLines(), response.getOutputStream());
             } else if(approval.getType() == ReportType.SOP_RF_Request_Form) {
-                sopRdRequestFormService.generateReport(approval.getSopRfRequestForm(), approval.getApprovalLines(), response.getOutputStream());
+                sopRfRequestFormService.generateReport(approval.getSopRfRequestForm(), approval.getApprovalLines(), response.getOutputStream());
             } else if(approval.getType() == ReportType.SOP_Waiver_Approval_Form) {
                 sopWaiverRequestApprovalFormService.generateReport(approval.getSopWaiverApprovalForm(), approval.getApprovalLines(), response.getOutputStream());
             } else if(approval.getType() == ReportType.SOP_RF_Retirement_Form) {
 //                List<MyTraining> trainingList = sopTrainingMatrixRepository.getDownloadTrainingList(user.getDeptCode(), teamCode, userId, docId, user);
-                sopRdRetirementApprovalFormService.generateReport(approval.getRetirementApprovalForm(), approval.getApprovalLines(), response.getOutputStream());
+                sopRfRetirementApprovalFormService.generateReport(approval.getRetirementApprovalForm(), approval.getApprovalLines(), response.getOutputStream());
 //                RetirementApprovalForm retirementApprovalForm = approval.getRetirementApprovalForm();
 //                List<RetirementDocument> retirementDocuments = new ArrayList<>();
 //                if(!ObjectUtils.isEmpty(retirementApprovalForm.getRetirementDocumentSOPs())) {

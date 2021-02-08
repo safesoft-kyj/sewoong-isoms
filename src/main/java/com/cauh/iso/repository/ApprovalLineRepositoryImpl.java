@@ -106,7 +106,7 @@ public class ApprovalLineRepositoryImpl implements ApprovalLineRepositoryCustom 
                         new CaseBuilder()
                         .when(approval.type.eq(ReportType.SOP_Waiver_Approval_Form)).then(qsopWaiverApprovalForm.projectNo)
                         .when(approval.type.eq(ReportType.SOP_Disclosure_Request_Form)).then(qsopDisclosureRequestForm.companyNameOrInstituteName)
-                        .when(approval.type.eq(ReportType.SOP_Deviation_Report)).then(qsopDeviationReport.projectNo)
+                        .when(approval.type.eq(ReportType.SOP_Training_Deviation_Report)).then(qsopDeviationReport.deviationDetails.substring(0, qsopDeviationReport.deviationDetails.indexOf("]").add(1)))
                         .otherwise("").as("keyword")
                         ))
                 .from(approval)

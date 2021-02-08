@@ -76,6 +76,8 @@
                                                         <#if line.status?has_content>
                                                             <#if line.base64signature?has_content>
                                                                 <img src="${line.base64signature}" style="width:50px"/>
+                                                            <#elseif line.status == 'request'>
+                                                                요청 진행 중
                                                             </#if>
                                                         <#else>
                                                             <#if idx + 1 == line?index>

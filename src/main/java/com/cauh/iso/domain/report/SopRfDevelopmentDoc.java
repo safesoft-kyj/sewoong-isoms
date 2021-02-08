@@ -19,7 +19,7 @@ import java.io.Serializable;
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @SequenceGenerator(name = "SOP_DEV_DOC_SEQ_GENERATOR", sequenceName = "SEQ_SOP_DEV_DOC", initialValue = 1, allocationSize = 1)
-public class SopRdDevelopmentDoc extends BaseEntity implements Serializable {
+public class SopRfDevelopmentDoc extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 8975360995297962082L;
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SOP_DEV_DOC_SEQ_GENERATOR")
@@ -27,7 +27,7 @@ public class SopRdDevelopmentDoc extends BaseEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "sop_rd_request_form_id", referencedColumnName = "id")
-    private SopRdRequestForm sopRdRequestForm;
+    private SopRfRequestForm sopRfRequestForm;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "document_type", length = 3)
@@ -55,13 +55,13 @@ public class SopRdDevelopmentDoc extends BaseEntity implements Serializable {
         return docId + "/" + title + "/" + version;
     }
 
-    public SopRdDevelopmentDoc(SopRdRequestForm sopRdRequestForm, SopRdDevelopmentDoc sopRdDevelopmentDoc) {
-        this.sopRdRequestForm = sopRdRequestForm;
-        this.documentType = sopRdDevelopmentDoc.getDocumentType();
-        this.docId = sopRdDevelopmentDoc.getDocId();
-        this.title = sopRdDevelopmentDoc.getTitle();
-        this.version = sopRdDevelopmentDoc.getVersion();
-        this.categoryId = sopRdDevelopmentDoc.getCategoryId();
-        this.docNo = sopRdDevelopmentDoc.getDocNo();
+    public SopRfDevelopmentDoc(SopRfRequestForm sopRfRequestForm, SopRfDevelopmentDoc sopRfDevelopmentDoc) {
+        this.sopRfRequestForm = sopRfRequestForm;
+        this.documentType = sopRfDevelopmentDoc.getDocumentType();
+        this.docId = sopRfDevelopmentDoc.getDocId();
+        this.title = sopRfDevelopmentDoc.getTitle();
+        this.version = sopRfDevelopmentDoc.getVersion();
+        this.categoryId = sopRfDevelopmentDoc.getCategoryId();
+        this.docNo = sopRfDevelopmentDoc.getDocNo();
     }
 }

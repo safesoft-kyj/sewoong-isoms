@@ -73,7 +73,7 @@
                                 <span class="caret"></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropdown-menu-right">
-                                <li><a href="${reportStatus?has_content?then('', 'requester/')}SOP_Deviation_Report/new">SOP Deviation Report</a></li>
+                                <li><a href="${reportStatus?has_content?then('', 'requester/')}SOP_Training_Deviation_Report/new">SOP Deviation Report</a></li>
 <#--                                <li><a href="${reportStatus?has_content?then('', 'requester/')}SOP_RD_Request_Form/new">SOP & RD Request Form</a></li>-->
 <#--                                <li><a href="${reportStatus?has_content?then('', 'requester/')}RD_Approval_Form/new">RD Approval Form</a></li>-->
 <#--                                <li><a href="${reportStatus?has_content?then('', 'requester/')}SOP_Waiver_Approval_Form/new">SOP Waiver Request and Approval Form</a></li>-->

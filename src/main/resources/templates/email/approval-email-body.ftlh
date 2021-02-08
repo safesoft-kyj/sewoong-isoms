@@ -23,22 +23,22 @@
             <td class="alignleft"><#if approval.sopDeviationReport.dateOfDiscovery?has_content>${approval.sopDeviationReport.dateOfDiscovery?string('dd-MMM-yyyy')?upper_case}</#if></td>
         </tr>
     </table>
-    <#elseif approval.sopRdRequestForm?has_content>
+    <#elseif approval.sopRfRequestForm?has_content>
         <!-- 2 SOP/RD Request Form -->
         <table class="invoice-items" cellpadding="0" cellspacing="0">
             <tr>
                 <td>Request for</td>
                 <td class="alignleft">
-                    <#if approval.sopRdRequestForm.newSOPDevelopment == true && approval.sopRdRequestForm.sopDevelopmentDocs?has_content>
+                    <#if approval.sopRfRequestForm.newSOPDevelopment == true && approval.sopRfRequestForm.sopDevelopmentDocs?has_content>
                         <strong>[New SOP Development]</strong><br/>
-                        <#list approval.sopRdRequestForm.sopDevelopmentDocs as sop>
+                        <#list approval.sopRfRequestForm.sopDevelopmentDocs as sop>
                             - ${sop.docId}/${sop.title}/v${sop.version}<br/>
                         </#list>
                         <br/>
                     </#if>
-                    <#if approval.sopRdRequestForm.newRDDevelopment == true && approval.sopRdRequestForm.rdDevelopmentDocs?has_content>
+                    <#if approval.sopRfRequestForm.newRDDevelopment == true && approval.sopRfRequestForm.rdDevelopmentDocs?has_content>
                         <strong>[New RD Development]</strong><br/>
-                        <#list approval.sopRdRequestForm.rdDevelopmentDocs as rd>
+                        <#list approval.sopRfRequestForm.rdDevelopmentDocs as rd>
                             - ${rd.docId}/${rd.title}/v${rd.version}<br/>
                         </#list>
                         <br/>
@@ -60,7 +60,7 @@
             </tr>
             <tr>
                 <td>Reason for the request</td>
-                <td class="alignleft">${approval.sopRdRequestForm.reasonForTheRequest}</td>
+                <td class="alignleft">${approval.sopRfRequestForm.reasonForTheRequest}</td>
             </tr>
         </table>
     <#elseif approval.sopWaiverApprovalForm?has_content>

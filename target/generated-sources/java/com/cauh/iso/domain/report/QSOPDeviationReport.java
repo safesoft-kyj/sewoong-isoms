@@ -26,6 +26,8 @@ public class QSOPDeviationReport extends EntityPathBase<SOPDeviationReport> {
 
     public final com.cauh.iso.domain.QApproval approval;
 
+    public final DateTimePath<java.util.Date> confirmationDate = createDateTime("confirmationDate", java.util.Date.class);
+
     public final StringPath correctiveAction = createString("correctiveAction");
 
     public final DateTimePath<java.util.Date> correctiveCompletionDate = createDateTime("correctiveCompletionDate", java.util.Date.class);
@@ -35,10 +37,6 @@ public class QSOPDeviationReport extends EntityPathBase<SOPDeviationReport> {
 
     //inherited
     public final DateTimePath<java.sql.Timestamp> createdDate = _super.createdDate;
-
-    public final DateTimePath<java.util.Date> dateOfDiscovery = createDateTime("dateOfDiscovery", java.util.Date.class);
-
-    public final DateTimePath<java.util.Date> dateOfOccurrence = createDateTime("dateOfOccurrence", java.util.Date.class);
 
     public final com.cauh.iso.domain.QDocumentVersion deviatedSOPDocument;
 
@@ -56,13 +54,11 @@ public class QSOPDeviationReport extends EntityPathBase<SOPDeviationReport> {
 
     public final DateTimePath<java.util.Date> preventiveCompletionDate = createDateTime("preventiveCompletionDate", java.util.Date.class);
 
-    public final StringPath projectNo = createString("projectNo");
-
-    public final StringPath protocolNo = createString("protocolNo");
-
     public final NumberPath<Integer> trainingLogId = createNumber("trainingLogId", Integer.class);
 
     public final NumberPath<Integer> trainingPeriodId = createNumber("trainingPeriodId", Integer.class);
+
+    public final StringPath trDeviatedSOPDocumentId = createString("trDeviatedSOPDocumentId");
 
     public QSOPDeviationReport(String variable) {
         this(SOPDeviationReport.class, forVariable(variable), INITS);

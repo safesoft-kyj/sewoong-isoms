@@ -1,12 +1,12 @@
 <#import "/spring.ftl" as spring />
-<#if approval.sopRdRequestForm.rdDevelopmentDocs?has_content>
-    <#list approval.sopRdRequestForm.rdDevelopmentDocs as c>
+<#if approval.sopRfRequestForm.rdDevelopmentDocs?has_content>
+    <#list approval.sopRfRequestForm.rdDevelopmentDocs as c>
         <tr>
-            <td><@spring.formInput "approval.sopRdRequestForm.rdDevelopmentDocs[${c?index}].docId" "class='form-control'"/>
+            <td><@spring.formInput "approval.sopRfRequestForm.rdDevelopmentDocs[${c?index}].docId" "class='form-control'"/>
                 <@spring.showErrors "<br/>" "color:red;"/></td>
-            <td><@spring.formInput "approval.sopRdRequestForm.rdDevelopmentDocs[${c?index}].title" "class='form-control'"/>
+            <td><@spring.formInput "approval.sopRfRequestForm.rdDevelopmentDocs[${c?index}].title" "class='form-control'"/>
                 <@spring.showErrors "<br/>" "color:red;"/></td>
-            <td><@spring.formInput "approval.sopRdRequestForm.rdDevelopmentDocs[${c?index}].version" "class='form-control'"/>
+            <td><@spring.formInput "approval.sopRfRequestForm.rdDevelopmentDocs[${c?index}].version" "class='form-control'"/>
                 <@spring.showErrors "<br/>" "color:red;"/></td>
             <td>
                 <button type="button" class="btn btn-default" data-type="rd" name="removeDevelopment"<#if c?index == 0> disabled="disabled"</#if> data-id="${c?index}"><i class="fa fa-times"></i></button>
@@ -15,11 +15,11 @@
     </#list>
 <#else>
     <tr>
-        <td><@spring.formInput "approval.sopRdRequestForm.rdDevelopmentDocs[0].docId" "class='form-control'"/>
+        <td><@spring.formInput "approval.sopRfRequestForm.rdDevelopmentDocs[0].docId" "class='form-control'"/>
             <@spring.showErrors "<br/>" "color:red;"/></td>
-        <td><@spring.formInput "approval.sopRdRequestForm.rdDevelopmentDocs[0].title" "class='form-control'"/>
+        <td><@spring.formInput "approval.sopRfRequestForm.rdDevelopmentDocs[0].title" "class='form-control'"/>
             <@spring.showErrors "<br/>" "color:red;"/></td>
-        <td><@spring.formInput "approval.sopRdRequestForm.rdDevelopmentDocs[0].version" "class='form-control'"/>
+        <td><@spring.formInput "approval.sopRfRequestForm.rdDevelopmentDocs[0].version" "class='form-control'"/>
             <@spring.showErrors "<br/>" "color:red;"/></td>
         <td><button type="button" class="btn btn-default" data-type="rd" name="removeDevelopment" disabled="disabled" data-id="0"><i class="fa fa-times"></i></button></td>
     </tr>

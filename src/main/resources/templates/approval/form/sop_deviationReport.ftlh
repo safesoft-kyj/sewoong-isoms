@@ -1,7 +1,7 @@
 <#import "/spring.ftl" as spring />
 <script>
     $(document).ready(function() {
-        $("#sopDeviationReport\\.dateOfOccurrence,#sopDeviationReport\\.dateOfDiscovery,#sopDeviationReport\\.correctiveCompletionDate,#sopDeviationReport\\.preventiveCompletionDate").datepicker({format:'yyyy-mm-dd', todayBtn: "linked",
+        $("#sopDeviationReport\\.confirmationDate,#sopDeviationReport\\.correctiveCompletionDate,#sopDeviationReport\\.preventiveCompletionDate").datepicker({format:'yyyy-mm-dd', todayBtn: "linked",
             autoclose: true,
             todayHighlight: true});
         $("#sopDeviationReport\\.deviatedSOPDocument\\.id").select2({width:"100%"});
@@ -9,28 +9,28 @@
 </script>
 <table class="table table-bordered">
     <tbody>
+<#--    <tr>-->
+<#--        <td class="bg-gray-light">Project No.</td>-->
+<#--        <td><@spring.formInput "approval.sopDeviationReport.projectNo" "class='form-control'"/>-->
+<#--            <@spring.showErrors "<br/>" "color:red;"/></td>-->
+<#--    </tr>-->
+<#--    <tr>-->
+<#--        <td class="bg-gray-light">Protocol Title/No.</td>-->
+<#--        <td><@spring.formInput "approval.sopDeviationReport.protocolNo" "class='form-control'"/>-->
+<#--            <@spring.showErrors "<br/>" "color:red;"/></td>-->
+<#--    </tr>-->
+<#--    <tr>-->
+<#--        <td class="bg-gray-light">Date of Occurrence</td>-->
+<#--        <td><@spring.formInput "approval.sopDeviationReport.dateOfOccurrence" "class='form-control'"/>-->
+<#--            <@spring.showErrors "<br/>" "color:red;"/></td>-->
+<#--    </tr>-->
     <tr>
-        <td class="bg-gray-light">Project No.</td>
-        <td><@spring.formInput "approval.sopDeviationReport.projectNo" "class='form-control'"/>
+        <td class="bg-gray-light">Confirmation Date of SOP<br>Training Deviation</td>
+        <td><@spring.formInput "approval.sopDeviationReport.confirmationDate" "class='form-control'"/>
             <@spring.showErrors "<br/>" "color:red;"/></td>
     </tr>
     <tr>
-        <td class="bg-gray-light">Protocol Title/No.</td>
-        <td><@spring.formInput "approval.sopDeviationReport.protocolNo" "class='form-control'"/>
-            <@spring.showErrors "<br/>" "color:red;"/></td>
-    </tr>
-    <tr>
-        <td class="bg-gray-light">Date of Occurrence</td>
-        <td><@spring.formInput "approval.sopDeviationReport.dateOfOccurrence" "class='form-control'"/>
-            <@spring.showErrors "<br/>" "color:red;"/></td>
-    </tr>
-    <tr>
-        <td class="bg-gray-light">Date of Discovery</td>
-        <td><@spring.formInput "approval.sopDeviationReport.dateOfDiscovery" "class='form-control'"/>
-            <@spring.showErrors "<br/>" "color:red;"/></td>
-    </tr>
-    <tr>
-        <td class="bg-gray-light">Deviated SOP Doc.</td>
+        <td class="bg-gray-light">SOP Information</td>
         <td><@spring.formSingleSelect "approval.sopDeviationReport.deviatedSOPDocument.id" sopMap "class='form-control'"/>
             <@spring.showErrors "<br/>" "color:red;"/></td>
     </tr>

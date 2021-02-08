@@ -1,9 +1,9 @@
 <#import "/spring.ftl" as spring />
 <script>
     $(document).ready(function() {
-       $("#sopRdRequestForm\\.sopRevisionIds,#sopRdRequestForm\\.rdRevisionIds").chosen({width:'100%'});
+       $("#sopRfRequestForm\\.sopRevisionIds,#sopRfRequestForm\\.rdRevisionIds").chosen({width:'100%'});
 
-       $("#sopRdRequestForm\\.sopRevision,#sopRdRequestForm\\.rdRevision").change(function() {
+       $("#sopRfRequestForm\\.sopRevision,#sopRfRequestForm\\.rdRevision").change(function() {
           var chkbox = $(this);
 
           if(chkbox.is(":checked")) {
@@ -12,7 +12,7 @@
               $("#"+chkbox.data("id")+"Div").hide();
           }
        });
-       $("#sopRdRequestForm\\.newSOPDevelopment,#sopRdRequestForm\\.newRDDevelopment").change(function() {
+       $("#sopRfRequestForm\\.newSOPDevelopment,#sopRfRequestForm\\.newRDDevelopment").change(function() {
           var chkbox = $(this);
 
           if(chkbox.is(":checked")) {
@@ -22,7 +22,7 @@
           }
        });
 
-        $("#sopRdRequestForm\\.sopRevision,#sopRdRequestForm\\.rdRevision,#sopRdRequestForm\\.newSOPDevelopment,#sopRdRequestForm\\.newRDDevelopment").trigger("change");
+        $("#sopRfRequestForm\\.sopRevision,#sopRfRequestForm\\.rdRevision,#sopRfRequestForm\\.newSOPDevelopment,#sopRfRequestForm\\.newRDDevelopment").trigger("change");
 
         $(document).on("click", "button[name='addDevelopment']", function() {
             var data = $("#appForm").serialize();
@@ -66,13 +66,13 @@
     <tbody>
     <tr>
         <td class="bg-gray-light col-xs-3">Name of Requester</td>
-        <td><@spring.formInput "approval.sopRdRequestForm.nameOfRequester" "class='form-control' readonly='readonly'"/>
+        <td><@spring.formInput "approval.sopRfRequestForm.nameOfRequester" "class='form-control' readonly='readonly'"/>
             <@spring.showErrors "<br/>" "color:red;"/>
         </td>
     </tr>
     <tr>
         <td class="bg-gray-light">Name of Team/Department</td>
-        <td><@spring.formInput "approval.sopRdRequestForm.nameOfTeamDept" "class='form-control' readonly='readonly'"/>
+        <td><@spring.formInput "approval.sopRfRequestForm.nameOfTeamDept" "class='form-control' readonly='readonly'"/>
             <@spring.showErrors "<br/>" "color:red;"/>
         </td>
     </tr>
@@ -80,7 +80,7 @@
         <td class="bg-gray-light" rowspan="4">Request for</td>
         <td>
             <label>
-            <@spring.formCheckbox "approval.sopRdRequestForm.newSOPDevelopment" "data-id='sop'"/> New SOP Development
+            <@spring.formCheckbox "approval.sopRfRequestForm.newSOPDevelopment" "data-id='sop'"/> New SOP Development
             </label>
             <div id="sopDevelopmentDiv">
             <table class="table table-bordered">
@@ -102,7 +102,7 @@
     <tr>
         <td>
             <label>
-            <@spring.formCheckbox "approval.sopRdRequestForm.newRDDevelopment" "data-id='rd'"/> New RD Development
+            <@spring.formCheckbox "approval.sopRfRequestForm.newRDDevelopment" "data-id='rd'"/> New RD Development
             </label>
             <div id="rdDevelopmentDiv">
                 <table class="table table-bordered">
@@ -124,10 +124,10 @@
     <tr>
         <td>
             <label>
-            <@spring.formCheckbox "approval.sopRdRequestForm.sopRevision" "data-id='sop'"/> SOP Revision
+            <@spring.formCheckbox "approval.sopRfRequestForm.sopRevision" "data-id='sop'"/> SOP Revision
             </label>
             <div id="sopDiv">
-                <@spring.formMultiSelect "approval.sopRdRequestForm.sopRevisionIds" sopMap "class='form-control'"/>
+                <@spring.formMultiSelect "approval.sopRfRequestForm.sopRevisionIds" sopMap "class='form-control'"/>
                 <@spring.showErrors "<br/>" "color:red;"/></td>
             </div>
         </td>
@@ -135,12 +135,12 @@
     <tr>
         <td>
             <label>
-            <@spring.formCheckbox "approval.sopRdRequestForm.rdRevision" "data-id='rd'"/> RD Revision
+            <@spring.formCheckbox "approval.sopRfRequestForm.rdRevision" "data-id='rd'"/> RD Revision
             </label>
             <div><@spring.showErrors "<br/>" "color:red;"/></div>
             <div id="rdDiv">
                 <div id="sopRevisionDiv">
-                    <@spring.formMultiSelect "approval.sopRdRequestForm.rdRevisionIds" rdMap "class='form-control'"/>
+                    <@spring.formMultiSelect "approval.sopRfRequestForm.rdRevisionIds" rdMap "class='form-control'"/>
                     <@spring.showErrors "<br/>" "color:red;"/></td>
         </div>
             </div>
@@ -149,7 +149,7 @@
     </tr>
     <tr>
         <td class="bg-gray-light">Reason for the request</td>
-        <td><@spring.formTextarea "approval.sopRdRequestForm.reasonForTheRequest" "rows='4' class='form-control' placeholder='If you select new SOP/RD development, please specify new SOP/RD title, purpose and the target date (expected effective date).
+        <td><@spring.formTextarea "approval.sopRfRequestForm.reasonForTheRequest" "rows='4' class='form-control' placeholder='If you select new SOP/RD development, please specify new SOP/RD title, purpose and the target date (expected effective date).
 If you select SOP/RD revision, please specify the reason of revision and the target date (expected effective date).
 For new RD development, please specify the SOP information (number and title) which is associated with the new RD.
 '"/>
@@ -163,7 +163,7 @@ For new RD development, please specify the SOP information (number and title) wh
     <tbody>
     <tr>
         <td class="bg-gray-light col-xs-3">Comments, if required</td>
-        <td><@spring.formTextarea "approval.sopRdRequestForm.requestedByComments" "class='form-control'"/>
+        <td><@spring.formTextarea "approval.sopRfRequestForm.requestedByComments" "class='form-control'"/>
             <@spring.showErrors "<br/>" "color:red;"/></td>
     </tr>
     </tbody>

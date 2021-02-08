@@ -90,8 +90,8 @@ public class SOPDisclosureRequestForm extends BaseEntity implements Serializable
     private List<RequestedDocument> requestedDocumentSOPs = new ArrayList<>();
 
     @OneToMany(mappedBy = "sopDisclosureRequestForm")
-    @Where(clause = "document_type='RD'")
-    private List<RequestedDocument> requestedDocumentRDs = new ArrayList<>();
+    @Where(clause = "document_type='RF'")
+    private List<RequestedDocument> requestedDocumentRFs = new ArrayList<>();
 
     @OneToMany(mappedBy = "sopDisclosureRequestForm")
     @NotAudited
@@ -101,8 +101,8 @@ public class SOPDisclosureRequestForm extends BaseEntity implements Serializable
         return !ObjectUtils.isEmpty(requestedDocumentSOPs);
     }
 
-    public boolean isRequestedRD() {
-        return !ObjectUtils.isEmpty(requestedDocumentRDs);
+    public boolean isRequestedRF() {
+        return !ObjectUtils.isEmpty(requestedDocumentRFs);
     }
 
     public boolean isDigitalBinder() {
@@ -126,9 +126,9 @@ public class SOPDisclosureRequestForm extends BaseEntity implements Serializable
                 this.requestedDocumentSOPs.add(new RequestedDocument(this, sop));
             }
         }
-        if(!ObjectUtils.isEmpty(sopDisclosureRequestForm.getRequestedDocumentRDs())) {
-            for(RequestedDocument rd : sopDisclosureRequestForm.getRequestedDocumentRDs()) {
-                this.requestedDocumentRDs.add(new RequestedDocument(this, rd));
+        if(!ObjectUtils.isEmpty(sopDisclosureRequestForm.getRequestedDocumentRFs())) {
+            for(RequestedDocument rf : sopDisclosureRequestForm.getRequestedDocumentRFs()) {
+                this.requestedDocumentRFs.add(new RequestedDocument(this, rf));
             }
         }
 
@@ -157,7 +157,7 @@ public class SOPDisclosureRequestForm extends BaseEntity implements Serializable
     private String[] sopIds;
 
     @Transient
-    private String[] rdIds;
+    private String[] rfIds;
 
     @Transient
     private String[] userIds;

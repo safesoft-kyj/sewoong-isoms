@@ -34,7 +34,7 @@ public class SOPDeviationReportService {
 
     public void generateReport(SOPDeviationReport form, List<ApprovalLine> approvalLines, OutputStream os) {
         try {
-            InputStream in = SOPDeviationReportService.class.getResourceAsStream("SOP_Deviation_Report_01.docx");
+            InputStream in = SOPDeviationReportService.class.getResourceAsStream("SOP_Training_Deviation_Report_01.docx");
             // 1) Load Docx file by filling Velocity template engine and cache
             // it to the registry
 //            log.debug("@User : {} Employee Training Log 생성 Template 가져오는중..", user.getEmpNo());
@@ -54,10 +54,15 @@ public class SOPDeviationReportService {
 
             SOPDeviationReportDTO dto = new SOPDeviationReportDTO();
             dto.setForm(form);
-            dto.setReviewer(approvalLineDTOList.stream().filter(a -> a.getLineType() == ApprovalLineType.reviewer).count() > 0);
+
+            log.info("Form : {}", form);
+
+//            dto.setReviewer(approvalLineDTOList.stream().filter(a -> a.getLineType() == ApprovalLineType.reviewer).count() > 0);
+//            dto.setReviewers(approvalLineDTOList.stream().filter(a -> a.getLineType() == ApprovalLineType.reviewer).collect(Collectors.toList()));
+
             dto.setReportedBy(approvalLineDTOList.stream().filter(a -> a.getLineType() == ApprovalLineType.requester).findFirst().get());
-            dto.setReviewers(approvalLineDTOList.stream().filter(a -> a.getLineType() == ApprovalLineType.reviewer).collect(Collectors.toList()));
             dto.setConfirmedBy(approvalLineDTOList.stream().filter(a -> a.getLineType() == ApprovalLineType.approver).findFirst().get());
+
             DataSourceInfo dataSourceInfo = new DataSourceInfo(dto, "");
             documentAssembly.assembleDocumentAsPdf(in, os, dataSourceInfo);
 //            log.debug("@User : {} 서명 이미지 설정...", user.getEmpNo());

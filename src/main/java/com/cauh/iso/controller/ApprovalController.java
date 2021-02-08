@@ -88,11 +88,11 @@ public class ApprovalController {
         }
 
         switch (approval.getType()) {
-            case SOP_Deviation_Report:
+            case SOP_Training_Deviation_Report:
                 sopDeviationReport(approval, user, trainingPeriodId, sopId, model);
                 break;
             case SOP_RF_Request_Form:
-                sopRdRequestForm(approval, user, model);
+                sopRfRequestForm(approval, user, model);
                 break;
 //            case RD_Approval_Form:
 //                rdApprovalForm(approval, user, model);
@@ -175,7 +175,7 @@ public class ApprovalController {
             }
         } else if (StringUtils.isEmpty(deselectedId) == false) {
             if(approval.getRetirementApprovalForm().getSopRfIds().contains(deselectedId)) {
-                log.info("현재 RD는 삭제 불가. 무보 SOP가 Retirement 대상임.");
+                log.info("현재 RF는 삭제 불가. 무보 SOP가 Retirement 대상임.");
             } else {
                 if (ObjectUtils.isEmpty(approval.getRetirementApprovalForm().getRetirementDocuments()) == false) {
                     DocumentVersion documentVersion = documentVersionService.findById(deselectedId);
@@ -212,25 +212,25 @@ public class ApprovalController {
 
         return "approval/form/inc_externalCustomer";
     }
-    @PutMapping("/ajax/approval/box/requester/SOP_RD_Request_Form/development")
+    @PutMapping("/ajax/approval/box/requester/SOP_RF_Request_Form/development")
     public String addDevelopmentDoc(@ModelAttribute("approval") Approval approval, @RequestParam(value = "act", defaultValue = "add") String act,
                                       @RequestParam(value = "idx", required = false, defaultValue = "0") Integer idx,
                                     @RequestParam("t") String type) {
 
         if("add".equals(act)) {
-            SopRdDevelopmentDoc sopRdDevelopmentDoc = new SopRdDevelopmentDoc();
+            SopRfDevelopmentDoc sopRfDevelopmentDoc = new SopRfDevelopmentDoc();
             if("sop".equals(type)) {
-                sopRdDevelopmentDoc.setDocumentType(DocumentType.SOP);
-                approval.getSopRfRequestForm().getSopDevelopmentDocs().add(sopRdDevelopmentDoc);
+                sopRfDevelopmentDoc.setDocumentType(DocumentType.SOP);
+                approval.getSopRfRequestForm().getSopDevelopmentDocs().add(sopRfDevelopmentDoc);
             } else {
-                sopRdDevelopmentDoc.setDocumentType(DocumentType.RF);
-                approval.getSopRfRequestForm().getRdDevelopmentDocs().add(sopRdDevelopmentDoc);
+                sopRfDevelopmentDoc.setDocumentType(DocumentType.RF);
+                approval.getSopRfRequestForm().getRfDevelopmentDocs().add(sopRfDevelopmentDoc);
             }
         } else {
             if("sop".equals(type)) {
                 approval.getSopRfRequestForm().getSopDevelopmentDocs().remove(idx.intValue());
             } else {
-                approval.getSopRfRequestForm().getRdDevelopmentDocs().remove(idx.intValue());
+                approval.getSopRfRequestForm().getRfDevelopmentDocs().remove(idx.intValue());
             }
         }
 
@@ -285,6 +285,8 @@ public class ApprovalController {
         log.info("=> @결재 알림 전송 여부 : {}", sendEmail);
 
         approval.setStatus(isTemp ? ApprovalStatus.temp : ApprovalStatus.request);
+
+        log.info("@Approval : {}, user : {}, sendMail : {}", approval.getSopDeviationReport(), user, sendEmail);
         approvalService.saveOrUpdate(approval, user, sendEmail);
 
         status.setComplete();
@@ -372,19 +374,48 @@ public class ApprovalController {
         if(approval.isRenew()) {
             log.info("@@수정기안 작성 : {}", user.getUsername());
             if(!ObjectUtils.isEmpty(approval.getSopDeviationReport().getTrainingPeriodId())) {
-                sopId = approval.getSopDeviationReport().getDeviatedSOPDocument().getId();
+                sopId = approval.getSopDeviationReport().getTrDeviatedSOPDocumentId();
                 log.info("@@ 수정기안시는 SOP 변경 불가능 하도록 설정 user : {}, sop : {}, trainingPeriodId : {}",user.getUsername(), sopId);
             }
         }
 
         List<MyTrainingMatrix> myTrainingMatrices = trainingMatrixRepository.getMyTrainingMatrix(user.getUserJobDescriptions());
-        if(StringUtils.isEmpty(sopId)) {
-            model.addAttribute("sopMap", myTrainingMatrices.stream().collect(Collectors.toMap(m -> m.getDocumentVersion().getId(), m -> m.getDocument().getDocId() + " " + m.getDocument().getTitle() + " v" + m.getDocumentVersion().getVersion())));
-        } else {
+        log.info("My Training Matrix : {}", myTrainingMatrices);
+
+        if(!ObjectUtils.isEmpty(approval.getSopDeviationReport().getTrainingPeriodId())) {//SOP Training Period 위반 기안
+            final String sopDevDocId = "CAUH-QM002";
+            Optional<DocumentVersion> optionalDocumentVersion = myTrainingMatrices.stream().filter(m -> {
+                Document doc = m.getDocumentVersion().getDocument();
+                if (doc.getDocId().equals(sopDevDocId) && m.getDocumentVersion().getStatus() == DocumentStatus.EFFECTIVE) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }).map(MyTrainingMatrix::getDocumentVersion).findFirst();
+
+            if(optionalDocumentVersion.isPresent()) {
+                DocumentVersion v = optionalDocumentVersion.get();
+                Map<String, String> sopMap = new HashMap<>();
+                sopMap.put(v.getId(), v.getDocument().getDocId() + " " + v.getDocument().getTitle() + " v" + v.getVersion());
+                model.addAttribute("sopMap", sopMap);
+
+                //교육 기간 위반 최초 작성시만 사유 설정
+                if(ObjectUtils.isEmpty(approval.getSopDeviationReport().getId())) {
+                    DocumentVersion t = documentVersionService.findById(sopId);
+                    approval.getSopDeviationReport().setTrDeviatedSOPDocumentId(sopId);
+                    approval.getSopDeviationReport().setDeviationDetails("[" + t.getDocument().getDocId() + " & " + t.getDocument().getTitle() + "/" + t.getVersion() + "/" + t.getStrEffectiveDate() + "]의 training period 이내에 training을 완료하지 못함.");
+                }
+            } else {
+                log.error("CAUH-QM002를 찾지 못함");
+                throw new RuntimeException("CAUH-QM002를 찾을 수 없습니다.");
+            }
+        } else if(!StringUtils.isEmpty(sopId)) { //수정 기안
             DocumentVersion v = documentVersionService.findById(sopId);
             Map<String, String> sopMap = new HashMap<>();
             sopMap.put(v.getId(), v.getDocument().getDocId() + " " + v.getDocument().getTitle() + " v" + v.getVersion());
             model.addAttribute("sopMap", sopMap);
+        } else {
+            model.addAttribute("sopMap", myTrainingMatrices.stream().collect(Collectors.toMap(m -> m.getDocumentVersion().getId(), m -> m.getDocument().getDocId() + " " + m.getDocument().getTitle() + " v" + m.getDocumentVersion().getVersion())));
         }
     }
 
@@ -396,9 +427,9 @@ public class ApprovalController {
         model.addAttribute("sopMap", myTrainingMatrices.stream().collect(Collectors.toMap(m -> m.getDocumentVersion().getId(), m -> m.getDocument().getDocId() + " " + m.getDocument().getTitle() + " v" + m.getDocumentVersion().getVersion())));
     }
 
-    private void sopRdRequestForm(Approval approval, Account user, Model model) {
+    private void sopRfRequestForm(Approval approval, Account user, Model model) {
         if (ObjectUtils.isEmpty(approval.getId()) && !approval.isRenew()) {
-            approval.setSopRfRequestForm(new SopRdRequestForm());
+            approval.setSopRfRequestForm(new SopRfRequestForm());
             approval.getSopRfRequestForm().setNameOfRequester(user.getEngName());
 
             String teamDept = "";
@@ -419,8 +450,8 @@ public class ApprovalController {
                         .map(d -> d.getDocumentVersion().getId())
                         .collect(Collectors.joining(",")).split(","));
             }
-            if(approval.getSopRfRequestForm().isRdRevision()) {
-                approval.getSopRfRequestForm().setRdRevisionIds(approval.getSopRfRequestForm().getRdRevisionDocs()
+            if(approval.getSopRfRequestForm().isRfRevision()) {
+                approval.getSopRfRequestForm().setRfRevisionIds(approval.getSopRfRequestForm().getRfRevisionDocs()
                         .stream()
                         .map(d -> d.getDocumentVersion().getId())
                         .collect(Collectors.joining(",")).split(","));
@@ -496,9 +527,9 @@ public class ApprovalController {
                 List<String> sopIdList = approval.getSopDisclosureRequestForm().getRequestedDocumentSOPs().stream().map(r -> r.getDocumentVersion().getId()).collect(Collectors.toList());
                 approval.getSopDisclosureRequestForm().setSopIds(sopIdList.toArray(new String[sopIdList.size()]));
             }
-            if(ObjectUtils.isEmpty(approval.getSopDisclosureRequestForm().getRequestedDocumentRDs()) == false) {
-                List<String> rdIdList = approval.getSopDisclosureRequestForm().getRequestedDocumentRDs().stream().map(r -> r.getDocumentVersion().getId()).collect(Collectors.toList());
-                approval.getSopDisclosureRequestForm().setRdIds(rdIdList.toArray(new String[rdIdList.size()]));
+            if(ObjectUtils.isEmpty(approval.getSopDisclosureRequestForm().getRequestedDocumentRFs()) == false) {
+                List<String> rfIdList = approval.getSopDisclosureRequestForm().getRequestedDocumentRFs().stream().map(r -> r.getDocumentVersion().getId()).collect(Collectors.toList());
+                approval.getSopDisclosureRequestForm().setRfIds(rfIdList.toArray(new String[rfIdList.size()]));
             }
 
             if(!ObjectUtils.isEmpty(approval.getSopDisclosureRequestForm().getDisclosureDigitalBinders())) {

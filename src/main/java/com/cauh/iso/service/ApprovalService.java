@@ -9,7 +9,6 @@ import com.cauh.iso.domain.report.*;
 import com.cauh.iso.repository.*;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,9 +28,9 @@ public class ApprovalService {
     private final TrainingPeriodService trainingPeriodService;
     private final TrainingLogService trainingLogService;
     private final SOPDeviationReportRepository sopDeviationReportRepository;
-    private final SopRdRequestFormRepository sopRdRequestFormRepository;
-    private final SopRdRevisionDocRepository sopRdRevisionDocRepository;
-    private final SopRdDevelopmentDocRepository sopRdDevelopmentDocRepository;
+    private final SopRfRequestFormRepository sopRfRequestFormRepository;
+    private final SopRfRevisionDocRepository sopRfRevisionDocRepository;
+    private final SopRfDevelopmentDocRepository sopRfDevelopmentDocRepository;
 //    private final RdApprovalFormRepository rdApprovalFormRepository;
     private final SOPWaiverApprovalFormRepository sopWaiverApprovalFormRepository;
     private final SOPDisclosureRequestFormRepository sopDisclosureRequestFormRepository;
@@ -54,7 +53,7 @@ public class ApprovalService {
     public void delete(Integer id) {
         Approval approval = findById(id).get();
         log.info("Approval 삭제 : {}", id);
-        if(approval.getType() == ReportType.SOP_Deviation_Report) {
+        if(approval.getType() == ReportType.SOP_Training_Deviation_Report) {
             if(!ObjectUtils.isEmpty(approval.getSopDeviationReport().getTrainingLogId())) {
                 log.info("삭제 문서 SOP Deviation Report Training Log Id 존재함 : {}", approval.getSopDeviationReport().getTrainingLogId());
                 TrainingLog trainingLog = trainingLogService.findById(approval.getSopDeviationReport().getTrainingLogId()).get();
@@ -78,6 +77,7 @@ public class ApprovalService {
 
     public void saveOrUpdate(Approval approval, Account user, boolean sendEmail) throws Exception {
         if (ObjectUtils.isEmpty(approval.getApprovalLines())) {
+            log.info("@ApprovalLine 생성");
             approval.setApprovalLines(new ArrayList<>());
         }
 //        log.info("approval.lines size : {}", approval.getApprovalLines().size());
@@ -93,6 +93,7 @@ public class ApprovalService {
                         .displayName(user.getName() + (StringUtils.isEmpty(user.getPosition()) ? "" : "(" + user.getPosition() + ")"))
                         .build());
             } else {
+                log.info("신규 요청");
                 approval.getApprovalLines().set(0, ApprovalLine.builder().username(user.getUsername())
                         .lineType(ApprovalLineType.requester)
                         .status(ApprovalStatus.approved)
@@ -167,31 +168,31 @@ public class ApprovalService {
     }
 
     private void addModel(Approval approval, HashMap<String, Object> model) {
-        if(approval.getType() == ReportType.SOP_Deviation_Report) {
+        if(approval.getType() == ReportType.SOP_Training_Deviation_Report) {
             DocumentVersion deviatedSOPDocument = documentVersionRepository.findById(approval.getSopDeviationReport().getDeviatedSOPDocument().getId()).get();
             model.put("deviatedSOPDocument", deviatedSOPDocument);
         } else if(approval.getType() == ReportType.SOP_RF_Request_Form) {
-            SopRdRequestForm sopRdRequestForm = approval.getSopRfRequestForm();
-            if(sopRdRequestForm.isSopRevision()) {
+            SopRfRequestForm sopRfRequestForm = approval.getSopRfRequestForm();
+            if(sopRfRequestForm.isSopRevision()) {
                 QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
                 BooleanBuilder builder = new BooleanBuilder();
-                if(ObjectUtils.isEmpty(sopRdRequestForm.getSopRevisionIds())) {
-                    List<String> sopIds = sopRdRequestForm.getSopRevisionDocs().stream().map(s -> s.getDocumentVersion().getId()).collect(Collectors.toList());
+                if(ObjectUtils.isEmpty(sopRfRequestForm.getSopRevisionIds())) {
+                    List<String> sopIds = sopRfRequestForm.getSopRevisionDocs().stream().map(s -> s.getDocumentVersion().getId()).collect(Collectors.toList());
                     builder.and(qDocumentVersion.id.in(sopIds));
                 } else {
-                    builder.and(qDocumentVersion.id.in(sopRdRequestForm.getSopRevisionIds()));
+                    builder.and(qDocumentVersion.id.in(sopRfRequestForm.getSopRevisionIds()));
                 }
                 model.put("sopRevisionDocs", documentVersionRepository.findAll(builder));
             }
 
-            if(sopRdRequestForm.isRdRevision()) {
+            if(sopRfRequestForm.isRfRevision()) {
                 QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
                 BooleanBuilder builder = new BooleanBuilder();
-                if(ObjectUtils.isEmpty(sopRdRequestForm.getRdRevisionIds())) {
-                    List<String> rdIds = sopRdRequestForm.getRdRevisionDocs().stream().map(s -> s.getDocumentVersion().getId()).collect(Collectors.toList());
+                if(ObjectUtils.isEmpty(sopRfRequestForm.getRfRevisionIds())) {
+                    List<String> rdIds = sopRfRequestForm.getRfRevisionDocs().stream().map(s -> s.getDocumentVersion().getId()).collect(Collectors.toList());
                     builder.and(qDocumentVersion.id.in(rdIds));
                 } else {
-                    builder.and(qDocumentVersion.id.in(sopRdRequestForm.getRdRevisionIds()));
+                    builder.and(qDocumentVersion.id.in(sopRfRequestForm.getRfRevisionIds()));
                 }
 
                 model.put("rdRevisionDocs", documentVersionRepository.findAll(builder));
@@ -253,45 +254,45 @@ public class ApprovalService {
 
     public void reportCustomProcess(Approval approval, Account user) {
         switch (approval.getType()) {
-//            case SOP_Deviation_Report:
-//                    SOPDeviationReport sopDeviationReport = approval.getSopDeviationReport();
-//                    sopDeviationReport.setApproval(approval);
-//
-//                    /**
-//                     * Training 기간을 위반한 경우
-//                     */
-//                    if (ObjectUtils.isEmpty(sopDeviationReport.getTrainingPeriodId()) == false) {
-//                        BooleanBuilder builder = new BooleanBuilder();
-//                        QTrainingLog qTrainingLog = QTrainingLog.trainingLog;
-//                        builder.and(qTrainingLog.user.id.eq(user.getId()));
-//                        builder.and(qTrainingLog.status.eq(TrainingStatus.PROGRESS).or(qTrainingLog.reportStatus.eq(DeviationReportStatus.REPORTED)));
-//                        builder.and(qTrainingLog.trainingPeriod.id.eq(sopDeviationReport.getTrainingPeriodId()));
-//                        Optional<TrainingLog> optionalTrainingLog = trainingLogService.findOne(builder);
-//
-//                        TrainingLog trainingLog;
-//                        if(optionalTrainingLog.isPresent()) {
-//                            trainingLog = optionalTrainingLog.get();
-//                            log.info("@교육 진행중인 로그가 존재함. Username : {}, TrainingLogId : {}", user.getUsername(), trainingLog.getId());
-//                        } else {
-//                            trainingLog = new TrainingLog();
-//                        }
-//                        trainingLog.setDocumentVersion(sopDeviationReport.getDeviatedSOPDocument());
-//                        trainingLog.setUser(user);
-//                        trainingLog.setReportStatus(DeviationReportStatus.REPORTED);
-//                        trainingLog.setStatus(TrainingStatus.NOT_STARTED);
-//                        trainingLog.setType(TrainingType.SELF);
-//                        trainingLog.setTrainingPeriod(trainingPeriodService.findById(sopDeviationReport.getTrainingPeriodId()).get());
-//
-//                        TrainingLog savedTrainingLog = trainingLogService.saveOrUpdate(trainingLog, null);
-//
-////                        approval.getSopDeviationReport().getTrainingLogId()
-////                        approval.setTrainingLogId(savedTrainingLog.getId());
-////                        approval.setTrainingPeriodId(sopDeviationReport.getTrainingPeriodId());
-//                        sopDeviationReport.setTrainingLogId(savedTrainingLog.getId());
-//                    }
-//
-//                    sopDeviationReportRepository.save(sopDeviationReport);
-//                    break;
+            case SOP_Training_Deviation_Report:
+                    SOPDeviationReport sopDeviationReport = approval.getSopDeviationReport();
+                    sopDeviationReport.setApproval(approval);
+
+                    /**
+                     * Training 기간을 위반한 경우
+                     */
+                    if (ObjectUtils.isEmpty(sopDeviationReport.getTrainingPeriodId()) == false) {
+                        BooleanBuilder builder = new BooleanBuilder();
+                        QTrainingLog qTrainingLog = QTrainingLog.trainingLog;
+                        builder.and(qTrainingLog.user.id.eq(user.getId()));
+                        builder.and(qTrainingLog.status.eq(TrainingStatus.PROGRESS).or(qTrainingLog.reportStatus.eq(DeviationReportStatus.REPORTED)));
+                        builder.and(qTrainingLog.trainingPeriod.id.eq(sopDeviationReport.getTrainingPeriodId()));
+                        Optional<TrainingLog> optionalTrainingLog = trainingLogService.findOne(builder);
+
+                        TrainingLog trainingLog;
+                        if(optionalTrainingLog.isPresent()) {
+                            trainingLog = optionalTrainingLog.get();
+                            log.info("@교육 진행중인 로그가 존재함. Username : {}, TrainingLogId : {}", user.getUsername(), trainingLog.getId());
+                        } else {
+                            trainingLog = new TrainingLog();
+                        }
+                        trainingLog.setDocumentVersion(sopDeviationReport.getDeviatedSOPDocument());
+                        trainingLog.setUser(user);
+                        trainingLog.setReportStatus(DeviationReportStatus.REPORTED);
+                        trainingLog.setStatus(TrainingStatus.NOT_STARTED);
+                        trainingLog.setType(TrainingType.SELF);
+                        trainingLog.setTrainingPeriod(trainingPeriodService.findById(sopDeviationReport.getTrainingPeriodId()).get());
+
+                        TrainingLog savedTrainingLog = trainingLogService.saveOrUpdate(trainingLog, null);
+
+//                        approval.getSopDeviationReport().getTrainingLogId()
+//                        approval.setTrainingLogId(savedTrainingLog.getId());
+//                        approval.setTrainingPeriodId(sopDeviationReport.getTrainingPeriodId());
+                        sopDeviationReport.setTrainingLogId(savedTrainingLog.getId());
+                    }
+
+                    sopDeviationReportRepository.save(sopDeviationReport);
+                    break;
 //            case SOP_RD_Request_Form:
 //                SopRdRequestForm sopRdRequestForm = approval.getSopRdRequestForm();
 //                sopRdRequestForm.setApproval(approval);
@@ -383,94 +384,94 @@ public class ApprovalService {
 //                sopWaiverApprovalFormRepository.save(sopWaiverApprovalForm);
 //                break;
 //
-//            case SOP_Disclosure_Request_Form:
-//                SOPDisclosureRequestForm sopDisclosureRequestForm = approval.getSopDisclosureRequestForm();
-//                sopDisclosureRequestForm.setApproval(approval);
-//
-//
-//                SOPDisclosureRequestForm savedSopDisclosureRequestForm = sopDisclosureRequestFormRepository.save(sopDisclosureRequestForm);
-//                List<String> sopList = Arrays.asList(sopDisclosureRequestForm.getSopIds());
-//
-//                List<String> rdList = Arrays.asList(sopDisclosureRequestForm.getRdIds());
-//                //수정인 경우
-//                if(ObjectUtils.isEmpty(sopDisclosureRequestForm.getId()) == false) {
-//                    if(ObjectUtils.isEmpty(sopDisclosureRequestForm.getRequestedDocumentSOPs()) == false) {
-//                        for(RequestedDocument requestedDocument : sopDisclosureRequestForm.getRequestedDocumentSOPs()) {
-//                            if(!sopList.contains(requestedDocument.getDocumentVersion().getId())) {
-//                                requestedDocumentRepository.delete(requestedDocument);
-//                            }
-//                        }
-//                    }
-//                    if(ObjectUtils.isEmpty(sopDisclosureRequestForm.getRequestedDocumentRDs()) == false) {
-//                        if(ObjectUtils.isEmpty(sopDisclosureRequestForm.getRdIds())) {
-//                            requestedDocumentRepository.deleteAll(sopDisclosureRequestForm.getRequestedDocumentRDs());
-//                        } else {
-////                            List<String> rdList = Arrays.asList(sopDisclosureRequestForm.getRdIds());
-//                            for(RequestedDocument requestedDocument : sopDisclosureRequestForm.getRequestedDocumentRDs()) {
-//                                if(!rdList.contains(requestedDocument.getDocumentVersion().getId())) {
-//                                    requestedDocumentRepository.delete(requestedDocument);
-//                                }
-//                            }
-//                        }
-//                    }
-//
-//                    for(ExternalCustomer externalCustomer : sopDisclosureRequestForm.getExternalCustomers()) {
-//                        externalCustomer.setSopDisclosureRequestForm(savedSopDisclosureRequestForm);
-//                        externalCustomerRepository.save(externalCustomer);
-//                    }
-//
-//                    if(!ObjectUtils.isEmpty(sopDisclosureRequestForm.getDisclosureDigitalBinders())) {
-//                        for(DisclosureDigitalBinder db : sopDisclosureRequestForm.getDisclosureDigitalBinders()) {
-//                            disclosureDigitalBinderRepository.delete(db);
-//                        }
-//                    }
-//                }
-//
-//                List<String> savedSopIds = sopDisclosureRequestForm.getRequestedDocumentSOPs()
-//                        .stream()
-//                        .filter(r -> !ObjectUtils.isEmpty(r.getId()))
-//                        .map(r -> r.getDocumentVersion().getId())
-//                        .collect(Collectors.toList());
-//                List<String> savedRdIds = sopDisclosureRequestForm.getRequestedDocumentRDs()
-//                        .stream()
-//                        .filter(r -> !ObjectUtils.isEmpty(r.getId()))
-//                        .map(r -> r.getDocumentVersion().getId())
-//                        .collect(Collectors.toList());
-//                for(String sopId : sopDisclosureRequestForm.getSopIds()) {
-//                    if(savedSopIds.contains(sopId) == false) {
-//                        DocumentVersion documentVersion = DocumentVersion.builder().id(sopId).build();
-//                        RequestedDocument requestedDocument = new RequestedDocument();
-//                        requestedDocument.setSopDisclosureRequestForm(savedSopDisclosureRequestForm);
-//                        requestedDocument.setDocumentType(DocumentType.SOP);
-//                        requestedDocument.setDocumentVersion(documentVersion);
-//
-//                        requestedDocumentRepository.save(requestedDocument);
-//                    }
-//                }
-//                if(ObjectUtils.isEmpty(sopDisclosureRequestForm.getRdIds()) == false) {
-//                    for(String rdId : sopDisclosureRequestForm.getRdIds()) {
-//                        if(savedRdIds.contains(rdId) == false) {
-//                            DocumentVersion documentVersion = DocumentVersion.builder().id(rdId).build();
-//                            RequestedDocument requestedDocument = new RequestedDocument();
-//                            requestedDocument.setSopDisclosureRequestForm(savedSopDisclosureRequestForm);
-//                            requestedDocument.setDocumentType(DocumentType.RD);
-//                            requestedDocument.setDocumentVersion(documentVersion);
-//
-//                            requestedDocumentRepository.save(requestedDocument);
-//                        }
-//                    }
-//                }
-//
-//                if(!ObjectUtils.isEmpty(sopDisclosureRequestForm.getUserIds())) {
-//                    for(String userId : sopDisclosureRequestForm.getUserIds()) {
-//                        DisclosureDigitalBinder db = new DisclosureDigitalBinder();
-//                        db.setSopDisclosureRequestForm(savedSopDisclosureRequestForm);
-//                        db.setUser(Account.builder().id(Integer.parseInt(userId)).build());
-//                        disclosureDigitalBinderRepository.save(db);
-//                    }
-//                }
-//
-//                break;
+            case SOP_Disclosure_Request_Form:
+                SOPDisclosureRequestForm sopDisclosureRequestForm = approval.getSopDisclosureRequestForm();
+                sopDisclosureRequestForm.setApproval(approval);
+
+
+                SOPDisclosureRequestForm savedSopDisclosureRequestForm = sopDisclosureRequestFormRepository.save(sopDisclosureRequestForm);
+                List<String> sopList = Arrays.asList(sopDisclosureRequestForm.getSopIds());
+
+                List<String> rfList = Arrays.asList(sopDisclosureRequestForm.getRfIds());
+                //수정인 경우
+                if(ObjectUtils.isEmpty(sopDisclosureRequestForm.getId()) == false) {
+                    if(ObjectUtils.isEmpty(sopDisclosureRequestForm.getRequestedDocumentSOPs()) == false) {
+                        for(RequestedDocument requestedDocument : sopDisclosureRequestForm.getRequestedDocumentSOPs()) {
+                            if(!sopList.contains(requestedDocument.getDocumentVersion().getId())) {
+                                requestedDocumentRepository.delete(requestedDocument);
+                            }
+                        }
+                    }
+                    if(ObjectUtils.isEmpty(sopDisclosureRequestForm.getRequestedDocumentRFs()) == false) {
+                        if(ObjectUtils.isEmpty(sopDisclosureRequestForm.getRfIds())) {
+                            requestedDocumentRepository.deleteAll(sopDisclosureRequestForm.getRequestedDocumentRFs());
+                        } else {
+//                            List<String> rdList = Arrays.asList(sopDisclosureRequestForm.getRdIds());
+                            for(RequestedDocument requestedDocument : sopDisclosureRequestForm.getRequestedDocumentRFs()) {
+                                if(!rfList.contains(requestedDocument.getDocumentVersion().getId())) {
+                                    requestedDocumentRepository.delete(requestedDocument);
+                                }
+                            }
+                        }
+                    }
+
+                    for(ExternalCustomer externalCustomer : sopDisclosureRequestForm.getExternalCustomers()) {
+                        externalCustomer.setSopDisclosureRequestForm(savedSopDisclosureRequestForm);
+                        externalCustomerRepository.save(externalCustomer);
+                    }
+
+                    if(!ObjectUtils.isEmpty(sopDisclosureRequestForm.getDisclosureDigitalBinders())) {
+                        for(DisclosureDigitalBinder db : sopDisclosureRequestForm.getDisclosureDigitalBinders()) {
+                            disclosureDigitalBinderRepository.delete(db);
+                        }
+                    }
+                }
+
+                List<String> savedSopIds = sopDisclosureRequestForm.getRequestedDocumentSOPs()
+                        .stream()
+                        .filter(r -> !ObjectUtils.isEmpty(r.getId()))
+                        .map(r -> r.getDocumentVersion().getId())
+                        .collect(Collectors.toList());
+                List<String> savedRfIds = sopDisclosureRequestForm.getRequestedDocumentRFs()
+                        .stream()
+                        .filter(r -> !ObjectUtils.isEmpty(r.getId()))
+                        .map(r -> r.getDocumentVersion().getId())
+                        .collect(Collectors.toList());
+                for(String sopId : sopDisclosureRequestForm.getSopIds()) {
+                    if(savedSopIds.contains(sopId) == false) {
+                        DocumentVersion documentVersion = DocumentVersion.builder().id(sopId).build();
+                        RequestedDocument requestedDocument = new RequestedDocument();
+                        requestedDocument.setSopDisclosureRequestForm(savedSopDisclosureRequestForm);
+                        requestedDocument.setDocumentType(DocumentType.SOP);
+                        requestedDocument.setDocumentVersion(documentVersion);
+
+                        requestedDocumentRepository.save(requestedDocument);
+                    }
+                }
+                if(ObjectUtils.isEmpty(sopDisclosureRequestForm.getRfIds()) == false) {
+                    for(String rdId : sopDisclosureRequestForm.getRfIds()) {
+                        if(savedRfIds.contains(rdId) == false) {
+                            DocumentVersion documentVersion = DocumentVersion.builder().id(rdId).build();
+                            RequestedDocument requestedDocument = new RequestedDocument();
+                            requestedDocument.setSopDisclosureRequestForm(savedSopDisclosureRequestForm);
+                            requestedDocument.setDocumentType(DocumentType.RF);
+                            requestedDocument.setDocumentVersion(documentVersion);
+
+                            requestedDocumentRepository.save(requestedDocument);
+                        }
+                    }
+                }
+
+                if(!ObjectUtils.isEmpty(sopDisclosureRequestForm.getUserIds())) {
+                    for(String userId : sopDisclosureRequestForm.getUserIds()) {
+                        DisclosureDigitalBinder db = new DisclosureDigitalBinder();
+                        db.setSopDisclosureRequestForm(savedSopDisclosureRequestForm);
+                        db.setUser(Account.builder().id(Integer.parseInt(userId)).build());
+                        disclosureDigitalBinderRepository.save(db);
+                    }
+                }
+
+                break;
 //
 //            case SOP_RD_Retirement_Form:
 //                RetirementApprovalForm retirementApprovalForm = approval.getRetirementApprovalForm();
@@ -720,7 +721,7 @@ public class ApprovalService {
 
                 sendApprovalResultEmail(receiveUser, approval, "반려");
 
-                if(approval.getType() == ReportType.SOP_Deviation_Report) {
+                if(approval.getType() == ReportType.SOP_Training_Deviation_Report) {
                     trainingLogReportStatus(approval);
                 }
 
@@ -730,7 +731,7 @@ public class ApprovalService {
             approval.setStatus(line.getStatus());
             log.debug("approval  id : {}, status : {}", approval.getId(), approval.getStatus());
 
-            if(approval.getType() == ReportType.SOP_Deviation_Report) {
+            if(approval.getType() == ReportType.SOP_Training_Deviation_Report) {
                 trainingLogReportStatus(approval);
 //            } else if(approval.getType() == ReportType.RD_Approval_Form && approval.getStatus() == ApprovalStatus.approved) {
 //                addRDRevisionDocument(approval);
@@ -809,12 +810,12 @@ public class ApprovalService {
     }
 
     private void sopRfRequestForm(Approval approval) {
-        SopRdRequestForm sopRfRequestForm = approval.getSopRfRequestForm();
+        SopRfRequestForm sopRfRequestForm = approval.getSopRfRequestForm();
 
         //신규 개발 SOP 등록
         Map<String, Document> newSOP = new HashMap<>();
         if(sopRfRequestForm.isNewSOPDevelopment()) {
-            for(SopRdDevelopmentDoc sop : sopRfRequestForm.getSopDevelopmentDocs()) {
+            for(SopRfDevelopmentDoc sop : sopRfRequestForm.getSopDevelopmentDocs()) {
                 Document document = new Document();
                 document.setCategory(categoryService.findByShortName(sop.getCategoryId()).get());
                 document.setDocId(sop.getDocId());
@@ -836,14 +837,14 @@ public class ApprovalService {
             }
         }
         //신규 개발 RD 정보 등록
-        if(sopRfRequestForm.isNewRDDevelopment()) {
-            for(SopRdDevelopmentDoc rd : sopRfRequestForm.getRdDevelopmentDocs()) {
+        if(sopRfRequestForm.isNewRFDevelopment()) {
+            for(SopRfDevelopmentDoc rd : sopRfRequestForm.getRfDevelopmentDocs()) {
                 Document document = new Document();
                 Optional<Document> optionalDocument = documentService.findByDocId(rd.getSopId());
                 if(optionalDocument.isPresent()) {
                     document.setSop(optionalDocument.get());
                 } else {
-                    if(sopRfRequestForm.isNewRDDevelopment()) {
+                    if(sopRfRequestForm.isNewRFDevelopment()) {
                         if(newSOP.containsKey(rd.getSopId())) {
                             document.setSop(newSOP.get(rd.getSopId()));
                         }
@@ -869,8 +870,8 @@ public class ApprovalService {
         }
 
         if(sopRfRequestForm.isSopRevision()) {
-            List<SopRdRevisionDoc> sopRevisionDocs = sopRfRequestForm.getSopRevisionDocs();
-            for(SopRdRevisionDoc revisionDoc : sopRevisionDocs) {
+            List<SopRfRevisionDoc> sopRevisionDocs = sopRfRequestForm.getSopRevisionDocs();
+            for(SopRfRevisionDoc revisionDoc : sopRevisionDocs) {
                 DocumentVersion supersededVersion = revisionDoc.getDocumentVersion();
 
                 DocumentVersion documentVersion = new DocumentVersion();
@@ -883,9 +884,9 @@ public class ApprovalService {
             }
         }
 
-        if(sopRfRequestForm.isRdRevision()) {
-            List<SopRdRevisionDoc> rdRevisionDocs = sopRfRequestForm.getRdRevisionDocs();
-            for(SopRdRevisionDoc revisionDoc : rdRevisionDocs) {
+        if(sopRfRequestForm.isRfRevision()) {
+            List<SopRfRevisionDoc> rdRevisionDocs = sopRfRequestForm.getRfRevisionDocs();
+            for(SopRfRevisionDoc revisionDoc : rdRevisionDocs) {
                 DocumentVersion supersededVersion = revisionDoc.getDocumentVersion();
 
                 DocumentVersion documentVersion = new DocumentVersion();
@@ -909,7 +910,7 @@ public class ApprovalService {
 //    }
 
     private void trainingLogReportStatus(Approval approval) {
-        if(approval.getType() == ReportType.SOP_Deviation_Report) {
+        if(approval.getType() == ReportType.SOP_Training_Deviation_Report) {
             if (ObjectUtils.isEmpty(approval.getSopDeviationReport().getTrainingLogId()) == false) {
                 Optional<TrainingLog> optionalTrainingLog = trainingLogService.findById(approval.getSopDeviationReport().getTrainingLogId());
                 if (optionalTrainingLog.isPresent()) {

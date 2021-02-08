@@ -35,7 +35,7 @@ public class ApprovalValidator implements Validator {
         if(ObjectUtils.isEmpty(approval.getApprovalLines()) || approval.getApprovalLines().size() == 1) {
             errors.rejectValue("approvalLines", "message.required", "필수 입력 항목입니다.");
         }
-        if(approval.getType() == ReportType.SOP_Deviation_Report) {
+        if(approval.getType() == ReportType.SOP_Training_Deviation_Report) {
             SOPDeviationReport r = approval.getSopDeviationReport();
             if (StringUtils.isEmpty(r.getDeviationDetails())) {
                 errors.rejectValue("sopDeviationReport.deviationDetails", "message.required", "필수 입력 항목입니다.");
@@ -46,18 +46,22 @@ public class ApprovalValidator implements Validator {
             if (StringUtils.isEmpty(r.getPreventiveCompletionDate())) {
                 errors.rejectValue("sopDeviationReport.preventiveCompletionDate", "message.required", "필수 입력 항목입니다.");
             }
-            if (StringUtils.isEmpty(r.getCorrectiveAction())) {
-                errors.rejectValue("sopDeviationReport.correctiveAction", "message.required", "필수 입력 항목입니다.");
+//            if (StringUtils.isEmpty(r.getCorrectiveAction())) {
+//                errors.rejectValue("sopDeviationReport.correctiveAction", "message.required", "필수 입력 항목입니다.");
+//            }
+//            if (StringUtils.isEmpty(r.getPreventiveAction())) {
+//                errors.rejectValue("sopDeviationReport.preventiveAction", "message.required", "필수 입력 항목입니다.");
+//            }
+            if (StringUtils.isEmpty(r.getConfirmationDate())) {
+                errors.rejectValue("sopDeviationReport.confirmationDate", "message.required", "필수 입력 항목입니다.");
             }
-            if (StringUtils.isEmpty(r.getPreventiveAction())) {
-                errors.rejectValue("sopDeviationReport.preventiveAction", "message.required", "필수 입력 항목입니다.");
-            }
+
         } else if(approval.getType() == ReportType.SOP_RF_Request_Form) {
-            SopRdRequestForm form = approval.getSopRfRequestForm();
+            SopRfRequestForm form = approval.getSopRfRequestForm();
 
             if(form.isNewSOPDevelopment()) {
                 int idx = 0;
-                for(SopRdDevelopmentDoc sop : form.getSopDevelopmentDocs()) {
+                for(SopRfDevelopmentDoc sop : form.getSopDevelopmentDocs()) {
                     if(StringUtils.isEmpty(sop.getDocId())) {
                         errors.rejectValue("sopRdRequestForm.sopDevelopmentDocs["+idx+"].docId", "message.required", "필수 입력 항목입니다.");
                     } else {
@@ -107,9 +111,9 @@ public class ApprovalValidator implements Validator {
                     idx ++;
                 }
             }
-            if(form.isNewRDDevelopment()) {
+            if(form.isNewRFDevelopment()) {
                 int idx = 0;
-                for(SopRdDevelopmentDoc rd : form.getRdDevelopmentDocs()) {
+                for(SopRfDevelopmentDoc rd : form.getRfDevelopmentDocs()) {
                     if(StringUtils.isEmpty(rd.getDocId())) {
                         errors.rejectValue("sopRdRequestForm.rdDevelopmentDocs["+idx+"].docId", "message.required", "필수 입력 항목입니다.");
                     } else {
@@ -159,15 +163,15 @@ public class ApprovalValidator implements Validator {
                 }
             }
 
-            if(form.isNewSOPDevelopment() == false && form.isNewRDDevelopment() == false
-                    && form.isSopRevision() == false && form.isRdRevision() == false) {
+            if(form.isNewSOPDevelopment() == false && form.isNewRFDevelopment() == false
+                    && form.isSopRevision() == false && form.isRfRevision() == false) {
                 errors.rejectValue("sopRdRequestForm.rdRevision", "message.required", "선택된 값이 없습니다.");
             }
 
             if(form.isSopRevision() && ObjectUtils.isEmpty(form.getSopRevisionIds())) {
                 errors.rejectValue("sopRdRequestForm.sopRevisionIds", "message.required", "개정할 SOP를 선택해 주세요.");
             }
-            if(form.isRdRevision() && ObjectUtils.isEmpty(form.getRdRevisionIds())) {
+            if(form.isRfRevision() && ObjectUtils.isEmpty(form.getRfRevisionIds())) {
                 errors.rejectValue("sopRdRequestForm.rdRevisionIds", "message.required", "개정할 RD를 선택해 주세요.");
             }
 
@@ -255,7 +259,7 @@ public class ApprovalValidator implements Validator {
                 errors.rejectValue("sopDisclosureRequestForm.purposeOfDisclosureOther", "message.required", "필수 입력 항목입니다.");
             }
 
-            if(ObjectUtils.isEmpty(r.getSopIds()) && ObjectUtils.isEmpty(r.getRdIds())) {
+            if(ObjectUtils.isEmpty(r.getSopIds()) && ObjectUtils.isEmpty(r.getRfIds())) {
                 errors.rejectValue("sopDisclosureRequestForm.sopIds", "message.required", "필수 입력 항목입니다.");
             }
         } else if(approval.getType() == ReportType.SOP_RF_Retirement_Form) {

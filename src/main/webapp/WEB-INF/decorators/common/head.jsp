@@ -312,5 +312,6 @@ Detailed information and more samples can be found in the document.
                 timer: 5000
             });
         });
+
     </script>
 </c:if>

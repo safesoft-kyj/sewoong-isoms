@@ -50,13 +50,13 @@ public class OrganizationController {
 
 
         List<Account> accounts = userRepository.findAllByUserTypeAndEnabledOrderByNameAsc(UserType.USER, true);
-        List<Account> managers = accounts.stream().filter(user -> user.getUserJobDescriptions().stream()
-                                //해당 유저가 관리자인지 (Manager권한을 가진 JD가 1개 이상 있으면)
-                                .filter(uj -> uj.getJobDescription().isManager()).count() > 0).collect(Collectors.toList());
+//        List<Account> managers = accounts.stream().filter(user -> user.getUserJobDescriptions().stream()
+//                                //해당 유저가 관리자인지 (Manager권한을 가진 JD가 1개 이상 있으면)
+//                                .filter(uj -> uj.getJobDescription().isManager()).count() > 0).collect(Collectors.toList());
 
         List<JsTreeNode> jsTreeNodes = new ArrayList<>();
         String mainCode = "CAUH";
-        String mainName = "CAUH(" + managers.size() + ")";
+        String mainName = "CAUH(" + accounts.size() + ")";
 
         JsTreeNode rootNode = new JsTreeNode(mainCode, mainName);
 //        rootNode.setIcon("jstree-folder");
@@ -71,7 +71,7 @@ public class OrganizationController {
         int lev;
         boolean sex;
 
-        for(Account u : managers) {
+        for(Account u : accounts) {
             log.trace(" -- user : {}", u);
             deptCode = ObjectUtils.isEmpty(u.getDepartment().getParentDepartment()) ? mainCode : Integer.toString(u.getDepartment().getParentDepartment().getId());
             teamCode = Integer.toString(u.getDepartment().getId());
