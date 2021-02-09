@@ -6,9 +6,14 @@ import com.cauh.iso.domain.constant.ApprovalStatus;
 import com.cauh.iso.domain.constant.ReportType;
 import com.cauh.iso.service.ApprovalService;
 import com.cauh.iso.admin.service.UserJobDescriptionService;
+import com.cauh.iso.utils.DateUtils;
 import com.cauh.iso.xdocreport.SOPDisclosureRequestFormService;
 import com.cauh.iso.xdocreport.*;
+import com.cauh.iso.xdocreport.dto.TrainingDeviationLogDTO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.jxls.common.Context;
+import org.jxls.util.JxlsHelper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -22,12 +27,17 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping({"/admin", "/ajax/admin"})
 @RequiredArgsConstructor
+@Slf4j
 public class AdminApprovalController {
     private final ApprovalService approvalService;
     private final SOPDisclosureRequestFormService sopDisclosureRequestFormService;
@@ -51,7 +61,7 @@ public class AdminApprovalController {
         model.addAttribute("status", status);
 
 //        model.addAttribute("reportType", Arrays.stream(ReportType.values()).collect(Collectors.toMap(a -> a.getViewName(), a -> a.getLabel())));
-        model.addAttribute("reportTypeList", Arrays.asList(ReportType.values()));
+        model.addAttribute("reportTypeList", Arrays.asList(ReportType.values()).stream().filter(r -> r.isEnable()).collect(Collectors.toList()));
         model.addAttribute("reportType", type);
         return "admin/approval/totalList";
     }
@@ -78,6 +88,34 @@ public class AdminApprovalController {
             return "redirect:/admin/approval";
         } else {
             return "redirect:/admin/approval/{status}";
+        }
+    }
+
+    @GetMapping({"/approval/training/deviation/print", "/approval/training/deviation/{status}/print"})
+    @Transactional(readOnly = true)
+    public void generateTrainingDeviationLog(@PathVariable(value = "status", required = false) ApprovalStatus status,
+                                             HttpServletResponse response) throws Exception {
+
+        List<TrainingDeviationLogDTO> DTOList = null;
+
+        if(ObjectUtils.isEmpty(status)) {
+            DTOList = approvalService.findAllByReportType(ReportType.SOP_Training_Deviation_Report);
+            log.info("Training Deviation Log : {}", DTOList);
+
+        } else {
+            DTOList = approvalService.findAllByReportTypeAndStatus(ReportType.SOP_Training_Deviation_Report, status);
+        }
+
+        log.info("Approval List : {}", DTOList);
+
+        if(DTOList.size() > 0) {
+            String strType = ObjectUtils.isEmpty(status)?"_All":"_" + status.name();
+            InputStream is = IndexReportService.class.getResourceAsStream("SOP_Training_Deviation_Log_01.xlsx");
+
+            Context context = new Context();
+            context.putVar("DTOList", DTOList);
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Training_Deviation_Log" + strType +"_" + DateUtils.format(new Date(), "yyyyMMdd") +".xlsx");
+            JxlsHelper.getInstance().processTemplate(is, response.getOutputStream(), context);
         }
     }
 

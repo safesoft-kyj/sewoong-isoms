@@ -9,8 +9,10 @@ import java.io.ByteArrayInputStream;
 @Setter
 @Getter
 public class ISOCertificationDTO {
-    private String no;
+    private String affiliationDepartment;
+    private String dateOfBirth;
     private String name;
-    private String isoTitle;
+    private String certificateNo;
+    private String completionDate;
     private ByteArrayInputStream sign;
 }

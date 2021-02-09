@@ -128,7 +128,7 @@
             <thead>
             <tr class="bg-gray-light">                <th data-sortable="true" data-field="index">No.</th>
                 <th data-sortable="true" data-field="certNo">Cert No.</th>
-                <th data-sortable="true" data-field="teamDept">Dept/Team</th>
+                <th data-sortable="true" data-field="teamDept">Affiliation/Department</th>
                 <th data-sortable="true" data-field="name">name</th>
                 <th data-sortable="true" data-field="role">ROLE</th>
                 <th data-sortable="true" data-field="isoType">ISO Type</th>

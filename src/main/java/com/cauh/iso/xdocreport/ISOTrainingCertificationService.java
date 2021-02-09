@@ -74,18 +74,21 @@ public class ISOTrainingCertificationService {
         String fileName = isoTrainingCertification.getUser().getUsername() + "_iso_cert_" + isoTrainingCertification.getId() + ".pdf";
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         //Certification Template File Load
-        InputStream in = ISOTrainingCertificationService.class.getResourceAsStream("iso_certi.docx");
+        InputStream in = ISOTrainingCertificationService.class.getResourceAsStream("ISO_14155_Training_Certificate_01.docx");
         log.info("Input Stream : {}", in);
 
         isoTrainingCertification.setPrintDate(DateUtils.format(new Date(), "dd/MMM/yyyy").toUpperCase());
 
         ISOCertificationDTO isoCertificationDTO = new ISOCertificationDTO();
-        isoCertificationDTO.setNo(isoTrainingCertification.getId());
+
+        isoCertificationDTO.setAffiliationDepartment(isoTrainingCertification.getUser().getTeamDept());
+        isoCertificationDTO.setDateOfBirth(DateUtils.format(isoTrainingCertification.getUser().getBirthDate(), "dd-MMM-yyyy").toUpperCase());
         isoCertificationDTO.setName(isoTrainingCertification.getUser().getName());
-        isoCertificationDTO.setIsoTitle(isoTrainingCertification.getIso().getTitle());
+        isoCertificationDTO.setCertificateNo(isoTrainingCertification.getId());
+        isoCertificationDTO.setCompletionDate(DateUtils.format(isoTrainingCertification.getIsoTrainingLog().getCompleteDate(), "dd-MMM-yyyy").toUpperCase());
         isoCertificationDTO.setSign(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(signatureRepository.findById(isoTrainingCertification.getUser().getUsername()).get().getBase64signature())));
 
-        DataSourceInfo dataSourceInfo = new DataSourceInfo(isoCertificationDTO, null);
+        DataSourceInfo dataSourceInfo = new DataSourceInfo(isoCertificationDTO, "");
         documentAssembly.assembleDocumentAsPdf(in, os, dataSourceInfo);
 
 //        DocumentAssembler assembler = new DocumentAssembler();

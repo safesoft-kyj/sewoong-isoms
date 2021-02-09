@@ -7,11 +7,13 @@ import com.cauh.iso.domain.*;
 import com.cauh.iso.domain.constant.*;
 import com.cauh.iso.domain.report.*;
 import com.cauh.iso.repository.*;
+import com.cauh.iso.xdocreport.dto.TrainingDeviationLogDTO;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -73,6 +75,14 @@ public class ApprovalService {
 
     public Page<Approval> findAll(ApprovalLineType type, ApprovalStatus status, Account user, Pageable pageable) {
         return approvalLineRepository.findAll(type, status, user, pageable);
+    }
+
+    public List<TrainingDeviationLogDTO> findAllByReportType(ReportType reportType) {
+        return approvalLineRepository.findAllByReportType(reportType);
+    }
+
+    public List<TrainingDeviationLogDTO> findAllByReportTypeAndStatus(ReportType reportType, ApprovalStatus status) {
+        return approvalLineRepository.findAllByReportTypeAndStatus(reportType, status);
     }
 
     public void saveOrUpdate(Approval approval, Account user, boolean sendEmail) throws Exception {

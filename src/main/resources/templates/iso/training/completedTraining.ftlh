@@ -25,6 +25,9 @@
                     method: 'post',
                     data: {"_method": "put", r: Math.random()},
                     success: function (certHtml) {
+
+                        console.log(certHtml);
+
                         $("#certHtml").html(certHtml);
                     }
                 });

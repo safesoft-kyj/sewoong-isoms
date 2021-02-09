@@ -1,15 +1,16 @@
 package com.cauh.iso.repository;
 
 import com.cauh.common.entity.Account;
-import com.cauh.iso.domain.Approval;
-import com.cauh.iso.domain.QApproval;
-import com.cauh.iso.domain.QApprovalLine;
+import com.cauh.common.entity.QAccount;
+import com.cauh.iso.domain.*;
 import com.cauh.iso.domain.constant.ApprovalLineType;
 import com.cauh.iso.domain.constant.ApprovalStatus;
+import com.cauh.iso.domain.constant.DeviationReportStatus;
 import com.cauh.iso.domain.constant.ReportType;
 import com.cauh.iso.domain.report.QSOPDeviationReport;
 import com.cauh.iso.domain.report.QSOPDisclosureRequestForm;
 import com.cauh.iso.domain.report.QSOPWaiverApprovalForm;
+import com.cauh.iso.xdocreport.dto.TrainingDeviationLogDTO;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
@@ -20,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Arrays;
@@ -29,6 +31,91 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ApprovalLineRepositoryImpl implements ApprovalLineRepositoryCustom {
     private final JPAQueryFactory queryFactory;
+
+    public List<TrainingDeviationLogDTO> findAllByReportType(ReportType reportType){
+
+        QApproval qApproval = QApproval.approval;
+        QTrainingPeriod qTrainingPeriod = QTrainingPeriod.trainingPeriod;
+        QTrainingMatrix qTrainingMatrix = QTrainingMatrix.trainingMatrix;
+        QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
+        QTrainingLog qTrainingLog = QTrainingLog.trainingLog;
+        QAccount qAccount = QAccount.account;
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+        if(!ObjectUtils.isEmpty(reportType)) {
+            builder.and(qApproval.type.eq(reportType));
+        }
+
+        List<TrainingDeviationLogDTO> results = queryFactory.select(Projections.constructor(TrainingDeviationLogDTO.class,
+                qApproval,
+                qTrainingPeriod.endDate,
+                qTrainingLog.status,
+                qTrainingLog.completeDate
+        ))
+                .from(qApproval)
+//                .join(qTrainingMatrix)
+//                .on(qTrainingMatrix.documentVersion.id.eq(qTrainingPeriod.documentVersion.id))
+                .join(qDocumentVersion)
+                .on(qDocumentVersion.id.eq(qApproval.sopDeviationReport.trDeviatedSOPDocumentId))
+                .join(qTrainingPeriod)
+                .on(qTrainingPeriod.documentVersion.id.eq(qDocumentVersion.id))
+                .join(qAccount)
+                .on(qAccount.username.eq(qApproval.username))
+                .join(qTrainingLog)
+                .on(qTrainingLog.user.id.eq(qAccount.id)
+                        .and(qTrainingLog.reportStatus.eq(DeviationReportStatus.APPROVED)))
+                .where(builder)
+                .orderBy(qApproval.sopDeviationReport.confirmationDate.desc())
+                .fetch();
+
+        return results;
+    }
+
+    public List<TrainingDeviationLogDTO> findAllByReportTypeAndStatus(ReportType reportType, ApprovalStatus approvalStatus){
+
+        QApproval qApproval = QApproval.approval;
+        QTrainingPeriod qTrainingPeriod = QTrainingPeriod.trainingPeriod;
+        QTrainingMatrix qTrainingMatrix = QTrainingMatrix.trainingMatrix;
+        QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
+        QTrainingLog qTrainingLog = QTrainingLog.trainingLog;
+        QAccount qAccount = QAccount.account;
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+        if(!ObjectUtils.isEmpty(reportType)) {
+            builder.and(qApproval.type.eq(reportType));
+        }
+
+        if(!ObjectUtils.isEmpty(approvalStatus)) {
+            builder.and(qApproval.status.eq(approvalStatus));
+        }
+
+        List<TrainingDeviationLogDTO> results = queryFactory.select(Projections.constructor(TrainingDeviationLogDTO.class,
+                qApproval,
+                qTrainingPeriod.endDate,
+                qTrainingLog.status,
+                qTrainingLog.completeDate
+        ))
+                .from(qApproval)
+//                .join(qTrainingMatrix)
+//                .on(qTrainingMatrix.documentVersion.id.eq(qTrainingPeriod.documentVersion.id))
+                .join(qDocumentVersion)
+                .on(qDocumentVersion.id.eq(qApproval.sopDeviationReport.trDeviatedSOPDocumentId))
+                .join(qTrainingPeriod)
+                .on(qTrainingPeriod.documentVersion.id.eq(qDocumentVersion.id))
+                .join(qAccount)
+                .on(qAccount.username.eq(qApproval.username))
+                .join(qTrainingLog)
+                .on(qTrainingLog.user.id.eq(qAccount.id)
+                        .and(qTrainingLog.reportStatus.eq(DeviationReportStatus.APPROVED)))
+                .where(builder)
+                .orderBy(qApproval.sopDeviationReport.confirmationDate.desc())
+                .fetch();
+
+        return results;
+    }
+
 
     public Page<Approval> findAll(ApprovalLineType lineType, ApprovalStatus status, Account user, Pageable pageable) {
         log.info("@@ 전자결재 리스트 조회 LineType : {}, approvalStatus : {}, user : {}", lineType, status, user);

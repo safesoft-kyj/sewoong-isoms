@@ -29,6 +29,9 @@
                     <form class="form-inline">
                         <div class="row">
                             <div class="col-sm-6 table-toolbar-left">
+                                <#if RequestParameters['type']?has_content && RequestParameters['type'] == "SOP_Training_Deviation_Report">
+                                    <a href="/admin/approval/training/deviation/print" class="btn btn-primary"><i class="pli-printer"></i> Training Deviation Log</a>
+                                </#if>
                             </div>
                             <div class="col-sm-6 table-toolbar-right">
                                 <div class="form-group">

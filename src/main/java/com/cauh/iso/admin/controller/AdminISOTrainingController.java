@@ -1,16 +1,14 @@
 package com.cauh.iso.admin.controller;
 
-import com.cauh.common.entity.Account;
 import com.cauh.common.entity.Department;
 import com.cauh.common.entity.QAccount;
 import com.cauh.common.repository.UserRepository;
-import com.cauh.common.security.annotation.CurrentUser;
 import com.cauh.iso.admin.service.DepartmentService;
-import com.cauh.iso.domain.*;
-import com.cauh.iso.domain.constant.DocumentStatus;
+import com.cauh.iso.domain.ISOOfflineTraining;
+import com.cauh.iso.domain.ISOTrainingCertification;
+import com.cauh.iso.domain.ISOTrainingCertificationDTO;
+import com.cauh.iso.domain.QISOTrainingCertification;
 import com.cauh.iso.domain.constant.ISOType;
-import com.cauh.iso.domain.constant.TrainingStatus;
-import com.cauh.iso.repository.ISOTrainingMatrixRepository;
 import com.cauh.iso.repository.TrainingMatrixRepository;
 import com.cauh.iso.service.ISOOfflineTrainingService;
 import com.cauh.iso.service.ISOService;

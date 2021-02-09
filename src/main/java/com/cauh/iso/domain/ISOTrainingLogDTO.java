@@ -14,5 +14,5 @@ public class ISOTrainingLogDTO implements Serializable {
     private String hour;
     private String organization;
     private String certId;
-    private String certHtml;
+    private boolean certification;
 }

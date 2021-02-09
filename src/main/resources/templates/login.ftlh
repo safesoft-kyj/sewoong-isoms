@@ -950,7 +950,7 @@
                     </form>
                 </div>
                 <div class="signup-image">
-                    <figure><img src="/static/img/signup-image.jpg" alt="sing up image"></figure>
+                    <img src="/static/img/login_logo.jpg" alt="sing up image">
                 </div>
             </div>
         </div>

@@ -164,7 +164,7 @@ public class ISOTrainingController {
             dto.setOrganization(log.getOrganization());
 
             //ISO에서 수료증을 사용할 경우,
-            if(log.getIso().isCertification()) {
+            if(log.getIso().isCertification() && log.getType() == TrainingType.SELF) {
                 ISOTrainingCertification certification = isoTrainingCertificationService.findByIsoAndUser(log.getIso(), user);
                 dto.setCertId(certification.getId());
             }
@@ -176,7 +176,7 @@ public class ISOTrainingController {
     }
 
     //수료증 html .return
-    @PutMapping("/ajax/training/iso/certification/{isoCertId}")
+    @PutMapping(value = "/ajax/training/iso/certification/{isoCertId}", produces = "application/text;charset=utf8")
     @ResponseBody
     public String ajaxCompletedTraining(@PathVariable("isoCertId") String isoCertId) {
         ISOTrainingCertification isoTrainingCertification = isoTrainingCertificationService.findById(isoCertId);

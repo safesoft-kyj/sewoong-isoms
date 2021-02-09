@@ -69,30 +69,15 @@
             <div class="panel mar-top mar-btm">
                 <div class="panel-body bg-gray" style="height:400px; overflow-y: scroll">
                     <div class="mar-btm text-center">
-                        <h3>Pledge of Confidentiality</h3>
+                        <h3>비밀 보장 서약서</h3>
                     </div>
-                    <div class="mar-top mar-btm">
-                        I <span class="text-info">${user.engName!user.name}</span>, through my involvement with and work on ISO Management System will have access to data<br>
-                        which contains confidential information that respondents generally perceive as personal and private.<br>
-                        I understand that access to this confidential information and data carries with it responsibility to guard<br>
-                        against unauthorized use and to abide by the data security plan.<br><br>
-
-                        To treat information as confidential means to not divulge it or make it accessible<br>
-                        to anyone who is not a project member. Such a disclosure would violate the confidentiality promised<br>
-                        to participants and would violate University ethics policies.<br>
-
-                        I agree to fulfill my responsibilities on this project in accordance with the following<br><br>
-
-                        1.I agree to not permit non-project personnel access to the data, either electronically,<br>
-                        &nbsp;&nbsp;&nbsp;in hard copy or orally.<br><br>
-
-                        2.I agree to not attempt to identify individuals, families, households, schools, or institutions<br>
-                        &nbsp;&nbsp;&nbsp;Select only those categories relevant to the nature of the ISO 14155<br>
-                        &nbsp;&nbsp;&nbsp;except in those cases where it is necessary in accordance with my role on the research project.<br><br>
-
-                        3.I agree that in the event I inadvertently uncover the identity of an individual, family, household,<br>
-                        &nbsp;&nbsp;&nbsp;school or institution, I will maintain the highest level of confidentiality of this information,<br>
-                        &nbsp;&nbsp;&nbsp;make no use of the knowledge and inform the study’s Principal Investigator.
+                    <div class="mar-top mar-btm text-bold">
+                        본인은 <span class="text-info">ISO Management System</span>에서 열람, 기록 및 관리되는 문서들<br>
+                        (예, 표준작업지침서, 관련 서식, ISO 관련 규정, 교육 기록 등)이<br>
+                        중앙대학교병원의 자산으로 비밀사항임을 이해 합니다.<br><br>
+                        본인은 <span class="text-info">ISO Management System</span>에서 열람, 기록 및 관리되는 문서들을<br>
+                        중앙대학교병원의 허가 또는 승인없이 제 3자에게 복사, 제공 및 배포하지 않을 것입니다.<br>
+                        본 서약에 동의함으로써 본인은 정보의 비밀을 준수할 것임을 서약 합니다.
                     </div>
 <#--                    <div class="mar-btm">The Discloser (KCSG) intends to disclose proprietary information and data <span class="text-bold"><’The Confidential Information’></span> relating to KCSG Standard Operating Procedures (SOP) to the Recipient for the purpose as below (<span style="font-style: italic">Please tick where applicable</span>).</div>-->
 <#--                    <div class="text-bold">Obligation of Recipient; </div>-->
