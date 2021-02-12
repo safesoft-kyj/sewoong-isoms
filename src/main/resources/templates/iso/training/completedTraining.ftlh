@@ -17,8 +17,8 @@
             $("#cert-modal").on("show.bs.modal", function (event) {
                 let btn = $(event.relatedTarget);
                 let certId = btn.data("cert");
-
                 $("#certId").val(certId);
+                $("#certHtml").html("Loading...");
 
                 $.ajax({
                     url: '/ajax/training/iso/certification/' + certId,
@@ -26,9 +26,9 @@
                     data: {"_method": "put", r: Math.random()},
                     success: function (certHtml) {
 
-                        console.log(certHtml);
-
-                        $("#certHtml").html(certHtml);
+                        setTimeout(function (){
+                            $("#certHtml").html(certHtml);
+                        }, 3000);
                     }
                 });
 
@@ -105,7 +105,7 @@
         <script src="/static/plugins/bootstrap-table/bootstrap-table.min.js"></script>
         <script>
             function tableActions(value, row, index) {
-                if (row.certId != null) {
+                 if (row.certification && row.certId != null) {
                     return [
                         '<button type="button" id="certBtn" name="certificationBtn" data-target="#cert-modal" data-toggle="modal" class="btn btn-info btn-xs" data-id="'
                         + row.id + '" data-cert="' + row.certId + '">',

@@ -428,7 +428,8 @@ public class TrainingController {
                         trainingLog.setOrganizationOther(organization);
                     }
 
-                    Pattern pattern = Pattern.compile("^(([A-Z]{3})\\-([A-Z]{2,5})(\\d{4}))\\s\\w(\\d\\.\\d)\\s(.+)");
+//                    Pattern pattern = Pattern.compile("^(([A-Z]{3})\\-([A-Z]{2,5})(\\d{4}))\\s\\w(\\d\\.\\d)\\s(.+)");
+                    Pattern pattern = Pattern.compile("^(([A-Z]{4})\\-([A-Z]{2,10})(\\d{3}))\\s\\w(\\d\\.\\d)\\s(.+)");
                     Matcher matcher = pattern.matcher(trainingCourse);
                     if(matcher.matches()) {
                         trainingLog.setMatched(true);

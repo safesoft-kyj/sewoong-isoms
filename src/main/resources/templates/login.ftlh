@@ -257,6 +257,10 @@
 
         .main {
             background: #f8f8f8;
+            /*background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)),*/
+            /*                  url("/static/img/login_logo.jpg");*/
+            /*background-size: 165%;*/
+
             padding: 150px 0;
         }
 
@@ -274,7 +278,7 @@
         }
 
         .container {
-            width: 900px;
+            width: 1200px;
             background: #fff;
             margin: 0 auto;
             border: 1px solid RGBA(232, 232, 232, 0.6);
@@ -333,29 +337,27 @@
         }
 
         .signup-content {
-            padding: 75px 0;
+            padding: 50px 0;
         }
 
         .signup-form, .signup-image, .signin-form, .signin-image {
-            width: 50%;
-            overflow: hidden;
-        }
-
-        .signup-form {
-            width: 70%;
+            width: 60%;
             overflow: hidden;
         }
 
         .signup-image {
-            margin: 0 55px;
+            background-image: url("/static/img/login_logo2.jpg");
+            background-size: cover;
+            margin-right: 50px;
+        }
+
+        .signup-form {
+            width: 40%;
+            overflow: hidden;
         }
 
         .form-title {
             margin-bottom: 33px;
-        }
-
-        .signup-image {
-            margin-top: 45px;
         }
 
         figure {
@@ -950,7 +952,7 @@
                     </form>
                 </div>
                 <div class="signup-image">
-                    <img src="/static/img/login_logo.jpg" alt="sing up image">
+<#--                    <img src="/static/img/login_logo.jpg" alt="sing up image">-->
                 </div>
             </div>
         </div>

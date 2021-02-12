@@ -37,6 +37,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -71,19 +72,21 @@ public class ISOTrainingController {
     }
 
     @PostMapping("/training/iso/mytraining")
-    public String saveTrainingLog(@RequestParam("isoId") String isoId,
+    @ResponseBody
+    public Map<String, String> saveTrainingLog(@RequestParam("isoId") String isoId,
                                   @RequestParam("isoTrainingPeriodId") Integer isoTrainingPeriodId,
                                   @RequestParam(value = "isoTrainingLogId", required = false) Integer isoTrainingLogId,
                                   @RequestParam("trainingTime") Integer trainingTime,
                                   @RequestParam("progressPercent") double progressPercent,
                                   @RequestParam("lastPageNo") Integer lastPageNo,
                                   @CurrentUser Account user, RedirectAttributes attributes) throws Exception {
+        Map<String, String> result = new HashMap<>();
         ISOTrainingLog isoTrainingLog;
         Optional<ISO> isoOptional = isoService.getISO(isoId);
         if(isoOptional.isEmpty()) {
-            attributes.addFlashAttribute("type", "danger");
-            attributes.addFlashAttribute("message", "ISO Training 교육 처리 과정 중 문제가 발생하였습니다.");
-            return "redirect:/training/iso/mytraining";
+            result.put("type", "danger");
+            result.put("message", "ISO Training 교육 처리 과정 중 문제가 발생하였습니다.");
+            return result;
         }
 
         ISO iso = isoOptional.get();
@@ -111,17 +114,17 @@ public class ISOTrainingController {
         //수료증이 있으면서 교육이 완료되었을 때 -> 수료증 정보 생성
         if(isoTrainingLog.getStatus() == TrainingStatus.COMPLETED && iso.isCertification()) {
             ISOTrainingCertification certification = ISOTrainingCertification.builder()
-                    .id(isoTrainingCertificationService.getCertId(iso))
+                    .certNo(isoTrainingCertificationService.getCertNo(iso))
                     .iso(iso).user(user).isoTrainingLog(savedTrainingLog).build();
             isoTrainingCertificationService.createCertificationFile(certification);
+            result.put("message", "교육이 완료 되었습니다.");
         }else if(isoTrainingLog.getStatus() == TrainingStatus.TRAINING_COMPLETED) {
-            attributes.addFlashAttribute("message", "Training 완료! Test를 진행 해 주세요.");
-            attributes.addFlashAttribute("trainingLogId", savedTrainingLog.getId());
+            result.put("message", "Training 완료! Test를 진행 해 주세요.");
         } else {
-            attributes.addFlashAttribute("message", "진행 중인 교육 정보가 업데이트 되었습니다.");
+            result.put("message", "진행 중인 교육 정보가 업데이트 되었습니다.");
         }
 
-        return "redirect:/training/iso/mytraining";
+        return result;
     }
 
     @GetMapping("/training/iso/mytraining/completed")
@@ -158,15 +161,16 @@ public class ISOTrainingController {
             ISOTrainingLogDTO dto = new ISOTrainingLogDTO();
             dto.setIndex(atomicInteger.getAndDecrement());
             dto.setId(log.getId());
+            dto.setCertification(log.getIso().isCertification());
             dto.setCompletionDate(DateUtils.format(log.getCompleteDate(), "dd-MMM-yyyy").toUpperCase());
             dto.setCourse(log.getTrainingCourse());
             dto.setHour(log.getHour());
             dto.setOrganization(log.getOrganization());
 
             //ISO에서 수료증을 사용할 경우,
-            if(log.getIso().isCertification() && log.getType() == TrainingType.SELF) {
+            if(dto.isCertification() && log.getType() == TrainingType.SELF) {
                 ISOTrainingCertification certification = isoTrainingCertificationService.findByIsoAndUser(log.getIso(), user);
-                dto.setCertId(certification.getId());
+                dto.setCertId(certification == null ? null : certification.getId().toString());
             }
 
             isoTrainingLogDTOS.add(dto);
@@ -178,13 +182,13 @@ public class ISOTrainingController {
     //수료증 html .return
     @PutMapping(value = "/ajax/training/iso/certification/{isoCertId}", produces = "application/text;charset=utf8")
     @ResponseBody
-    public String ajaxCompletedTraining(@PathVariable("isoCertId") String isoCertId) {
+    public String ajaxCompletedTraining(@PathVariable("isoCertId") Integer isoCertId) {
         ISOTrainingCertification isoTrainingCertification = isoTrainingCertificationService.findById(isoCertId);
         return isoTrainingCertification.getCertHtml();
     }
 
     @PostMapping("/training/iso/mytraining/completed/downloadCertFile")
-    public ResponseEntity<Resource> downloadCertification(@RequestParam("isoCertId") String isoCertId, @CurrentUser Account user, HttpServletRequest request) {
+    public ResponseEntity<Resource> downloadCertification(@RequestParam("isoCertId") Integer isoCertId, @CurrentUser Account user, HttpServletRequest request) throws Exception {
         ISOTrainingCertification isoTrainingCertification = isoTrainingCertificationService.findById(isoCertId);
 
         //AccessLog 저장
@@ -204,7 +208,8 @@ public class ISOTrainingController {
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + user.getName() +  "_Cert_" + isoTrainingCertification.getId() + ".pdf\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + isoTrainingCertification.getId() + ".pdf\"")
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + URLEncoder.encode(user.getName() +  "_Cert_" + isoTrainingCertification.getId(), "utf-8") + ".pdf\"")
                 .body(resource);
     }
 
@@ -265,11 +270,11 @@ public class ISOTrainingController {
             trainingLog.setStatus(TrainingStatus.COMPLETED);
             if(trainingLog.getIso().isCertification()) {
                 ISOTrainingCertification certification = ISOTrainingCertification.builder()
-                        .id(isoTrainingCertificationService.getCertId(trainingLog.getIso()))
+                        .certNo(isoTrainingCertificationService.getCertNo(trainingLog.getIso()))
                         .isoTrainingLog(trainingLog)
                         .iso(trainingLog.getIso()).user(user).build();
 
-                log.info("@Certification 생성 : {}", certification.getId());
+                log.info("@Certification 생성 : {}", certification.getCertNo());
                 isoTrainingCertificationService.createCertificationFile(certification);
             }
 

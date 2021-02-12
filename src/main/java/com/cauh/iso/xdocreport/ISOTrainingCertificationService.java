@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -50,19 +51,30 @@ public class ISOTrainingCertificationService {
         return isoTrainingCertificationRepository.findAll(predicate, pageable);
     }
 
-    public ISOTrainingCertification findById(String certId) {
+    public ISOTrainingCertification findById(Integer certId) {
         return isoTrainingCertificationRepository.findById(certId).get();
     }
 
     public ISOTrainingCertification findByIsoAndUser(ISO iso, Account user){
-        return isoTrainingCertificationRepository.findByIsoAndUser(iso, user).get();
+        Optional<ISOTrainingCertification> optional = isoTrainingCertificationRepository.findByIsoAndUser(iso, user);
+        if(optional.isPresent()) {
+            return optional.get();
+        } else {
+            log.error("해당 ISO에 대한 수료증이 없음 : {}", iso.getId());
+
+            return null;
+        }
     }
 
     //처음 Certification 번호 부여 시 사용
-    public String getCertId(ISO iso){
+    public String getCertNo(ISO iso){
         Integer seqNo = isoTrainingCertificationRepository.countByIso(iso) + 1; //1로 시작
-        String seqTxt = String.format("%06d", seqNo); //6자리 fixed Text
-        return iso.getCertificationHead() + "-" + DateUtils.format(iso.getCreatedDate(), "yyyy") + "-" + seqTxt;
+        String seqTxt = String.format("%03d", seqNo); //3자리 fixed Text
+        String result = iso.getCertificationHead() + "-" + DateUtils.format(iso.getCreatedDate(), "yyyy") + "-" + seqTxt;
+
+        log.info("@Certification Number 생성 : {}", result);
+
+        return result;
     }
 
     public ISOTrainingCertification saveOrUpdate(ISOTrainingCertification isoTrainingCertification) {
@@ -71,7 +83,8 @@ public class ISOTrainingCertificationService {
 
     //수료증 파일 생성
     public void createCertificationFile(ISOTrainingCertification isoTrainingCertification) throws Exception{
-        String fileName = isoTrainingCertification.getUser().getUsername() + "_iso_cert_" + isoTrainingCertification.getId() + ".pdf";
+//        String fileName = isoTrainingCertification.getUser().getUsername() + "_iso_cert_" + isoTrainingCertification.getId() + ".pdf";
+        String fileName = isoTrainingCertification.getId() + ".pdf";
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         //Certification Template File Load
         InputStream in = ISOTrainingCertificationService.class.getResourceAsStream("ISO_14155_Training_Certificate_01.docx");
@@ -84,7 +97,7 @@ public class ISOTrainingCertificationService {
         isoCertificationDTO.setAffiliationDepartment(isoTrainingCertification.getUser().getTeamDept());
         isoCertificationDTO.setDateOfBirth(DateUtils.format(isoTrainingCertification.getUser().getBirthDate(), "dd-MMM-yyyy").toUpperCase());
         isoCertificationDTO.setName(isoTrainingCertification.getUser().getName());
-        isoCertificationDTO.setCertificateNo(isoTrainingCertification.getId());
+        isoCertificationDTO.setCertificateNo(isoTrainingCertification.getCertNo());
         isoCertificationDTO.setCompletionDate(DateUtils.format(isoTrainingCertification.getIsoTrainingLog().getCompleteDate(), "dd-MMM-yyyy").toUpperCase());
         isoCertificationDTO.setSign(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(signatureRepository.findById(isoTrainingCertification.getUser().getUsername()).get().getBase64signature())));
 

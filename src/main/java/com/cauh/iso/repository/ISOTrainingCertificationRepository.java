@@ -8,7 +8,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.Optional;
 
-public interface ISOTrainingCertificationRepository extends PagingAndSortingRepository<ISOTrainingCertification, String>, QuerydslPredicateExecutor<ISOTrainingCertification> {
+public interface ISOTrainingCertificationRepository extends PagingAndSortingRepository<ISOTrainingCertification, Integer>, QuerydslPredicateExecutor<ISOTrainingCertification> {
     Integer countByIso(ISO iso);
 
     Optional<ISOTrainingCertification> findByIsoAndUser(ISO iso, Account user);

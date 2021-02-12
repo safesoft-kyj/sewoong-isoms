@@ -193,8 +193,8 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
 
         if(!StringUtils.isEmpty(docId)) {
             log.info("@DocId : {}", docId);
-            if(!docId.toUpperCase().startsWith("SOP-")) {
-                docId = "SOP-" + docId;
+            if(!docId.toUpperCase().startsWith("CAUH-")) {
+                docId = "CAUH-" + docId;
             }
             builder.and(qDocumentVersion.document.docId.like(docId.toUpperCase() + "%"));
         }

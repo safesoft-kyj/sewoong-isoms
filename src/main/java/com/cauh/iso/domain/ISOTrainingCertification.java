@@ -14,6 +14,7 @@ import java.io.Serializable;
 @Data
 @Entity
 @Table(name = "s_iso_training_certification", uniqueConstraints = {@UniqueConstraint(columnNames = {"id", "user_id"})})
+@SequenceGenerator(name = "ISO_TRAINING_CERT_SEQ_GENERATOR", sequenceName = "SEQ_ISO_TRAINING_CERT", initialValue = 1, allocationSize = 1)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,9 +22,14 @@ public class ISOTrainingCertification extends BaseEntity implements Serializable
 
     private static final long serialVersionUID = 1329010014950482889L;
 
-    //수료증 채번 ( 분류 + 년도 + 숫자 )
+
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ISO_TRAINING_CERT_SEQ_GENERATOR")
+    private Integer id;
+
+    //수료증 채번 ( 분류 + 년도 + 숫자 )
+    @Column(name = "cert_no", columnDefinition = "nvarchar(50)")
+    private String certNo;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
