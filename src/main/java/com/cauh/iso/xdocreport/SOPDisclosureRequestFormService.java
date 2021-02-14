@@ -29,7 +29,8 @@ public class SOPDisclosureRequestFormService {
 
     public void generateReport(SOPDisclosureRequestForm form, List<ApprovalLine> approvalLines, OutputStream os) {
         try {
-            InputStream in = SOPDisclosureRequestFormService.class.getResourceAsStream("SOP_Disclosure_Request_Form_01.docx");
+            //TODO :: 작업 필요.
+            InputStream in = SOPDisclosureRequestFormService.class.getResourceAsStream("SOP_Training_Log_Disclosure_Request_Form_01.docx");
 
             log.info("@SOP Disclosure Request Form pdf 생성");
             List<ApprovalLineDTO> approvalLineDTOList = approvalLines.stream()

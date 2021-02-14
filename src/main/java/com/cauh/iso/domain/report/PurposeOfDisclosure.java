@@ -1,8 +1,8 @@
 package com.cauh.iso.domain.report;
 
 public enum PurposeOfDisclosure {
-    INSPECTION("Inspection"),
     AUDIT("Audit"),
+    INSPECTION("Inspection"),
     ASSESSMENT("Assessment/Evaluation Visit"),
     OTHER("Other");
 

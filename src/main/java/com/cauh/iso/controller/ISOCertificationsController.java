@@ -55,7 +55,7 @@ public class ISOCertificationsController {
     private final DocumentViewer documentViewer;
 
     @GetMapping("/certifications")
-    public String CertList(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable, @CurrentUser Account user, Model model) {
+    public String CertList(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable, Model model) {
         QISOCertification qISOCertification = QISOCertification.iSOCertification;
 
         //인증현황 리스트

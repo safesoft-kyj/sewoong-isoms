@@ -58,13 +58,7 @@ public class UserAgreementController {
     private final NonDisclosureAgreementService nonDisclosureAgreementService;
     private final ConfidentialityPledgeService confidentialityPledgeService;
     private final ExternalCustomerRepository externalCustomerRepository;
-    private final UserRepository userRepository;
     private final SignatureRepository signatureRepository;
-    private final DocumentViewer documentViewer;
-    private final CategoryService categoryService;
-
-    @Value("${file.binder-dir}")
-    private String bindPath;
 
     @GetMapping("/please-enter-your-access-code")
     public String auth() {
@@ -242,7 +236,7 @@ public class UserAgreementController {
         user.setNonDisclosureAgreement(true);
         updateAuthentication(user);
         attributes.addFlashAttribute("message", "동의 처리가 완료 되었습니다.");
-        return "redirect:/external/sop/effective";
+        return "redirect:/external/notice";
     }
 
     //Authentication Update
@@ -267,124 +261,5 @@ public class UserAgreementController {
             SecurityContext context = SecurityContextHolder.getContext();
             context.setAuthentication(authentication);
         }
-    }
-
-    @GetMapping({
-            "/external/sop/{status}",
-            "/external/sop/{status}/{categoryId}",
-            "/external/sop/{status}/{categoryId}/{sopId}"
-    })
-    public String sopList(@PathVariable("status") String stringStatus,
-                          @PathVariable(value = "categoryId", required = false) String categoryId,
-                          @PathVariable(value = "sopId", required = false) String sopId,
-                          @CurrentUser Account user,
-                          Model model) {
-        log.info("@externalCustomerId : {}", user.getExternalCustomerId());
-        Optional<ExternalCustomer> optionalExternalCustomer = externalCustomerRepository.findById(user.getExternalCustomerId());
-        DocumentStatus status = DocumentStatus.valueOf(stringStatus.toUpperCase());
-        if(optionalExternalCustomer.isPresent()) {
-            ExternalCustomer externalCustomer = optionalExternalCustomer.get();
-            List<DisclosureSOP> disclosureSOPList = externalCustomerRepository.getDocumentList(externalCustomer.getSopDisclosureRequestForm().getId(), status, categoryId, sopId);
-
-            log.info("@SOP DB 조회 데이터 수 : {}", disclosureSOPList.size());
-            /**
-             * Category 정보 설정
-             */
-            if(!ObjectUtils.isEmpty(disclosureSOPList) && StringUtils.isEmpty(categoryId)) {
-                model.addAttribute("CategoryList", StreamSupport.stream(disclosureSOPList.spliterator(), false)
-                        .map(v -> v.getDocumentVersion().getDocument().getType() == DocumentType.SOP ? v.getDocument().getCategory() : v.getSopDocument().getCategory())
-                        .distinct()
-                        .sorted(Comparator.comparing(Category::getId))
-                        .collect(Collectors.toList()));
-            }
-
-            /**
-             * 최초 status 로만 필터가 된 경우
-             */
-            if(StringUtils.isEmpty(categoryId) && StringUtils.isEmpty(sopId)) {
-                log.info("@Category/SOP 선택된 정보 없음");
-                disclosureSOPList = disclosureSOPList.stream().map(s -> new DisclosureSOP(null, null,
-                        s.getDocument().getType() == DocumentType.SOP ? s.getDocument() : s.getSopDocument()))
-                        .distinct()
-                        .sorted(Comparator.comparing(c -> c.getSopDocument().getDocId()))
-                        .collect(Collectors.toList());
-            }
-
-            if(!StringUtils.isEmpty(categoryId) && StringUtils.isEmpty(sopId)) {/**category 가 선택된 경우*/
-                log.info("@Category Id 선택됨 : {}", categoryId);
-                disclosureSOPList = disclosureSOPList.stream()
-                        .filter(s -> s.getDocument().getType() == DocumentType.SOP ?
-                            s.getDocument().getCategory().getId().equals(categoryId) : s.getSopDocument().getCategory().getId().equals(categoryId))
-                        .map(s -> new DisclosureSOP(null, null, s.getDocument().getType() == DocumentType.SOP ?
-                                s.getDocument() : s.getSopDocument()))
-                        .distinct()
-                        .sorted(Comparator.comparing(s -> s.getSopDocument().getDocId()))
-                        .collect(Collectors.toList());
-            } else if(!StringUtils.isEmpty(sopId)) {/** SOP 가 선택된 경우 */
-                log.info("@SOP 선택 됨 : {}", sopId);
-                disclosureSOPList = disclosureSOPList.stream()
-//                        .filter(s -> s.getDocument().getType() == DocumentType.SOP ?
-//                                s.getDocument().getCategory().getId().equals(categoryId) : s.getSopDocument().getCategory().getId().equals(categoryId))
-//                        .map(s -> new DisclosureSOP(s.getDocumentVersion(), s.getDocument(), s.getDocument().getType() == DocumentType.SOP ?
-//                                s.getDocument() : s.getSopDocument()))
-//                        .filter(s -> s.getSopDocument().getId().equals(sopId))
-//                        .distinct()
-                        .sorted(Comparator.comparing(s -> s.getDocument().getDocId()))
-                        .collect(Collectors.toList());
-            }
-
-            log.debug("sopList = {}", disclosureSOPList);
-            model.addAttribute("sopList", disclosureSOPList);
-            model.addAttribute("categoryId", categoryId);
-
-            if (!StringUtils.isEmpty(categoryId)) {
-                model.addAttribute("category", categoryService.findById(categoryId));
-            }
-
-            model.addAttribute("sopId", sopId);
-            model.addAttribute("status", status);
-
-            return "sop/external-list";
-        } else {
-            throw new RuntimeException("현재 사용자는 Access 권한이 없습니다.");
-        }
-    }
-
-    @GetMapping("/external/digital-binder")
-    public String digitalBinder(@CurrentUser Account user, Model model) {
-        if(!ObjectUtils.isEmpty(user.getDisclosureUsers())) {
-            QAccount qUser = QAccount.account;
-            BooleanBuilder builder = new BooleanBuilder();
-            builder.and(qUser.username.in(user.getDisclosureUsers()));
-            model.addAttribute("users", userRepository.findAll(builder));
-        }
-        return "externalCustomer/digital-binder";
-    }
-
-    @GetMapping("/ajax/digital-binder/{username}")
-    public void digitalBinder(@PathVariable("username") String username, HttpServletResponse response) throws Exception {
-        Optional<Signature> optionalSignature = signatureRepository.findById(username);
-        OutputStream os = response.getOutputStream();
-        if(optionalSignature.isPresent()) {
-            try {
-                Signature signature = optionalSignature.get();
-
-                Path fileStorageLocation = Paths.get(bindPath).toAbsolutePath().normalize();
-                Path filePath = fileStorageLocation.resolve(signature.getBinderFileName()).normalize();
-                Resource resource = new UrlResource(filePath.toUri());
-
-                ByteArrayOutputStream html = new ByteArrayOutputStream();
-                documentViewer.toHTML("pdf", resource.getInputStream(), html);
-                os.write(html.toByteArray());
-            } catch (Exception e) {
-                os.write("File Not Found.".getBytes());
-            }
-
-        } else {
-            os.write("File Not Found.".getBytes());
-        }
-
-        os.flush();
-        os.close();
     }
 }

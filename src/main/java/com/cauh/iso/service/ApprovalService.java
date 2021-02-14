@@ -402,7 +402,10 @@ public class ApprovalService {
                 SOPDisclosureRequestForm savedSopDisclosureRequestForm = sopDisclosureRequestFormRepository.save(sopDisclosureRequestForm);
                 List<String> sopList = Arrays.asList(sopDisclosureRequestForm.getSopIds());
 
-                List<String> rfList = Arrays.asList(sopDisclosureRequestForm.getRfIds());
+                //RF가 없을경우 null삽입
+                List<String> rfList = ObjectUtils.isEmpty(sopDisclosureRequestForm.getRfIds())?null:Arrays.asList(sopDisclosureRequestForm.getRfIds());
+
+
                 //수정인 경우
                 if(ObjectUtils.isEmpty(sopDisclosureRequestForm.getId()) == false) {
                     if(ObjectUtils.isEmpty(sopDisclosureRequestForm.getRequestedDocumentSOPs()) == false) {

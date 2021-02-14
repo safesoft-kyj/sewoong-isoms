@@ -7,7 +7,7 @@
                 <@spring.showErrors "<br/>" "color:red;"/></td>
             <td><@spring.formInput "approval.sopDisclosureRequestForm.externalCustomers[${c?index}].email" "class='form-control'"/>
                 <@spring.showErrors "<br/>" "color:red;"/></td>
-            <td><@spring.formInput "approval.sopDisclosureRequestForm.externalCustomers[${c?index}].jobTitle" "class='form-control'"/>
+            <td><@spring.formInput "approval.sopDisclosureRequestForm.externalCustomers[${c?index}].role" "class='form-control'"/>
                 <@spring.showErrors "<br/>" "color:red;"/></td>
             <td>
                 <button type="button" class="btn btn-default" name="removeExternalCustomer"<#if c?index == 0> disabled="disabled"</#if> data-id="${c?index}"><i class="fa fa-times"></i></button>
@@ -21,7 +21,7 @@
             <@spring.showErrors "<br/>" "color:red;"/></td>
         <td><@spring.formInput "approval.sopDisclosureRequestForm.externalCustomers[0].email" "class='form-control'"/>
             <@spring.showErrors "<br/>" "color:red;"/></td>
-        <td><@spring.formInput "approval.sopDisclosureRequestForm.externalCustomers[0].jobTitle" "class='form-control'"/>
+        <td><@spring.formInput "approval.sopDisclosureRequestForm.externalCustomers[0].role" "class='form-control'"/>
             <@spring.showErrors "<br/>" "color:red;"/></td>
         <td><button type="button" class="btn btn-default" name="removeExternalCustomer" disabled="disabled" data-id="0"><i class="fa fa-times"></i></button></td>
     </tr>

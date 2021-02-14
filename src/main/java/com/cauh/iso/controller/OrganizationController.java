@@ -18,10 +18,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -73,10 +70,11 @@ public class OrganizationController {
 
         for(Account u : accounts) {
             log.trace(" -- user : {}", u);
-            deptCode = ObjectUtils.isEmpty(u.getDepartment().getParentDepartment()) ? mainCode : Integer.toString(u.getDepartment().getParentDepartment().getId());
-            teamCode = Integer.toString(u.getDepartment().getId());
-            deptName = ObjectUtils.isEmpty(u.getDepartment().getParentDepartment()) ? mainName : u.getDepartment().getParentDepartment().getName();
-            teamName = u.getDepartment().getName();
+            deptCode = ObjectUtils.isEmpty(u.getDepartment().getParentDepartment()) ? u.getDepartment().getId().toString() : u.getDepartment().getParentDepartment().getId().toString();
+            deptName = ObjectUtils.isEmpty(u.getDepartment().getParentDepartment()) ? u.getDepartment().getName() : u.getDepartment().getParentDepartment().getName();
+            teamCode = ObjectUtils.isEmpty(u.getDepartment().getParentDepartment()) ? null : u.getDepartment().getId().toString();
+            teamName = ObjectUtils.isEmpty(u.getDepartment().getParentDepartment()) ? null : u.getDepartment().getName();
+
             korName = u.getName();
             username = u.getUsername();
 //            lev = Integer.parseInt(String.valueOf(u.get("lev")));
@@ -85,11 +83,12 @@ public class OrganizationController {
             //User의 소속이 부서인경우
             JsTreeNode deptNode = new JsTreeNode(deptCode, deptName, deptCode, deptName, teamCode, teamName, "", u.getUsername(), JsTreeIcon.dept);
             JsTreeNode teamNode = new JsTreeNode(teamCode, teamName, deptCode, deptName, teamCode, teamName, "", u.getUsername(), JsTreeIcon.team);
-            JsTreeNode userNode = new JsTreeNode(u.getEmpNo(), StringUtils.isEmpty(u.getPosition()) ? u.getName() : u.getName() + "(" + u.getPosition() + ")", "DEPT_CODE", u.getDeptName(), "TEAM_CODE",
-                    u.getTeamName(), u.getEmpNo(), u.getUsername(),
-                    JsTreeIcon.user_male);
 
-            if(ObjectUtils.isEmpty(u.getDepartment())) {
+            //부서정보보다 앞에 가있기 위한 code값 세팅
+            JsTreeNode userNode = new JsTreeNode("0", StringUtils.isEmpty(u.getPosition()) ? u.getName() : u.getName() + "(" + u.getPosition() + ")",
+                                                deptCode, u.getDeptName(), teamCode, u.getTeamName(), u.getEmpNo(), u.getUsername(), JsTreeIcon.user_male);
+
+             if(ObjectUtils.isEmpty(u.getDepartment())) {
                 log.trace("CAUH - 사용자 추가 : {}", u.getName());
                 rootNode.getChildren().add(userNode);
             } else if(rootNode.getChildren().contains(deptNode)) {//부서 존재
@@ -110,7 +109,7 @@ public class OrganizationController {
                         findDeptNode.getChildren().add(teamNode);
                     }
                 }
-            } else {
+             } else{
                 log.trace("신규 Dept/Team 추가, deptCode : {} add user : {}", deptCode, korName);
                 if(ObjectUtils.isEmpty(u.getDepartment().getParentDepartment())) {
                     log.trace("-> 부서만 존재하는 사용자 : {}", korName);
@@ -123,6 +122,7 @@ public class OrganizationController {
                 rootNode.getChildren().add(deptNode);
             }
         }
+
         return jsTreeNodes;
     }
 }

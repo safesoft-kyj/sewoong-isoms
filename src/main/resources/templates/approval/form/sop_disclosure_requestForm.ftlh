@@ -118,7 +118,7 @@
         </td>
     </tr>
     <tr>
-        <td class="bg-gray-light">External Customer Name, Email, Job Title</td>
+        <td class="bg-gray-light">External Customer Name, Email, Role</td>
         <td>
             <table class="table table-bordered">
                 <thead>
@@ -126,7 +126,7 @@
                     <th>No.</th>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>Job Title</th>
+                    <th>Role</th>
                     <th>#</th>
                 </tr>
                 </thead>
@@ -269,7 +269,7 @@
 
             <hr/>
             <div>
-                <h6>[Digital Binder]</h6>
+                <h6>[Training Log]</h6>
                 <div>
                     <@spring.formMultiSelect "approval.sopDisclosureRequestForm.userIds" userMap "class='form-control multi-select'"/>
                 </div>

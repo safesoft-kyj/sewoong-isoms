@@ -28,7 +28,6 @@
 
     <!--Tabs Content-->
     <div class="tab-content">
-
         <div class="tab-pane fade active in">
             <#if isoTrainingLog.content?has_content>
             <div class="text-right">
@@ -60,34 +59,6 @@
             </table>
         </div>
 
-<#--        <#list user.jobDescriptions as jd>-->
-<#--        <div id="jd-tab-${jd?index}" class="tab-pane<#if jd?is_first> fade active in</#if>">-->
-<#--            <div class="text-right">-->
-<#--                <a class="btn btn-primary" href="trainingLog/download"><i class="fa fa-file-pdf-o"></i> Training Log(${jd.jobDescription.shortName})</a>-->
-<#--            </div>-->
-<#--            <hr/>-->
-<#--            <h4 class="text-center">${user.engName?default(user.korName)}</h4>-->
-<#--            <hr/>-->
-<#--            <table class="table table-bordered">-->
-<#--                <tbody>-->
-<#--                <tr>-->
-<#--                    <th class="col-xs-2 bg-gray-light">Job Title:</th>-->
-<#--                    <td class="col-xs-4 text-primary">${jd.jobDescription.title}(${jd.jobDescription.shortName})</td>-->
-<#--                    <th class="col-xs-2 bg-gray-light">Start Date in Dt&SanoMedics:</th>-->
-<#--                    <td class="col-xs-4 text-primary">${user.inDate?string('dd-MMM-yyyy')}</td>-->
-<#--                </tr>-->
-<#--                <tr>-->
-<#--                    <th class="bg-gray-light">Department/Team:</th>-->
-<#--                    <td class="text-primary">-->
-<#--                        <#if user.deptName?has_content>${user.deptName}/</#if><#if user.teamName?has_content>${user.teamName}</#if>-->
-<#--                    </td>-->
-<#--                    <th class="bg-gray-light">Employee No.:</th>-->
-<#--                    <td class="text-primary">${user.empNo}</td>-->
-<#--                </tr>-->
-<#--                </tbody>-->
-<#--            </table>-->
-<#--        </div>-->
-<#--        </#list>-->
         <div class="pad-btm">
             <p class="pad-no mar-no text-muted"><i class="fa fa-genderless"></i> This training log should be completed by the employee; training hour can be included with specific mandatory training following the regulation.</p>
             <p class="pad-no mar-no text-muted"><i class="fa fa-genderless"></i> Training course: MFDS required training, Regulation, Guideline, On the Job Training, Various Type of Visit, External training, On-line training etc.</p>

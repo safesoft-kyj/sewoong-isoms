@@ -124,8 +124,6 @@ public class NoticeController {
         Notice savedNotice = noticeService.save(notice, uploadingFiles);
         sessionStatus.setComplete();
 
-
-
         if(ObjectUtils.isEmpty(noticeId)) {
             attributes.addFlashAttribute("message", "공지사항이 저장 되었습니다.");
             return "redirect:/notice/" + savedNotice.getId()  + (StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString());

@@ -61,8 +61,8 @@ public class AgreementReportService {
             InputStream in = TrainingLogReportService.class.getResourceAsStream("SOP_Agreement_01.docx");
 
             StringBuilder jobTitleAndCompany = new StringBuilder();
-            if (!StringUtils.isEmpty(agreement.getExternalCustomer().getJobTitle())) {
-                jobTitleAndCompany.append(agreement.getExternalCustomer().getJobTitle());
+            if (!StringUtils.isEmpty(agreement.getExternalCustomer().getRole())) {
+                jobTitleAndCompany.append(agreement.getExternalCustomer().getRole());
             }
             if (jobTitleAndCompany.length() != 0 && StringUtils.isEmpty(agreement.getExternalCustomer().getSopDisclosureRequestForm().getCompanyNameOrInstituteName()) == false) {
                 jobTitleAndCompany.append("/").append(agreement.getExternalCustomer().getSopDisclosureRequestForm().getCompanyNameOrInstituteName());

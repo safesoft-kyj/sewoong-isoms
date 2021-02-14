@@ -19,16 +19,23 @@
                 <%--                                        <span class="pull-right dropdown-toggle">--%>
                 <%--                                            <i class="dropdown-caret"></i>--%>
                 <%--                                        </span>--%>
-            <sec:authentication property="principal.orgDepart" var="deptName"/>
-            <sec:authentication property="principal.orgTeam" var="teamName"/>
+            <sec:authentication property="principal.deptName" var="deptName"/>
+            <sec:authentication property="principal.teamName" var="teamName"/>
+            <sec:authentication property="principal.role" var="role"/>
             <p class="mnp-name"><sec:authentication property="principal.name"/></p>
-                <p class="text-sm">
-                    (${teamName})
-                </p>
+            <p class="text-sm">
+                (${teamName})
+            </p>
+
+            <c:if test="${not empty role}"><p><span class="label label-primary">${role}</span></p></c:if>
+
             <sec:authentication property="principal.disclosureStartDate" var="disclosureStartDate"/>
             <sec:authentication property="principal.disclosureEndDate" var="disclosureEndDate"/>
-                    <fmt:setLocale value="en_US"/>
-            <span class="mnp-desc"><i class="fa fa-unlock-alt"></i> <fmt:formatDate value="${disclosureStartDate}" pattern="dd/MMM/yyy" timeZone=""/>~<fmt:formatDate value="${disclosureEndDate}" pattern="dd/MMM/yyy"/></span>
+            <fmt:setLocale value="en_US"/>
+            <span class="mnp-desc"><i class="fa fa-unlock-alt"></i> <fmt:formatDate value="${disclosureStartDate}"
+                                                                                    pattern="dd/MMM/yyy"
+                                                                                    timeZone=""/>~<fmt:formatDate
+                    value="${disclosureEndDate}" pattern="dd/MMM/yyy"/></span>
             <hr/>
                 <%--            </a>--%>
         </div>

@@ -166,7 +166,7 @@
                                     // 'dblclick_toggle' : false,
                                     'data': response
                                 },
-                                'plugins': ['types'],
+                                'plugins': ['types', 'sort'],
                                 'types' : {
                                     'company' : {
                                         'icon' : 'pli-building icon-lg'
@@ -189,6 +189,9 @@
                                     'user_female' : {
                                         'icon' : 'pli-female icon-lg'
                                     }
+                                },
+                                'sort': function (a, b) {
+                                    return (parseInt(a) < parseInt(b))?1:-1;
                                 }
                             }).bind('select_node.jstree', function (event, data) {
                                 var jsTreeData = {};

@@ -36,8 +36,8 @@ public class NonDisclosureAgreementReportService {
 
             SOPDisclosureRequestForm sopDisclosureRequestForm = agreement.getExternalCustomer().getSopDisclosureRequestForm();
             StringBuilder jobTitleAndCompany = new StringBuilder();
-            if(!StringUtils.isEmpty(agreement.getExternalCustomer().getJobTitle())) {
-                jobTitleAndCompany.append(agreement.getExternalCustomer().getJobTitle());
+            if(!StringUtils.isEmpty(agreement.getExternalCustomer().getRole())) {
+                jobTitleAndCompany.append(agreement.getExternalCustomer().getRole());
             }
 
             if(jobTitleAndCompany.length() != 0 && StringUtils.isEmpty(sopDisclosureRequestForm.getCompanyNameOrInstituteName()) == false) {

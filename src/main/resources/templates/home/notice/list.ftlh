@@ -123,18 +123,21 @@
     <!--Data Table-->
     <!--===================================================-->
     <div class="panel-body">
-        <#if reviewCount?has_content && reviewCount gt 0>
-        <div class="alert alert-success">
-            <button class="close" data-dismiss="alert"><i class="pci-cross pci-circle"></i></button>
-            <strong><i class="pli-bell"></i> 전자결재</strong> 검토가 필요한 요청 <a href="/approval/box/reviewer/request" class="alert-link">${reviewCount}건</a> 있습니다.
-        </div>
-        </#if>
-        <#if approvalCount?has_content && approvalCount gt 0>
-        <div class="alert alert-info">
-            <button class="close" data-dismiss="alert"><i class="pci-cross pci-circle"></i></button>
-            <strong><i class="pli-bell"></i> 전자결재</strong> 승인이 필요한 요청 <a href="/approval/box/approver/request" class="alert-link">${approvalCount}건</a> 있습니다.
-        </div>
-        </#if>
+        <@security.authorize access="hasAnyAuthority('ADMIN', 'USER')">
+            <#if reviewCount?has_content && reviewCount gt 0>
+                <div class="alert alert-success">
+                    <button class="close" data-dismiss="alert"><i class="pci-cross pci-circle"></i></button>
+                    <strong><i class="pli-bell"></i> 전자결재</strong> 검토가 필요한 요청 <a href="/approval/box/reviewer/request" class="alert-link">${reviewCount}건</a> 있습니다.
+                </div>
+            </#if>
+            <#if approvalCount?has_content && approvalCount gt 0>
+                <div class="alert alert-info">
+                    <button class="close" data-dismiss="alert"><i class="pci-cross pci-circle"></i></button>
+                    <strong><i class="pli-bell"></i> 전자결재</strong> 승인이 필요한 요청 <a href="/approval/box/approver/request" class="alert-link">${approvalCount}건</a> 있습니다.
+                </div>
+            </#if>
+        </@security.authorize>
+
         <@security.authorize access="hasAnyAuthority('ADMIN')">
         <#if signUpRequestCount?has_content && signUpRequestCount gt 0>
             <div class="alert alert-purple">

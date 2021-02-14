@@ -2,6 +2,7 @@ package com.cauh.iso.controller;
 
 import com.cauh.common.entity.QAccount;
 import com.cauh.common.entity.Account;
+import com.cauh.common.entity.constant.UserStatus;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.annotation.CurrentUser;
 import com.cauh.common.security.authentication.GroupwareUserAuthService;
@@ -498,9 +499,12 @@ public class ApprovalController {
     private void sopDisclosureRequestForm(Approval approval, Account user, Model model) {
         QAccount qUser = QAccount.account;
         BooleanBuilder userBuilder = new BooleanBuilder();
-        userBuilder.and(qUser.empNo.isNotNull());
+
+        //        userBuilder.and(qUser.empNo.isNotNull());
         userBuilder.and(qUser.training.eq(true));
         userBuilder.and(qUser.enabled.eq(true));
+        userBuilder.and(qUser.userStatus.eq(UserStatus.ACTIVE));
+
         Iterable<Account> users = userRepository.findAll(userBuilder, qUser.name.asc());
         model.addAttribute("userMap", StreamSupport.stream(users.spliterator(), false)
 //                .filter(u -> u.getId() != user.getId())
@@ -546,9 +550,9 @@ public class ApprovalController {
         model.addAttribute("documentAccessMap", documentAccessMap);
 
         Map<String, String> purposeOfDisclosureMap = new LinkedHashMap<>();
-        purposeOfDisclosureMap.put(PurposeOfDisclosure.INSPECTION.name(), PurposeOfDisclosure.INSPECTION.getLabel());
         purposeOfDisclosureMap.put(PurposeOfDisclosure.AUDIT.name(), PurposeOfDisclosure.AUDIT.getLabel());
-        purposeOfDisclosureMap.put(PurposeOfDisclosure.ASSESSMENT.name(), PurposeOfDisclosure.ASSESSMENT.getLabel());
+        purposeOfDisclosureMap.put(PurposeOfDisclosure.INSPECTION.name(), PurposeOfDisclosure.INSPECTION.getLabel());
+//        purposeOfDisclosureMap.put(PurposeOfDisclosure.ASSESSMENT.name(), PurposeOfDisclosure.ASSESSMENT.getLabel());
         purposeOfDisclosureMap.put(PurposeOfDisclosure.OTHER.name(), PurposeOfDisclosure.OTHER.getLabel());
 
         model.addAttribute("purposeOfDisclosureMap", purposeOfDisclosureMap);

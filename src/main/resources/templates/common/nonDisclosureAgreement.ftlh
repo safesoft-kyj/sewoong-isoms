@@ -68,7 +68,7 @@
             <hr/>
             <div>&nbsp;</div>
             <div class="mar-top mar-btm">This NON-DISCLOSURE AGREEMENT FOR SOP is to assure the protection and preservation of the confidential and/or proprietary nature of information to be disclosed.</div>
-            <div class="mar-btm">The Discloser (KCSG) intends to disclose proprietary information and data <span class="text-bold"><’The Confidential Information’></span> relating to KCSG Standard Operating Procedures (SOP) to the Recipient for the purpose as below (<span style="font-style: italic">Please tick where applicable</span>).</div>
+            <div class="mar-btm">The Disclosure (CAUH) intends to disclose proprietary information and data <span class="text-bold"><’The Confidential Information’></span> relating to CAUH Standard Operating Procedures (SOP) to the Recipient for the purpose as below (<span style="font-style: italic">Please tick where applicable</span>).</div>
 
             <div class="mar-top mar-btm">
                 <label class="checkbox-inline">
@@ -119,7 +119,7 @@
                     <hr style="margin-top:5px;margin-bottom: 3px"/><div class="text-xs">Title/Company</div>
                 </div>
                 <div class="col-xs-3 text-center">
-                    <#if user.signature?has_content>
+                    <#if user.signature == true>
                         <div id="sign" style="height:40px;">
                             <img src="${signatureData!''}" width="50px" >
                         </div>

@@ -84,7 +84,7 @@
                 </#list>
             </#if>
             <hr/>
-            <h6>[Digital Binder]</h6>
+            <h6>[Training Log]</h6>
             <#if approvalView.sopDisclosureRequestForm.disclosureDigitalBinders?has_content>
                 <#list approvalView.sopDisclosureRequestForm.disclosureDigitalBinders as db>
                     <span class="label label-default">${db.user.engName?default(db.user.name)}</span>

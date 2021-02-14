@@ -65,6 +65,7 @@ public class ExternalCustomerUserServiceImpl implements ExternalCustomUserServic
                 user.setUserType(UserType.AUDITOR);
                 user.setDeptName(sopDisclosureRequestForm.getCompanyNameOrInstituteName());
                 user.setTeamName(sopDisclosureRequestForm.getCompanyNameOrInstituteName());
+                user.setRole(externalCustomer.getRole()); // 2021-02-14 추가
                 user.setEmail(email);
                 user.setAccessCode(randomNo);
                 user.setAgreementCollectUse(optionalAgreementPersonalInformation.isPresent());

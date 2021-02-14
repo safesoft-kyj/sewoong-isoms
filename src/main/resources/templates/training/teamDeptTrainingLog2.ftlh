@@ -5,7 +5,7 @@
     <title>ISO Management System > Training > Employee Training</title>
     <script>
         $(document).ready(function() {
-            location.href
+
             $("#exportBtn").click(function() {
                $("#f").attr("action",window.location.pathname).attr("method", "post").submit();
             });

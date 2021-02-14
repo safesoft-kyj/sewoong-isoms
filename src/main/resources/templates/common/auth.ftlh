@@ -16,7 +16,7 @@
                       dataType: "json"
                   }).done(function(response) {
                      if(response.result == 'Y') {
-                         location.replace("/external/sop/effective");
+                         location.replace("/external/notice");
                      } else {
                          alert('Access code가 일치 하지 않습니다.');
                          $("#accessCode").val("").focus();

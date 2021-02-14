@@ -25,13 +25,13 @@
                             <table width="100%" cellpadding="0" cellspacing="0">
                                 <tr>
                                     <td class="content-block aligncenter">
-                                        <table class="invoice">
+                                        <table class="invoice" style="margin: 25px auto; text-align: left; width: 100%;>
                                             <!--                                            <tr>-->
                                             <!--                                                <td>[e-SOP] SOP Off-line Training 등록 요청</td>-->
                                             <!--                                            </tr>-->
                                             <tr>
                                                 <td>
-                                                    <table class="invoice-items" cellpadding="0" cellspacing="0">
+                                                    <table class="invoice-items" style="width:100%;" cellpadding="0" cellspacing="0">
                                                         <tr>
                                                             <td>Training Date</td>
                                                             <td class="alignleft">${offlineTraining.trainingDate?string('yyyy-MM-dd')}</td>

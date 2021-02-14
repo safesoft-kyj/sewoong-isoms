@@ -14,9 +14,6 @@
                 maxWidth:7
             });
 
-            <#if user.signature?has_content>
-            </#if>
-
             if($("#base64signature").val()) {
                 signaturePad.fromDataURL($("#base64signature").val());
             }

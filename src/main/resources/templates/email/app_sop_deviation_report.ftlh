@@ -1,10 +1,12 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Billing e.g. invoices and receipts</title>
-    <link href="http://${domain}/static/plugins/transactional-email-templates/templates/styles.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="http://${domain}/static/plugins/transactional-email-templates/templates/styles.css" media="all"
+          rel="stylesheet" type="text/css"/>
 </head>
 
 <body itemscope itemtype="http://schema.org/EmailMessage">
@@ -12,45 +14,61 @@
 <table class="body-wrap" style="background-color: #ecf0f5; width: 100%;">
     <tr>
         <td></td>
-        <td class="container" style="display: block !important; max-width: 800px !important; margin: 0 auto !important; clear: both !important;">
+        <td class="container"
+            style="display: block !important; max-width: 800px !important; margin: 0 auto !important; clear: both !important;">
             <div class="content" style="max-width: 800px; margin: 0 auto; display: block; padding: 20px;">
-                <table class="main" width="100%" cellpadding="0" cellspacing="0" style="background-color: #fff; border-bottom: 2px solid #d7d7d7;">
+                <table class="main" width="100%" cellpadding="0" cellspacing="0"
+                       style="background-color: #fff; border-bottom: 2px solid #d7d7d7;">
                     <tr>
-                        <td class="alert alert-good" style="vertical-align: top; font-size: 16px; color: #fff; font-weight: 500; padding: 20px; text-align: center; background-color: #8BC34A;">
+                        <td class="alert alert-good"
+                            style="vertical-align: top; font-size: 16px; color: #fff; font-weight: 500; padding: 20px; text-align: center; background-color: #8BC34A;">
                             <strong>SOP Deviation Report 에 대한 ${lineType} 요청이 있습니다.</strong>
                         </td>
                     </tr>
                     <tr>
-                        <td class="content-wrap aligncenter" style="vertical-align: top; padding: 0 0 20px; text-align: center;">
+                        <td class="content-wrap aligncenter"
+                            style="vertical-align: top; padding: 0 0 20px; text-align: center;">
                             <table width="100%" cellpadding="0" cellspacing="0">
                                 <tr>
-                                    <td class="content-block aligncenter" style="">
-                                        <table class="invoice">
+                                    <td class="content-block aligncenter" style="padding: 0 0 20px; text-align: center;">
+                                        <table class="invoice"
+                                               style="margin: 25px auto; text-align: left; width: 100%;">
                                             <!--                                            <tr>-->
                                             <!--                                                <td>SOP Deviation Report 에 대한 승인(or 검토) 요청이 있습니다.</td>-->
                                             <!--                                            </tr>-->
                                             <tr>
                                                 <td>
                                                     <!-- 1 SOP Deviation Report -->
-                                                    <table class="invoice-items" cellpadding="0" cellspacing="0">
+                                                    <table class="invoice-items"
+                                                           style="margin: 25px auto; text-align: left; width: 100%;"
+                                                           cellpadding="0" cellspacing="0">
                                                         <tr>
-                                                            <td>Project No.</td>
-                                                            <td class="alignleft"><#if form.projectNo?has_content>${form.projectNo}</#if></td>
+                                                            <td style="padding: 5px 0;">Project No.</td>
+                                                            <td class="alignleft"
+                                                                style="padding: 5px 0; text-align: left;"><#if form.projectNo?has_content>${form.projectNo}</#if></td>
                                                         </tr>
                                                         <tr>
-                                                            <td>Deviated SOP</td>
-                                                            <td class="alignleft">${form.deviatedSOPDocument.document.title} v${form.deviatedSOPDocument.version}</td>
+                                                            <td style="padding: 5px 0;">Deviated SOP</td>
+                                                            <td class="alignleft"
+                                                                style="padding: 5px 0; text-align: left;">${form.deviatedSOPDocument.document.title}
+                                                                v${form.deviatedSOPDocument.version}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>Confirmation Date of SOP<br/>Training Deviation</td>
-                                                            <td class="alignleft"><#if form.confirmationDate?has_content>${form.dateOfOccurrence?string('dd-MMM-yyyy')?upper_case}</#if></td>
+                                                            <td style="padding: 5px 0;">Confirmation Date of SOP<br/>Training
+                                                                Deviation
+                                                            </td>
+                                                            <td class="alignleft"
+                                                                style="padding: 5px 0; text-align: left;"><#if form.confirmationDate?has_content>${form.dateOfOccurrence?string('dd-MMM-yyyy')?upper_case}</#if></td>
                                                         </tr>
                                                     </table>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td class="content-block aligncenter">
-                                                    <a href="http://${domain}" target="_blank" style="color: #348eda; text-decoration: underline;">CAUH ISO-MS 바로가기</a>
+                                                <td class="content-block aligncenter"
+                                                    style="padding: 0 0 20px; text-align: center">
+                                                    <a href="http://${domain}" target="_blank"
+                                                       style="color: #348eda; text-decoration: underline;">CAUH ISO-MS
+                                                        바로가기</a>
                                                 </td>
                                             </tr>
                                         </table>
@@ -69,11 +87,11 @@
                                 </small></td>
                         </tr>
                     </table>
-                </div></div>
+                </div>
+            </div>
         </td>
         <td></td>
     </tr>
 </table>
-
 </body>
 </html>
