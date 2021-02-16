@@ -14,16 +14,16 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "s_disclosure_digital_binder")
+@Table(name = "s_disclosure_sop_training_log")
 @Slf4j
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
-@SequenceGenerator(name = "SOP_DISCLOSURE_DB_GENERATOR", sequenceName = "SEQ_DISCLOSURE_DB", initialValue = 1, allocationSize = 1)
-public class DisclosureDigitalBinder extends BaseEntity implements Serializable {
+@SequenceGenerator(name = "SOP_DISCLOSURE_TRAINING_LOG_GENERATOR", sequenceName = "SEQ_SOP_DISCLOSURE_TRAINING_LOG", initialValue = 1, allocationSize = 1)
+public class DisclosureSOPTrainingLog extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = -6407142975311925813L;
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SOP_DISCLOSURE_DB_GENERATOR")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SOP_DISCLOSURE_TRAINING_LOG_GENERATOR")
     private Integer id;
 
     @ManyToOne
@@ -35,8 +35,8 @@ public class DisclosureDigitalBinder extends BaseEntity implements Serializable 
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private Account user;
 
-    public DisclosureDigitalBinder(SOPDisclosureRequestForm sopDisclosureRequestForm, DisclosureDigitalBinder disclosureDigitalBinder) {
+    public DisclosureSOPTrainingLog(SOPDisclosureRequestForm sopDisclosureRequestForm, DisclosureSOPTrainingLog disclosureSOPTrainingLog) {
         this.sopDisclosureRequestForm = sopDisclosureRequestForm;
-        this.user = disclosureDigitalBinder.getUser();
+        this.user = disclosureSOPTrainingLog.getUser();
     }
 }

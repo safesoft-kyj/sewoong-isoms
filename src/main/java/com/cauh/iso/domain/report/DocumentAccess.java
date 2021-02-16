@@ -2,7 +2,7 @@ package com.cauh.iso.domain.report;
 
 public enum DocumentAccess {
     PDF("PDF"),
-    HARDCOPY("HARDCOPY"),
+//    HARDCOPY("HARDCOPY"),
     OTHER("Other");
 
     private String label;

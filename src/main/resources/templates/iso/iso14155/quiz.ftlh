@@ -15,6 +15,9 @@
             <@spring.formHiddenInput "quiz.quizQuestions[" + q?index + "].index"/>
             <@spring.formTextarea "quiz.quizQuestions[" + q?index + "].text" "class='form-control'"/>
             <@spring.showErrors "<br/>" "color:red;"/>
+            <div class="input-group-addon">
+                <button class="btn btn-warning btn-xs" type="submit" name="removeQuiz" value="${q?index}"<#if q?index lt 1 || !q?is_last> disabled</#if>><i class="fa fa-times"></i> </button>
+            </div>
         </div>
         <div class="form-group">
             <#list q.answers as answer>

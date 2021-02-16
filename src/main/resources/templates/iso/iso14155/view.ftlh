@@ -169,7 +169,6 @@
                         <tr>
                             <th class="text-center">교육 참석</th>
                             <th class="text-center">참석자</th>
-                            <th class="text-center">수료증 여부</th>
                             <th class="text-center">교육 기간</th>
                         </tr>
                         </thead>
@@ -185,7 +184,6 @@
                                     -
                                 </#if>
                             </td>
-                            <td class="text-center"><span class="label label-${viewIso.certification?then('success', 'warning')}">${viewIso.certification?then('Y', 'N')}</span></td>
                             <td class="text-center text-info">${viewIso.trainingDate}</td>
                         </tr>
                         </tbody>

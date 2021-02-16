@@ -66,9 +66,8 @@ public class ISOValidator implements Validator {
                 errors.rejectValue("userIds", "message.iso.userIds.required", "교육 참석자를 등록해주세요");
             }
 
-            if (iso.isCertification() && StringUtils.isEmpty(iso.getCertificationHead())) {
-                iso.setCertificationHead("CAUH-ISO 14155 GCP");
-                //errors.rejectValue("certificationHead", "message.iso.certificationHead.required", "수료을 채번을 입력해주세요");
+            if (ObjectUtils.isEmpty(iso.getCorrectCount())) {
+                errors.rejectValue("correctCount", "message.iso.correctCount.required", "합격 문항 개수를 입력해주세요");
             }
         }
     }

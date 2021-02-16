@@ -1,26 +1,22 @@
 <#setting locale="en_US">
 <!-- 1 SOP Deviation Report -->
 <#if approval.sopDeviationReport?has_content>
-    <table class="invoice-items" cellpadding="0" cellspacing="0">
+    <table class="invoice-items" style="margin: 25px auto; text-align: left; width: 100%;" cellpadding="0" cellspacing="0">
         <tr>
-            <td>Project No.</td>
-            <td class="alignleft"><#if approval.sopDeviationReport.projectNo?has_content>${approval.sopDeviationReport.projectNo}</#if></td>
+            <td style="padding: 5px 0;">Project No.</td>
+            <td class="alignleft" style="padding: 5px 0; text-align: left;"><#if approval.sopDeviationReport.projectNo?has_content>${approval.sopDeviationReport.projectNo}</#if></td>
         </tr>
         <tr>
             <td>Deviated SOP</td>
-            <td class="alignleft">
+            <td class="alignleft" style="padding: 5px 0; text-align: left;">
                 <#if deviatedSOPDocument?has_content && deviatedSOPDocument.document?has_content>
                     ${deviatedSOPDocument.document.docId} & ${deviatedSOPDocument.document.title} v${deviatedSOPDocument.version}
                 </#if>
             </td>
         </tr>
         <tr>
-            <td>Date of Occurrence</td>
-            <td class="alignleft"><#if approval.sopDeviationReport.dateOfOccurrence?has_content>${approval.sopDeviationReport.dateOfOccurrence?string('dd-MMM-yyyy')?upper_case}</#if></td>
-        </tr>
-        <tr>
-            <td>Date of Discovery</td>
-            <td class="alignleft"><#if approval.sopDeviationReport.dateOfDiscovery?has_content>${approval.sopDeviationReport.dateOfDiscovery?string('dd-MMM-yyyy')?upper_case}</#if></td>
+            <td style="padding: 5px 0;">Confirmation Date of SOP<br>Training Deviation</td>
+            <td class="alignleft" style="padding: 5px 0; text-align: left;"><#if approval.sopDeviationReport.confirmationDate?has_content>${approval.sopDeviationReport.confirmationDate?string('dd-MMM-yyyy')?upper_case}</#if></td>
         </tr>
     </table>
     <#elseif approval.sopRfRequestForm?has_content>
@@ -88,22 +84,22 @@
         </tr>
     </table>
     <#elseif approval.sopDisclosureRequestForm?has_content>
-    <table class="invoice-items" cellpadding="0" cellspacing="0">
+    <table class="invoice-items" style="margin: 25px auto; text-align: left; width: 100%;" cellpadding="0" cellspacing="0">
+<#--        <tr>-->
+<#--            <td>Protocol Title/No.</td>-->
+<#--            <td class="alignleft">${approval.sopDisclosureRequestForm.protocolTitleOrNo?default('')}</td>-->
+<#--        </tr>-->
         <tr>
-            <td>Protocol Title/No.</td>
-            <td class="alignleft">${approval.sopDisclosureRequestForm.protocolTitleOrNo?default('')}</td>
+            <td style="padding: 5px 0;">Company Name or Institute Name</td>
+            <td class="alignleft" style="padding: 5px 0; text-align: left;">${approval.sopDisclosureRequestForm.companyNameOrInstituteName?default('')}</td>
         </tr>
         <tr>
-            <td>Company Name or Institute Name</td>
-            <td class="alignleft">${approval.sopDisclosureRequestForm.companyNameOrInstituteName?default('')}</td>
+            <td style="padding: 5px 0;">Request Date</td>
+            <td class="alignleft" style="padding: 5px 0; text-align: left;">${approval.sopDisclosureRequestForm.requestStartDate?string('dd-MMM-yyyy')?upper_case} ~ ${approval.sopDisclosureRequestForm.requestEndDate?string('dd-MMM-yyyy')?upper_case}</td>
         </tr>
         <tr>
-            <td>Request Date</td>
-            <td class="alignleft">${approval.sopDisclosureRequestForm.requestStartDate?string('dd-MMM-yyyy')?upper_case} ~ ${approval.sopDisclosureRequestForm.requestEndDate?string('dd-MMM-yyyy')?upper_case}</td>
-        </tr>
-        <tr>
-            <td>Purpose of Disclosure</td>
-            <td class="alignleft">${approval.sopDisclosureRequestForm.purposeOfDisclosure.label}
+            <td style="padding: 5px 0;">Purpose of Disclosure</td>
+            <td class="alignleft" style="padding: 5px 0; text-align: left;">${approval.sopDisclosureRequestForm.purposeOfDisclosure.label}
                 <#if approval.sopDisclosureRequestForm.purposeOfDisclosure == 'OTHER'>
                     : <u>${approval.sopDisclosureRequestForm.purposeOfDisclosureOther}</u>
                 </#if></td>

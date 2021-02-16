@@ -51,7 +51,7 @@
                             <th class="text-center">Company Name<br/>or Institute Name</th>
                             <th class="text-center">Customer Name</th>
                             <th class="text-center">Email</th>
-                            <th class="text-center">Job Title</th>
+                            <th class="text-center">Role</th>
                             <th class="text-center">Agreement Date</th>
                             <#--                    <th style="width:80px;">#Actions</th>-->
                         </tr>

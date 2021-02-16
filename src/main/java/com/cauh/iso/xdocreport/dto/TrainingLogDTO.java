@@ -11,5 +11,6 @@ public class TrainingLogDTO {
     private ByteArrayInputStream sign;
     private Account user;
     private List<TrainingLogReport> trainingLogs;
+    private String birthDate;
     private String printDate;
 }

@@ -29,7 +29,7 @@
                 <thead>
                 <tr>
                     <th class="text-center" colspan="5">SOP List</th>
-                    <th<#if jdSize gt 1> colspan="${jdSize}"</#if> class="text-center">Job Title</th>
+                    <th<#if jdSize gt 1> colspan="${jdSize}"</#if> class="text-center">Role</th>
                 </tr>
                 <tr>
                     <th class="text-center" style="width:60px;">No.</th>

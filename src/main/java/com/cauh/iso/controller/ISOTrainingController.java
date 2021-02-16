@@ -11,6 +11,8 @@ import com.cauh.iso.service.*;
 import com.cauh.iso.validator.ISOOfflineTrainingValidator;
 import com.cauh.iso.xdocreport.ISOTrainingCertificationService;
 import com.cauh.iso.utils.DateUtils;
+import com.cauh.iso.xdocreport.TrainingLogReportService;
+import com.cauh.iso.xdocreport.dto.TrainingLogReport;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.*;
@@ -59,7 +62,8 @@ public class ISOTrainingController {
     private final ISOOfflineTrainingAttendeeService isoOfflineTrainingAttendeeService;
     private final ISOOfflineTrainingValidator isoOfflineTrainingValidator;
     private final UserRepository userRepository;
-
+    private final TrainingLogReportService trainingLogReportService;
+    private final TrainingAccessLogService trainingAccessLogService;
     private final FileStorageService fileStorageService;
 
     @GetMapping("/training/iso/mytraining")
@@ -112,7 +116,7 @@ public class ISOTrainingController {
         log.debug("=> SavedTrainingLog Id : {}", savedTrainingLog.getId());
 
         //수료증이 있으면서 교육이 완료되었을 때 -> 수료증 정보 생성
-        if(isoTrainingLog.getStatus() == TrainingStatus.COMPLETED && iso.isCertification()) {
+        if(isoTrainingLog.getStatus() == TrainingStatus.COMPLETED) {
             ISOTrainingCertification certification = ISOTrainingCertification.builder()
                     .certNo(isoTrainingCertificationService.getCertNo(iso))
                     .iso(iso).user(user).isoTrainingLog(savedTrainingLog).build();
@@ -161,14 +165,13 @@ public class ISOTrainingController {
             ISOTrainingLogDTO dto = new ISOTrainingLogDTO();
             dto.setIndex(atomicInteger.getAndDecrement());
             dto.setId(log.getId());
-            dto.setCertification(log.getIso().isCertification());
             dto.setCompletionDate(DateUtils.format(log.getCompleteDate(), "dd-MMM-yyyy").toUpperCase());
             dto.setCourse(log.getTrainingCourse());
             dto.setHour(log.getHour());
             dto.setOrganization(log.getOrganization());
 
             //ISO에서 수료증을 사용할 경우,
-            if(dto.isCertification() && log.getType() == TrainingType.SELF) {
+            if(log.getType() == TrainingType.SELF) {
                 ISOTrainingCertification certification = isoTrainingCertificationService.findByIsoAndUser(log.getIso(), user);
                 dto.setCertId(certification == null ? null : certification.getId().toString());
             }
@@ -208,7 +211,7 @@ public class ISOTrainingController {
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + isoTrainingCertification.getId() + ".pdf\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + isoTrainingCertification.getCertNo() + ".pdf\"")
 //                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + URLEncoder.encode(user.getName() +  "_Cert_" + isoTrainingCertification.getId(), "utf-8") + ".pdf\"")
                 .body(resource);
     }
@@ -266,17 +269,15 @@ public class ISOTrainingController {
 
         log.debug("=> 정답 수 : {}, 점수 : {}", correctCount, score);
         trainingLog.setScore((int)score);
-        if(correctCount >= 4) {
+        if(correctCount >= trainingLog.getIso().getCorrectCount()) {
             trainingLog.setStatus(TrainingStatus.COMPLETED);
-            if(trainingLog.getIso().isCertification()) {
-                ISOTrainingCertification certification = ISOTrainingCertification.builder()
-                        .certNo(isoTrainingCertificationService.getCertNo(trainingLog.getIso()))
-                        .isoTrainingLog(trainingLog)
-                        .iso(trainingLog.getIso()).user(user).build();
+            ISOTrainingCertification certification = ISOTrainingCertification.builder()
+                                                    .certNo(isoTrainingCertificationService.getCertNo(trainingLog.getIso()))
+                                                    .isoTrainingLog(trainingLog)
+                                                    .iso(trainingLog.getIso()).user(user).build();
 
-                log.info("@Certification 생성 : {}", certification.getCertNo());
+                log.debug("@Certification 생성 : {}", certification.getCertNo());
                 isoTrainingCertificationService.createCertificationFile(certification);
-            }
 
             trainingLog.setCompleteDate(new Date());
             attributes.addFlashAttribute("message", trainingLog.getScore() + "점("+(int)questionCount+"문제중 정답 "+(int)correctCount+"개)으로 교육 완료 되었습니다.");
@@ -419,6 +420,34 @@ public class ISOTrainingController {
         model.addAttribute("isoTrainingLog", isoTrainingLogService.findAll(builder, pageable));
         return "iso/training/trainingLog";
 
+    }
+
+    @PostMapping("/training/iso/trainingLog/export")
+    @Transactional
+    public void exportTrainingLog(@CurrentUser Account user, HttpServletResponse response) throws Exception {
+
+        QISOTrainingLog qIsoTrainingLog = QISOTrainingLog.iSOTrainingLog;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qIsoTrainingLog.user.id.eq(user.getId()));
+        builder.and(qIsoTrainingLog.status.eq(TrainingStatus.COMPLETED));
+        Iterable<ISOTrainingLog> iterable = isoTrainingLogService.findAll(builder, qIsoTrainingLog.completeDate.desc());
+        List<TrainingLogReport> trainingLogs = StreamSupport.stream(iterable.spliterator(), false)
+                .map(t -> TrainingLogReport.builder()
+                        .completeDate(DateUtils.format(t.getCompleteDate(), "dd-MMM-yyyy").toUpperCase())
+                        .course(t.getTrainingCourse())
+                        .hr(t.getHour())
+                        .organization(t.getOrganization())
+                        .build()).collect(Collectors.toList());
+
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=ISO_Training_Log_" + new Date(System.currentTimeMillis()) + ".pdf");
+        response.setContentType("application/pdf");
+
+        log.debug("@Training Logs : {}", trainingLogs);
+        log.debug("@User : {}", user);
+
+        if(trainingLogReportService.isoGenerateReport(trainingLogs, user, response.getOutputStream())){
+            trainingAccessLogService.save(user, TrainingLogType.ISO_TRAINING_LOG, DocumentAccessType.DOWNLOAD);
+        }
     }
 
 }

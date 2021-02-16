@@ -9,6 +9,9 @@
     <link href="/static/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
     <script src="/static/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
 
+    <!-- Mask -->
+    <script src="/static/js/jquery.mask.min.js"></script>
+
     <script>
         $(document).ready(function () {
             if ($('#content').length) {
@@ -58,6 +61,8 @@
             });
 
             $('#userIds').select2({width: '100%'});
+
+            $('#correctCount').mask('00');
 
             // $('#dropzone').dropzone({
             //     //url: '/file/post',
@@ -158,31 +163,24 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-2 form-group">
-                                    <label class="control-label" for="certification">수료증 사용 여부</label>
-                                </div>
-                                <div class="col-lg-1 form-group">
-                                    <@spring.formCheckbox "iso.certification" "class='form-checkbox'" />
-                                    <label class="control-label" for="certification">사용</label>
+                                <div class="col-lg-3 form-group">
+                                    <label class="control-label" for="correctCount">합격 문항 개수</label>
                                 </div>
                                 <div class="col-lg-9 form-group">
-                                    <div id="certificationHeadArea"
-                                         style="display:${iso.certification?then('block', 'none')}">
-                                        <@spring.formInput "iso.certificationHead" "class='form-control' placeholder='CAUH-ISO 14155 GCP'" />
-                                        <@spring.showErrors "" "color:red;"/>
-                                    </div>
+                                    <@spring.formInput "iso.correctCount" "class='form-control' placeholder='00'" "number" />
+                                    <@spring.showErrors "" "color:red;"/>
                                 </div>
                             </div>
                             <div class="row">
-                                <label class="control-label col-sm-3" style="margin-top: 7px;">교육 기간</label>
-                                <div class="form-group col-sm-4">
+                                <label class="control-label col-lg-3" style="margin-top: 7px;">교육 기간</label>
+                                <div class="form-group col-lg-4">
                                     <@spring.formInput "iso.startDate" "class='form-control' placeholder='Start Date'" />
                                     <@spring.showErrors "" "color:red;"/>
                                 </div>
-                                <div class="form-group col-sm-1 text-center">
+                                <div class="form-group col-lg-1 text-center">
                                     <span class="text-2x">~</span>
                                 </div>
-                                <div class="form-group col-sm-4">
+                                <div class="form-group col-lg-4">
                                     <@spring.formInput "iso.endDate" "class='form-control' placeholder='End Date'" />
                                     <@spring.showErrors "" "color:red;"/>
                                 </div>

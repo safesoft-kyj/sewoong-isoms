@@ -109,9 +109,9 @@
             <li>
                 <a href="/approval/box/requester" aria-expanded="false">기안함</a>
             </li>
-            <li>
-                <a href="/approval/box/reviewer" aria-expanded="false">검토함</a>
-            </li>
+<%--            <li>--%>
+<%--                <a href="/approval/box/reviewer" aria-expanded="false">검토함</a>--%>
+<%--            </li>--%>
             <li>
                 <a href="/approval/box/approver" aria-expanded="false">승인함</a>
             </li>

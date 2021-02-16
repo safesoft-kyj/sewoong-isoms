@@ -13,18 +13,18 @@
             ${approvalView.sopDisclosureRequestForm.teamDept!''}
         </td>
     </tr>
-    <tr>
-        <td class="bg-gray-light">Protocol Title or No.</td>
-        <td>
-            ${approvalView.sopDisclosureRequestForm.protocolTitleOrNo!''}
-        </td>
-    </tr>
-    <tr>
-        <td class="bg-gray-light">Project Manager or Team Manager</td>
-        <td>
-            ${approvalView.sopDisclosureRequestForm.projectOrTeamManager!''}
-        </td>
-    </tr>
+<#--    <tr>-->
+<#--        <td class="bg-gray-light">Protocol Title or No.</td>-->
+<#--        <td>-->
+<#--            ${approvalView.sopDisclosureRequestForm.protocolTitleOrNo!''}-->
+<#--        </td>-->
+<#--    </tr>-->
+<#--    <tr>-->
+<#--        <td class="bg-gray-light">Project Manager or Team Manager</td>-->
+<#--        <td>-->
+<#--            ${approvalView.sopDisclosureRequestForm.projectOrTeamManager!''}-->
+<#--        </td>-->
+<#--    </tr>-->
     </tbody>
 </table>
 <h5>External Customer Information</h5>
@@ -45,7 +45,7 @@
                     <th>No.</th>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>Job Title</th>
+                    <th>Role</th>
                 </tr>
                 </thead>
                 <tbody id="externalCustomerBody">
@@ -54,7 +54,7 @@
                         <td>${c?index + 1}</td>
                         <td>${c.name}</td>
                         <td>${c.email}</td>
-                        <td>${c.jobTitle!''}</td>
+                        <td>${c.role!''}</td>
                     </tr>
                 </#list>
                 </tbody>
@@ -70,24 +70,30 @@
     <tr>
         <td class="bg-gray-light">Requested Documents</td>
         <td>
-            <h6>[SOP/RD]</h6>
+            <h6>[SOP/RF]</h6>
             <#list approvalView.sopDisclosureRequestForm.requestedDocumentSOPs as sop>
                 <div>
                     <small><span class="label label-purple">SOP</span> ${sop.documentVersion.document.docId}/${sop.documentVersion.document.title}/${sop.documentVersion.version}</small>
                 </div>
             </#list>
-            <#if approvalView.sopDisclosureRequestForm.requestedDocumentRDs?has_content>
-                <#list approvalView.sopDisclosureRequestForm.requestedDocumentRDs as rd>
+            <#if approvalView.sopDisclosureRequestForm.requestedDocumentRFs?has_content>
+                <#list approvalView.sopDisclosureRequestForm.requestedDocumentRFs as rf>
                     <div>
-                        <small><span class="label label-important label-info">RD</span> ${rd.documentVersion.document.docId}/${rd.documentVersion.document.title}/${rd.documentVersion.version}</small>
+                        <small><span class="label label-important label-info">RF</span> ${rf.documentVersion.document.docId}/${rf.documentVersion.document.title}/${rf.documentVersion.version}</small>
                     </div>
                 </#list>
             </#if>
             <hr/>
-            <h6>[Training Log]</h6>
-            <#if approvalView.sopDisclosureRequestForm.disclosureDigitalBinders?has_content>
-                <#list approvalView.sopDisclosureRequestForm.disclosureDigitalBinders as db>
-                    <span class="label label-default">${db.user.engName?default(db.user.name)}</span>
+            <h6>[Training Log(SOP)]</h6>
+            <#if approvalView.sopDisclosureRequestForm.disclosureSOPTrainingLog?has_content>
+                <#list approvalView.sopDisclosureRequestForm.disclosureSOPTrainingLog as sop>
+                    <span class="label label-default">${sop.user.engName?default(sop.user.name)}</span>
+                </#list>
+            </#if>
+            <h6>[Training Log(ISO)]</h6>
+            <#if approvalView.sopDisclosureRequestForm.disclosureISOTrainingLog?has_content>
+                <#list approvalView.sopDisclosureRequestForm.disclosureISOTrainingLog as iso>
+                    <span class="label label-default">${iso.user.engName?default(iso.user.name)}</span>
                 </#list>
             </#if>
         </td>

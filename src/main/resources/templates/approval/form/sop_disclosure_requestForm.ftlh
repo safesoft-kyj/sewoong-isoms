@@ -93,18 +93,18 @@
             <@spring.showErrors "<br/>" "color:red;"/>
         </td>
     </tr>
-    <tr>
-        <td class="bg-gray-light">Protocol Title or No.</td>
-        <td><@spring.formInput "approval.sopDisclosureRequestForm.protocolTitleOrNo" "class='form-control'"/>
-            <@spring.showErrors "<br/>" "color:red;"/>
-        </td>
-    </tr>
-    <tr>
-        <td class="bg-gray-light">Project Manager or Team Manager</td>
-        <td><@spring.formInput "approval.sopDisclosureRequestForm.projectOrTeamManager" "class='form-control'"/>
-            <@spring.showErrors "<br/>" "color:red;"/>
-        </td>
-    </tr>
+<#--    <tr>-->
+<#--        <td class="bg-gray-light">Protocol Title or No.</td>-->
+<#--        <td><@spring.formInput "approval.sopDisclosureRequestForm.protocolTitleOrNo" "class='form-control'"/>-->
+<#--            <@spring.showErrors "<br/>" "color:red;"/>-->
+<#--        </td>-->
+<#--    </tr>-->
+<#--    <tr>-->
+<#--        <td class="bg-gray-light">Project Manager or Team Manager</td>-->
+<#--        <td><@spring.formInput "approval.sopDisclosureRequestForm.projectOrTeamManager" "class='form-control'"/>-->
+<#--            <@spring.showErrors "<br/>" "color:red;"/>-->
+<#--        </td>-->
+<#--    </tr>-->
     </tbody>
 </table>
 <h5>External Customer Information</h5>
@@ -249,7 +249,7 @@
                                                                 <label>
                                                                     <#--                                            <input class="hummingbirdNoParent" id="${rdVer.id}" data-id="${rdVer.id}" name="rd" value="${rdVer.id}" type="checkbox" />-->
                                                                     <#--                                            <@spring.formCheckbox "approval.sopDisclosureRequestForm.rdIds" "value='${rdVer.id}'"/>-->
-                                                                    <@checkbox "approval.sopDisclosureRequestForm.rdIds" rdVer.id approval.sopDisclosureRequestForm.rdIds/>
+                                                                    <@checkbox "approval.sopDisclosureRequestForm.rfIds" rdVer.id approval.sopDisclosureRequestForm.rfIds/>
                                                                     <span class="label label-info">RD</span> ${rdVer.document.docId}/${rdVer.document.title}/${rdVer.version} </label>
                                                             </li>
                                                         </#if>
@@ -269,9 +269,15 @@
 
             <hr/>
             <div>
-                <h6>[Training Log]</h6>
+                <h6>[Training Log(SOP)]</h6>
                 <div>
-                    <@spring.formMultiSelect "approval.sopDisclosureRequestForm.userIds" userMap "class='form-control multi-select'"/>
+                    <@spring.formMultiSelect "approval.sopDisclosureRequestForm.sopUserIds" userMap "class='form-control multi-select'"/>
+                </div>
+            </div>
+            <div>
+                <h6>[Training Log(ISO)]</h6>
+                <div>
+                    <@spring.formMultiSelect "approval.sopDisclosureRequestForm.isoUserIds" userMap "class='form-control multi-select'"/>
                 </div>
             </div>
         </td>

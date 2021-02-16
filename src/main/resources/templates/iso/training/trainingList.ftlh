@@ -78,7 +78,7 @@
                                 <#elseif t.isoTrainingLog.status == "TRAINING_COMPLETED">
                                     <button class="btn btn-info btn-xs" type="button" href="#test-modal" data-toggle="modal"<#if t.iso.quiz?has_content == false>disabled="disabled"</#if> id="testBtn${t.isoTrainingLog.id}" data-title="[${t.iso.isoType.label}]${t.iso.title}" data-id="${t.iso.id}" data-logid="${t.isoTrainingLog.id}"><i class="fa fa-check-square-o"></i> Test</button>
                                 <#elseif t.isoTrainingLog.status == "PROGRESS">
-                                    <button class="btn btn-info btn-xs" type="button" href="#training-modal" data-toggle="modal" data-cert="${t.iso.certification?string}" data-title="[${t.iso.isoType.label}]${t.iso.title}" data-id="${t.iso.id}" data-pid="${t.isoTrainingPeriod.id}"<#if t.isoTrainingLog?has_content> data-logid="${t.isoTrainingLog.id}" data-page="${t.isoTrainingLog.lastPageNo?default(0)}" data-percent="${t.isoTrainingLog.progressPercent?default(0)}" data-time="${t.isoTrainingLog.trainingTime?default(0)}"</#if> data-total="${(t.isoAttachFile.totalPage?has_content)?then(t.isoAttachFile.totalPage, 0)}"<#if t.isoAttachFile.totalPage?has_content == false> disabled="disabled"</#if>><i class="fa fa-search"></i> Training</button>
+                                    <button class="btn btn-info btn-xs" type="button" href="#training-modal" data-toggle="modal" data-title="[${t.iso.isoType.label}]${t.iso.title}" data-id="${t.iso.id}" data-pid="${t.isoTrainingPeriod.id}"<#if t.isoTrainingLog?has_content> data-logid="${t.isoTrainingLog.id}" data-page="${t.isoTrainingLog.lastPageNo?default(0)}" data-percent="${t.isoTrainingLog.progressPercent?default(0)}" data-time="${t.isoTrainingLog.trainingTime?default(0)}"</#if> data-total="${(t.isoAttachFile.totalPage?has_content)?then(t.isoAttachFile.totalPage, 0)}"<#if t.isoAttachFile.totalPage?has_content == false> disabled="disabled"</#if>><i class="fa fa-search"></i> Training</button>
                                 </#if>
                             <#else>
 <#--                                <#if t.isoTrainingPeriod.trainingType == 'SELF' && t.isUserOutOfPeriod()>-->
@@ -175,8 +175,6 @@
 
             var button = $(event.relatedTarget); // Button that triggered the modal
             isoId = button.data('id'); // Extract info from data-* attributes
-            var isCertification = button.data('cert'); // Extract info from data-* attributes
-            $("#isoCertification").val(isCertification ? 'Y' :'N');
             $("#isoId").val(isoId);
             $("#isoTrainingPeriodId").val(button.data('pid'));
 

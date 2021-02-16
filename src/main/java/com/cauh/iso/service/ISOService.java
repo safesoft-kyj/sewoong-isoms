@@ -5,6 +5,7 @@ import com.cauh.iso.domain.constant.PostStatus;
 import com.cauh.iso.domain.constant.TrainingType;
 import com.cauh.iso.repository.ISOAttachFileRepository;
 import com.cauh.iso.repository.ISORepository;
+import com.cauh.iso.utils.DateUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
@@ -65,6 +66,23 @@ public class ISOService {
 
         //ISO 상태를 Active로 한다.
         iso.setActive(true);
+
+        return "success";
+    }
+
+    public String isoPeriodExpand(ISO iso, Integer expandCount){
+
+        Optional<ISOTrainingPeriod> isoTrainingPeriodOptional = iso.getIsoTrainingPeriods().stream().findFirst();
+
+        if(isoTrainingPeriodOptional.isPresent()) {
+            ISOTrainingPeriod isoTrainingPeriod = isoTrainingPeriodOptional.get();
+            isoTrainingPeriod.setEndDate(DateUtils.addDay(isoTrainingPeriod.getEndDate(), expandCount));
+            ISOTrainingPeriod savedISOTrainingPeriod = isoTrainingPeriodService.save(isoTrainingPeriod);
+            log.debug("@ISO Period Exapnd 완료 : {}", savedISOTrainingPeriod);
+
+        } else {
+            return "ISO Training 기한 연장에 실패하였습니다.";
+        }
 
         return "success";
     }

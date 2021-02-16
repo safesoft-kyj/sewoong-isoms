@@ -237,64 +237,54 @@ public class ExternalCustomerController {
         }
     }
 
-    @GetMapping("/external/digital-binder")
-    public String digitalBinder(@CurrentUser Account user, Model model) {
-        if(!ObjectUtils.isEmpty(user.getDisclosureUsers())) {
-            QAccount qUser = QAccount.account;
-            BooleanBuilder builder = new BooleanBuilder();
-            builder.and(qUser.username.in(user.getDisclosureUsers()));
-            model.addAttribute("users", userRepository.findAll(builder));
-        }
-        return "externalCustomer/digital-binder";
-    }
 
-    @GetMapping("/ajax/log/{username}")
-    public void digitalBinder(@PathVariable("username") String username, HttpServletResponse response) throws Exception {
-        Optional<Signature> optionalSignature = signatureRepository.findById(username);
-        OutputStream os = response.getOutputStream();
-        if(optionalSignature.isPresent()) {
-            try {
-                Signature signature = optionalSignature.get();
-
-                Path fileStorageLocation = Paths.get(bindPath).toAbsolutePath().normalize();
-                Path filePath = fileStorageLocation.resolve(signature.getBinderFileName()).normalize();
-                Resource resource = new UrlResource(filePath.toUri());
-
-                ByteArrayOutputStream html = new ByteArrayOutputStream();
-                documentViewer.toHTML("pdf", resource.getInputStream(), html);
-                os.write(html.toByteArray());
-            } catch (Exception e) {
-                os.write("File Not Found.".getBytes());
-            }
-
-        } else {
-            os.write("File Not Found.".getBytes());
-        }
-
-        os.flush();
-        os.close();
-    }
+//    @GetMapping("/ajax/log/{username}")
+//    public void digitalBinder(@PathVariable("username") String username, HttpServletResponse response) throws Exception {
+//        Optional<Signature> optionalSignature = signatureRepository.findById(username);
+//        OutputStream os = response.getOutputStream();
+//        if(optionalSignature.isPresent()) {
+//            try {
+//                Signature signature = optionalSignature.get();
+//
+//                Path fileStorageLocation = Paths.get(bindPath).toAbsolutePath().normalize();
+//                Path filePath = fileStorageLocation.resolve(signature.getBinderFileName()).normalize();
+//                Resource resource = new UrlResource(filePath.toUri());
+//
+//                ByteArrayOutputStream html = new ByteArrayOutputStream();
+//                documentViewer.toHTML("pdf", resource.getInputStream(), html);
+//                os.write(html.toByteArray());
+//            } catch (Exception e) {
+//                os.write("File Not Found.".getBytes());
+//            }
+//
+//        } else {
+//            os.write("File Not Found.".getBytes());
+//        }
+//
+//        os.flush();
+//        os.close();
+//    }
 
     @GetMapping("/external/log/iso")
     public String externISOTrainingLog(@PageableDefault(sort = {"completeDate"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable,
-                                 @RequestParam(value = "userId", required = false) String userId,
+                                 @RequestParam(value = "userId", required = false) Integer userId,
                                  @CurrentUser Account user, Model model, RedirectAttributes attributes){
-        if(!ObjectUtils.isEmpty(user.getDisclosureUsers())) {
+        if(!ObjectUtils.isEmpty(user.getDisclosureISOUsers())) {
             QAccount qUser = QAccount.account;
             BooleanBuilder builder = new BooleanBuilder();
-            builder.and(qUser.username.in(user.getDisclosureUsers()));
+            builder.and(qUser.id.in(user.getDisclosureISOUsers()));
             model.addAttribute("userList", userRepository.findAll(builder));
         }
 
         if(!StringUtils.isEmpty(userId)) {
-            Optional<Account> optionalUser = userRepository.findByUsername(userId);
+            Optional<Account> optionalUser = userRepository.findById(userId);
 
             if(optionalUser.isPresent()) {
                 Account searchUser = optionalUser.get();
                 model.addAttribute("logUser", searchUser);
                 log.debug("Log User : {}", searchUser);
 
-                if(user.getDisclosureUsers().contains(userId)) {
+                if(user.getDisclosureISOUsers().contains(userId)) {
                     QISOTrainingLog qisoTrainingLog = QISOTrainingLog.iSOTrainingLog;
 
                     BooleanBuilder builder = new BooleanBuilder();
@@ -322,24 +312,24 @@ public class ExternalCustomerController {
 
     @GetMapping("/external/log/sop")
     public String sopTrainingLog(@PageableDefault(sort = {"completeDate"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable,
-                                 @RequestParam(value = "userId", required = false) String userId,
+                                 @RequestParam(value = "userId", required = false) Integer userId,
                                  @CurrentUser Account user, Model model, RedirectAttributes attributes){
-        if(!ObjectUtils.isEmpty(user.getDisclosureUsers())) {
+        if(!ObjectUtils.isEmpty(user.getDisclosureSOPUsers())) {
             QAccount qUser = QAccount.account;
             BooleanBuilder builder = new BooleanBuilder();
-            builder.and(qUser.username.in(user.getDisclosureUsers()));
+            builder.and(qUser.id.in(user.getDisclosureSOPUsers()));
             model.addAttribute("userList", userRepository.findAll(builder));
         }
 
         if(!StringUtils.isEmpty(userId)) {
-            Optional<Account> optionalUser = userRepository.findByUsername(userId);
+            Optional<Account> optionalUser = userRepository.findById(userId);
 
             if(optionalUser.isPresent()) {
                 Account searchUser = optionalUser.get();
                 model.addAttribute("logUser", searchUser);
                 log.debug("Log User : {}", searchUser);
 
-                if(user.getDisclosureUsers().contains(userId)) {
+                if(user.getDisclosureSOPUsers().contains(userId)) {
                     QTrainingLog qTrainingLog = QTrainingLog.trainingLog;
 
                     BooleanBuilder builder = new BooleanBuilder();

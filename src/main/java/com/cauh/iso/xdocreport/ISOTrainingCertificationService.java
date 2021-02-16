@@ -68,9 +68,9 @@ public class ISOTrainingCertificationService {
 
     //처음 Certification 번호 부여 시 사용
     public String getCertNo(ISO iso){
-        Integer seqNo = isoTrainingCertificationRepository.countByIso(iso) + 1; //1로 시작
+        Integer seqNo = isoTrainingCertificationRepository.countByCreatedDate(new Date()) + 1; //1로 시작
         String seqTxt = String.format("%03d", seqNo); //3자리 fixed Text
-        String result = iso.getCertificationHead() + "-" + DateUtils.format(iso.getCreatedDate(), "yyyy") + "-" + seqTxt;
+        String result = DateUtils.format(new Date(), "yyyy") + "-" + seqTxt;
 
         log.info("@Certification Number 생성 : {}", result);
 

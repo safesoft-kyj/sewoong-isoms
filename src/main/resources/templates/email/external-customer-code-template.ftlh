@@ -31,7 +31,7 @@
                                             <!--                                                <td>SOP Deviation Report 에 대한 승인(or 검토) 요청이 있습니다.</td>-->
                                             <!--                                            </tr>-->
                                             <tr>
-                                                <td>
+                                                <td style="padding: 5px 0;">
                                                     <table class="invoice-items" style="margin: 25px auto; text-align: left; width: 100%;" cellpadding="0" cellspacing="0">
                                                         <tr>
                                                             <td style="padding: 5px 0;">Access Code :</td>

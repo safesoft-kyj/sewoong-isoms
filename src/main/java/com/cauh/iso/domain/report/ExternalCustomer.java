@@ -35,6 +35,9 @@ public class ExternalCustomer extends BaseEntity implements Serializable {
     @Column(name = "role", columnDefinition = "nvarchar(50)")
     private String role;
 
+    @Transient
+    private Integer size;
+
     public ExternalCustomer(SOPDisclosureRequestForm sopDisclosureRequestForm, ExternalCustomer externalCustomer) {
         this.sopDisclosureRequestForm = sopDisclosureRequestForm;
         this.name = externalCustomer.getName();

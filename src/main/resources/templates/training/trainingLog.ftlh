@@ -5,13 +5,6 @@
 <html xmlns="http://www.w3.org/1999/html">
 <head>
     <title>ISO Management System > SOP > Training Log</title>
-    <script>
-        $(document).ready(function() {
-            $('#publishBtn').on('click', function () {
-                var btn = $(this).button('loading')
-            });
-        })
-    </script>
 </head>
 <body>
 <@pagination.bind trainingLog/>
@@ -32,8 +25,8 @@
         <div class="tab-pane fade active in">
             <#if trainingLog.content?has_content>
             <div class="text-right">
-                <form method="post" action="/training/trainingLog/publish">
-                    <button class="btn btn-primary" id="publishBtn" data-loading-text="배포 진행중..." type="submit"><i class="fa fa-send-o"></i> Publish</button>
+                <form method="get" action="/training/sop/trainingLog/export">
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-send-o"></i> Export</button>
                 </form>
             </div>
             <hr/>

@@ -82,7 +82,7 @@
 
             <div class="text-bold mar-btm">6. Chung-Ang University Hospital shall not use the collected information without the consent of the External Customer for anything other than the original purpose aforementioned, and shall not provide it to the Third Parties.</div>
 
-            <div class="mar-btm mar-top">I hereby confirm that I shall provide personal information (name, affiliation, e-mail and job title/position) for the access to “Chung-Ang University Hospital-ISO 14155” SOP/RF</div>
+            <div class="mar-btm mar-top">I hereby confirm that I shall provide personal information (name, affiliation, e-mail and Role) for the access to “Chung-Ang University Hospital-ISO 14155” SOP/RF</div>
 <#--            <div class="mar-top mar-btm">-->
 <#--                <label class="checkbox-inline">-->
 <#--                    <input type="checkbox" name="agree" value="1"> I agree-->

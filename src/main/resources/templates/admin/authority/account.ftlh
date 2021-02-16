@@ -38,7 +38,7 @@
                     <th class="text-center">Company Name<br/>or Institute Name</th>
                     <th class="text-center">Customer Name</th>
                     <th class="text-center">Email</th>
-                    <th class="text-center">Job Title</th>
+                    <th class="text-center">Role</th>
                     <th class="text-center">Request Date<br/><small>(Date or Period to access ISO Management System system)</small></th>
                     <th style="width:100px">#Actions</th>
                 </tr>

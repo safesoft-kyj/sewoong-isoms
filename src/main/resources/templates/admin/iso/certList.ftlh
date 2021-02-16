@@ -105,7 +105,7 @@
                 if (row.certHead != '') {
                     return [
                         '<button type="button" id="certBtn" name="certificationBtn" data-target="#cert-modal" data-toggle="modal" class="btn btn-info btn-xs" data-id="'
-                        + row.id + '" data-cert="' + row.certNo + '">',
+                        + row.id + '" data-cert="' + row.certId + '">',
                         'Certification Output',
                         '</button>'
                     ].join('');

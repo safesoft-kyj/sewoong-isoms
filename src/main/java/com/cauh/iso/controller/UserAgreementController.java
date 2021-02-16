@@ -90,11 +90,11 @@ public class UserAgreementController {
     public String agreementCollectUse(@CurrentUser Account user, Model model) {
         AgreementPersonalInformation agreementPersonalInformation = new AgreementPersonalInformation();
 
-        Optional<DocumentVersion> optionalDocumentVersion = documentService.findLatestDocument("SOP-AD0001_RD11");
+        Optional<DocumentVersion> optionalDocumentVersion = documentService.findLatestDocument("CAUH-QM002-RF11");
         if(optionalDocumentVersion.isPresent()) {
             agreementPersonalInformation.setDocumentVersion(optionalDocumentVersion.get());
         } else {
-            log.error("[SOP-AD0001_RD11] 문서가 존재하지 않습니다.");
+            log.error("[CAUH-QM002-RF11] 문서가 존재하지 않습니다.");
         }
 
         //CASE Common :: 공통 데이터
@@ -213,11 +213,11 @@ public class UserAgreementController {
     public String nonDisclosureAgreement(@CurrentUser Account user, Model model) {
         NonDisclosureAgreement nonDisclosureAgreement = new NonDisclosureAgreement();
 
-        Optional<DocumentVersion> optionalDocumentVersion = documentService.findLatestDocument("SOP-AD0001_RD12");
+        Optional<DocumentVersion> optionalDocumentVersion = documentService.findLatestDocument("CAUH-QM002-RF10");
         if(optionalDocumentVersion.isPresent()) {
             nonDisclosureAgreement.setDocumentVersion(optionalDocumentVersion.get());
         } else {
-            log.error("[SOP-AD0001_RD12] 문서가 존재하지 않습니다.");
+            log.error("[CAUH-QM002-RF10] 문서가 존재하지 않습니다.");
         }
 
         nonDisclosureAgreement.setEmail(user.getEmail());

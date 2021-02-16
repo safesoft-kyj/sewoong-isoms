@@ -89,13 +89,19 @@ public class ExternalCustomerUserServiceImpl implements ExternalCustomUserServic
                     user.getAllowedRFMap().putAll(allowedRFMap);
                 }
 
-                if(!ObjectUtils.isEmpty(sopDisclosureRequestForm.getDisclosureDigitalBinders())) {
-                    user.setDisclosureUsers(sopDisclosureRequestForm.getDisclosureDigitalBinders().stream().map(s -> s.getUser().getUsername()).collect(Collectors.toList()));
+                //2021-02-15 YSH 수정
+                if(!ObjectUtils.isEmpty(sopDisclosureRequestForm.getDisclosureISOTrainingLog())) {
+                    user.setDisclosureISOUsers(sopDisclosureRequestForm.getDisclosureISOTrainingLog().stream().map(s -> s.getUser().getId()).collect(Collectors.toList()));
+                }
+
+                if(!ObjectUtils.isEmpty(sopDisclosureRequestForm.getDisclosureSOPTrainingLog())) {
+                    user.setDisclosureSOPUsers(sopDisclosureRequestForm.getDisclosureISOTrainingLog().stream().map(s -> s.getUser().getId()).collect(Collectors.toList()));
                 }
 
                 log.info("@@ Allowed SOP[{}]", user.getAllowedSOP());
                 log.info("@@ Allowed RD Maps(rdId, sopId)[{}]", user.getAllowedRFMap());
-                log.info("@@ Allowed DB Users : {}", user.getDisclosureUsers());
+                log.info("@@ Allowed SOP Training Log Users : {}", user.getDisclosureSOPUsers());
+                log.info("@@ Allowed ISO Training Log Users : {}", user.getDisclosureISOUsers());
 
                 HashMap<String, Object> model = new HashMap<>();
                 model.put("code", randomNo);

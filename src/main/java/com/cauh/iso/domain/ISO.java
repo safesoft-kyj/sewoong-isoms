@@ -73,11 +73,14 @@ public class ISO extends BaseEntity implements Serializable {
     @ColumnDefault("0")
     private boolean training;
 
-    @ColumnDefault("0")
-    private boolean certification;
-
-    @Column(length = 20)
-    private String certificationHead;
+//    @ColumnDefault("0")
+//    private boolean certification;
+//
+//    @Column(length = 20)
+//    private String certificationHead;
+    
+    //정답 개수
+    private Integer correctCount;
 
     //강의 active 여부
     @ColumnDefault("0")

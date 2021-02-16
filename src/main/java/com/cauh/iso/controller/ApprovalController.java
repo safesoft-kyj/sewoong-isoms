@@ -135,8 +135,8 @@ public class ApprovalController {
                 approval.getRetirementApprovalForm().getRetirementDocuments().add(documentVersion);
 
                 if(documentVersion.getDocument().getType() == DocumentType.SOP) {
-                    for(Document rd : documentVersion.getDocument().getRfList()) {
-                        for(DocumentVersion rdVer : rd.getDocumentVersionList()) {
+                    for(Document rf : documentVersion.getDocument().getRfList()) {
+                        for(DocumentVersion rdVer : rf.getDocumentVersionList()) {
                             if(rdVer.getStatus() == DocumentStatus.EFFECTIVE) {
                                 if(!approval.getRetirementApprovalForm().getRetirementDocuments().contains(rdVer)) {
                                     approval.getRetirementApprovalForm().getRetirementDocuments().add(rdVer);
@@ -146,15 +146,15 @@ public class ApprovalController {
                         }
                     }
 
-                    List<String> rdIds = Arrays.stream(approval.getRetirementApprovalForm().getRfIds())
+                    List<String> rfIds = Arrays.stream(approval.getRetirementApprovalForm().getRfIds())
                             .collect(Collectors.toList());
 
                     log.info("@@ approval.getRetirementApprovalForm().getSopRdIds() : {}", approval.getRetirementApprovalForm().getSopRfIds());
                     List<String> filtered = approval.getRetirementApprovalForm().getSopRfIds().stream()
-                            .filter(rdId -> rdIds.contains(rdId) == false)
+                            .filter(rdId -> rfIds.contains(rdId) == false)
                             .collect(Collectors.toList());
                     if(!ObjectUtils.isEmpty(filtered)) {
-                        rdIds.addAll(filtered);
+                        rfIds.addAll(filtered);
                     }
 //                    log.info("필터전 : {}", rdIds);
 //                    List<String> filtered = rdIds.stream().filter(rdId -> {
@@ -166,10 +166,10 @@ public class ApprovalController {
 //                    log.info("필터 후 : {}", filtered);
 
 //                    log.info("선택된 RD ID : {}", approval.getRetirementApprovalForm().getRdIds());
-                    if(ObjectUtils.isEmpty(rdIds)) {
+                    if(ObjectUtils.isEmpty(rfIds)) {
                         approval.getRetirementApprovalForm().setRfIds(null);
                     } else {
-                        approval.getRetirementApprovalForm().setRfIds(rdIds.toArray(new String[rdIds.size()]));
+                        approval.getRetirementApprovalForm().setRfIds(rfIds.toArray(new String[rfIds.size()]));
                     }
 
                 }
@@ -536,15 +536,22 @@ public class ApprovalController {
                 approval.getSopDisclosureRequestForm().setRfIds(rfIdList.toArray(new String[rfIdList.size()]));
             }
 
-            if(!ObjectUtils.isEmpty(approval.getSopDisclosureRequestForm().getDisclosureDigitalBinders())) {
-                List<String> userIds = approval.getSopDisclosureRequestForm().getDisclosureDigitalBinders().stream().map(s -> Integer.toString(s.getUser().getId())).collect(Collectors.toList());
-                approval.getSopDisclosureRequestForm().setUserIds(userIds.toArray(new String[userIds.size()]));
+            //SOP Training Log
+            if(!ObjectUtils.isEmpty(approval.getSopDisclosureRequestForm().getDisclosureSOPTrainingLog())) {
+                List<String> sopUserIds = approval.getSopDisclosureRequestForm().getDisclosureSOPTrainingLog().stream().map(s -> Integer.toString(s.getUser().getId())).collect(Collectors.toList());
+                approval.getSopDisclosureRequestForm().setSopUserIds(sopUserIds.toArray(new String[sopUserIds.size()]));
+            }
+
+            //ISO Training Log
+            if(!ObjectUtils.isEmpty(approval.getSopDisclosureRequestForm().getDisclosureISOTrainingLog())) {
+                List<String> isoUserIds = approval.getSopDisclosureRequestForm().getDisclosureISOTrainingLog().stream().map(s -> Integer.toString(s.getUser().getId())).collect(Collectors.toList());
+                approval.getSopDisclosureRequestForm().setIsoUserIds(isoUserIds.toArray(new String[isoUserIds.size()]));
             }
         }
 
         Map<String, String> documentAccessMap = new LinkedHashMap<>();
         documentAccessMap.put(DocumentAccess.PDF.name(), DocumentAccess.PDF.getLabel());
-        documentAccessMap.put(DocumentAccess.HARDCOPY.name(), DocumentAccess.HARDCOPY.getLabel());
+//        documentAccessMap.put(DocumentAccess.HARDCOPY.name(), DocumentAccess.HARDCOPY.getLabel());
         documentAccessMap.put(DocumentAccess.OTHER.name(), DocumentAccess.OTHER.getLabel());
 
         model.addAttribute("documentAccessMap", documentAccessMap);

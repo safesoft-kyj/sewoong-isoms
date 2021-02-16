@@ -26,11 +26,9 @@ public class QISO extends EntityPathBase<ISO> {
 
     public final ListPath<ISOAttachFile, QISOAttachFile> attachFiles = this.<ISOAttachFile, QISOAttachFile>createList("attachFiles", ISOAttachFile.class, QISOAttachFile.class, PathInits.DIRECT2);
 
-    public final BooleanPath certification = createBoolean("certification");
-
-    public final StringPath certificationHead = createString("certificationHead");
-
     public final StringPath content = createString("content");
+
+    public final NumberPath<Integer> correctCount = createNumber("correctCount", Integer.class);
 
     //inherited
     public final StringPath createdBy = _super.createdBy;

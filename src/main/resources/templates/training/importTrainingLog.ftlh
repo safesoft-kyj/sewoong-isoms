@@ -32,9 +32,9 @@
             <table class="table table-bordered">
                 <tbody>
                 <tr>
-                    <th class="col-xs-2 bg-gray-light">Job Title:</th>
+                    <th class="col-xs-2 bg-gray-light">Role:</th>
                     <td class="col-xs-4 text-primary">${user.commaJobDescription}</td>
-                    <th class="col-xs-2 bg-gray-light">Start Date in KCSG:</th>
+                    <th class="col-xs-2 bg-gray-light">Start Date in CAUH:</th>
                     <td class="col-xs-4 text-primary">${user.indate?string('dd-MMM-yyyy')}</td>
                 </tr>
                 <tr>

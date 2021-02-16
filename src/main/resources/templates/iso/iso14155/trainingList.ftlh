@@ -8,6 +8,8 @@
 
     <!--Bootbox Modals [ OPTIONAL ]-->
     <script src="/static/plugins/bootbox/bootbox.min.js"></script>
+    <!-- Mask -->
+    <script src="/static/js/jquery.mask.min.js"></script>
 
     <style>
         .modal-dialog.modal-fullsize {
@@ -24,7 +26,99 @@
         }
     </style>
     <script>
+
+        function numberPad(n, width) {
+            n = n + '';
+            return n.length >= width ? n : new Array(width - n.length + 1).join('0') + n;
+        }
+
+        //추가 일수 입력란 변경 시 이벤트.
+        function dateChange(start, end, date) {
+            let startDate = new Date(start);
+            let endDate = new Date(end);
+
+            if($("#addDayField").val() == "") {
+                $("#originDate").css("text-decoration", "");
+                $("#newDate").removeClass("class");
+                $("#newDate").removeClass("label label-default");
+                $("#newDate").html("");
+            } else {
+                $("#originDate").css("text-decoration", "line-through");
+                let res;
+                let time = $("#addDayField").val();
+                endDate.setDate(endDate.getDate() + parseInt(time));
+
+                if(!$("#newDate").hasClass()) {
+                    $("#newDate").addClass("class");
+                    $("#newDate").addClass("label label-default");
+                }
+
+                if(startDate.getTime() == endDate.getTime()) {
+                    res = "-> " + start;
+                } else {
+                    res = "-> " + start + " ~ " + numberPad(endDate.getFullYear(), 4) + '-' +
+                        numberPad((endDate.getMonth()+1), 2) + '-' + numberPad(endDate.getDate(), 2);
+                }
+
+                $("#newDate").html(res);
+            }
+
+        }
+
         $(document).ready(function () {
+
+            $(document).on("click", "#expandBtn", function(){
+                let isoId = $(this).data("id");
+                let start = $(this).data("start");
+                let end = $(this).data("end");
+                let name = $(this).data("name");
+                let date = $(this).data("date");
+
+                bootbox.dialog({
+                    title: 'Training Period Expand',
+                    message: "<div>"
+                        + "<p><span class='label label-primary'>[" + name + "]</span>의 Training 기한을 연장합니다.</p>"
+                        + "<table class='table table-striped'>"
+                        + "<tr>"
+                        + "<th style='width:250px'>Training Date</th>"
+                        + "<th>Action#</th>"
+                        + "</tr>"
+                        + "<tr>"
+                        + "<td><span id='originDate' class='label label-default'>" + date + "</span><br><br><span id='newDate'></span></td>"
+                        + "<td><input type='number' min='1' max='30' id='addDayField' class='form-control' placeholder='연장 일수 입력' onchange='dateChange(\"" + start + "\",\"" + end + "\",\"" + date + "\")' /></td>"
+                        + "</tr>"
+                        + "</table>"
+                        + "</div>",
+                    size: 'middle',
+                    buttons: {
+                    cancel: {
+                        label: "Cancel",
+                            className: 'btn-danger'
+                    },
+                    ok: {
+                        label: "OK",
+                            className: 'btn-info',
+                            callback: function(e){
+                            let time = $("#addDayField").val();
+
+                            if(time == "") {
+                                alert("연장 일수를 입력해주세요.");
+                                return false;
+                            }
+
+                            $("#expandIsoId").val(isoId);
+                            $("#addDays").val(time);
+                            $("#expandForm").submit();
+                        }
+                    }
+                }
+
+                })
+
+            })
+
+            $("#addDayField").mask('00');
+
             $(document).on("click", "#activeBtn", function(){
                 let isoId = $(this).data("id");
                 let test = $(this).data('test');
@@ -79,7 +173,7 @@
                             label: "OK",
                             className: 'btn-info',
                             callback: function(){
-                                $("#isoId").val(isoId);
+                                $("#activeIsoId").val(isoId);
                                 $("#activeForm").submit();
                             }
                         }
@@ -102,14 +196,16 @@
 </head>
 <body>
 
-<div class="panel">
-    <#--    <div class="panel-heading">-->
-    <#--        <h3 class="panel-title">공지사항</h3>-->
-    <#--    </div>-->
-
-    <!--Data Table-->
-    <!--===================================================-->
-    <div class="panel-body">
+<div class="tab-base">
+    <ul class="nav nav-tabs">
+        <li>
+            <a href="/iso-14155/board">Board</a>
+        </li>
+        <li class="active">
+            <a href="/iso-14155/training">Training</a>
+        </li>
+    </ul>
+    <div class="tab-content">
         <div class="pad-btm form-inline">
             <div class="row">
                 <div class="col-sm-6 table-toolbar-left">
@@ -156,7 +252,6 @@
                     <@security.authorize access="hasAnyAuthority('ADMIN')">
                     <th class="text-center" style="width:90px;">시험</th>
                     </@security.authorize>
-                    <th class="text-center" style="width:90px;">수료증 여부</th>
                     <th class="text-center" style="width:200px;">교육 일정</th>
                     <th class="text-center" style="width:120px;">등록일</th>
                     <th class="text-center" style="width:100px;">작성자</th>
@@ -208,11 +303,8 @@
                                     <#if iso.active>
                                         <span class="label label-primary">Activated</span>
                                     <#else>
-                                        <button id="activeBtn" data-cert="${iso.certification?then('Y', 'N')}"
-                                                data-date="${iso.trainingDate}" data-attendee="${iso.attendee}"
-                                                data-test="${iso.quiz?has_content?then('Y', 'N')}" data-id="${iso.id}"
-                                                class="btn btn-purple btn-sm">Active
-                                        </button>
+                                        <button id="activeBtn" data-date="${iso.trainingDate}" data-attendee="${iso.attendee}"
+                                                data-test="${iso.quiz?has_content?then('Y', 'N')}" data-id="${iso.id}" class="btn btn-purple btn-sm">Active</button>
                                     </#if>
                                 <#else>
                                     -
@@ -256,7 +348,6 @@
                                 </#if>
                             </td>
                             </@security.authorize>
-                            <td class="text-center" style="width:90px;"><span class="label label-${iso.certification?then('success', 'warning')}">${iso.certification?then('Y', 'N')}</span></td>
                             <td class="text-center"><span class="text-info">${iso.trainingDate}</span></td>
                             <td class="text-center"><span class="text-muted">${iso.createdDate?string('yyyy-MM-dd')}</span></td>
                             <td class="text-center">${iso.createdBy?default('System')}</td>
@@ -264,12 +355,16 @@
                             <td class="text-center">
                                 <#if iso.training>
                                     <#if iso.active>
-                                        <span class="label label-primary">Activated</span>
+                                        <button id="expandBtn" class="btn btn-primary btn-sm" data-id="${iso.id}"
+                                                data-start="${iso.startDate?string('yyyy-MM-dd')}" data-date="${iso.trainingDate}"
+                                                data-end="${iso.endDate?string('yyyy-MM-dd')}" data-name="${iso.title}">
+                                            Period Expand
+                                        </button>
                                     <#else>
-                                        <button id="activeBtn" data-cert="${iso.certification?then('Y', 'N')}"
+                                        <button id="activeBtn" class="btn btn-purple btn-sm" data-id="${iso.id}"
                                                 data-date="${iso.trainingDate}" data-attendee="${iso.attendee}"
-                                                data-test="${iso.quiz?has_content?then('Y', 'N')}" data-id="${iso.id}"
-                                                class="btn btn-purple btn-sm">Active
+                                                data-test="${iso.quiz?has_content?then('Y', 'N')}">
+                                            Active
                                         </button>
                                     </#if>
                                 <#else>
@@ -281,7 +376,13 @@
                     </#list>
                     <form method="post" id="activeForm" action="/iso-14155/active">
                         <input type="hidden" name="_method" value="put" />
-                        <input type="hidden" id="isoId" name="isoId" />
+                        <input type="hidden" id="activeIsoId" name="isoId" />
+                    </form>
+
+                    <form method="post" id="expandForm" action="/iso-14155/expand">
+                        <input type="hidden" name="_method" value="put" />
+                        <input type="hidden" id="expandIsoId" name="isoId" />
+                        <input type="hidden" id="addDays" name="addDays" />
                     </form>
                 <#else>
                     <tr>

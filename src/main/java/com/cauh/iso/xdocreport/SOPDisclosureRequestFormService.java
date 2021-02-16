@@ -29,7 +29,6 @@ public class SOPDisclosureRequestFormService {
 
     public void generateReport(SOPDisclosureRequestForm form, List<ApprovalLine> approvalLines, OutputStream os) {
         try {
-            //TODO :: 작업 필요.
             InputStream in = SOPDisclosureRequestFormService.class.getResourceAsStream("SOP_Training_Log_Disclosure_Request_Form_01.docx");
 
             log.info("@SOP Disclosure Request Form pdf 생성");
@@ -42,7 +41,9 @@ public class SOPDisclosureRequestFormService {
                     .collect(Collectors.toList());
 
             SOPDisclosureRequestFormDTO dto = new SOPDisclosureRequestFormDTO();
-            dto.setReviewer(approvalLines.stream().filter(a -> a.getLineType() == ApprovalLineType.reviewer).count() > 0);
+//            dto.setReviewer(approvalLines.stream().filter(a -> a.getLineType() == ApprovalLineType.reviewer).count() > 0);
+            //외부사용자 size 확인을 위해 넣기.
+            form.getExternalCustomers().stream().forEach( e -> e.setSize(form.getExternalCustomers().size()));
             dto.setForm(form);
             dto.setReportedBy(approvalLineDTOList.stream().filter(a -> a.getLineType() == ApprovalLineType.requester).findFirst().get());
             dto.setReviewers(approvalLineDTOList.stream().filter(a -> a.getLineType() == ApprovalLineType.reviewer).collect(Collectors.toList()));

@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -48,7 +47,8 @@ public class ApprovalService {
     private final CategoryService categoryService;
     private final DocumentRepository documentRepository;
     private final DocumentService documentService;
-    private final DisclosureDigitalBinderRepository disclosureDigitalBinderRepository;
+    private final DisclosureSOPTrainingLogRepository disclosureSOPTrainingLogRepository;
+    private final DisclosureISOTrainingLogRepository disclosureISOTrainingLogRepository;
 //    @PersistenceContext
 //    private EntityManager entityManager;
 
@@ -433,9 +433,15 @@ public class ApprovalService {
                         externalCustomerRepository.save(externalCustomer);
                     }
 
-                    if(!ObjectUtils.isEmpty(sopDisclosureRequestForm.getDisclosureDigitalBinders())) {
-                        for(DisclosureDigitalBinder db : sopDisclosureRequestForm.getDisclosureDigitalBinders()) {
-                            disclosureDigitalBinderRepository.delete(db);
+                    if(!ObjectUtils.isEmpty(sopDisclosureRequestForm.getDisclosureSOPTrainingLog())) {
+                        for(DisclosureSOPTrainingLog sop : sopDisclosureRequestForm.getDisclosureSOPTrainingLog()) {
+                            disclosureSOPTrainingLogRepository.delete(sop);
+                        }
+                    }
+
+                    if(!ObjectUtils.isEmpty(sopDisclosureRequestForm.getDisclosureISOTrainingLog())) {
+                        for(DisclosureISOTrainingLog iso : sopDisclosureRequestForm.getDisclosureISOTrainingLog()) {
+                            disclosureISOTrainingLogRepository.delete(iso);
                         }
                     }
                 }
@@ -475,12 +481,21 @@ public class ApprovalService {
                     }
                 }
 
-                if(!ObjectUtils.isEmpty(sopDisclosureRequestForm.getUserIds())) {
-                    for(String userId : sopDisclosureRequestForm.getUserIds()) {
-                        DisclosureDigitalBinder db = new DisclosureDigitalBinder();
-                        db.setSopDisclosureRequestForm(savedSopDisclosureRequestForm);
-                        db.setUser(Account.builder().id(Integer.parseInt(userId)).build());
-                        disclosureDigitalBinderRepository.save(db);
+                if(!ObjectUtils.isEmpty(sopDisclosureRequestForm.getSopUserIds())) {
+                    for(String sopUserId : sopDisclosureRequestForm.getSopUserIds()) {
+                        DisclosureSOPTrainingLog sop = new DisclosureSOPTrainingLog();
+                        sop.setSopDisclosureRequestForm(savedSopDisclosureRequestForm);
+                        sop.setUser(Account.builder().id(Integer.parseInt(sopUserId)).build());
+                        disclosureSOPTrainingLogRepository.save(sop);
+                    }
+                }
+
+                if(!ObjectUtils.isEmpty(sopDisclosureRequestForm.getIsoUserIds())) {
+                    for(String isoUserId : sopDisclosureRequestForm.getIsoUserIds()) {
+                        DisclosureISOTrainingLog iso = new DisclosureISOTrainingLog();
+                        iso.setSopDisclosureRequestForm(savedSopDisclosureRequestForm);
+                        iso.setUser(Account.builder().id(Integer.parseInt(isoUserId)).build());
+                        disclosureISOTrainingLogRepository.save(iso);
                     }
                 }
 

@@ -65,14 +65,20 @@ public class ISOController {
     private final UserService userService;
     private final QuizValidator quizValidator;
 
-
     @GetMapping("/iso-14155")
-    public String ISOlist(@PageableDefault(sort = {"createdDate"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable, @CurrentUser Account user, Model model) {
-        QISO qISO = QISO.iSO;
+    public String ISOList(){
+        return "redirect:/iso-14155/board";
+    }
 
-        //공지사항 리스트
+    @GetMapping("/iso-14155/board")
+    public String ISOBoardList(@PageableDefault(sort = {"createdDate"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable,
+                          @CurrentUser Account user, Model model) {
+        QISO qISO = QISO.iSO;
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qISO.deleted.eq(false));
+        builder.and(qISO.training.eq(false));
+
+        //공지사항 리스트
         model.addAttribute("isoList", isoService.getPage(builder, pageable));
 
         //공지사항(상단공지)
@@ -84,7 +90,26 @@ public class ISOController {
 //        Optional<ISOTrainingMatrixFile> optionalTrainingMatrixFile = isotrainingMatrixService.findFirstByOrderByIdDesc();
 //        model.addAttribute("isoTrainingMatrixFile", optionalTrainingMatrixFile.isPresent() ? optionalTrainingMatrixFile.get() : null);
 
-        return "iso/iso14155/list";
+        return "iso/iso14155/boardList";
+    }
+
+    @GetMapping("/iso-14155/training")
+    public String ISOTrainingList(@PageableDefault(sort = {"createdDate"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable, Model model) {
+        QISO qISO = QISO.iSO;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qISO.deleted.eq(false));
+        builder.and(qISO.training.eq(true));
+
+        //공지사항 리스트
+        model.addAttribute("isoList", isoService.getPage(builder, pageable));
+
+        //공지사항(상단공지)
+        Date today = new Date(System.currentTimeMillis());
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        builder.and(qISO.topViewEndDate.goe(Date.valueOf(format.format(today))));
+        model.addAttribute("topISOList", isoService.getTopISOs(builder));
+
+        return "iso/iso14155/trainingList";
     }
 
     @IsAdmin
@@ -205,15 +230,39 @@ public class ISOController {
             if(!res.equals("success")) {
                 attributes.addFlashAttribute("type", "danger");
                 attributes.addFlashAttribute("message", res);
-                return "redirect:/iso-14155";
+                return "redirect:/iso-14155/training";
             }
 
             attributes.addFlashAttribute("message", "[" + iso.getTitle() + "] Training이 Active되었습니다.");
         }
 
-        return "redirect:/iso-14155";
+        return "redirect:/iso-14155/training";
     }
 
+    @IsAdmin
+    @PutMapping("/iso-14155/expand")
+    @Transactional
+    public String isoTrainingPeriodExpand(@RequestParam("isoId") String isoId, @RequestParam("addDays") Integer addDays, RedirectAttributes attributes) {
+
+        log.info("@ISO Training Period Exapnd : {}, {}", isoId, addDays);
+
+
+        Optional<ISO> isoOptional = isoService.getISO(isoId);
+        if(isoOptional.isPresent()) {
+            ISO iso = isoOptional.get();
+            String res = isoService.isoPeriodExpand(iso, addDays);
+
+            if(!res.equals("success")) {
+                attributes.addFlashAttribute("type", "danger");
+                attributes.addFlashAttribute("message", res);
+                return "redirect:/iso-14155/training";
+            }
+
+            attributes.addFlashAttribute("message", "[" + iso.getTitle() + "] Training의 기한이 연장되었습니다.");
+        }
+
+        return "redirect:/iso-14155/training";
+    }
 
     /**
      * 메일전송 대상자에게 메일 전송
@@ -426,7 +475,8 @@ public class ISOController {
             XSSFRow a5Row = sheet.getRow(12);
             XSSFRow correctRow = sheet.getRow(13);
 
-            for(int i = 1; i <= 5; i ++) {
+            //최대 30문항까지.
+            for(int i = 1; i <= 30; i ++) {
                 qRow.getCell(i).setCellType(CellType.STRING);
                 a1Row.getCell(i).setCellType(CellType.STRING);
                 a2Row.getCell(i).setCellType(CellType.STRING);
@@ -446,6 +496,13 @@ public class ISOController {
 
                 QuizQuestion quizQuestion = new QuizQuestion(i + 1);
                 List<QuizAnswer> quizAnswers = new ArrayList<>();
+
+                //문항 내용이 없을 경우, 읽기를 멈추고 여태 읽었던 내용까지만 작업을 진행한다.
+                if(StringUtils.isEmpty(q)) {
+                    log.debug("@Quiz Upload Stop");
+                    break;
+                }
+
                 quizQuestion.setText(q);
                 quizAnswers.add(new QuizAnswer(1, a1, eq("1", correct)));
                 quizAnswers.add(new QuizAnswer(2, a2, eq("2", correct)));

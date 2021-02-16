@@ -26,14 +26,14 @@
         <div class="pad-all">
             <form name="f" id="f">
                 <#if userList?has_content>
-                    <#assign pUserId = RequestParameters['userId']?has_content?then(RequestParameters['userId'], '0')?string/>
+                    <#assign pUserId = RequestParameters['userId']?has_content?then(RequestParameters['userId'], '0')?number/>
                     <div class="box-inline mar-btm">
                         User :
                         <div class="select">
                         <select name="userId" id="userList" class="form-control">
-                            <option value=""${(pUserId == '0')?then('', ' selected')}>Select User</option>
+                            <option value=""${(pUserId == 0)?then('', ' selected')}>Select User</option>
                             <#list userList as user>
-                                <option value="${user.username}"${(pUserId != '0')?then((pUserId == user.username)?then(' selected', ''), '')}>${user.name!''}</option>
+                                <option value="${user.id}"${(pUserId != 0)?then((pUserId == user.username)?then(' selected', ''), '')}>${user.name!''}</option>
                             </#list>
                         </select>
                         </div>

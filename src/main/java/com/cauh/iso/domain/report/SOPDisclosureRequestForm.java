@@ -95,7 +95,11 @@ public class SOPDisclosureRequestForm extends BaseEntity implements Serializable
 
     @OneToMany(mappedBy = "sopDisclosureRequestForm")
     @NotAudited
-    private List<DisclosureDigitalBinder> disclosureDigitalBinders = new ArrayList<>();
+    private List<DisclosureSOPTrainingLog> disclosureSOPTrainingLog = new ArrayList<>();
+
+    @OneToMany(mappedBy = "sopDisclosureRequestForm")
+    @NotAudited
+    private List<DisclosureISOTrainingLog> disclosureISOTrainingLog = new ArrayList<>();
 
     public boolean isRequestedSOP() {
         return !ObjectUtils.isEmpty(requestedDocumentSOPs);
@@ -105,8 +109,12 @@ public class SOPDisclosureRequestForm extends BaseEntity implements Serializable
         return !ObjectUtils.isEmpty(requestedDocumentRFs);
     }
 
-    public boolean isDigitalBinder() {
-        return !ObjectUtils.isEmpty(disclosureDigitalBinders);
+    public boolean isSOPTrainingLog() {
+        return !ObjectUtils.isEmpty(disclosureSOPTrainingLog);
+    }
+
+    public boolean isISOTrainingLog() {
+        return !ObjectUtils.isEmpty(disclosureISOTrainingLog);
     }
 
     public String getStrRequestDate() {
@@ -132,9 +140,15 @@ public class SOPDisclosureRequestForm extends BaseEntity implements Serializable
             }
         }
 
-        if(!ObjectUtils.isEmpty(sopDisclosureRequestForm.getDisclosureDigitalBinders())) {
-            for(DisclosureDigitalBinder db : sopDisclosureRequestForm.getDisclosureDigitalBinders()) {
-                this.disclosureDigitalBinders.add(new DisclosureDigitalBinder(this, db));
+        if(!ObjectUtils.isEmpty(sopDisclosureRequestForm.getDisclosureSOPTrainingLog())) {
+            for(DisclosureSOPTrainingLog sop : sopDisclosureRequestForm.getDisclosureSOPTrainingLog()) {
+                this.disclosureSOPTrainingLog.add(new DisclosureSOPTrainingLog(this, sop));
+            }
+        }
+
+        if(!ObjectUtils.isEmpty(sopDisclosureRequestForm.getDisclosureISOTrainingLog())) {
+            for(DisclosureISOTrainingLog iso : sopDisclosureRequestForm.getDisclosureISOTrainingLog()) {
+                this.disclosureISOTrainingLog.add(new DisclosureISOTrainingLog(this, iso));
             }
         }
 
@@ -160,5 +174,8 @@ public class SOPDisclosureRequestForm extends BaseEntity implements Serializable
     private String[] rfIds;
 
     @Transient
-    private String[] userIds;
+    private String[] sopUserIds;
+
+    @Transient
+    private String[] isoUserIds;
 }

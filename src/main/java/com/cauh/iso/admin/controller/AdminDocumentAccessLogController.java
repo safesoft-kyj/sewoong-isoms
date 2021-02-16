@@ -2,6 +2,7 @@ package com.cauh.iso.admin.controller;
 
 import com.cauh.iso.service.DocumentAccessLogService;
 import com.cauh.iso.service.ISOAccessLogService;
+import com.cauh.iso.service.TrainingAccessLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class AdminDocumentAccessLogController {
     private final DocumentAccessLogService documentAccessLogService;
     private final ISOAccessLogService isoAccessLogService;
+    private final TrainingAccessLogService trainingAccessLogService;
 
     @GetMapping("/admin/document/accessLog")
     public String accessLog(@PageableDefault(sort = {"createdDate"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable, Model model) {
@@ -28,6 +30,13 @@ public class AdminDocumentAccessLogController {
         model.addAttribute("isoAccessLog", isoAccessLogService.findAll(pageable));
 
         return "admin/iso/accessLog";
+    }
+
+    @GetMapping("/admin/training/accessLog")
+    public String trainingAccessLog(@PageableDefault(sort = {"createdDate"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable, Model model) {
+        model.addAttribute("trainingAccessLog", trainingAccessLogService.findAll(pageable));
+
+        return "admin/training/accessLog";
     }
 
 }

@@ -34,6 +34,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,8 +48,10 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
@@ -70,11 +74,11 @@ public class TrainingController {
     private final OfflineTrainingValidator offlineTrainingValidator;
     private final OfflineTrainingService offlineTrainingService;
     private final OfflineTrainingAttendeeService offlineTrainingAttendeeService;
-    private final DeptUserMapper deptUserMapper;
     private final DepartmentService departmentService;
     private final DocumentService documentService;
-    private final TrainingRecordRepository trainingRecordRepository;
     private final TrainingService trainingService;
+    private final TrainingAccessLogService trainingAccessLogService;
+
 
 //    @Value("${gw.userTbl}")
 //    private String gwUserTbl;
@@ -626,34 +630,51 @@ public class TrainingController {
 //        }
 //    }
 
-    @PostMapping("/training/sop/trainingLog/publish")
-    public String publishTrainingLog(@CurrentUser Account user, RedirectAttributes attributes) throws Exception {
-        Optional<TrainingRecord> optionalTrainingRecord = trainingRecordRepository.findTop1ByUsernameOrderByIdDesc(user.getUsername());
-        if(optionalTrainingRecord.isPresent()) {
-            TrainingRecord trainingRecord = optionalTrainingRecord.get();
-            if(TrainingRecordStatus.REVIEW == trainingRecord.getStatus()) {
-                attributes.addFlashAttribute("message", "현재 검토 진행 중 입니다. 완료 후 배포 가능 합니다.");
-                return "redirect:/training/sop/trainingLog";
-            } else {
-                generateTrainingLog(user, trainingRecord.getStatus() == TrainingRecordStatus.REVIEWED ? null : trainingRecord.getId());
-            }
-        } else {
-            generateTrainingLog(user, null);
-        }
+//    @PostMapping("/training/sop/trainingLog/publish")
+//    public String publishTrainingLog(@CurrentUser Account user, RedirectAttributes attributes) throws Exception {
+//        Optional<TrainingRecord> optionalTrainingRecord = trainingRecordRepository.findTop1ByUsernameOrderByIdDesc(user.getUsername());
+//        if(optionalTrainingRecord.isPresent()) {
+//            TrainingRecord trainingRecord = optionalTrainingRecord.get();
+//            if(TrainingRecordStatus.REVIEW == trainingRecord.getStatus()) {
+//                attributes.addFlashAttribute("message", "현재 검토 진행 중 입니다. 완료 후 배포 가능 합니다.");
+//                return "redirect:/training/sop/trainingLog";
+//            } else {
+//                generateTrainingLog(user, trainingRecord.getStatus() == TrainingRecordStatus.REVIEWED ? null : trainingRecord.getId());
+//            }
+//        } else {
+//            generateTrainingLog(user, null);
+//        }
+//
+//        attributes.addFlashAttribute("message", "Training Log 배포 완료 되었습니다.");
+//        return "redirect:/training/sop/trainingLog";
+//    }
 
-        attributes.addFlashAttribute("message", "Training Log 배포 완료 되었습니다.");
-        return "redirect:/training/sop/trainingLog";
-    }
+    @GetMapping("/training/sop/trainingLog/export")
+    @Transactional
+    public void exportTrainingLog(@CurrentUser Account user, HttpServletResponse response) throws Exception {
 
-    private void generateTrainingLog(Account user, Integer trainingRecordId) throws Exception {
         QTrainingLog qTrainingLog = QTrainingLog.trainingLog;
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qTrainingLog.user.id.eq(user.getId()));
         builder.and(qTrainingLog.status.eq(TrainingStatus.COMPLETED));
         Iterable<TrainingLog> iterable = trainingLogService.findAll(builder, qTrainingLog.completeDate.desc());
         List<TrainingLogReport> trainingLogs = StreamSupport.stream(iterable.spliterator(), false)
-                .map(t -> TrainingLogReport.builder().completeDate(DateUtils.format(t.getCompleteDate(), "dd-MMM-yyyy").toUpperCase()).course(t.getTrainingCourse()).hr(t.getHour()).organization(t.getOrganization()).build())
-                .collect(Collectors.toList());
-        trainingLogReportService.generateReport(trainingLogs, user, trainingRecordId);
+                .map(t -> TrainingLogReport.builder()
+                        .completeDate(DateUtils.format(t.getCompleteDate(), "dd-MMM-yyyy").toUpperCase())
+                        .course(t.getTrainingCourse())
+                        .hr(t.getHour())
+                        .organization(t.getOrganization())
+                        .build()).collect(Collectors.toList());
+
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=SOP_Training_Log_" + new Date(System.currentTimeMillis()) + ".pdf");
+        response.setContentType("application/pdf");
+
+        log.debug("@Training Logs : {}", trainingLogs);
+        log.debug("@User : {}", user);
+
+        if(trainingLogReportService.sopGenerateReport(trainingLogs, user, response.getOutputStream())){
+           trainingAccessLogService.save(user, TrainingLogType.SOP_TRAINING_LOG, DocumentAccessType.DOWNLOAD);
+
+        }
     }
 }

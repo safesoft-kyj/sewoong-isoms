@@ -34,7 +34,9 @@ public class QSOPDisclosureRequestForm extends EntityPathBase<SOPDisclosureReque
     //inherited
     public final DateTimePath<java.sql.Timestamp> createdDate = _super.createdDate;
 
-    public final ListPath<DisclosureDigitalBinder, QDisclosureDigitalBinder> disclosureDigitalBinders = this.<DisclosureDigitalBinder, QDisclosureDigitalBinder>createList("disclosureDigitalBinders", DisclosureDigitalBinder.class, QDisclosureDigitalBinder.class, PathInits.DIRECT2);
+    public final ListPath<DisclosureISOTrainingLog, QDisclosureISOTrainingLog> disclosureISOTrainingLog = this.<DisclosureISOTrainingLog, QDisclosureISOTrainingLog>createList("disclosureISOTrainingLog", DisclosureISOTrainingLog.class, QDisclosureISOTrainingLog.class, PathInits.DIRECT2);
+
+    public final ListPath<DisclosureSOPTrainingLog, QDisclosureSOPTrainingLog> disclosureSOPTrainingLog = this.<DisclosureSOPTrainingLog, QDisclosureSOPTrainingLog>createList("disclosureSOPTrainingLog", DisclosureSOPTrainingLog.class, QDisclosureSOPTrainingLog.class, PathInits.DIRECT2);
 
     public final EnumPath<DocumentAccess> documentAccess = createEnum("documentAccess", DocumentAccess.class);
 

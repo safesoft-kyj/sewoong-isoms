@@ -26,6 +26,9 @@ public class ISOTrainingPeriodService {
         return isoTrainingPeriodRepository.findById(periodId);
     }
 
+    public ISOTrainingPeriod save(ISOTrainingPeriod isoTrainingPeriod) {
+        return isoTrainingPeriodRepository.save(isoTrainingPeriod);
+    }
 
     public void saveAll(ISO savedISO, ISO iso) {
         if(ObjectUtils.isEmpty(iso.getIsoTrainingPeriods())) { //신규 생성 시

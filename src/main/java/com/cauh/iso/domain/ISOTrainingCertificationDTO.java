@@ -9,7 +9,7 @@ public class ISOTrainingCertificationDTO implements Serializable {
     private static final long serialVersionUID = 6895867392813120132L;
 
     private Integer index;
-    private String certNo;
+    private String certId;
     private String name;
     private String teamDept;
     private String role;

@@ -139,7 +139,7 @@ public class AdminISOTrainingController {
             ISOTrainingCertificationDTO dto = new ISOTrainingCertificationDTO();
 
             dto.setIndex(atomicInteger.getAndDecrement());
-            dto.setCertNo(cert.getCertNo());
+            dto.setCertId(cert.getId().toString());
             dto.setName(cert.getUser().getName());
             dto.setTeamDept(cert.getUser().getTeamDept());
             dto.setRole(cert.getUser().getCommaJobTitle());
