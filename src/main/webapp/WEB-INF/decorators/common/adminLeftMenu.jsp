@@ -124,8 +124,8 @@
             <li><a href="/admin/iso/accessLog">ISO Access Log</a></li>
             <li><a href="/admin/document/accessLog">SOP/RF Access Log</a></li>
             <li><a href="/admin/training/accessLog">Training Access Log</a></li>
-            <li><a href="#" style="color:red;">Change Control(작업중)</a></li>
-<%--            <li><a href="/admin/change-control">Change Control</a></li>--%>
+<%--            <li><a href="#" style="color:red;">Change Control(작업중)</a></li>--%>
+            <li><a href="/admin/change-control">Change Control</a></li>
 
         </ul>
 

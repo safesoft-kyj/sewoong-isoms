@@ -19,11 +19,12 @@ public interface TrainingMatrixRepositoryCustom {
     List<MyTrainingMatrix> getMyTrainingMatrix(List<UserJobDescription> userJobDescriptions);
 
     Page<MyTraining> getMyTraining(TrainingRequirement requirement, Pageable pageable, Account user);
-    Page<MyTraining> getTrainingList(Department department, Integer userId, String docId, Account user, Pageable pageable, BooleanBuilder docStatus);
-    List<MyTraining> getDownloadTrainingList(Department department, Integer userId, String docId, Account user);
+    Page<MyTraining> getTrainingList(Department department, Integer userId, String docId, Account user, Pageable pageable, BooleanBuilder docStatus, BooleanBuilder completeStatus);
+    List<MyTraining> getDownloadTrainingList(Department department, Integer userId, String docId, Account user, BooleanBuilder completeStatus);
 
 
     //ISO Training
     Page<MyTraining> getISOMyTraining(Pageable pageable, Account user);
-    Page<MyTraining> getISOTrainingList(Department department, Integer userId, ISOType isoType, Pageable pageable);
+    Page<MyTraining> getISOTrainingList(Department department, Integer userId, ISOType isoType, Pageable pageable, BooleanBuilder completeStatus);
+    List<MyTraining> getDownloadISOTrainingList(Department department, Integer userId, ISOType isoType, BooleanBuilder completeStatus);
 }

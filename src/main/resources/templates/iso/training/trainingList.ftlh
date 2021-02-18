@@ -78,7 +78,7 @@
                                 <#elseif t.isoTrainingLog.status == "TRAINING_COMPLETED">
                                     <button class="btn btn-info btn-xs" type="button" href="#test-modal" data-toggle="modal"<#if t.iso.quiz?has_content == false>disabled="disabled"</#if> id="testBtn${t.isoTrainingLog.id}" data-title="[${t.iso.isoType.label}]${t.iso.title}" data-id="${t.iso.id}" data-logid="${t.isoTrainingLog.id}"><i class="fa fa-check-square-o"></i> Test</button>
                                 <#elseif t.isoTrainingLog.status == "PROGRESS">
-                                    <button class="btn btn-info btn-xs" type="button" href="#training-modal" data-toggle="modal" data-title="[${t.iso.isoType.label}]${t.iso.title}" data-id="${t.iso.id}" data-pid="${t.isoTrainingPeriod.id}"<#if t.isoTrainingLog?has_content> data-logid="${t.isoTrainingLog.id}" data-page="${t.isoTrainingLog.lastPageNo?default(0)}" data-percent="${t.isoTrainingLog.progressPercent?default(0)}" data-time="${t.isoTrainingLog.trainingTime?default(0)}"</#if> data-total="${(t.isoAttachFile.totalPage?has_content)?then(t.isoAttachFile.totalPage, 0)}"<#if t.isoAttachFile.totalPage?has_content == false> disabled="disabled"</#if>><i class="fa fa-search"></i> Training</button>
+                                    <button class="btn btn-info btn-xs" type="button" href="#training-modal" data-toggle="modal" data-title="[${t.iso.isoType.label}]${t.iso.title}" data-id="${t.iso.id}" data-pid="${t.isoTrainingPeriod.id}"<#if t.isoTrainingLog?has_content> data-logid="${t.isoTrainingLog.id}" data-page="${t.isoTrainingLog.lastPageNo?default(0)}" data-percent="${t.isoTrainingLog.progressPercent?default(0)}" data-time="${t.isoTrainingLog.trainingTime?default(0)}"</#if> data-test="${t.iso.quiz?has_content?then('Y', 'N')}" data-total="${(t.isoAttachFile.totalPage?has_content)?then(t.isoAttachFile.totalPage, 0)}"<#if t.isoAttachFile.totalPage?has_content == false> disabled="disabled"</#if>><i class="fa fa-search"></i> Training</button>
                                 </#if>
                             <#else>
 <#--                                <#if t.isoTrainingPeriod.trainingType == 'SELF' && t.isUserOutOfPeriod()>-->
@@ -86,7 +86,7 @@
 <#--                                <#else>-->
 <#--                                    <button class="btn btn-info btn-xs" type="button" href="#training-modal" data-toggle="modal" data-title="${t.document.title} v${t.documentVersion.version}" data-id="${t.documentVersion.id}" data-pid="${t.trainingPeriod.id}"<#if t.trainingLog?has_content> data-logid="${t.isoTrainingLog.id}" data-page="${t.isoTrainingLog.lastPageNo?default(0)}" data-percent="${t.isoTrainingLog.progressPercent?default(0)}" data-time="${t.isoTrainingLog.trainingTime?default(0)}"</#if> data-total="${(t.isoAttachFile.totalPage?has_content)?then(t.isoAttachFile.totalPage, 0)}"<#if t.isoAttachFile.totalPage?has_content == false> disabled="disabled"</#if>><i class="fa fa-search"></i> Training</button>-->
 <#--                                </#if>-->
-                                <button class="btn btn-info btn-xs" type="button" href="#training-modal" data-toggle="modal" data-cert="${t.iso.certification?string}" data-title="${t.iso.title}" data-id="${t.iso.id}" data-pid="${t.isoTrainingPeriod.id}"<#if t.isoTrainingLog?has_content> data-logid="${t.isoTrainingLog.id}" data-page="${t.isoTrainingLog.lastPageNo?default(0)}" data-percent="${t.isoTrainingLog.progressPercent?default(0)}" data-time="${t.isoTrainingLog.trainingTime?default(0)}"</#if> data-total="${(t.isoAttachFile.totalPage?has_content)?then(t.isoAttachFile.totalPage, 0)}"<#if t.isoAttachFile.totalPage?has_content == false> disabled="disabled"</#if>><i class="fa fa-search"></i> Training</button>
+                                <button class="btn btn-info btn-xs" type="button" href="#training-modal" data-toggle="modal" data-title="${t.iso.title}" data-id="${t.iso.id}" data-pid="${t.isoTrainingPeriod.id}"<#if t.isoTrainingLog?has_content> data-logid="${t.isoTrainingLog.id}" data-page="${t.isoTrainingLog.lastPageNo?default(0)}" data-percent="${t.isoTrainingLog.progressPercent?default(0)}" data-time="${t.isoTrainingLog.trainingTime?default(0)}"</#if> data-test="${t.iso.quiz?has_content?then('Y', 'N')}" data-total="${(t.isoAttachFile.totalPage?has_content)?then(t.isoAttachFile.totalPage, 0)}"<#if t.isoAttachFile.totalPage?has_content == false> disabled="disabled"</#if>><i class="fa fa-search"></i> Training</button>
                             </#if>
                         </td>
                     </tr>
@@ -109,7 +109,6 @@
     <input type="hidden" name="isoId" id="isoId">
     <input type="hidden" name="isoTrainingPeriodId" id="isoTrainingPeriodId">
     <input type="hidden" name="isoTrainingLogId" id="isoTrainingLogId">
-    <input type="hidden" name="isoCertification" id="isoCertification">
     <input type="hidden" name="progressPercent" id="progressPercent">
     <input type="hidden" name="trainingTime" id="trainingTime">
     <input type="hidden" name="lastPageNo" id="lastPageNo">
@@ -166,6 +165,8 @@
     $(document).ready(function() {
         var modal;
         var isoId;
+        var test;
+
         $('#training-modal').on('show.bs.modal', function (event) {
             current = 1;
             time.h = 0;
@@ -175,8 +176,12 @@
 
             var button = $(event.relatedTarget); // Button that triggered the modal
             isoId = button.data('id'); // Extract info from data-* attributes
+            test = button.data('test'); // Quiz exist check
+            console.log("Quiz : ", test);
+
             $("#isoId").val(isoId);
             $("#isoTrainingPeriodId").val(button.data('pid'));
+
 
             if(button.data('time')) {
                 time.total = parseInt(button.data('time'));
@@ -221,20 +226,25 @@
                     clearInterval(intervalId);
                     intervalId = null;
 
-                    submitData();
+                    submitData(test);
                 }
             }
         });
 
-        function submitData() {
-            if($("#isoCertification").val() == 'Y' && parseInt($('#progressPercent').val()) == 100) {
-
+        function submitData(test) {
+            if(parseInt($('#progressPercent').val()) == 100 && test == 'N') {
                 bootbox.dialog({
-                    message: '<p><i class="fa fa-spin fa-spinner"></i> 수료증 생성중입니다. 잠시만 기다려 주세요..</p>',
+                    message: '<div class="sk-three-bounce" style="width: 100%">' +
+                        '<div class="sk-child sk-bounce1"></div>' +
+                        '<div class="sk-child sk-bounce2"></div>' +
+                        '<div class="sk-child sk-bounce3"></div>' +
+                        '<p> 수료증 생성중입니다. 잠시만 기다려 주세요..</p>' +
+                        '</div>',
                     closeButton: false
                 })
 
             }
+
             var data = $("#trainingLogForm").serialize();
             $.ajax({
                 type:'post',
@@ -424,13 +434,15 @@
             });
         });
 
-        $("#testForm").submit(function() {
+        $("#testForm").submit(function(event) {
+
             return testValidate();
         });
     });
 
     function testValidate() {
-        for(var i = 0; i < 5; i ++) {
+        let quizSize = $("#quizSize").val();
+        for(var i = 0; i < quizSize; i ++) {
             var checked = $("#answerDiv"+i+" input[type='checkbox']:checked").length;
             if(checked == 0) {
                 $.niftyNoty({

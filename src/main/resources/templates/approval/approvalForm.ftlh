@@ -231,7 +231,7 @@
                                 var $li = $($el);
                                 var idx = (i + 1);
                                 // $li.find('input[type=hidden]').remove();
-                                var lineType = $li.find('select option:selected').val();
+                                var lineType = $li.find('input[type="hidden"]').val();
                                 $li.append("<input type='hidden' name='approvalLines[" + idx + "].id' value=''/>");
                                 $li.append("<input type='hidden' name='approvalLines[" + idx + "].username' value='"+$li.data("username")+"'/>");
                                 $li.append("<input type='hidden' name='approvalLines[" + idx + "].displayName' value='"+$li.data("name")+"'/>");
@@ -246,7 +246,7 @@
                                     "</li>";
 
                                 if(idx < lineSize && lineType == 'approver') {
-                                    alert('결재 순서를 변경해 주세요.');
+                                    alert('결재 승인자는 1명만 가능합니다.');
                                     return false;
                                 }
 
@@ -269,12 +269,19 @@
                     var lineUsers = new Array();
                     function createLi(username, korName) {
                         lineUsers.push(username);
+                        // var htmlText = "<li class=\"dd-item\" data-username=\""+username+"\" data-name=\""+korName+"\">\n" +
+                        //     "<div class=\"dd-handle dd-handle-btn\"></div>\n" +
+                        //     "<div class=\"dd-content bord-all\"><div class='pull-right pad-rgt'><i class='fa fa-times' data-id=\""+username+"\"></i></div><select style='border:1px solid #eee;padding:1px;'>" +
+                        //     "<option value='reviewer'>검토</option>" +
+                        //     "<option value='approver'>승인</option>" +
+                        //     "</select> "+korName+"</div>\n" +
+                        //     "</li>";
+
                         var htmlText = "<li class=\"dd-item\" data-username=\""+username+"\" data-name=\""+korName+"\">\n" +
                             "<div class=\"dd-handle dd-handle-btn\"></div>\n" +
-                            "<div class=\"dd-content bord-all\"><div class='pull-right pad-rgt'><i class='fa fa-times' data-id=\""+username+"\"></i></div><select style='border:1px solid #eee;padding:1px;'>" +
-                            "<option value='reviewer'>검토</option>" +
-                            "<option value='approver'>승인</option>" +
-                            "</select> "+korName+"</div>\n" +
+                            "<div class=\"dd-content bord-all\"><div class='pull-right pad-rgt'><i class='fa fa-times' data-id=\""+username+"\"></i></div>" +
+                            "<input type='hidden' value='approver'>" +
+                            "<span class='label label-success'>승인</span>&nbsp;"+korName+"</div>\n" +
                             "</li>";
 
                         return htmlText

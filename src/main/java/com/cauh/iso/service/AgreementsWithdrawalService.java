@@ -1,6 +1,7 @@
 package com.cauh.iso.service;
 
 import com.cauh.common.entity.Account;
+import com.cauh.common.entity.constant.UserStatus;
 import com.cauh.iso.domain.AgreementPersonalInformation;
 import com.cauh.iso.domain.AgreementsWithdrawal;
 import com.cauh.iso.domain.ConfidentialityPledge;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -82,6 +84,7 @@ public class AgreementsWithdrawalService {
 
             Optional<ConfidentialityPledge> confidentialityPledgeOptional = confidentialityPledgeRepository.findByInternalUser(user);
             if(confidentialityPledgeOptional.isPresent()) {
+
                 //기밀유지 서약 동의 철회 설정.
                 ConfidentialityPledge confidentialityPledge = confidentialityPledgeOptional.get();
                 confidentialityPledge.setAgree(false);
@@ -89,6 +92,12 @@ public class AgreementsWithdrawalService {
             }
 
             //TODO :: 회원탈퇴 절차 추가 필요.
+            if(ObjectUtils.isEmpty(user)) {
+                //회원탈퇴 절차 진행
+                user.setEnabled(false);
+                user.setAccountExpiredDate(new Date());
+                user.setUserStatus(UserStatus.RETIREE);
+            }
 
             //위의 내역 반영 후 적용
             agreementsWithdrawal.setApply(true);

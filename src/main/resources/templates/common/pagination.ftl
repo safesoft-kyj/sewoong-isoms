@@ -60,7 +60,37 @@
 -->
 <#macro bind paginationData>
     <#assign data = paginationData />
+
+    <form id="searchForm">
+        <input type="hidden" id="pageNumber" name="page" value="${data.number}"/>
+        <input type="hidden" id="listSize" name="size" value="${data.size}"/>
+        <#list data.sort.iterator() as sort>
+            <input type="hidden" name="sort" value="${sort.property},${sort.direction}"/>
+        </#list>
+        <#if RequestParameters?has_content>
+            <#list RequestParameters?keys as k>
+                <#if k != 'page' && k != 'size' && k != 'sort'>
+                    <input type="hidden" name="${k}" value="${RequestParameters[k]!''}"/>
+                </#if>
+            </#list>
+        </#if>
+    </form>
+    <script>
+        //파라메터 1개 (페이지 번호)
+        //2개는 (페이지번호, 리스트사이트)
+        function goPage() {
+            if(arguments.length == 1) {
+                $("#pageNumber").val(arguments[0]);
+            } else if(arguments.length == 2) {
+                $("#pageNumber").val(arguments[0]);
+                $("#listSize").val(arguments[1]);
+            }
+            $("#searchForm").submit();
+        }
+    </script>
 </#macro>
+
+
 
 <#macro default>
     <div class="row">
@@ -69,11 +99,12 @@
                 <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
                     <i class="fa fa-list-ol"></i>
                     <span class="caret"></span>
+
                 </button>
                 <ul role="menu" class="dropdown-menu dropdown-menu-sm dropdown-menu-left">
                     <#list 1..6 as i>
                         <#assign viewSize = i * 5/>
-                        <li><a href="<@getQueryString viewSize/>">${viewSize}</a></li>
+                        <li><a href="javascript:goPage(0, ${viewSize})">${viewSize}</a></li>
                     </#list>
                 </ul>
             </div>
@@ -97,7 +128,11 @@
 
     <!--===================================================-->
     <!--End Pagination with disabled and active states-->
+
+
 </#macro>
+
+
 
 <#--
  * Outputs the first page link
@@ -198,11 +233,11 @@
             <#local classAttr = "" />
         </#if>
         <@page pageNumber, "", classAttr/>
-<#--        <#if pageNumber_has_next>${separator}</#if>-->
+    <#--        <#if pageNumber_has_next>${separator}</#if>-->
     </#list>
 </#macro>
 
-<#macro getQueryString viewSize=0>?page=${data.number}&amp;size=${(viewSize == 0)?then(data.size, viewSize)}<#list data.sort.iterator() as sort>&sort=${sort.property},${sort.direction}</#list></#macro>
+<#macro getQueryString viewSize=0>?page=${data.number}&amp;size=${(viewSize == 0)?then(data.size, viewSize)}<#list data.sort.iterator() as sort>&sort=${sort.property},${sort.direction}</#list>&docId=${RequestParameters['docId']!''}</#macro>
 <#--
  * Outputs a link to a specific page.
  *
@@ -218,7 +253,7 @@
         <#local attributes = " " + attributes />
     </#if>
 <#--<a href="?field=${data.sortField?url}&amp;page=${pageNumber}&amp;size=${data.pageSize}&amp;direction=${data.sortDirection?url}"${attributes}>${text?html}</a>-->
-    <li${attributes}><a href="?page=${pageNumber}&amp;size=${data.size}<#list data.sort.iterator() as sort>&sort=${sort.property},${sort.direction}</#list>"${className}><#if className?has_content == false>${text?html}</#if></a></li>
+    <li${attributes}><a href="javascript:goPage(${pageNumber})"${className}><#if className?has_content == false>${text?html}</#if></a></li>
 <#--    <li class="disabled"><a href="#" class="demo-pli-arrow-left"></a></li>-->
 </#macro>
 
@@ -243,18 +278,18 @@
     <#assign matched = false/>
     <#assign s = ""/>
     <#list data.sort.iterator() as sort>
-    <#if sort?is_first>
-    <#assign s = "?"/>
-    <#else>
-    <#assign s += "&"/>
-    </#if>
-    <#if sort.property == fieldName>
-        <#assign matched = true/>
-        <#assign direction=(sort.direction?upper_case == 'DESC')?then('asc', 'desc')/>
-        <#assign s += "sort=${fieldName},${direction}"/>
-    <#else>
-        <#assign s += "sort=${sort.property},asc"/>
-    </#if>
+        <#if sort?is_first>
+            <#assign s = "?"/>
+        <#else>
+            <#assign s += "&"/>
+        </#if>
+        <#if sort.property == fieldName>
+            <#assign matched = true/>
+            <#assign direction=(sort.direction?upper_case == 'DESC')?then('asc', 'desc')/>
+            <#assign s += "sort=${fieldName},${direction}"/>
+        <#else>
+            <#assign s += "sort=${sort.property},asc"/>
+        </#if>
     </#list>
 
     <#if matched == false>

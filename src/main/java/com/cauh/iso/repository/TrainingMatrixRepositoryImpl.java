@@ -15,6 +15,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.xpath.operations.Bool;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -158,32 +159,30 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
             BooleanBuilder docStatus = new BooleanBuilder();
             QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
             docStatus.and(qDocumentVersion.status.in(DocumentStatus.APPROVED, DocumentStatus.EFFECTIVE));
-            return getMyMandatoryTrainingList(user.getDepartment(), user.getId(), null, null, pageable, docStatus);
+
+            BooleanBuilder completeStatus = new BooleanBuilder();
+            QTrainingLog qTrainingLog = QTrainingLog.trainingLog;
+            completeStatus.and(qTrainingLog.status.notIn(TrainingStatus.COMPLETED).or(qTrainingLog.status.isNull()));
+
+            return getMyMandatoryTrainingList(user.getDepartment(), user.getId(), null, null, pageable, docStatus, completeStatus);
         }
     }
 
     /**
      * 필수 트레이닝 이며, Training을 완료한 경우는 제외하고 리스트를 가져온다.
      */
-    private JPAQuery getMyMandatoryTrainingListJpaQuery(Department department, Integer userId, String docId, Account loginUser, BooleanBuilder docStatus) {
+    private JPAQuery getMyMandatoryTrainingListJpaQuery(Department department, Integer userId, String docId, Account loginUser, BooleanBuilder docStatus, BooleanBuilder completeStatus) {
         QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
         QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
         QTrainingPeriod qTrainingPeriod = QTrainingPeriod.trainingPeriod;
         QAccount qUser = QAccount.account;
         QTrainingLog qTrainingLog = QTrainingLog.trainingLog;
         QUserMatrix qUserMatrix = QUserMatrix.userMatrix;
-        //
-//        if(ObjectUtils.isEmpty(employees)) {
-//            User user = userRepository.findById(userId).get();
-//            employees.add(user.getUsername());
-//        }
 
-//        User user = userRepository.findById(userId).get();
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qUser.enabled.eq(true));
         builder.and(qUser.indate.isNotNull());
-//        builder.and(qUser.empNo.isNotNull());
-//        if(ObjectUtils.isEmpty(loginUser) == false) builder.and(qUser.id.ne(loginUser.getId()));
+
         if (!StringUtils.isEmpty(department)) {
             builder.and(qUser.department.eq(department));
         }
@@ -212,36 +211,23 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
                         .where(qUserJobDescription.user.username.eq(qUser.username)
                         .and(qUserJobDescription.status.eq(JobDescriptionStatus.APPROVED))), "assignDate")
         ))
-        .from(qUser)
-//        .leftJoin(qUserJobDescription).on(qUser.username.eq(qUserJobDescription.username).and(qUserJobDescription.status.in(statusList)))
-//        .join(trainingMatrix).on(trainingMatrix.trainingAll.eq(true).or(qUserJobDescription.jobDescriptionVersion.jobDescription.id.eq(trainingMatrix.jobDescription.id)))
-
-//                .join(trainingMatrix)
-//                .on(trainingMatrix.id.in(JPAExpressions.select(SQLExpressions.max(trainingMatrix.id))
-//                        .from(trainingMatrix)
-//                        .where(trainingMatrix.trainingAll.eq(true).or(trainingMatrix.jobDescription.id.in(JPAExpressions
-//                                .select(qUserJobDescription.jobDescriptionVersion.jobDescription.id)
-//                                .from(qUserJobDescription)
-//                                .where(qUserJobDescription.username.eq(qUser.username))
-////                                .where(qUserJobDescription.username.in(employees))
-//                        ))).groupBy(trainingMatrix.documentVersion.id)
-//                ))
-                .join(qUserMatrix).on(qUser.id.eq(qUserMatrix.userId))
-                .join(qTrainingPeriod).on(qUserMatrix.trainingPeriodId.eq(qTrainingPeriod.id))
-                .join(qDocumentVersion).on(qTrainingPeriod.documentVersion.id.eq(qDocumentVersion.id).and(docStatus))
-//        .on(qTrainingPeriod.documentVersion.id.eq(qDocumentVersion.id))
-//        .on(
-//            qTrainingPeriod.trainingType.eq(TrainingType.SELF).and(qTrainingPeriod.startDate.loe(new Date()))
-//            .or(qTrainingPeriod.trainingType.eq(TrainingType.REFRESH).and(qTrainingPeriod.startDate.goe(qUser.inDate)))
-//            .or(qTrainingPeriod.trainingType.eq(TrainingType.RE_TRAINING).and(qTrainingPeriod.retrainingUser.id.eq(qUser.id)))
-//        )
-        .leftJoin(qTrainingLog)
-                .on(qTrainingLog.trainingPeriod.id.eq(qUserMatrix.trainingPeriodId).and(qTrainingLog.user.id.eq(qUserMatrix.userId)))
-                .on(qTrainingLog.id.in(
+                .from(qUser)
+                .join(qUserMatrix)
+                    .on(qUser.id.eq(qUserMatrix.userId))
+                .join(qTrainingPeriod)
+                    .on(qUserMatrix.trainingPeriodId.eq(qTrainingPeriod.id))
+                .join(qDocumentVersion)
+                    .on(qTrainingPeriod.documentVersion.id.eq(qDocumentVersion.id)
+                        .and(docStatus))
+                .leftJoin(qTrainingLog)
+                    .on(qTrainingLog.trainingPeriod.id.eq(qUserMatrix.trainingPeriodId)
+                        .and(qTrainingLog.user.id.eq(qUserMatrix.userId)))
+                    .on(qTrainingLog.id.in(
                         JPAExpressions.select(qTrainingLog.id).from(qTrainingLog)
-                        .where(qTrainingLog.reportStatus.notIn(DeviationReportStatus.REJECTED, DeviationReportStatus.DELETED))))
+                        .where(qTrainingLog.reportStatus
+                                .notIn(DeviationReportStatus.REJECTED, DeviationReportStatus.DELETED))))
         .where(builder)
-        .where(qTrainingLog.status.isNull().or(qTrainingLog.status.ne(TrainingStatus.COMPLETED)))
+        .where(completeStatus)
         .orderBy(qDocumentVersion.document.docId.asc());
 
         return jpaQuery;
@@ -272,8 +258,8 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
 
         if(!StringUtils.isEmpty(docId)) {
             log.info("@DocId : {}", docId);
-            if(!docId.toUpperCase().startsWith("SOP-")) {
-                docId = "SOP-" + docId;
+            if(!docId.toUpperCase().startsWith("CAUH-")) {
+                docId = "CAUH-" + docId;
             }
             builder.and(trainingMatrix.documentVersion.document.docId.like(docId.toUpperCase() + "%"));
         }
@@ -314,9 +300,9 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
         return jpaQuery;
     }
 
-    public Page<MyTraining> getMyMandatoryTrainingList(Department department, Integer userId, String docId, Account user, Pageable pageable, BooleanBuilder docStatus) {
+    public Page<MyTraining> getMyMandatoryTrainingList(Department department, Integer userId, String docId, Account user, Pageable pageable, BooleanBuilder docStatus, BooleanBuilder completeStatus) {
 
-        JPAQuery<MyTraining> jpaQuery = getMyMandatoryTrainingListJpaQuery(department, userId, docId, user, docStatus);
+        JPAQuery<MyTraining> jpaQuery = getMyMandatoryTrainingListJpaQuery(department, userId, docId, user, docStatus, completeStatus);
         QueryResults<MyTraining> results = null;
 
         try{
@@ -341,33 +327,33 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
      * @param docStatus
      * @return
      */
-    public Page<MyTraining> getTrainingList(Department department, Integer userId, String docId, Account user, Pageable pageable, BooleanBuilder docStatus) {
+    public Page<MyTraining> getTrainingList(Department department, Integer userId, String docId, Account user, Pageable pageable, BooleanBuilder docStatus, BooleanBuilder completeStatus) {
 
 //        JPAQuery<MyTraining> jpaQuery = getTrainingListJpaQuery(deptCode, teamCode, userId, docId, user, docStatus, statusList);
 //        QueryResults<MyTraining> results = jpaQuery.offset(pageable.getOffset())
 //        .limit(pageable.getPageSize())
 //                .fetchResults();
-        JPAQuery<MyTraining> jpaQuery = getMyMandatoryTrainingListJpaQuery(department, userId, docId, user, docStatus);
-        QueryResults<MyTraining> results;
+
+        JPAQuery<MyTraining> jpaQuery = getMyMandatoryTrainingListJpaQuery(department, userId, docId, user, docStatus, completeStatus);
 
         try{
-            results = jpaQuery.offset(pageable.getOffset())
+            QueryResults<MyTraining> results = jpaQuery.offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetchResults();
+
+            return new PageImpl<>(results.getResults(), pageable, results.getTotal());
         }catch(Exception e) {
             log.error("@Training Log List 동작 중 에러 발생 : {}", e.getMessage());
             return new PageImpl<>(new ArrayList<>(), pageable, 0);
         }
-
-        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 
-    public List<MyTraining> getDownloadTrainingList(Department department, Integer userId, String docId, Account user) {
+    public List<MyTraining> getDownloadTrainingList(Department department, Integer userId, String docId, Account user, BooleanBuilder completeStatus) {
         BooleanBuilder docStatus = new BooleanBuilder();
         QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
         docStatus.and(qDocumentVersion.status.in(DocumentStatus.APPROVED, DocumentStatus.EFFECTIVE));
 
-        JPAQuery<MyTraining> jpaQuery = getMyMandatoryTrainingListJpaQuery(department, userId, docId, user, docStatus);
+        JPAQuery<MyTraining> jpaQuery = getMyMandatoryTrainingListJpaQuery(department, userId, docId, user, docStatus, completeStatus);
 //        BooleanBuilder docStatus = new BooleanBuilder();
 //        QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
 //        docStatus.and(qDocumentVersion.status.notIn(DocumentStatus.REVISION, DocumentStatus.DEVELOPMENT));
@@ -383,7 +369,7 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
     }
 
 
-    @Override
+    @Override // My Training List를 불러온다.
     public Page<MyTraining> getISOMyTraining(Pageable pageable, Account user) {
 
         QISOTrainingPeriod qIsoTrainingPeriod = QISOTrainingPeriod.iSOTrainingPeriod;
@@ -407,12 +393,19 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
                 )
                 .from(iSOTrainingMatrix)
                 .where(builder)
-                .join(qISO).on(iSOTrainingMatrix.iso.id.eq(qISO.id))
-                .join(qIsoAttachFile).on(qISO.id.eq(qIsoAttachFile.iso.id))
-                .join(qIsoTrainingPeriod).on(qISO.id.eq(qIsoTrainingPeriod.iso.id)
-                        .and(qISO.training.eq(true).and(qISO.active.eq(true))
+                .join(qISO)
+                    .on(iSOTrainingMatrix.iso.id.eq(qISO.id))
+                .join(qIsoAttachFile)
+                    .on(qISO.id.eq(qIsoAttachFile.iso.id))
+                .join(qIsoTrainingPeriod)
+                    .on(qISO.id.eq(qIsoTrainingPeriod.iso.id)
+                        .and(qISO.training.eq(true)
+                                .and(qISO.active.eq(true))
                                 .and(qIsoTrainingPeriod.trainingType.eq(TrainingType.SELF)
-                                        .and(qIsoTrainingPeriod.startDate.loe(new Date())))))
+                                        .and(qIsoTrainingPeriod.startDate.loe(new Date()))
+                                )
+                        )
+                    )
                 .leftJoin(qIsoTrainingLog).on(qISO.id.eq(qIsoTrainingLog.iso.id)
                         .and(qIsoTrainingLog.user.id.eq(user.getId())))
                 .where(qIsoTrainingLog.status.ne(TrainingStatus.COMPLETED)
@@ -421,70 +414,14 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
                 .limit(pageable.getPageSize())
                 .fetchResults();
 
-        /*queryFactory.selectDistinct(Projections.constructor(MyTraining.class,
-                iSOTrainingMatrix.iso,
-                qIsoAttachFile,
-                qIsoTrainingPeriod,
-                qIsoTrainingLog,
-                qIsoTrainingPeriod.startDate,
-                qIsoTrainingPeriod.endDate)
-        )
-                .from(iSOTrainingMatrix)
-                .where(builder)
-                .join(qIsoAttachFile)
-                .on(iSOTrainingMatrix.iso.id.eq(qIsoAttachFile.iso.id))
-                .join(qIsoTrainingPeriod)
-                .on(iSOTrainingMatrix.iso.id.eq(qIsoTrainingPeriod.iso.id)
-                        .and(qIsoTrainingPeriod.trainingType.eq(TrainingType.SELF))
-                        .and(qIsoTrainingPeriod.startDate.loe(new Date()))
-                )
-                .leftJoin(qIsoTrainingLog)
-                .on(qIsoTrainingPeriod.id.eq(qIsoTrainingLog.isoTrainingPeriod.id)
-                        .and(qIsoTrainingLog.user.id.eq(user.getId()))
-                        .and(qIsoTrainingLog.status.ne(TrainingStatus.COMPLETED))
-                )
-                .where(iSOTrainingMatrix.iso.training.eq(true).and(iSOTrainingMatrix.iso.active.eq(true)))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetchResults();*/
-
-        /*queryFactory
-                .selectDistinct(Projections.constructor(MyTraining.class,
-                        iSOTrainingMatrix.iso,
-                        qIsoAttachFile,
-                        qIsoTrainingPeriod,
-                        qIsoTrainingLog,
-                        qIsoTrainingPeriod.startDate,
-                        qIsoTrainingPeriod.endDate)
-                )
-                .from(iSOTrainingMatrix)
-                .join(qISO).on(iSOTrainingMatrix.iso.id.eq(qISO.id))
-                .join(qIsoAttachFile).on(qISO.id.eq(qIsoAttachFile.iso.id))
-                .join(qIsoTrainingPeriod).on(qISO.id.eq(qIsoTrainingPeriod.iso.id)
-                        .and(qISO.training.eq(true).and(qISO.active.eq(true))
-                                .and(qIsoTrainingPeriod.trainingType.eq(TrainingType.SELF)
-                                .and(qIsoTrainingPeriod.startDate.loe(new Date())))))
-                .leftJoin(qIsoTrainingLog).on(qISO.id.eq(qIsoTrainingLog.iso.id)
-                        .and(qIsoTrainingLog.type.eq(TrainingType.SELF)
-                                .and(qIsoTrainingLog.status.ne(TrainingStatus.COMPLETED))))
-                .where(iSOTrainingMatrix.user.id.eq(user.getId())
-                        .or(iSOTrainingMatrix.trainingAll.eq(true).and(iSOTrainingMatrix.user.id.isNull())))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetchResults();*/
-
-
-
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 
     /**
      * ISO 트레이닝 이며, Training을 완료한 경우는 제외하고 리스트를 가져온다.
      */
-    private JPAQuery getMyISOTrainingListJpaQuery(Department department, Integer userId, ISOType isoType) {
-        QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
+    private JPAQuery getMyISOTrainingListJpaQuery(Department department, Integer userId, ISOType isoType, BooleanBuilder completeStatus) {
         QISO qISO = QISO.iSO;
-        QISOAttachFile qISOAttachFile = QISOAttachFile.iSOAttachFile;
         QISOTrainingPeriod qISOTrainingPeriod = QISOTrainingPeriod.iSOTrainingPeriod;
         QISOTrainingLog qISOTrainingLog = QISOTrainingLog.iSOTrainingLog;
         QAccount qUser = QAccount.account;
@@ -492,8 +429,7 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qUser.enabled.eq(true));
         builder.and(qUser.indate.isNotNull());
-//        builder.and(qUser.empNo.isNotNull());
-//        if(ObjectUtils.isEmpty(loginUser) == false) builder.and(qUser.id.ne(loginUser.getId()));
+
         if (!ObjectUtils.isEmpty(department)) {
             builder.and(qUser.department.eq(department));
             
@@ -509,6 +445,7 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
         if(!ObjectUtils.isEmpty(isoType)) {
             log.info("@isoType : {}", isoType);
             builder.and(qISO.isoType.eq(isoType));
+            builder.and(qISO.training.eq(true).and(qISO.active.eq(true)));
         }
 
         JPAQuery<MyTraining> jpaQuery = queryFactory.select(Projections.constructor(MyTraining.class,
@@ -518,25 +455,33 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
                 qISOTrainingLog,
                 qISOTrainingPeriod.startDate,
                 qISOTrainingPeriod.endDate))
-                .from(qUser)
-                .join(iSOTrainingMatrix).on(qUser.id.eq(iSOTrainingMatrix.user.id).or(iSOTrainingMatrix.trainingAll.eq(true).and(iSOTrainingMatrix.user.id.isNull())))
-                .join(qISO).on(qISO.id.eq(iSOTrainingMatrix.iso.id).and(qISO.active.eq(true).and(qISO.training.eq(true)))) //Active 된 Training인 경우,
-                .join(qISOTrainingPeriod).on(qISOTrainingPeriod.iso.id.eq(qISO.id))
+                .from(qISO)
+                .join(qISOTrainingPeriod)
+                .on(qISO.id.eq(qISOTrainingPeriod.iso.id)
+                        .and(qISO.training.eq(true)
+                                .and(qISO.active.eq(true))
+                                .and(qISOTrainingPeriod.trainingType.eq(TrainingType.SELF))
+                        )
+                )
+                .join(iSOTrainingMatrix)
+                    .on(qISO.id.eq(iSOTrainingMatrix.iso.id))
+                .join(qUser)
+                    .on(iSOTrainingMatrix.user.id.eq(qUser.id)
+                            .or((iSOTrainingMatrix.user.id.isNull().and(iSOTrainingMatrix.trainingAll.eq(true)))))
                 .leftJoin(qISOTrainingLog)
-                .on(qISOTrainingLog.user.id.eq(qUser.id)
-                        .and(qISOTrainingLog.iso.id.eq(qISO.id))
-                        .and(qISOTrainingLog.isoTrainingPeriod.id.eq(qISOTrainingPeriod.id)))
+                    .on(qISOTrainingLog.iso.id.eq(qISO.id)
+                            .and(qISOTrainingLog.user.id.eq(qUser.id)))
                 .where(builder)
-//                .where(qISOTrainingLog.status.isNull().or(qISOTrainingLog.status.ne(TrainingStatus.COMPLETED)))
+                .where(completeStatus)
                 .orderBy(qISO.id.asc());
 
         return jpaQuery;
     }
 
     @Override
-    public Page<MyTraining> getISOTrainingList(Department department, Integer userId, ISOType isoType, Pageable pageable) {
+    public Page<MyTraining> getISOTrainingList(Department department, Integer userId, ISOType isoType, Pageable pageable, BooleanBuilder completeStatus) {
 
-        JPAQuery<MyTraining> jpaQuery = getMyISOTrainingListJpaQuery(department, userId, isoType);
+        JPAQuery<MyTraining> jpaQuery = getMyISOTrainingListJpaQuery(department, userId, isoType, completeStatus);
         QueryResults<MyTraining> results;
 
         try{
@@ -549,5 +494,17 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
         }
 
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+    }
+
+    @Override
+    public List<MyTraining> getDownloadISOTrainingList(Department department, Integer userId, ISOType isoType, BooleanBuilder completeStatus) {
+        JPAQuery<MyTraining> jpaQuery = getMyISOTrainingListJpaQuery(department, userId, isoType, completeStatus);
+
+        try{
+            return jpaQuery.fetch();
+        }catch(Exception e) {
+            log.error("@ISO Training Log Download List 동작 중 에러 발생 : {}", e.getMessage());
+            return new ArrayList<>();
+        }
     }
 }

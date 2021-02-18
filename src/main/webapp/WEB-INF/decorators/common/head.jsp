@@ -27,6 +27,9 @@
 <link href="/static/premium/icon-sets/icons/line-icons/premium-line-icons.min.css" rel="stylesheet">
 <link href="/static/premium/icon-sets/icons/solid-icons/premium-solid-icons.min.css" rel="stylesheet">
 
+<!--Spinkit [ OPTIONAL ]-->
+<link href="/static/plugins/spinkit/css/spinkit.min.css" rel="stylesheet">
+
 <!-- No Print -->
 <%--<link href="/static/css/no_print.css" rel="stylesheet">--%>
 

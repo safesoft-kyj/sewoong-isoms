@@ -70,6 +70,11 @@ public class ISOTrainingController {
     public String myTraining(@PageableDefault(size = 25) Pageable pageable, @CurrentUser Account user, Model model) {
 
         Page<MyTraining> isoTrainingMatrices = trainingMatrixRepository.getISOMyTraining(pageable, user);
+
+        isoTrainingMatrices.getContent().forEach(t -> {
+                log.info("Quiz? : {}", t.getIso().getQuiz());
+        });
+
         model.addAttribute("trainingMatrix", isoTrainingMatrices);
 
         return "iso/training/trainingList";
@@ -247,6 +252,7 @@ public class ISOTrainingController {
         double correctCount = 0;
         double questionCount = quiz.getQuizQuestions().size();
         log.info("@User : {} Quiz 정답 체크 시작", user.getUsername());
+
         for(QuizQuestion q : quiz.getQuizQuestions()) {
             List<Integer> correct = Arrays.asList(q.getCorrect());
             List<Integer> choices = q.getAnswers().stream().filter(a -> a.isCorrect()).map(a -> a.getIndex()).collect(Collectors.toList());
@@ -261,6 +267,9 @@ public class ISOTrainingController {
         ISOTrainingLog trainingLog = isoTrainingLogService.findById(isoTrainingLogId).get();
 
         double score = 0;
+        double curtLineCount = trainingLog.getIso().getCorrectCount();
+        double curLineScore = ((curtLineCount/questionCount) * 100);
+
         if(correctCount > 0) {
             score = ((correctCount / questionCount) * 100);
             log.debug("점수 : {}", score);
@@ -268,8 +277,11 @@ public class ISOTrainingController {
         }
 
         log.debug("=> 정답 수 : {}, 점수 : {}", correctCount, score);
+
+
         trainingLog.setScore((int)score);
-        if(correctCount >= trainingLog.getIso().getCorrectCount()) {
+
+        if(correctCount >= curtLineCount) {
             trainingLog.setStatus(TrainingStatus.COMPLETED);
             ISOTrainingCertification certification = ISOTrainingCertification.builder()
                                                     .certNo(isoTrainingCertificationService.getCertNo(trainingLog.getIso()))
@@ -283,7 +295,8 @@ public class ISOTrainingController {
             attributes.addFlashAttribute("message", trainingLog.getScore() + "점("+(int)questionCount+"문제중 정답 "+(int)correctCount+"개)으로 교육 완료 되었습니다.");
         } else {
             trainingLog.setStatus(TrainingStatus.TEST_FAILED);
-            attributes.addFlashAttribute("message", "점수는 [" + trainingLog.getScore() + "]입니다.("+(int)questionCount+"문제중 정답 "+(int)correctCount+"개) 80점이상 이수 가능 합니다.");
+            attributes.addFlashAttribute("type", "danger");
+            attributes.addFlashAttribute("message", "점수는 [" + trainingLog.getScore() + "]입니다.("+(int)questionCount+"문제중 정답 "+(int)correctCount+"개) " + ((int)curLineScore) + "점이상 이수 가능 합니다.");
         }
 
         isoTrainingLogService.saveOrUpdate(trainingLog, quiz);

@@ -7,7 +7,7 @@ import java.io.ByteArrayInputStream;
 @Data
 public class NonDisclosureAgreementDTO {
     private String customerName;
-    private String jobTitleAndCompany;
+    private String RoleAndCompany;
     private ByteArrayInputStream sign;
     private String purpose;
     private String purposeOther;

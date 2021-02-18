@@ -69,6 +69,9 @@ public class ISOValidator implements Validator {
             if (ObjectUtils.isEmpty(iso.getCorrectCount())) {
                 errors.rejectValue("correctCount", "message.iso.correctCount.required", "합격 문항 개수를 입력해주세요");
             }
+            else if(iso.getCorrectCount() > 30) {
+                errors.rejectValue("correctCount", "message.iso.correctCount.required", "합격 문항 개수가 최대 문항 개수를 넘었습니다. (30↑)");
+            }
         }
     }
 }

@@ -33,7 +33,7 @@
                         <select name="userId" id="userList" class="form-control">
                             <option value=""${(pUserId == 0)?then('', ' selected')}>Select User</option>
                             <#list userList as user>
-                                <option value="${user.id}"${(pUserId != 0)?then((pUserId == user.username)?then(' selected', ''), '')}>${user.name!''}</option>
+                                <option value="${user.id}"${(pUserId != 0)?then((pUserId == user.id)?then(' selected', ''), '')}>${user.name!''}</option>
                             </#list>
                         </select>
                         </div>

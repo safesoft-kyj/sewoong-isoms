@@ -8,7 +8,6 @@
 <body>
 
 
-
 <div class="panel">
     <!--Data Table-->
     <!--===================================================-->
@@ -30,10 +29,23 @@
                 <#if trainingAccessLog.content?has_content>
                     <#list trainingAccessLog.content as access>
                         <tr>
+
                             <td class="text-center">${(trainingAccessLog.totalElements - (trainingAccessLog.size * trainingAccessLog.number)) - access?index}
-                            <td class="text-center"><span class="label label-${access.trainingLogType.className} label-table">${access.trainingLogType.label}</span></td>
-                            <td class="text-center"><span class="label label-table label-${access.accessType.className}"> ${access.accessType.name()}</span></td>
-                            <td class="text-center"><span class="text-muted">${access.createdDate?string('yyyy-MM-dd HH:mm:ss')}</span></td>
+                            <td class="text-center"><span
+                                        class="label label-${access.trainingLogType.className} label-table add-popover"
+                                        data-toggle="popover" data-container="body" data-placement="top"
+                                        data-trigger="hover" data-html="true"
+                                        data-content="${access.trainingLogType.detail}"
+                                        style="max-width: 160px;">
+                                    ${access.trainingLogType.label}
+                                </span>
+                            </td>
+                            <td class="text-center"><span
+                                        class="label label-table label-${access.accessType.className}"> ${access.accessType.name()}</span>
+                            </td>
+                            <td class="text-center"><span
+                                        class="text-muted">${access.createdDate?string('yyyy-MM-dd HH:mm:ss')}</span>
+                            </td>
                             <td class="text-center">${access.user.name?default('System')}</td>
                         </tr>
                     </#list>

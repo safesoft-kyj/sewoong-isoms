@@ -4,35 +4,25 @@
     <title>Admin > User Management > 사용자별 ROLE 관리</title>
 </head>
 <body>
-<div class="tab-base">
-    <ul class="nav nav-tabs">
-        <li>
-            <a href="/admin/role">ROLE 관리</a>
-        </li>
-        <li class="active">
-            <a href="/admin/role/user">사용자별 ROLE 관리</a>
-        </li>
-    </ul>
-    <div class="tab-content">
+
 <div class="panel">
-    <#--    <div class="panel-heading">-->
-    <#--        <h3 class="panel-title">사용자별 ROLE 관리</h3>-->
-    <#--    </div>-->
-    <#--    <div class="pad-btm form-inline">-->
-    <#--        <div class="row">-->
-    <#--            <div class="col-sm-6 table-toolbar-left">-->
-    <#--            </div>-->
-    <#--            <div class="col-sm-6 table-toolbar-right">-->
-    <#--                <div class="btn-group">-->
-    <#--                    <a class="btn btn-primary" href="/admin/training/refresh-training/new"><i class="fa fa-plus"></i> Add Refresh Training</a>-->
-    <#--                </div>-->
-    <#--            </div>-->
-    <#--        </div>-->
-    <#--    </div>-->
+        <div class="panel-heading">
+            <h3 class="panel-title">사용자별 ROLE 관리</h3>
+        </div>
+    <div class="panel-control" style="float:left;">
+        <ul class="nav nav-tabs">
+            <li>
+                <a href="/admin/role">Role 관리</a>
+            </li>
+            <li class='active'>
+                <a href="/admin/role/user">사용자별 Role 관리</a>
+            </li>
+        </ul>
+    </div>
     <!--Data Table-->
     <!--===================================================-->
     <@pagination.bind userJobDescriptions/>
-    <div class="panel-body">
+    <div class="panel-body" style="margin-top:45px;">
         <div class="table-responsive">
             <table class="table table-hover table-bordered">
                 <thead>
@@ -81,7 +71,5 @@
     <!--===================================================-->
     <!--End Data Table-->
 </div><!-- end panel-->
-</div><!-- end tab-content -->
-</div><!-- end tab-based -->
 </body>
 </html>

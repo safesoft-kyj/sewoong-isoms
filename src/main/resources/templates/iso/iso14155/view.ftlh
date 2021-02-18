@@ -210,7 +210,7 @@
                             <button class="btn btn-default" id="removeBtn"><i class="pli-trash icon-lg"></i> 삭제</button>
                         </@security.authorize>
                         <div class="btn-group btn-group">
-                            <a class="btn btn-default" href="javascript:goToURL('/iso-14155');">
+                            <a class="btn btn-default" href="javascript:goToURL('/iso-14155/${viewIso.training?then('training', 'board')}');">
                                 <i class="psi-list-view"></i> 목록
                             </a>
                         </div>

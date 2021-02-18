@@ -36,6 +36,9 @@ public class MailServiceImpl implements MailService {
     @Value("${server.domain}")
     private String domain;
 
+    @Value("${mail.notice.name}")
+    private String emailName;
+
     private String EMAIL_PATH = "email/";
 
     public String processTemplate(String fileName, HashMap<String, Object> model, Locale locale) {
@@ -74,8 +77,8 @@ public class MailServiceImpl implements MailService {
             if(ObjectUtils.isEmpty(mail.getBcc()) == false) {
                 helper.setCc(mail.getBcc());
             }
-            helper.setReplyTo("ssoft@safesoft.co.kr", "SafeSoft Systems");
-            helper.setFrom("ssoft@safesoft.co.kr", "SafeSoft Systems");
+            helper.setReplyTo("ssoft@safesoft.co.kr", emailName);
+            helper.setFrom("ssoft@safesoft.co.kr", emailName);
             helper.setSubject(mail.getSubject());
             helper.setText(content, true);
             javaMailSender.send(message);

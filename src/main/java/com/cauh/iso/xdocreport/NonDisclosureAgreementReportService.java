@@ -32,21 +32,21 @@ public class NonDisclosureAgreementReportService {
 
     public void generateReport(NonDisclosureAgreement agreement, HttpServletResponse response) {
         try(OutputStream os = response.getOutputStream()) {
-            InputStream in = TrainingLogReportService.class.getResourceAsStream("SOP_Non_Disclosure_Agreement_01.docx");
+            InputStream in = TrainingLogReportService.class.getResourceAsStream("Non-Disclosure_Agreement_for_SOP_01.docx");
 
             SOPDisclosureRequestForm sopDisclosureRequestForm = agreement.getExternalCustomer().getSopDisclosureRequestForm();
-            StringBuilder jobTitleAndCompany = new StringBuilder();
+            StringBuilder roleAndCompany = new StringBuilder();
             if(!StringUtils.isEmpty(agreement.getExternalCustomer().getRole())) {
-                jobTitleAndCompany.append(agreement.getExternalCustomer().getRole());
+                roleAndCompany.append(agreement.getExternalCustomer().getRole());
             }
 
-            if(jobTitleAndCompany.length() != 0 && StringUtils.isEmpty(sopDisclosureRequestForm.getCompanyNameOrInstituteName()) == false) {
-                jobTitleAndCompany.append("/").append(sopDisclosureRequestForm.getCompanyNameOrInstituteName());
+            if(roleAndCompany.length() != 0 && StringUtils.isEmpty(sopDisclosureRequestForm.getCompanyNameOrInstituteName()) == false) {
+                roleAndCompany.append("/").append(sopDisclosureRequestForm.getCompanyNameOrInstituteName());
             }
 
             NonDisclosureAgreementDTO dto = new NonDisclosureAgreementDTO();
             dto.setCustomerName(agreement.getExternalCustomer().getName());
-            dto.setJobTitleAndCompany(jobTitleAndCompany.toString());
+            dto.setRoleAndCompany(roleAndCompany.toString());
             dto.setSign(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(agreement.getBase64signature())));
             dto.setPurpose(sopDisclosureRequestForm.getPurposeOfDisclosure().name());
             dto.setPurposeOther(sopDisclosureRequestForm.getPurposeOfDisclosureOther());

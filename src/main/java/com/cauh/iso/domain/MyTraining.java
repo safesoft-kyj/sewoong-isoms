@@ -132,7 +132,11 @@ public class MyTraining implements Serializable {
     }
 
     public String getStringStatus() {
-        return ObjectUtils.isEmpty(trainingLog) || ObjectUtils.isEmpty(trainingLog.getStatus()) ? TrainingStatus.NOT_STARTED.getLabel() : trainingLog.getStatus().getLabel();
+        if(ObjectUtils.isEmpty(iso)) {
+            return ObjectUtils.isEmpty(trainingLog) || ObjectUtils.isEmpty(trainingLog.getStatus()) ? TrainingStatus.NOT_STARTED.getLabel() : trainingLog.getStatus().getLabel();
+        } else {
+            return ObjectUtils.isEmpty(isoTrainingLog) || ObjectUtils.isEmpty(isoTrainingLog.getStatus()) ? TrainingStatus.NOT_STARTED.getLabel() : isoTrainingLog.getStatus().getLabel();
+        }
     }
 
     public Date getUserStartDate() {
@@ -217,7 +221,11 @@ public class MyTraining implements Serializable {
     }
 
     public String getCompleteDate() {
-        return ObjectUtils.isEmpty(trainingLog) ? "" : toString(trainingLog.getCompleteDate());
+        if(ObjectUtils.isEmpty(iso)) {
+            return ObjectUtils.isEmpty(trainingLog) ? "" : toString(trainingLog.getCompleteDate());
+        } else {
+            return ObjectUtils.isEmpty(isoTrainingLog) ? "" : toString(isoTrainingLog.getCompleteDate());
+        }
     }
 
     private String toString(Date date) {

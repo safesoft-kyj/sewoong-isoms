@@ -51,7 +51,7 @@
                             <td class="text-center">${t.sopDisclosureRequestForm.companyNameOrInstituteName}</td>
                             <td class="text-center">${t.name}</td>
                             <td class="text-center">${t.email}</td>
-                            <td class="text-center">${t.jobTitle!''}</td>
+                            <td class="text-center">${t.role!''}</td>
                             <td class="text-center">${t.sopDisclosureRequestForm.requestStartDate?string('yyyy-MM-dd')}~${t.sopDisclosureRequestForm.requestEndDate?string('yyyy-MM-dd')}</td>
                             <td class="text-center">
                                 <a class="btn btn-xs btn-info" href="#approval-modal" data-toggle="modal" data-title="SOP & Digital Binder Disclosure Request Form" data-id="${t.sopDisclosureRequestForm.approval.id}"><i class="fa fa-file-text-o"></i></a>

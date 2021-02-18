@@ -264,7 +264,7 @@
                 <#if trainingMatrixFile?has_content>
                 <tr class="bg-gray-light">
                     <td class="text-center"><i class="fa fa-exclamation-circle text-warning"></i></td>
-                    <td><a class="btn-link" target="_blank" href="/viewer/trainingMatrix" data-toggle="modal" data-title="${trainingMatrixFile.title}">${trainingMatrixFile.title}</a></td>
+                    <td><span class="label label-warning">Training Matrix</span>&nbsp;&nbsp;<a class="btn-link" target="_blank" href="/viewer/trainingMatrix" data-toggle="modal" data-title="${trainingMatrixFile.title}">${trainingMatrixFile.title}</a></td>
                     <td class="text-center"></td>
                     <td class="text-center"><span class="text-muted">${trainingMatrixFile.createdDate?string('yyyy-MM-dd')}</span></td>
                     <td class="text-center">System</td>

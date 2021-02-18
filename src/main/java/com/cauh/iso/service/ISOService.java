@@ -43,6 +43,10 @@ public class ISOService {
         return isoRepository.findAll(predicate, pageable);
     }
 
+    public ISO findById(String isoId) {
+        return isoRepository.findById(isoId).isPresent()?isoRepository.findById(isoId).get():null;
+    }
+
     public Iterable<ISO> findAll(Predicate predicate) {
         return isoRepository.findAll(predicate);
     }

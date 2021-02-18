@@ -1,11 +1,10 @@
 package com.cauh.iso.controller;
 
-import com.cauh.common.entity.QAccount;
 import com.cauh.common.entity.Account;
+import com.cauh.common.entity.QAccount;
 import com.cauh.common.entity.constant.UserStatus;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.annotation.CurrentUser;
-import com.cauh.common.security.authentication.GroupwareUserAuthService;
 import com.cauh.iso.domain.*;
 import com.cauh.iso.domain.constant.*;
 import com.cauh.iso.domain.report.*;
@@ -50,7 +49,6 @@ public class ApprovalController {
     private final DocumentVersionService documentVersionService;
     private final DocumentVersionRepository documentVersionRepository;
     private final CategoryService categoryService;
-    private final GroupwareUserAuthService groupwareUserAuthService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 

@@ -5,5 +5,5 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.history.RevisionRepository;
 
-public interface NoticeRepository extends PagingAndSortingRepository<Notice, Integer>, QuerydslPredicateExecutor<Notice>, RevisionRepository<Notice, Integer, Integer> {
+public interface NoticeRepository extends PagingAndSortingRepository<Notice, Integer>, QuerydslPredicateExecutor<Notice>, RevisionRepository<Notice, Integer, Long> {
 }

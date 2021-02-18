@@ -102,16 +102,12 @@
         <script src="/static/plugins/bootstrap-table/bootstrap-table.min.js"></script>
         <script>
             function tableActions(value, row, index) {
-                if (row.certHead != '') {
-                    return [
-                        '<button type="button" id="certBtn" name="certificationBtn" data-target="#cert-modal" data-toggle="modal" class="btn btn-info btn-xs" data-id="'
-                        + row.id + '" data-cert="' + row.certId + '">',
-                        'Certification Output',
-                        '</button>'
-                    ].join('');
-                } else {
-                    return '';
-                }
+                return [
+                    '<button type="button" id="certBtn" name="certificationBtn" data-target="#cert-modal" data-toggle="modal" class="btn btn-info btn-xs" data-id="'
+                    + row.id + '" data-cert="' + row.certNo + '">',
+                    'Certification Output',
+                    '</button>'
+                ].join('');
             }
         </script>
         <table data-toggle="table"

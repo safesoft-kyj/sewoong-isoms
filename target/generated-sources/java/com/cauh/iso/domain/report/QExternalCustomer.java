@@ -34,8 +34,6 @@ public class QExternalCustomer extends EntityPathBase<ExternalCustomer> {
 
     public final NumberPath<Integer> id = createNumber("id", Integer.class);
 
-    public final StringPath jobTitle = createString("jobTitle");
-
     //inherited
     public final StringPath lastModifiedBy = _super.lastModifiedBy;
 
@@ -43,6 +41,8 @@ public class QExternalCustomer extends EntityPathBase<ExternalCustomer> {
     public final DateTimePath<java.sql.Timestamp> lastModifiedDate = _super.lastModifiedDate;
 
     public final StringPath name = createString("name");
+
+    public final StringPath role = createString("role");
 
     public final QSOPDisclosureRequestForm sopDisclosureRequestForm;
 

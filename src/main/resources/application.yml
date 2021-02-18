@@ -87,6 +87,14 @@ gw:
     url: http://gw.dtnsm.com/checker9_new.aspx?txtDomainNum=4&sType=LOGIN&txtUserid={txtUserid}&txtpassword={txtpassword}
   sign-image: http://gw.dtnsm.com/common/download.aspx?DownType=approsign&file=
 
+mail:
+  notice:
+    name: CAUH System
+    adress: ISOCAU@caumc.or.kr
+
+cert:
+  header: "CAUH-ISO 14155 GCP-"
+
 
 #초 분 시 일 월 요일 연도
 scheduler:

@@ -7,6 +7,7 @@ import com.cauh.iso.domain.*;
 import com.cauh.iso.domain.constant.DocumentStatus;
 import com.cauh.iso.domain.constant.DocumentType;
 import com.cauh.iso.domain.constant.PostStatus;
+import com.cauh.iso.domain.constant.TrainingStatus;
 import com.cauh.iso.domain.report.RetirementDocument;
 import com.cauh.iso.repository.DocumentRepository;
 import com.cauh.iso.repository.DocumentVersionRepository;
@@ -566,10 +567,16 @@ public class DocumentVersionService {
         Iterable<Account> iterable = userRepository.findAll(builder);
 
         Date currentDate = DateUtils.truncate(new Date());
-        int[] diffArr = {0, 2, 6, 9};
+        int[] diffArr = {0, 2, 6, 9}; // 1일전, 3일전, 7일전, 10일전
+
+        //트레이닝 완료 되지 않았을 경우,
+        BooleanBuilder completeStatus = new BooleanBuilder();
+        QTrainingLog qTrainingLog = QTrainingLog.trainingLog;
+        completeStatus.and(qTrainingLog.status.notIn(TrainingStatus.COMPLETED).or(qTrainingLog.status.isNull()));
+        
         iterable.forEach(user -> {
             log.info("@SOP 트레이닝 이메일 알림을 전송한다.");
-            List<MyTraining> trainingList = trainingMatrixRepository.getDownloadTrainingList(null, user.getId(), null, null);
+            List<MyTraining> trainingList = trainingMatrixRepository.getDownloadTrainingList(null, user.getId(), null, null, completeStatus);
 
             for(int compareDiff : diffArr) {
                 log.info("@Diff : {}", compareDiff);

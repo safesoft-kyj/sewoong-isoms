@@ -98,8 +98,8 @@
                     <hr style="margin-top:5px;margin-bottom: 3px"/><div class="text-xs">Print Name</div>
                 </div>
                 <div class="col-xs-3 text-center">
-                    <div style="height:40px;" class="pad-top">${user.teamDept!''}</div>
-                    <hr style="margin-top:5px;margin-bottom: 3px"/><div class="text-xs">Title/Company</div>
+                    <div style="height:40px;" class="pad-top">${user.getRoleAndCompony()!''}</div>
+                    <hr style="margin-top:5px;margin-bottom: 3px"/><div class="text-xs">Role/Company</div>
                 </div>
                 <div class="col-xs-3 text-center">
                     <#if user.signature == true>

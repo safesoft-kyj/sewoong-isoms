@@ -53,7 +53,7 @@
                             <th class="text-center">Email</th>
                             <th class="text-center">Role</th>
                             <th class="text-center">Agreement Date</th>
-                            <#--                    <th style="width:80px;">#Actions</th>-->
+                            <th style="width:80px;">#Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -64,13 +64,19 @@
                                     <td class="text-center">${t.externalCustomer.sopDisclosureRequestForm.companyNameOrInstituteName}</td>
                                     <td class="text-center">${t.externalCustomer.name}</td>
                                     <td class="text-center">${t.externalCustomer.email}</td>
-                                    <td class="text-center">${t.externalCustomer.jobTitle!''}</td>
+                                    <td class="text-center">${t.externalCustomer.role!''}</td>
 
                                     <td class="text-center">${t.createdDate?string('yyyy-MM-dd')}</td>
-                                    <#--                            <td class="text-center">-->
-                                    <#--                                <a class="btn btn-info btn-xs" href="#approval-modal" data-toggle="modal" data-title="SOP & Digital Binder Disclosure Request Form" data-id="${t.externalCustomer.sopDisclosureRequestForm.approval.id}"><i class="fa fa-file-text-o"></i></a>-->
-                                    <#--                                <a href="agreement-to-collect-and-use/${t.id}/print" class="btn btn-mint btn-xs add-tooltip" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Print"><i class="fa fa-print"></i></a>-->
-                                    <#--                            </td>-->
+                                    <td class="text-center">
+                                        <a class="btn btn-info btn-xs" href="#approval-modal" data-toggle="modal"
+                                           data-title="SOP & Digital Binder Disclosure Request Form"
+                                           data-id="${t.externalCustomer.sopDisclosureRequestForm.approval.id}"><i
+                                                    class="fa fa-file-text-o"></i></a>
+                                        <a href="${t.id}/print"
+                                           class="btn btn-mint btn-xs add-tooltip" data-toggle="tooltip"
+                                           data-container="body" data-placement="top" data-original-title="Print"><i
+                                                    class="fa fa-print"></i></a>
+                                    </td>
                                 </tr>
                             </#list>
                         <#else>

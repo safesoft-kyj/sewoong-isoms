@@ -18,7 +18,10 @@
                 let btn = $(event.relatedTarget);
                 let certId = btn.data("cert");
                 $("#certId").val(certId);
-                $("#certHtml").html("Loading...");
+                $("#certHtml").html('<div class="sk-three-bounce" style="width: 100%">' +
+                '<div class="sk-child sk-bounce1"></div>' +
+                '<div class="sk-child sk-bounce2"></div>' +
+                '<div class="sk-child sk-bounce3"></div><p>Loading...</p></div>');
 
                 $.ajax({
                     url: '/ajax/training/iso/certification/' + certId,
@@ -28,7 +31,7 @@
 
                         setTimeout(function (){
                             $("#certHtml").html(certHtml);
-                        }, 3000);
+                        }, 1000);
                     }
                 });
 
@@ -105,16 +108,12 @@
         <script src="/static/plugins/bootstrap-table/bootstrap-table.min.js"></script>
         <script>
             function tableActions(value, row, index) {
-                 if (row.certification && row.certId != null) {
                     return [
                         '<button type="button" id="certBtn" name="certificationBtn" data-target="#cert-modal" data-toggle="modal" class="btn btn-info btn-xs" data-id="'
                         + row.id + '" data-cert="' + row.certId + '">',
                         'Certification Output',
                         '</button>'
                     ].join('');
-                } else {
-                    return '';
-                }
             }
         </script>
         <table data-toggle="table"

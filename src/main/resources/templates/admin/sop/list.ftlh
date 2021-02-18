@@ -65,9 +65,9 @@
                     <#if status == 'EFFECTIVE' || status == 'SUPERSEDED' || status == 'APPROVED' || status == 'DEVELOPMENT'>
                         <a class="btn btn-primary" href="javascript:goToURL('/admin/${type.name()}/management/${status.name()?lower_case}/new')"><i class="pli-pencil"></i> ${status.label} ${type.name()} 등록</a>
                     </#if>
-                    <#if status == 'EFFECTIVE'>
-                        <a href="/common/download/${type.name()}/index" class="btn btn-mint"><i class="fa fa-download"></i> ${type.name()} Index</a>
-                    </#if>
+<#--                    <#if status == 'EFFECTIVE'>-->
+<#--                        <a href="/common/download/${type.name()}/index" class="btn btn-mint"><i class="fa fa-download"></i> ${type.name()} Index</a>-->
+<#--                    </#if>-->
                 </div>
                 <div class="col-sm-6 table-toolbar-right">
                     <form>

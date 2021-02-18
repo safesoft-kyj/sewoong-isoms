@@ -101,8 +101,8 @@ public class UserAgreementController {
         agreementPersonalInformation.setEmail(user.getEmail());
         agreementPersonalInformation.setAgree(true);
 
-        //CASE 1. Internal User - USER TODO :: (ADMIN으로도 사용가능하게 잠시 활성화)
-        if(user.getUserType() == UserType.USER || ObjectUtils.isEmpty(user.getUserType())){
+        //CASE 1. Internal User - USER
+        if(user.getUserType() == UserType.USER){
             agreementPersonalInformation.setInternalUser(user);
 
             if(user.isSignature()) {

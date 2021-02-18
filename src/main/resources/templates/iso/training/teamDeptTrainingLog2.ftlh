@@ -4,36 +4,46 @@
 <head>
     <title>ISO Management System > Training > Employee Training</title>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             location.href
-            $("#exportBtn").click(function() {
-               $("#f").attr("action",window.location.pathname).attr("method", "post").submit();
+            $("#exportBtn").click(function () {
+                $("#f").attr("action", window.location.pathname).attr("method", "post").submit();
             });
-            $("#searchBtn").click(function() {
-               $("#f").attr("method", "get").submit();
+            $("#searchBtn").click(function () {
+                $("#f").attr("method", "get").submit();
             });
         });
     </script>
 </head>
 <body>
-
-
 <div class="panel">
     <div class="panel-heading">
-        <h3 class="panel-title">Training Log
+        <h3 class="panel-title">ISO Training Log
             <@security.authentication property="principal.indate" var="inDate"/>
         </h3>
+        <div class="panel-control" style="float:left;">
+            <ul class="nav nav-tabs">
+                <li class=${complete?has_content?then('', 'active')}>
+                    <a href="/admin/training/iso/trainingLog">미이수 내역</a>
+                </li>
+                <li class=${complete?has_content?then('active', '')}>
+                    <a href="/admin/training/iso/trainingLog/completed">이수 내역</a>
+                </li>
+            </ul>
+        </div>
     </div>
 
     <!--Data Table-->
     <!--===================================================-->
     <@pagination.bind isoTrainingLog/>
-    <div class="panel-body">
+    <div class="panel-body" style="margin-top: 25px;">
         <div class="pad-all">
 
             <form name="f" id="f">
                 <div class="pull-right">
-                    <button type="button" class="btn btn-primary" id="exportBtn"><i class="fa fa-file-excel-o"></i> Export</button>
+                    <button type="button" class="btn btn-primary" id="exportBtn"><i
+                                class="fa fa-file-excel-o"></i> Export
+                    </button>
                 </div>
                 <#if deptList?has_content>
                     <#assign pDeptCode = RequestParameters['deptId']?default('')/>
@@ -49,7 +59,7 @@
                         <#--                        </div>-->
                     </div>
                     <script>
-                        $("#deptCode").change(function() {
+                        $("#deptCode").change(function () {
                             $("#teamCode").val("");
 
                             $("#f").attr("method", "get").submit();
@@ -59,43 +69,45 @@
                 <#if teamList?has_content>
                     <#assign pTeamCode = RequestParameters['teamId']?default('')/>
                     <div class="box-inline mar-btm">
-<#--                        Team :-->
-<#--                        <div class="select">-->
-                            <select name="teamId" id="teamCode" class="form-control">
-                                <option value=""${pTeamCode?has_content?then('', ' selected')}>ALL</option>
-                                <#list teamList as team>
-                                    <option value="${team.id}" ${pTeamCode?has_content?then((pTeamCode == team.id?string)?then(' selected', ''), '')}>${team.name}</option>
-                                </#list>
-                            </select>
-<#--                        </div>-->
+                        <#--                        Team :-->
+                        <#--                        <div class="select">-->
+                        <select name="teamId" id="teamCode" class="form-control">
+                            <option value=""${pTeamCode?has_content?then('', ' selected')}>ALL</option>
+                            <#list teamList as team>
+                                <option value="${team.id}" ${pTeamCode?has_content?then((pTeamCode == team.id?string)?then(' selected', ''), '')}>${team.name}</option>
+                            </#list>
+                        </select>
+                        <#--                        </div>-->
                     </div>
                     <script>
-                        $("#teamCode").change(function() {
-                           $("#userList").val("");
+                        $("#teamCode").change(function () {
+                            $("#userList").val("");
 
-                           $("#f").attr("method", "get").submit();
+                            $("#f").attr("method", "get").submit();
                         });
                     </script>
                 </#if>
                 <#if userList?has_content>
                     <#assign pUserId = RequestParameters['userId']?has_content?then(RequestParameters['userId'], '0')?number/>
                     <div class="box-inline mar-btm">
-<#--                        Employee :-->
-<#--                        <div class="select">-->
-                            <select name="userId" id="userList" class="form-control">
-                                <option value=""${(pUserId == 0)?then('', ' selected')}>ALL</option>
-                                <#list userList as user>
-                                    <option value="${user.id}"${(pUserId != 0)?then((pUserId == user.id)?then(' selected', ''), '')}>${user.engName?has_content?then(user.engName, user.korName)}</option>
-                                </#list>
-                            </select>
-<#--                        </div>-->
+                        <#--                        Employee :-->
+                        <#--                        <div class="select">-->
+                        <select name="userId" id="userList" class="form-control">
+                            <option value=""${(pUserId == 0)?then('', ' selected')}>ALL</option>
+                            <#list userList as user>
+                                <option value="${user.id}"${(pUserId != 0)?then((pUserId == user.id)?then(' selected', ''), '')}>${user.engName?has_content?then(user.engName, user.korName)}</option>
+                            </#list>
+                        </select>
+                        <#--                        </div>-->
                     </div>
                 </#if>
                 <div class="box-inline mar-btm">
-                    <input type="text" name="docId" value="${RequestParameters['docId']?default('')}" class="form-control" placeholder="Document ID">
+                    <input type="text" name="docId" value="${RequestParameters['docId']?default('')}"
+                           class="form-control" placeholder="Document ID">
                 </div>
                 <div class="box-inline mar-btm">
-                <button class="btn btn-default" style="margin-top:-5px !important;" type="button" id="searchBtn"><i class="fa fa-search"></i></button>
+                    <button class="btn btn-default" style="margin-top:-5px !important;" type="button"
+                            id="searchBtn"><i class="fa fa-search"></i></button>
                 </div>
             </form>
         </div>
@@ -111,9 +123,8 @@
                     <th class="text-center">Training period</th>
                     <th class="text-center">Progress</th>
                     <th class="text-center">Status</th>
-                    <th class="text-center">Certification</th>
                     <th class="text-center">Complete date</th>
-<#--                    <th>#Actions</th>-->
+                    <#--                    <th>#Actions</th>-->
                 </tr>
                 </thead>
                 <tbody>
@@ -136,7 +147,11 @@
                                 <#if t.isoTrainingLog?has_content>
                                     <#assign percent = (t.isoTrainingLog.progressPercent?has_content)?then(t.isoTrainingLog.progressPercent, 0)/>
                                 </#if>
-                                <div class="progress"><div style="width: ${percent}%;" class="progress-bar progress-bar-info">${percent}%</div></div>
+                                <div class="progress">
+                                    <div style="width: ${percent}%;"
+                                         class="progress-bar progress-bar-info">${percent}%
+                                    </div>
+                                </div>
                             </td>
                             <td class="text-center">
                                 <#if t.isoTrainingLog?has_content>
@@ -146,9 +161,6 @@
                                 <#--                            <#elseif t.trainingLog?has_content == false && t.isOutOfPeriod() && requirement == "mandatory">-->
                                 <#--                                <a class="btn btn-purple btn-xs" href="/approval/box/requester/SOP_Deviation_Report/new?trainingPeriodId=${t.trainingPeriod.id}&sopId=${t.documentVersion.id}"><i class="fa fa-external-link"></i> Deviation Report</a>-->
                                 </#if>
-                            </td>
-                            <td class="text-center">
-                                <span class="label label-${t.iso.certification?then('info', 'danger')}">${t.iso.certification?then('Y', 'N')}</span>
                             </td>
                             <td class="text-center">
                                 <#if t.isoTrainingLog?has_content && t.isoTrainingLog.completeDate?has_content>
@@ -169,7 +181,6 @@
     </div>
     <!--===================================================-->
     <!--End Data Table-->
-
 </div>
 </body>
 </html>

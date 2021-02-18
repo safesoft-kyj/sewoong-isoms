@@ -604,9 +604,14 @@ public class TrainingController {
             @RequestParam(value = "docId", required = false) String docId,
             HttpServletResponse response) throws Exception {
 
+        //트레이닝 완료 되지 않았을 경우,
+        BooleanBuilder completeStatus = new BooleanBuilder();
+        QTrainingLog qTrainingLog = QTrainingLog.trainingLog;
+        completeStatus.and(qTrainingLog.status.notIn(TrainingStatus.COMPLETED).or(qTrainingLog.status.isNull()));
+
         Department department = departmentService.getDepartmentById(teamId);
-        List<MyTraining> trainingList = trainingMatrixRepository.getDownloadTrainingList(department, userId, docId, user);
-        InputStream is = IndexReportService.class.getResourceAsStream("trainingLog.xlsx");
+        List<MyTraining> trainingList = trainingMatrixRepository.getDownloadTrainingList(department, userId, docId, user, completeStatus);
+        InputStream is = IndexReportService.class.getResourceAsStream("Admin_SOP_TrainingLog.xlsx");
         Context context = new Context();
         context.putVar("trainings", trainingList);
         response.setHeader("Content-Disposition", "attachment; filename=\"TrainingLog("+DateUtils.format(new Date(), "yyyyMMdd")+").xlsx\"");

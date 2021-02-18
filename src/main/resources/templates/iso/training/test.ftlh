@@ -26,4 +26,5 @@
         </div>
     </div>
 </#list>
+<input type="hidden" id="quizSize" value="${quiz.quizQuestions?size}" />
 <#--</form>-->

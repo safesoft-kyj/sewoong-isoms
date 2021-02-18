@@ -5,14 +5,16 @@ import com.cauh.common.entity.Department;
 import com.cauh.common.entity.UserJobDescription;
 import com.cauh.common.entity.constant.UserStatus;
 import com.cauh.common.entity.constant.UserType;
+import com.cauh.iso.domain.Notice;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.history.RevisionRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface UserRepository extends PagingAndSortingRepository<Account, Integer>, QuerydslPredicateExecutor<Account> {
+public interface UserRepository extends PagingAndSortingRepository<Account, Integer>, QuerydslPredicateExecutor<Account>, RevisionRepository<Account, Integer, Long> {
 
     List<Account> findAll();
 

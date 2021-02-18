@@ -1,20 +1,17 @@
 package com.cauh.iso.admin.controller;
 
+import com.cauh.common.entity.Account;
 import com.cauh.common.entity.Department;
 import com.cauh.common.entity.QAccount;
 import com.cauh.common.mapper.DeptUserMapper;
 import com.cauh.common.repository.DepartmentRepository;
 import com.cauh.common.repository.UserRepository;
+import com.cauh.common.security.annotation.CurrentUser;
 import com.cauh.iso.admin.service.DepartmentService;
 import com.cauh.iso.domain.*;
-import com.cauh.iso.domain.constant.DocumentStatus;
-import com.cauh.iso.domain.constant.DocumentType;
-import com.cauh.iso.domain.constant.TrainingType;
+import com.cauh.iso.domain.constant.*;
 import com.cauh.iso.repository.TrainingMatrixRepository;
-import com.cauh.iso.service.DocumentVersionService;
-import com.cauh.iso.service.OfflineTrainingService;
-import com.cauh.iso.service.TrainingMatrixService;
-import com.cauh.iso.service.TrainingPeriodService;
+import com.cauh.iso.service.*;
 import com.cauh.iso.utils.DateUtils;
 import com.cauh.iso.validator.TrainingPeriodValidator;
 import com.cauh.iso.xdocreport.IndexReportService;
@@ -37,12 +34,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -61,6 +56,7 @@ public class AdminTrainingController {
     private final DepartmentService departmentService;
     private final UserRepository userRepository;
     private final TrainingMatrixRepository trainingMatrixRepository;
+    private final TrainingAccessLogService trainingAccessLogService;
 
 //    @Value("${gw.userTbl}")
 //    private String gwUserTbl;
@@ -78,7 +74,7 @@ public class AdminTrainingController {
     public String uploadTrainingMatrix(@ModelAttribute TrainingMatrixFile trainingMatrixFile) {
         trainingMatrixService.save(trainingMatrixFile);
 
-        return "redirect:/admin/training/matrix";
+        return "redirect:/admin/training/sop/matrix";
     }
 
     @GetMapping("/training/sop/offline-training")
@@ -167,14 +163,15 @@ public class AdminTrainingController {
         return "redirect:/admin/training/refresh-training";
     }
 
-    @GetMapping("/training/sop/trainingLog")
-    public String teamDeptTrainingLog2(@PageableDefault(size = 25) Pageable pageable,
-//                                       @CurrentUser User user,
+    @GetMapping({"/training/sop/trainingLog", "/training/sop/trainingLog/{complete}"})
+    public String teamDeptTrainingLog(@PageableDefault(size = 25) Pageable pageable,
+                                       @PathVariable(value = "complete", required = false) String isComplete,
                                        @RequestParam(value = "deptId", required = false) Integer deptId,
                                        @RequestParam(value = "teamId", required = false) Integer teamId,
                                        @RequestParam(value = "userId", required = false) Integer userId,
                                        @RequestParam(value = "docId", required = false) String docId,
                                        Model model) {
+
         //부서 목록
         model.addAttribute("deptList", departmentService.getParentDepartment());
         Department department = null;
@@ -194,23 +191,33 @@ public class AdminTrainingController {
 
         BooleanBuilder docStatus = new BooleanBuilder();
         QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
-
-        //Document Type을 지정. (ISO or SOP)
         docStatus.and(qDocumentVersion.status.in(DocumentStatus.APPROVED, DocumentStatus.EFFECTIVE));
-        model.addAttribute("trainingLog", trainingMatrixRepository.getTrainingList(department, userId, docId, null, pageable, docStatus));
 
-//        model.addAttribute("trainingLog", trainingLogService.findAll(builder, pageable));
+        BooleanBuilder completeStatus = new BooleanBuilder();
+        QTrainingLog qTrainingLog = QTrainingLog.trainingLog;
+
+        if(StringUtils.isEmpty(isComplete)) {
+            completeStatus.and(qTrainingLog.status.notIn(TrainingStatus.COMPLETED).or(qTrainingLog.status.isNull()));
+        } else if(!StringUtils.isEmpty(isComplete) && isComplete.equals("completed")) {
+            completeStatus.and(qTrainingLog.status.in(TrainingStatus.COMPLETED));
+        } else {
+            return "redirect:/admin/training/sop/trainingLog";
+        }
+
+        model.addAttribute("trainingLog", trainingMatrixRepository.getTrainingList(department, userId, docId, null, pageable, docStatus, completeStatus));
         return "training/teamDeptTrainingLog2";
     }
 
-    @PostMapping("/training/sop/trainingLog")
+    @PostMapping({"/training/sop/trainingLog", "/training/sop/trainingLog/{complete}"})
 //    @Transactional(readOnly = true)
     @Transactional
-    public void downloadTeamDeptTrainingLog(@RequestParam(value = "deptId", required = false) Integer deptId,
+    public void downloadTeamDeptTrainingLog(@PathVariable(value = "complete", required = false) String isComplete,
+                                            @RequestParam(value = "deptId", required = false) Integer deptId,
                                             @RequestParam(value = "teamId", required = false) Integer teamId,
                                             @RequestParam(value = "userId", required = false) Integer userId,
                                             @RequestParam(value = "docId", required = false) String docId,
-                                            HttpServletResponse response) throws Exception {
+                                            @CurrentUser Account user,
+                                            HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         //team, user 정보는 있는데 부서정보가 없는 경우
         if((!ObjectUtils.isEmpty(teamId) || !ObjectUtils.isEmpty(userId)) && ObjectUtils.isEmpty(deptId)) {
@@ -229,12 +236,33 @@ public class AdminTrainingController {
             }
         }
 
-        List<MyTraining> trainingList = trainingMatrixRepository.getDownloadTrainingList(department, userId, docId, null);
-        InputStream is = IndexReportService.class.getResourceAsStream("trainingLog.xlsx");
+        BooleanBuilder completeStatus = new BooleanBuilder();
+        QTrainingLog qTrainingLog = QTrainingLog.trainingLog;
+
+        TrainingLogType trainingLogType = null;
+
+        if(StringUtils.isEmpty(isComplete)) {
+            completeStatus.and(qTrainingLog.status.notIn(TrainingStatus.COMPLETED).or(qTrainingLog.status.isNull()));
+            trainingLogType = TrainingLogType.SOP_ADMIN_NOT_COMPLETE_LOG;
+        } else if(!StringUtils.isEmpty(isComplete) && isComplete.equals("completed")) {
+            completeStatus.and(qTrainingLog.status.in(TrainingStatus.COMPLETED));
+            trainingLogType = TrainingLogType.SOP_ADMIN_COMPLETE_LOG;
+        } else {
+            log.error("Training Export Error : 존재하지 않는 URI입니다 : {}", request.getRequestURI());
+            return;
+        }
+
+        List<MyTraining> trainingList = trainingMatrixRepository.getDownloadTrainingList(department, userId, docId, null, completeStatus);
+        InputStream is = IndexReportService.class.getResourceAsStream("Admin_SOP_TrainingLog.xlsx");
 
         Context context = new Context();
         context.putVar("trainings", trainingList);
-        response.setHeader("Content-Disposition", "attachment; filename=\"TrainingLog("+ DateUtils.format(new Date(), "yyyyMMdd")+").xlsx\"");
+        response.setHeader("Content-Disposition", "attachment; filename=\"SOP_TrainingLog("+ DateUtils.format(new Date(), "yyyyMMdd")+").xlsx\"");
         JxlsHelper.getInstance().processTemplate(is, response.getOutputStream(), context);
+
+        //Training AccessLog 저장
+        Optional<TrainingAccessLog> savedLog = trainingAccessLogService.save(user, trainingLogType, DocumentAccessType.DOWNLOAD);
+        log.info("@Download Training Log 기록 : {}", savedLog.get().getId());
+
     }
 }

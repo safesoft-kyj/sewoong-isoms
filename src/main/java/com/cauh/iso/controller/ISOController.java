@@ -246,7 +246,6 @@ public class ISOController {
 
         log.info("@ISO Training Period Exapnd : {}, {}", isoId, addDays);
 
-
         Optional<ISO> isoOptional = isoService.getISO(isoId);
         if(isoOptional.isPresent()) {
             ISO iso = isoOptional.get();
@@ -264,21 +263,21 @@ public class ISOController {
         return "redirect:/iso-14155/training";
     }
 
-    /**
-     * 메일전송 대상자에게 메일 전송
-     * @param isoId
-     * @return
-     */
-    @IsAdmin
-    @GetMapping("/ajax/iso-14155/{isoId}/send")
-    @ResponseBody
-    public Map<String, String> sendEmail(@PathVariable("isoId") String isoId) {
-        Map<String, String> model = new HashMap<>();
-        isoService.sendMail(isoId);
-        model.put("result", "success");
-        model.put("id", isoId);
-        return model;
-    }
+//    /**
+//     * 메일전송 대상자에게 메일 전송
+//     * @param isoId
+//     * @return
+//     */
+//    @IsAdmin
+//    @GetMapping("/ajax/iso-14155/{isoId}/send")
+//    @ResponseBody
+//    public Map<String, String> sendEmail(@PathVariable("isoId") String isoId) {
+//        Map<String, String> model = new HashMap<>();
+//        isoService.sendMail(isoId);
+//        model.put("result", "success");
+//        model.put("id", isoId);
+//        return model;
+//    }
 
     /**
      * ISO 삭제.
@@ -294,15 +293,15 @@ public class ISOController {
         if(iso.isPresent() && iso.get().isActive()){
             attributes.addFlashAttribute("type", "danger");
             attributes.addFlashAttribute("message", "삭제 실패 :: 교육 진행중인 ISO입니다.");
-            return "redirect:/iso-14155";
+            return "redirect:/iso-14155/" + (iso.get().isTraining()?"training":"board");
         }else if (iso.isPresent()) {
             isoService.remove(iso.get());
             attributes.addFlashAttribute("message", "ISO-14155 게시물이 삭제 되었습니다.");
-            return "redirect:/iso-14155?" + (StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString());
+            return "redirect:/iso-14155/" + (iso.get().isTraining()?"training":"board") + (StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString());
         } else {
             attributes.addFlashAttribute("type", "danger");
             attributes.addFlashAttribute("message", "존재하지 않는 ISO-14155 게시물 입니다.");
-            return "redirect:/iso-14155";
+            return "redirect:/iso-14155/board";
         }
     }
 
@@ -339,7 +338,7 @@ public class ISOController {
             quiz = new Quiz();
             List<QuizQuestion> questions = new ArrayList<>();
 
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 25; i++) {
                 List<QuizAnswer> quizAnswers = new ArrayList<>();
                 for (int x = 0; x < 5; x++) {
                     quizAnswers.add(new QuizAnswer(x + 1));
@@ -372,14 +371,44 @@ public class ISOController {
     public String saveQuiz(@PathVariable("isoId") String isoId,
                            @ModelAttribute("quiz") Quiz quiz,
                            BindingResult result, SessionStatus status,
-                           HttpServletRequest request,
+                           HttpServletRequest request, Model model,
                            RedirectAttributes attributes) throws Exception {
+        boolean isQuizRemove = WebUtils.hasSubmitParameter(request, "removeQuiz");
         boolean isRemove = WebUtils.hasSubmitParameter(request, "remove");
+        boolean isQuizAdd = WebUtils.hasSubmitParameter(request, "add");
 
-        if(isRemove) {
+        if(isQuizRemove) {
+            if(quiz.getQuizQuestions().size() <= 25) {
+                log.debug("@Quiz Minimum");
+                model.addAttribute("type", "warning");
+                model.addAttribute("message", "최소 문항 개수는 25개 입니다.");
+                return "iso/iso14155/quiz";
+            }
+            
+            String removeValue = ServletRequestUtils.getStringParameter(request, "removeQuiz");
+            quiz.getQuizQuestions().remove(Integer.parseInt(removeValue));
+            return "iso/iso14155/quiz";
+        }
+        else if(isRemove) {
             String removeValue = ServletRequestUtils.getStringParameter(request, "remove");
             String[] arr = removeValue.split("\\.");
             quiz.getQuizQuestions().get(Integer.parseInt(arr[0])).getAnswers().remove(Integer.parseInt(arr[1]));
+            return "iso/iso14155/quiz";
+        } else if(isQuizAdd) {
+            if(quiz.getQuizQuestions().size() >= 30) {
+                log.debug("@Quiz Maximum");
+                model.addAttribute("type", "warning");
+                model.addAttribute("message", "최대 문항 개수는 30개 입니다.");
+                return "iso/iso14155/quiz";
+            }
+
+            QuizQuestion quizQuestion = new QuizQuestion(quiz.getQuizQuestions().size());
+            List<QuizAnswer> quizAnswers = new ArrayList<>();
+            for (int x = 0; x < 5; x++) {
+                quizAnswers.add(new QuizAnswer(x + 1));
+            }
+            quizQuestion.setAnswers(quizAnswers);
+            quiz.getQuizQuestions().add(quizQuestion);
             return "iso/iso14155/quiz";
         }
 
@@ -396,11 +425,11 @@ public class ISOController {
         if(ObjectUtils.isEmpty(savedIso)) {
             attributes.addFlashAttribute("type", "danger");
             attributes.addFlashAttribute("message", "존재하지 않는 ISO입니다.");
-            return "redirect:/iso-14155";
+            return "redirect:/iso-14155/training";
         }
 
         attributes.addFlashAttribute("message", "[" + savedIso.getTitle() + "] 에 퀴즈 정보가 수정 되었습니다.");
-        return "redirect:/iso-14155";
+        return "redirect:/iso-14155/training";
     }
 
     /**
@@ -450,21 +479,22 @@ public class ISOController {
             XSSFWorkbook workbook = new XSSFWorkbook(is);
             XSSFSheet sheet = workbook.getSheetAt(0);
 
-            XSSFRow isoTypeRow = sheet.getRow(2);
-            isoTypeRow.getCell(1).setCellType(CellType.STRING);
-            String isoType = isoTypeRow.getCell(1).getStringCellValue();
-
-            XSSFRow titleRow = sheet.getRow(3);
-            titleRow.getCell(1).setCellType(CellType.STRING);
-            String title = titleRow.getCell(1).getStringCellValue();
-
-            log.debug("ISO Type : {}, title : {}", isoType, title);
-
-            //임시로 삭제.
-//            DocumentVersion documentVersion = documentVersionService.findById(docVerId);
-//            if(!documentVersion.getDocument().getDocId().equals(documentId) || !documentVersion.getVersion().equals(version)) {
-//                attributes.addFlashAttribute("message", "Template에 DocumentId/Version 정보와 SOP 정보와 일치하지 않습니다.");
-//                return "redirect:/admin/SOP/management/{stringStatus}";
+            //검증 부분 사용 안함으로 인해 주석처리 : 2021-02-17
+//            XSSFRow titleRow = sheet.getRow(2);
+//            titleRow.getCell(1).setCellType(CellType.STRING);
+//            String title = titleRow.getCell(1).getStringCellValue();
+//
+//            XSSFRow isoTypeRow = sheet.getRow(3);
+//            isoTypeRow.getCell(1).setCellType(CellType.STRING);
+//            String isoType = isoTypeRow.getCell(1).getStringCellValue();
+//
+//            log.debug("ISO Type : {}, title : {}", isoType, title);
+//
+//            //임시로 삭제.
+//            ISO iso = isoService.findById(isoId);
+//            if(!(iso.getIsoType().getLabel().equals(isoType) && iso.getTitle().equals(title))) {
+//                attributes.addFlashAttribute("message", "Template에 Title/ISO Type 정보가 ISO 정보와 일치하지 않습니다.");
+//                return "redirect:/iso-14155/training";
 //            }
 
             XSSFRow qRow = sheet.getRow(7);
@@ -484,7 +514,9 @@ public class ISOController {
                 a4Row.getCell(i).setCellType(CellType.STRING);
                 a5Row.getCell(i).setCellType(CellType.STRING);
 
-                String q = qRow.getCell(i).getStringCellValue();
+                log.info("@@GETCELL BEFORE : {}", i);
+
+                String q = ObjectUtils.isEmpty(qRow.getCell(i))?null:qRow.getCell(i).getStringCellValue();
                 String a1 = a1Row.getCell(i).getStringCellValue();
                 String a2 = a2Row.getCell(i).getStringCellValue();
                 String a3 = a3Row.getCell(i).getStringCellValue();
@@ -498,35 +530,44 @@ public class ISOController {
                 List<QuizAnswer> quizAnswers = new ArrayList<>();
 
                 //문항 내용이 없을 경우, 읽기를 멈추고 여태 읽었던 내용까지만 작업을 진행한다.
-                if(StringUtils.isEmpty(q)) {
-                    log.debug("@Quiz Upload Stop");
+                if(StringUtils.isEmpty(q) && i > 25) {
+                    log.debug("@Quiz Upload Stop (25 over) :: 바로 빠져나옴.");
                     break;
-                }
+                } else if(StringUtils.isEmpty(q) && i <= 25) { //CASE 2. 문서 내용이 없는 경우 일반 Template 적용
+                    log.debug("@Quiz Upload Stop (25 less or equal) :: 기본 서식 추가");
 
-                quizQuestion.setText(q);
-                quizAnswers.add(new QuizAnswer(1, a1, eq("1", correct)));
-                quizAnswers.add(new QuizAnswer(2, a2, eq("2", correct)));
-                if(!StringUtils.isEmpty(a3)) {
-                    quizAnswers.add(new QuizAnswer(3, a3, eq("3", correct)));
+                    for (int x = 0; x < 5; x++) {
+                        quizAnswers.add(new QuizAnswer(x + 1));
+                    }
+                    quizQuestion.setAnswers(quizAnswers);
+                    questions.add(quizQuestion);
+                } else { //CASE 3. 문서 내 Quiz 서식 적용
+                    quizQuestion.setText(q);
+                    quizAnswers.add(new QuizAnswer(1, a1, eq("1", correct)));
+                    quizAnswers.add(new QuizAnswer(2, a2, eq("2", correct)));
+                    if(!StringUtils.isEmpty(a3)) {
+                        quizAnswers.add(new QuizAnswer(3, a3, eq("3", correct)));
+                    }
+                    if(!StringUtils.isEmpty(a4)) {
+                        quizAnswers.add(new QuizAnswer(4, a4, eq("4", correct)));
+                    }
+                    if(!StringUtils.isEmpty(a5)) {
+                        quizAnswers.add(new QuizAnswer(5, a5, eq("5", correct)));
+                    }
+                    quizQuestion.setAnswers(quizAnswers);
+                    questions.add(quizQuestion);
                 }
-                if(!StringUtils.isEmpty(a4)) {
-                    quizAnswers.add(new QuizAnswer(4, a4, eq("4", correct)));
-                }
-                if(!StringUtils.isEmpty(a5)) {
-                    quizAnswers.add(new QuizAnswer(5, a5, eq("5", correct)));
-                }
-                quizQuestion.setAnswers(quizAnswers);
-                questions.add(quizQuestion);
             }
 
             quiz.setQuizQuestions(questions);
             model.addAttribute("quiz", quiz);
+
             return "iso/iso14155/quiz";
         } catch (Exception error) {
             log.error("error : {}", error.getMessage());
             attributes.addFlashAttribute("type", "danger");
             attributes.addFlashAttribute("message", "Quiz Upload 동작 중 에러가 발생하였습니다.");
-            return "redirect:/iso-14155/";
+            return "redirect:/iso-14155/training";
         }
     }
 

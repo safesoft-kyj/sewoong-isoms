@@ -84,7 +84,7 @@ public class ISOTrainingCertificationService {
     //수료증 파일 생성
     public void createCertificationFile(ISOTrainingCertification isoTrainingCertification) throws Exception{
 //        String fileName = isoTrainingCertification.getUser().getUsername() + "_iso_cert_" + isoTrainingCertification.getId() + ".pdf";
-        String fileName = isoTrainingCertification.getId() + ".pdf";
+        String fileName = isoTrainingCertification.getUser().getUsername() + "_" + isoTrainingCertification.getCertNo() + ".pdf";
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         //Certification Template File Load
         InputStream in = ISOTrainingCertificationService.class.getResourceAsStream("ISO_14155_Training_Certificate_01.docx");

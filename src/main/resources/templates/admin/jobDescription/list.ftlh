@@ -5,28 +5,29 @@
     <title>Admin > User Management > ROLE 관리</title>
 </head>
 <body>
-<div class="tab-base">
-    <ul class="nav nav-tabs">
-        <li class="active">
-            <a href="/admin/role">ROLE 관리</a>
-        </li>
-        <li>
-            <a href="/admin/role/user">사용자별 ROLE 관리</a>
-        </li>
-    </ul>
-    <div class="tab-content">
-<div class="panel">
-    <#--    <div class="panel-heading">-->
-    <#--        <h3 class="panel-title">Category List</h3>-->
-    <#--    </div>-->
 
+<div class="panel">
+    <div class="panel-heading">
+        <h3 class="panel-title">Role 관리</h3>
+        <div class="panel-control" style="float:left;">
+            <ul class="nav nav-tabs">
+                <li class='active'>
+                    <a href="/admin/role">Role 관리</a>
+                </li>
+                <li>
+                    <a href="/admin/role/user">사용자별 Role 관리</a>
+                </li>
+            </ul>
+        </div>
+    </div>
     <!--Data Table-->
     <!--===================================================-->
-    <div class="panel-body">
+    <div class="panel-body" style="margin-top:45px;">
         <div class="pad-btm form-inline">
             <div class="row">
                 <div class="col-sm-6 table-toolbar-left">
-                    <a class="btn btn-primary" href="/admin/role?action=new#edit0"><i class="pli-pencil"></i> ROLE 추가</a>
+                    <a class="btn btn-primary" href="/admin/role?action=new#edit0"><i class="pli-pencil"></i>
+                        ROLE 추가</a>
                 </div>
                 <div class="col-sm-6 table-toolbar-right">
                     <#--                    <div class="form-group">-->
@@ -97,10 +98,15 @@
                                 </td>
                                 <td>
                                     <#if action == "edit" && id == role.id>
-                                        <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-check"></i> 저장</button>
-                                        <a class="btn btn-sm btn-warning" href="?action=list"><i class="fa fa-times"></i> 취소</a>
+                                        <button class="btn btn-sm btn-primary" type="submit"><i
+                                                    class="fa fa-check"></i> 저장
+                                        </button>
+                                        <a class="btn btn-sm btn-warning" href="?action=list"><i
+                                                    class="fa fa-times"></i> 취소</a>
                                     <#else>
-                                        <a class="btn btn-sm btn-mint" href="/admin/role?action=edit&id=${role.id}#edit${role?index}"><i class="fa fa-pencil"> 수정</i></a>
+                                        <a class="btn btn-sm btn-mint"
+                                           href="/admin/role?action=edit&id=${role.id}#edit${role?index}"><i
+                                                    class="fa fa-pencil"> 수정</i></a>
                                     </#if>
                                 </td>
                             </tr>
@@ -127,8 +133,11 @@
                                 <@spring.formCheckbox "jobDescription.enabled" "checked"/>
                                 <@spring.showErrors "" "color:red;"/></td>
                             <td>
-                                <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-check"></i> 저장</button>
-                                <a class="btn btn-sm btn-warning" href="?action=list"><i class="fa fa-times"></i> 취소</a>
+                                <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-check"></i>
+                                    저장
+                                </button>
+                                <a class="btn btn-sm btn-warning" href="?action=list"><i
+                                            class="fa fa-times"></i> 취소</a>
                             </td>
                         </tr>
                     </#if>
@@ -141,7 +150,5 @@
     <!--===================================================-->
     <!--End Data Table-->
 </div><!-- end panel-->
-</div><!-- end tab-content -->
-</div><!-- end tab-based -->
 </body>
 </html>

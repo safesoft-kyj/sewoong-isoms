@@ -36,8 +36,9 @@
         function dateChange(start, end, date) {
             let startDate = new Date(start);
             let endDate = new Date(end);
+            let expandDate = $("#addDayField").val();
 
-            if($("#addDayField").val() == "") {
+            if(expandDate == "") {
                 $("#originDate").css("text-decoration", "");
                 $("#newDate").removeClass("class");
                 $("#newDate").removeClass("label label-default");
@@ -85,10 +86,11 @@
                         + "</tr>"
                         + "<tr>"
                         + "<td><span id='originDate' class='label label-default'>" + date + "</span><br><br><span id='newDate'></span></td>"
-                        + "<td><input type='number' min='1' max='30' id='addDayField' class='form-control' placeholder='연장 일수 입력' onchange='dateChange(\"" + start + "\",\"" + end + "\",\"" + date + "\")' /></td>"
+                        + "<td><input type='number' min='1' max='30' id='addDayField' class='form-control' placeholder='연장 일수 입력' onkeyup='dateChange(\"" + start + "\",\"" + end + "\",\"" + date + "\")' /></td>"
                         + "</tr>"
                         + "</table>"
-                        + "</div>",
+                        + "</div>"
+                        + "<script>$('#addDayField').mask('00');<\/script>",
                     size: 'middle',
                     buttons: {
                     cancel: {
@@ -117,15 +119,14 @@
 
             })
 
-            $("#addDayField").mask('00');
+
 
             $(document).on("click", "#activeBtn", function(){
                 let isoId = $(this).data("id");
                 let test = $(this).data('test');
                 let testColor = test=='Y'?'success':'warning';
 
-                let cert = $(this).data('cert');
-                let certColor = cert=='Y'?'success':'warning';
+                let correct = $(this).data('correct');
 
                 let attendee = $(this).data('attendee');
                 let attendeeColor = attendee=='ALL'?'info':'purple';
@@ -148,8 +149,8 @@
                         + "<td><span class='label label-" + testColor + "'>" + test + "</span></td>"
                         + "</tr>"
                         + "<tr>"
-                        + "<th>수료증 여부 : </th>"
-                        + "<td><span class='label label-" + certColor + "'>" + cert + "</span></td>"
+                        + "<th>합격 문항 개수 : </th>"
+                        + "<td><span class='label label-success'>" + correct + "</span></td>"
                         + "</tr>"
                         + "<tr>"
                         + "<th>교육 참석자 : </th>"
@@ -293,7 +294,6 @@
                                 <!--===================================================-->
                             </td>
                             </@security.authorize>
-                            <td class="text-center" style="width:90px;"><span class="label label-${iso.certification?then('success', 'warning')}">${iso.certification?then('Y', 'N')}</span></td>
                             <td class="text-center"><span class="text-info">${iso.trainingDate}</span></td>
                             <td class="text-center"><span class="text-muted">${iso.createdDate?string('yyyy-MM-dd')}</span></td>
                             <td class="text-center">${iso.createdBy?default('System')}</td>
@@ -303,8 +303,8 @@
                                     <#if iso.active>
                                         <span class="label label-primary">Activated</span>
                                     <#else>
-                                        <button id="activeBtn" data-date="${iso.trainingDate}" data-attendee="${iso.attendee}"
-                                                data-test="${iso.quiz?has_content?then('Y', 'N')}" data-id="${iso.id}" class="btn btn-purple btn-sm">Active</button>
+                                        <button id="activeBtn" data-date="${iso.trainingDate}" data-attendee="${iso.attendee}" data-correct="${iso.correctCount}"
+                                                data-test="${iso.quiz?has_content?then('Y', 'N')}" data-id="${iso.id}" class="btn btn-purple btn-xs">Active</button>
                                     </#if>
                                 <#else>
                                     -
@@ -355,14 +355,14 @@
                             <td class="text-center">
                                 <#if iso.training>
                                     <#if iso.active>
-                                        <button id="expandBtn" class="btn btn-primary btn-sm" data-id="${iso.id}"
+                                        <button id="expandBtn" class="btn btn-primary btn-xs" data-id="${iso.id}"
                                                 data-start="${iso.startDate?string('yyyy-MM-dd')}" data-date="${iso.trainingDate}"
                                                 data-end="${iso.endDate?string('yyyy-MM-dd')}" data-name="${iso.title}">
                                             Period Expand
                                         </button>
                                     <#else>
-                                        <button id="activeBtn" class="btn btn-purple btn-sm" data-id="${iso.id}"
-                                                data-date="${iso.trainingDate}" data-attendee="${iso.attendee}"
+                                        <button id="activeBtn" class="btn btn-purple btn-xs" data-id="${iso.id}"
+                                                data-date="${iso.trainingDate}" data-attendee="${iso.attendee}" data-correct="${iso.correctCount}"
                                                 data-test="${iso.quiz?has_content?then('Y', 'N')}">
                                             Active
                                         </button>
