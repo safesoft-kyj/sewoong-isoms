@@ -31,8 +31,7 @@ public class AdminChangeControlController {
     private final ChangeAuditService changeAuditService;
 
     @GetMapping({"/change-control", "/change-control/{audit}"})
-    public String changeControl(@PageableDefault(sort = {"revisionEntity.timestamp"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable,
-                                @PathVariable(value = "audit", required = false) String auditString, RedirectAttributes attributes, Model model) {
+    public String changeControl(@PathVariable(value = "audit", required = false) String auditString, RedirectAttributes attributes, Model model) {
         if(StringUtils.isEmpty(auditString)) {
             return "redirect:/admin/change-control/account";
         }

@@ -8,13 +8,6 @@
     <link href="/static/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
     <script src="plugins/bootstrap-table/bootstrap-table.min.js"></script>
 
-    <script>
-        $(document).ready(function() {
-
-        });
-
-    </script>
-
 </head>
 <body>
 
