@@ -89,8 +89,8 @@
                 </script>
                 <table data-toggle="table"
                        data-url="/ajax/training/sop/mandatory-training/completed"
-<#--                       data-show-columns="true"-->
-<#--                       data-toolbar="#toolbar"-->
+                       data-show-columns="true"
+                       data-toolbar="#toolbar"
                        data-page-list="[5, 10, 20, 50]"
                        data-page-size="20"
                        data-pagination="true"

@@ -1,12 +1,16 @@
 package com.cauh.iso.admin.domain.constant;
 
 import com.cauh.common.entity.Account;
+import com.cauh.iso.domain.Document;
+import com.cauh.iso.domain.DocumentVersion;
 import lombok.Getter;
 
 @Getter
 public enum AuditComponent {
 
-    ACCOUNT(Account.class, "account_change_history");
+    ACCOUNT(Account.class, "account_change_history"),
+    DOCUMENT(Document.class, "document_change_history"),
+    DOCUMENT_VERSION(DocumentVersion.class, "document_version_change_history");
 
     private Class<?> classType;
 

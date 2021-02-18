@@ -65,8 +65,6 @@
         <form class="form-horizontal form-padding" method="post" id="appForm">
             <div class="row">
                 <div class="col-xs-12">
-
-
                     <div class="panel">
                         <div class="panel-heading">
                             <h3 class="panel-title">${approval.type.label}</h3>

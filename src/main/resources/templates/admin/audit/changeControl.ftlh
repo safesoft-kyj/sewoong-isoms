@@ -4,6 +4,17 @@
 <head>
     <title>Admin > Change Control</title>
 
+    <!--Bootstrap Table [ OPTIONAL ]-->
+    <link href="/static/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+    <script src="plugins/bootstrap-table/bootstrap-table.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+
+        });
+
+    </script>
+
 </head>
 <body>
 
@@ -11,51 +22,7 @@
     <!--Data Table-->
     <!--===================================================-->
     <div class="panel-body">
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th class="text-center" style="width:70px;">No.</th>
-                    <th>Test</th>
-<#--                    <th class="text-center">Document Type</th>-->
-<#--                    <th>Document Id</th>-->
-<#--                    <th>Title</th>-->
-<#--                    <th class="text-center">Version</th>-->
-<#--                    <th class="text-center">Access Type</th>-->
-<#--                    <th class="text-center">Access Date</th>-->
-<#--                    <th class="text-center">User</th>-->
-                </tr>
-                </thead>
-                <tbody>
-                <#if changeLog?has_content>
-                    <#list changeLog as access>
-                        <#include "form/" + viewName + ".ftlh"/>
-<#--                        <tr>-->
-<#--                            <td class="text-center">${(accessLog.totalElements - (accessLog.size * accessLog.number)) - access?index}-->
-<#--                                <td>Test</td>-->
-<#--&lt;#&ndash;                            <td class="text-center"><span class="label label-${(access.documentVersion.document.type == 'SOP')?then('purple', 'mint')} label-table">${access.documentVersion.document.type.name()}</span></td>&ndash;&gt;-->
-<#--&lt;#&ndash;                            <td>${access.documentVersion.document.docId}</td>&ndash;&gt;-->
-<#--&lt;#&ndash;                            <td>${access.documentVersion.document.title}</td>&ndash;&gt;-->
-<#--&lt;#&ndash;                            <td class="text-center">${access.documentVersion.version}</td>&ndash;&gt;-->
-<#--&lt;#&ndash;                            <td class="text-center"><span class="label label-table label-${access.accessType.className}"> ${access.accessType.name()}</span></td>&ndash;&gt;-->
-<#--&lt;#&ndash;                            <td class="text-center"><span class="text-muted">${access.createdDate?string('yyyy-MM-dd HH:mm:ss')}</span></td>&ndash;&gt;-->
-<#--&lt;#&ndash;                            <td class="text-center">${access.createdBy?default('System')}</td>&ndash;&gt;-->
-<#--                        </tr>-->
-                    </#list>
-                <#else>
-                    <tr>
-                        <td colspan="8" class="text-center">Change History가 없습니다.</td>
-                    </tr>
-                </#if>
-                </tbody>
-            </table>
-
-        </div>
-
-        <#--        <nav style="float:left;">-->
-        <#---->
-        <#--        </nav>-->
-        <#--        <@pagination.counter />-->
+        <#include "form/" + viewName + ".ftlh"/>
     </div>
     <!--===================================================-->
     <!--End Data Table-->
