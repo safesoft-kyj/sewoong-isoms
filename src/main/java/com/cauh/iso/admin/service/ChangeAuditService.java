@@ -25,7 +25,7 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public class ChangeAuditService {
 
-    @PersistenceContext(unitName = "common")
+    @PersistenceContext
     private EntityManager entityManager;
 
     public <T> Page<EntityAudit> getRevisionAuditList(Class<T> clazz, Pageable pageable) {
