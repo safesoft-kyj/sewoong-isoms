@@ -15,12 +15,14 @@
     <div class="panel-heading">
         <div class="panel-control" style="float:left;">
             <ul class="nav nav-tabs">
-                <li class="active">
-                    <a href="/admin/authority/agreement-to-collect-and-use/internal">내부 사용자</a>
-                </li>
-                <li>
-                    <a href="/admin/authority/agreement-to-collect-and-use/external">외부 사용자</a>
-                </li>
+                <#if audit?has_content>
+                    <li class="${(audit == 'account')?then('active', '')}">
+                        <a href="/admin/change-control/account">User Profile</a>
+                    </li>
+                    <li class="${(audit == 'notice')?then('active', '')}">
+                        <a href="/admin/change-control/notice">공지사항</a>
+                    </li>
+                </#if>
             </ul>
         </div>
     </div>

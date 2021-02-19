@@ -49,10 +49,6 @@ public class AdminChangeControlController {
 
         Page<EntityAudit> revisionAuditList = changeAuditService.getRevisionAuditList(auditComponent.getClassType(), pageable);
 
-        revisionAuditList.getContent().stream().forEach(t ->{
-            log.info("JD : {} ", ((Account)t.getEntity()).getCommaJobTitle());
-        });
-
         model.addAttribute("auditList", revisionAuditList);
         model.addAttribute("viewName", auditComponent.getViewName());
 
@@ -77,6 +73,8 @@ public class AdminChangeControlController {
 
         if(auditString.equals("account")) {
             auditComponent = AuditComponent.ACCOUNT;
+        } else if(auditString.equals("notice")) {
+            auditComponent = AuditComponent.NOTICE;
         } else if(auditString.equals("document")) {
             auditComponent = AuditComponent.DOCUMENT;
         } else if(auditString.equals("documentVersion")) {
