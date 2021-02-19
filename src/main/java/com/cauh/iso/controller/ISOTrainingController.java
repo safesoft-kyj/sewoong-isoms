@@ -295,7 +295,7 @@ public class ISOTrainingController {
             attributes.addFlashAttribute("message", trainingLog.getScore() + "점("+(int)questionCount+"문제중 정답 "+(int)correctCount+"개)으로 교육 완료 되었습니다.");
         } else {
             trainingLog.setStatus(TrainingStatus.TEST_FAILED);
-            attributes.addFlashAttribute("type", "danger");
+            attributes.addFlashAttribute("messageType", "danger");
             attributes.addFlashAttribute("message", "점수는 [" + trainingLog.getScore() + "]입니다.("+(int)questionCount+"문제중 정답 "+(int)correctCount+"개) " + ((int)curLineScore) + "점이상 이수 가능 합니다.");
         }
 

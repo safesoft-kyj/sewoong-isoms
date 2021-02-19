@@ -293,12 +293,12 @@ public class ExternalCustomerController {
 
                     model.addAttribute("isoTrainingLog", isoTrainingLogRepository.findAll(builder, pageable));
                 } else {
-                    attributes.addFlashAttribute("type", "warning");
+                    attributes.addFlashAttribute("messageType", "warning");
                     attributes.addFlashAttribute("message", "열람할 수 없는 User입니다.");
                     return "redirect:/external/log/iso";
                 }
             } else {
-                attributes.addFlashAttribute("type", "danger");
+                attributes.addFlashAttribute("messageType", "danger");
                 attributes.addFlashAttribute("message", "존재하지 않는 User ID입니다.");
                 return "redirect:/external/log/iso";
             }
@@ -338,12 +338,12 @@ public class ExternalCustomerController {
 
                     model.addAttribute("trainingLog", trainingLogRepository.findAll(builder, pageable));
                 } else {
-                    attributes.addFlashAttribute("type", "warning");
+                    attributes.addFlashAttribute("messageType", "warning");
                     attributes.addFlashAttribute("message", "열람할 수 없는 User입니다.");
                     return "redirect:/external/log/sop";
                 }
             } else {
-                attributes.addFlashAttribute("type", "danger");
+                attributes.addFlashAttribute("messageType", "danger");
                 attributes.addFlashAttribute("message", "존재하지 않는 User ID입니다.");
                 return "redirect:/external/log/sop";
             }

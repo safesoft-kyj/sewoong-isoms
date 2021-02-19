@@ -228,7 +228,7 @@ public class ISOController {
             String res = isoService.isoActivate(iso);
 
             if(!res.equals("success")) {
-                attributes.addFlashAttribute("type", "danger");
+                attributes.addFlashAttribute("messageType", "danger");
                 attributes.addFlashAttribute("message", res);
                 return "redirect:/iso-14155/training";
             }
@@ -252,7 +252,7 @@ public class ISOController {
             String res = isoService.isoPeriodExpand(iso, addDays);
 
             if(!res.equals("success")) {
-                attributes.addFlashAttribute("type", "danger");
+                attributes.addFlashAttribute("messageType", "danger");
                 attributes.addFlashAttribute("message", res);
                 return "redirect:/iso-14155/training";
             }
@@ -291,7 +291,7 @@ public class ISOController {
     public String isoRemove(@PathVariable("isoId") String isoId, RedirectAttributes attributes, HttpServletRequest request) {
         Optional<ISO> iso = isoService.getISO(isoId);
         if(iso.isPresent() && iso.get().isActive()){
-            attributes.addFlashAttribute("type", "danger");
+            attributes.addFlashAttribute("messageType", "danger");
             attributes.addFlashAttribute("message", "삭제 실패 :: 교육 진행중인 ISO입니다.");
             return "redirect:/iso-14155/" + (iso.get().isTraining()?"training":"board");
         }else if (iso.isPresent()) {
@@ -299,7 +299,7 @@ public class ISOController {
             attributes.addFlashAttribute("message", "ISO-14155 게시물이 삭제 되었습니다.");
             return "redirect:/iso-14155/" + (iso.get().isTraining()?"training":"board") + (StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString());
         } else {
-            attributes.addFlashAttribute("type", "danger");
+            attributes.addFlashAttribute("messageType", "danger");
             attributes.addFlashAttribute("message", "존재하지 않는 ISO-14155 게시물 입니다.");
             return "redirect:/iso-14155/board";
         }
@@ -318,7 +318,7 @@ public class ISOController {
         Optional<ISO> isoOptional = isoService.getISO(isoId);
 
         if(isoOptional.isEmpty()) {
-            attributes.addFlashAttribute("type", "danger");
+            attributes.addFlashAttribute("messageType", "danger");
             attributes.addFlashAttribute("message", "존재하지 않는 ISO입니다.");
             return "redirect:/iso-14155";
         }
@@ -423,7 +423,7 @@ public class ISOController {
         status.setComplete();
 
         if(ObjectUtils.isEmpty(savedIso)) {
-            attributes.addFlashAttribute("type", "danger");
+            attributes.addFlashAttribute("messageType", "danger");
             attributes.addFlashAttribute("message", "존재하지 않는 ISO입니다.");
             return "redirect:/iso-14155/training";
         }
@@ -447,7 +447,7 @@ public class ISOController {
         Optional<ISO> isoOptional = isoService.getISO(isoId);
 
         if(isoOptional.isEmpty()) {
-            attributes.addFlashAttribute("type", "danger");
+            attributes.addFlashAttribute("messageType", "danger");
             attributes.addFlashAttribute("message", "존재하지 않는 ISO입니다.");
             return "redirect:/iso-14155";
         }
@@ -565,7 +565,7 @@ public class ISOController {
             return "iso/iso14155/quiz";
         } catch (Exception error) {
             log.error("error : {}", error.getMessage());
-            attributes.addFlashAttribute("type", "danger");
+            attributes.addFlashAttribute("messageType", "danger");
             attributes.addFlashAttribute("message", "Quiz Upload 동작 중 에러가 발생하였습니다.");
             return "redirect:/iso-14155/training";
         }

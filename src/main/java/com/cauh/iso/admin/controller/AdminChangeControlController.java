@@ -41,7 +41,7 @@ public class AdminChangeControlController {
 
         AuditComponent auditComponent = getAuditComponent(auditString);
         if(ObjectUtils.isEmpty(auditComponent)) {
-            attributes.addFlashAttribute("type", "danger");
+            attributes.addFlashAttribute("messageType", "danger");
             attributes.addFlashAttribute("message", "존재하지 않는 경로입니다.");
 
             return "redirect:/admin/change-control/account";

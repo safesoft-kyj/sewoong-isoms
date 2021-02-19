@@ -119,7 +119,7 @@ public class UserController {
         //New 인 경우,
         if(ObjectUtils.isEmpty(userJobDescriptionChangeLog.getId())) {
             if(userJobDescriptionChangeLogService.isRequestedRole(user)) {
-                attributes.addFlashAttribute("type", "danger");
+                attributes.addFlashAttribute("messageType", "danger");
                 attributes.addFlashAttribute("message", "이미 신청중인 Role 내역이 존재합니다.");
                 return "redirect:/user/profile/role";
             }
@@ -153,7 +153,7 @@ public class UserController {
         Optional<Account> user = userRepository.findByUsername(account.getUsername());
         if(user.isPresent()) {
 
-            attributes.addFlashAttribute("type", "danger");
+            attributes.addFlashAttribute("messageType", "danger");
             attributes.addFlashAttribute("message", "Sign Up request was failed");
         } else {
             Account signUpAccount = userService.signUpRequest(account);
@@ -161,7 +161,7 @@ public class UserController {
             userRepository.save(signUpAccount);
             currentUserComponent.updateCurrentUserList(); //현재 유저 업데이트.
 
-            attributes.addFlashAttribute("type", "success");
+            attributes.addFlashAttribute("messageType", "success");
             attributes.addFlashAttribute("message", "Sign up request is success");
         }
         return "redirect:/login";

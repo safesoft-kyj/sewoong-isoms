@@ -284,10 +284,10 @@ public class AdminAuthorityController {
                 userJobDescriptionChangeLog.setRoleStatus(RoleStatus.REJECTED);
                 user = userJobDescriptionChangeLog.getUser();
 
-                attributes.addFlashAttribute("type", "warning");
+                attributes.addFlashAttribute("messageType", "warning");
                 attributes.addFlashAttribute("message", "[" + user.getName() + "]의 ROLE 신청이 반려되었습니다.");
             } else {
-                attributes.addFlashAttribute("type", "dnager");
+                attributes.addFlashAttribute("messageType", "dnager");
                 attributes.addFlashAttribute("message", "잘못된 동작을 수행하였습니다.");
                 return "redirect:/admin/authority/users";
             }
@@ -304,7 +304,7 @@ public class AdminAuthorityController {
         Optional<Account> accountOptional = userRepository.findById(id);
 
         if(!accountOptional.isPresent()){ // 유저 정보가 없으면
-            attributes.addFlashAttribute("type", "danger");
+            attributes.addFlashAttribute("messageType", "danger");
             attributes.addFlashAttribute("message", "잘못된 유저 정보입니다.");
             return "redirect:/admin/authority/users";
         }

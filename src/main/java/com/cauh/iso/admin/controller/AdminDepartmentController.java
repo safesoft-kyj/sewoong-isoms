@@ -92,7 +92,7 @@ public class AdminDepartmentController {
             for(Department dept : totalDepartments) {
                 Integer size = userRepository.countAllByDepartment(dept);
                 if(size > 0) {
-                    attributes.addFlashAttribute("type", "danger");
+                    attributes.addFlashAttribute("messageType", "danger");
                     attributes.addFlashAttribute("message", "ERROR :: [ " + dept.getName() + "] 부서에 배정된 유저가 있습니다.");
                     return "redirect:/admin/department";
                 }

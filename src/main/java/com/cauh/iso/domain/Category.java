@@ -5,6 +5,7 @@ import com.cauh.iso.domain.constant.CategoryType;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,6 +17,7 @@ import java.io.Serializable;
 @Slf4j
 @ToString(of = {"id", "name"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
+@Audited(withModifiedFlag = true)
 public class Category extends BaseEntity implements Serializable {
     private static final long serialVersionUID = -6871231388579015424L;
     @Id

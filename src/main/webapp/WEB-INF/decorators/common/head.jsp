@@ -296,8 +296,8 @@ Detailed information and more samples can be found in the document.
     <script>
         $(document).ready(function () {
             let type = 'info'
-            <c:if test="${not empty type}">
-            type = '${type}';
+            <c:if test="${not empty messageType}">
+            type = '${messageType}';
             </c:if>
 
             $.niftyNoty({
