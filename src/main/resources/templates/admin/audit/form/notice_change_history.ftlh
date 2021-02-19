@@ -96,9 +96,9 @@
             <th>Title</th>
             <th>Content</th>
             <th class="text-center">Attach Files</th>
+            <th class="text-center">topViewEndDate</th>
+            <th class="text-center">postStatus</th>
             <th class="text-center">Deleted</th>
-<#--            <th class="text-center">email</th>-->
-<#--            <th class="text-center">전화번호</th>-->
 <#--            <th class="text-center">생년월일</th>-->
 <#--            <th class="text-center">ROLE</th>-->
 <#--            <th class="text-center">Status</th>-->
@@ -125,18 +125,19 @@
                     <td class="text-center ${new}" style="vertical-align: middle;">${audit.revisionEntity.rev!''}</td>
                     <td class="text-center ${new}" style="vertical-align: middle;">${audit.revisionEntity.revisionDate?string('yyyy-MM-dd HH:mm:ss')}</td>
                     <td class="text-center ${new}" style="vertical-align: middle;"><span class="label label-${revType}">${audit.revisionType}</span></td>
-                    <td class="text-center ${new}" style="vertical-align: middle;">${audit.entity.id}</td>
-                    <td class="${new}" style="vertical-align: middle;">${audit.entity.title}</td>
-                    <td class="${new}" style="vertical-align: middle;">${audit.entity.content}</td>
-                    <td class="text-center ${new}" style="vertical-align: middle;">
+                    <td class="text-center ${new}" style="vertical-align: middle; ${audit.contains('attachFiles')?then('color:red;', '')}">${audit.entity.id}</td>
+                    <td class="${new}" style="vertical-align: middle; ${audit.contains('attachFiles')?then('color:red;', '')}">${audit.entity.title}</td>
+                    <td class="${new}" style="vertical-align: middle; ${audit.contains('attachFiles')?then('color:red;', '')}">${audit.entity.content}</td>
+                    <td class="text-center ${new}" style="vertical-align: middle; ${audit.contains('attachFiles')?then('color:red;', '')}">
                         <#if audit.entity.attachFiles?has_content>
                             <#list audit.entity.attachFiles as file>
-                                <p><i class="fa fa-file"></i>&nbsp;${file.originalFileName}</p>
+                                <i class="fa fa-file"></i>&nbsp;${file.originalFileName}<br />
                             </#list>
                         </#if>
                     </td>
-                    <td class="text-center ${new}"style="vertical-align: middle;">${audit.entity.deleted?then('Y', 'N')}</td>
-
+                    <td class="text-center ${new}"style="vertical-align: middle; ${audit.contains('topViewEndDate')?then('color:red;', '')}">${audit.entity.topViewEndDate?has_content?then(audit.entity.topViewEndDate?string('yyyy-MM-dd'), 'N/A')}</td>
+                    <td class="text-center ${new}"style="vertical-align: middle; ${audit.contains('postStatus')?then('color:red;', '')}">${audit.entity.postStatus!''}</td>
+                    <td class="text-center ${new}"style="vertical-align: middle; ${audit.contains('deleted')?then('color:red;', '')}">${audit.entity.deleted?then('Y', 'N')}</td>
 <#--                    <td class="text-center ${new}" style="${audit.contains('deptName')?then('color:red;', '')}">${audit.entity.deptName!'N/A'}</td>-->
 <#--                    <td class="text-center ${new}" style="${audit.contains('teamName')?then('color:red;', '')}">${audit.entity.teamName!'N/A'}</td>-->
 <#--                    <td class="text-center ${new}" style="${audit.contains('email')?then('color:red;', '')}">${audit.entity.email!'N/A'}</td>-->
