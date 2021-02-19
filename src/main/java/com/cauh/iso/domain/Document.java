@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,6 +19,7 @@ import java.util.List;
 @Slf4j
 @ToString(of = {"title"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
+@Audited(withModifiedFlag = true)
 public class Document extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(generator = "uuid")

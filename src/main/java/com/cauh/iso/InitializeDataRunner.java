@@ -60,7 +60,7 @@ public class InitializeDataRunner implements ApplicationRunner {
         //현재 유저 Update
         currentUserComponent.updateCurrentUserList();
 
-        if("prod".equals(activeProfile) && !userService.findByUsername("admin").isPresent()) {
+        if("dev".equals(activeProfile) && !userService.findByUsername("admin").isPresent()) {
             //DEV 환경에서 시작 시, 초기 세팅
             //Role savedRole = addRole(1L, "ADMIN", "관리자");
             JobDescription jobDescription = addJobDescription(1, "ADMIN", "관리자");
@@ -189,7 +189,6 @@ public class InitializeDataRunner implements ApplicationRunner {
                 user.setEnabled(true);
                 user.setUserStatus(UserStatus.ACTIVE);
                 user.setAdmin(admin);
-                user.setEmpNo(empNo);
                 user.setUserType(UserType.ADMIN);
                 user.setEmail("sh.yang@safesoft.co.kr");
 

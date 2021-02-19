@@ -1,11 +1,13 @@
 package com.cauh.iso.admin.controller;
 
+import com.cauh.common.entity.Account;
 import com.cauh.common.entity.EntityAudit;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.iso.admin.domain.constant.AuditComponent;
 import com.cauh.iso.admin.service.ChangeAuditService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -31,7 +33,8 @@ public class AdminChangeControlController {
     private final ChangeAuditService changeAuditService;
 
     @GetMapping({"/change-control", "/change-control/{audit}"})
-    public String changeControl(@PathVariable(value = "audit", required = false) String auditString, RedirectAttributes attributes, Model model) {
+    public String changeControl(@PageableDefault(sort = {"customRevisionEntity.rev"}, direction = Sort.Direction.DESC, size = 15) Pageable pageable,
+            @PathVariable(value = "audit", required = false) String auditString, RedirectAttributes attributes, Model model) {
         if(StringUtils.isEmpty(auditString)) {
             return "redirect:/admin/change-control/account";
         }
@@ -44,22 +47,34 @@ public class AdminChangeControlController {
             return "redirect:/admin/change-control/account";
         }
 
+        Page<EntityAudit> revisionAuditList = changeAuditService.getRevisionAuditList(auditComponent.getClassType(), pageable);
+
+        revisionAuditList.getContent().stream().forEach(t ->{
+            log.info("JD : {} ", ((Account)t.getEntity()).getCommaJobTitle());
+        });
+
+        model.addAttribute("auditList", revisionAuditList);
         model.addAttribute("viewName", auditComponent.getViewName());
 
         return "admin/audit/changeControl";
     }
 
-    @GetMapping("/ajax/change-control/{audit}}")
+
+    //현재 다시 미사용
+    @GetMapping("/ajax/change-control/{audit}")
     @ResponseBody
     public List<EntityAudit> getChangeList(@PathVariable("audit") String auditString) {
         AuditComponent auditComponent = getAuditComponent(auditString);
-        return changeAuditService.getRevisionAuditList(auditComponent.getClassType());
+        List<EntityAudit> resultList = changeAuditService.getRevisionAuditList(auditComponent.getClassType());
+
+        log.info("Entity Audit Info : {}", resultList);
+
+        return resultList;
     }
 
     private AuditComponent getAuditComponent(String auditString) {
         AuditComponent auditComponent = null;
 
-        //TODO :: 작업 진행 필요.
         if(auditString.equals("account")) {
             auditComponent = AuditComponent.ACCOUNT;
         } else if(auditString.equals("document")) {

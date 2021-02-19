@@ -164,7 +164,7 @@ public class DocumentVersionService {
             retirementDocumentVersion.setStatus(DocumentStatus.SUPERSEDED);
             retirementDocumentVersion.setRetirement(true);
             retirementDocumentVersion.setRetirementDate(new Date());
-        } else { //날짜를 지정
+        } else { //Retirement 날짜를 지정
             retirementDocumentVersion.setRetirementDate(retirementDate);
         }
 

@@ -6,6 +6,7 @@ import com.cauh.iso.domain.constant.DocumentStatus;
 import com.cauh.iso.utils.DateUtils;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -40,7 +41,6 @@ public class DocumentVersion extends BaseEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "document_id", referencedColumnName = "id")
-    @NotAudited
     private Document document;
 
     @Column(name = "version", length = 5)
@@ -67,6 +67,7 @@ public class DocumentVersion extends BaseEntity implements Serializable {
     private Date retirementDate;
 
     @Column(name = "retirement")
+    @ColumnDefault("0")
     private boolean retirement;
 
 //    @OneToMany(mappedBy = "documentVersion")
