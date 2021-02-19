@@ -93,19 +93,12 @@
             <th class="text-center">Revision Date</th>
             <th class="text-center">Revision Type</th>
             <th class="text-center">ID</th>
-            <th class="text-center">User Id</th>
-            <th class="text-center">이름</th>
-            <th class="text-center">Department</th>
-            <th class="text-center">Team</th>
-            <th class="text-center">email</th>
-            <th class="text-center">전화번호</th>
-            <th class="text-center">생년월일</th>
-            <th class="text-center">ROLE</th>
-            <th class="text-center">Status</th>
-            <th class="text-center">비밀번호 기한</th>
-            <th class="text-center">계정 사용기한</th>
-            <th class="text-center">계정 잠금여부</th>
-
+            <th class="text-center">Document Type</th>
+            <th class="text-center">Document Category</th>
+            <th class="text-center">Document No</th>
+            <th class="text-center">Doc Id</th>
+            <th class="text-center">title</th>
+            <th class="text-center">SOP ID (Only RF)</th>
         </tr>
         </thead>
         <tbody>
@@ -126,7 +119,7 @@
                     <td class="text-center ${new}">${audit.revisionEntity.revisionDate?string('yyyy-MM-dd HH:mm:ss')}</td>
                     <td class="text-center ${new}"><span class="label label-${revType}">${audit.revisionType}</span></td>
                     <td class="text-center ${new}">${audit.entity.id}</td>
-                    <td class="text-center ${new}">${audit.entity.username}</td>
+                    <td class="text-center ${new}"><span class="label label-${audit.entity.type=='SOP'?then('info','purple')}">${audit.entity.type}</span></td>
                     <td class="text-center ${new}">${audit.entity.name}</td>
                     <td class="text-center ${new}" style="${audit.contains('deptName')?then('color:red;', '')}">${audit.entity.deptName!''}</td>
                     <td class="text-center ${new}" style="${audit.contains('teamName')?then('color:red;', '')}">${audit.entity.teamName!''}</td>
@@ -142,7 +135,7 @@
             </#list>
         <#else>
             <tr>
-                <td colspan="16" class="text-center">Change History가 없습니다.</td>
+                <td colspan="7" class="text-center">Change History가 없습니다.</td>
             </tr>
         </#if>
         </tbody>

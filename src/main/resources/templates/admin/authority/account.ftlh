@@ -23,7 +23,7 @@
                 </div>
                 <div class="col-sm-6 table-toolbar-right">
                     <div class="form-group">
-                        <#--                        <input id="demo-input-search2" type="text" placeholder="Search" class="form-control" autocomplete="off">-->
+                        <#--                        <input id="demo-input-search2" messageType="text" placeholder="Search" class="form-control" autocomplete="off">-->
                     </div>
                     <div class="btn-group">
                     </div>
