@@ -128,8 +128,8 @@
                     <td class="text-center ${new}">${audit.entity.id}</td>
                     <td class="text-center ${new}">${audit.entity.username}</td>
                     <td class="text-center ${new}">${audit.entity.name}</td>
-                    <td class="text-center ${new}" style="${audit.contains('deptName')?then('color:red;', '')}">${audit.entity.deptName!''}</td>
-                    <td class="text-center ${new}" style="${audit.contains('teamName')?then('color:red;', '')}">${audit.entity.teamName!''}</td>
+                    <td class="text-center ${new}" style="${audit.contains('deptName')?then('color:red;', '')}">${audit.entity.deptName!'N/A'}</td>
+                    <td class="text-center ${new}" style="${audit.contains('teamName')?then('color:red;', '')}">${audit.entity.teamName!'N/A'}</td>
                     <td class="text-center ${new}" style="${audit.contains('email')?then('color:red;', '')}">${audit.entity.email!'N/A'}</td>
                     <td class="text-center ${new}" style="${audit.contains('phone')?then('color:red;', '')}">${audit.entity.phone!'N/A'}</td>
                     <td class="text-center ${new}" style="${audit.contains('birthDate')?then('color:red;', '')}">${audit.entity.birthDate?has_content?then(audit.entity.birthDate?string('yyyy-MM-dd'), 'N/A')}</td>

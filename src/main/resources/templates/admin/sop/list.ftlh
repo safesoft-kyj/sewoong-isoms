@@ -204,8 +204,8 @@
                                                 data-toggle="popover" data-container="body" data-placement="bottom"
                                                 data-trigger="hover" data-html="true"
                                                 data-content="Retirement 예정일 : ${documentVer.retirementDate?string('yyyy-MM-dd')}"
-                                                style="max-width: 160px;">
-                                            Retirement Scheduled
+                                                style="max-width: 160px; cursor: pointer;">
+                                            <i class="fa fa-comment"></i>
                                         </span>
                                     </#if>
                                 <#elseif status == 'DEVELOPMENT' || status == 'REVISION'>

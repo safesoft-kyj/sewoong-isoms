@@ -35,7 +35,8 @@ public class ChangeAuditService {
          * size : Page Size - 5, 10, 15, 20 ...
          * sort : sort Type - AuditEntity.revisionNumber().desc() / asc() etc...
          */
-        AuditQuery auditQuery = auditReader.createQuery().forRevisionsOfEntityWithChanges(clazz,true);
+        AuditQuery auditQuery = auditReader.createQuery().forRevisionsOfEntityWithChanges(clazz,true)
+                .addOrder(AuditEntity.revisionNumber().desc());
 
         List results = auditQuery.getResultList();
         List<EntityAudit> entityAuditList = new ArrayList<>();
@@ -57,7 +58,10 @@ public class ChangeAuditService {
             entityAuditList.add(audit);
         }
 
-        return new PageImpl<>(entityAuditList, pageable, entityAuditList.size());
+        long start = pageable.getOffset();
+        long end = (start + pageable.getPageSize()) > entityAuditList.size() ? entityAuditList.size() : (start + pageable.getPageSize());
+
+        return new PageImpl<EntityAudit>(entityAuditList.subList((int)start, (int)end), pageable, entityAuditList.size());
     }
 
     public <T> List<EntityAudit> getRevisionAuditList(Class<T> clazz) {
