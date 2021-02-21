@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -24,6 +25,7 @@ import java.util.List;
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @SequenceGenerator(name = "ISO_TRAINING_LOG_SEQ_GENERATOR", sequenceName = "SEQ_ISO_TRAINING_LOG", initialValue = 1, allocationSize = 1)
+@Audited(withModifiedFlag = true)
 public class ISOTrainingLog extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 7139156238208003683L;
 

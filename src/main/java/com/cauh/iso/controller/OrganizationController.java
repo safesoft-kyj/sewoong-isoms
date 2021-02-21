@@ -2,6 +2,7 @@ package com.cauh.iso.controller;
 
 import com.cauh.common.entity.Account;
 import com.cauh.common.entity.Department;
+import com.cauh.common.entity.constant.UserStatus;
 import com.cauh.common.entity.constant.UserType;
 import com.cauh.common.mapper.DeptUserMapper;
 import com.cauh.common.repository.DepartmentRepository;
@@ -46,7 +47,7 @@ public class OrganizationController {
 //        List<Map<String, String>> allUsers = deptUserMapper.getAllUsers(param);
 
 
-        List<Account> accounts = userRepository.findAllByUserTypeAndEnabledOrderByNameAsc(UserType.USER, true);
+        List<Account> accounts = userRepository.findAllByUserTypeAndUserStatusOrderByNameAsc(UserType.USER, UserStatus.ACTIVE);
 //        List<Account> managers = accounts.stream().filter(user -> user.getUserJobDescriptions().stream()
 //                                //해당 유저가 관리자인지 (Manager권한을 가진 JD가 1개 이상 있으면)
 //                                .filter(uj -> uj.getJobDescription().isManager()).count() > 0).collect(Collectors.toList());

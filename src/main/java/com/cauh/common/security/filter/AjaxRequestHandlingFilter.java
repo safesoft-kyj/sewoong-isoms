@@ -35,7 +35,8 @@ public class AjaxRequestHandlingFilter implements Filter {
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //                UserDetails userDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-                log.debug("XMLHttpRequest[{}] username={}", ((HttpServletRequest) request).getRequestURI(), authentication.getName());
+//                log.debug("XMLHttpRequest[{}] username={}", ((HttpServletRequest) request).getRequestURI(), authentication.getName());
+
                 //permitURIList에 포함되어있는 경우, Ajax를 예외적으로 사용 가능함
                 Boolean isPermit = permitURIList.contains(((HttpServletRequest) request).getRequestURI());
                 //log.info("uri : {}", ((HttpServletRequest) request).getRequestURI());

@@ -7,6 +7,7 @@ import com.cauh.iso.domain.report.*;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.Audited;
 import org.springframework.util.ObjectUtils;
 
@@ -47,21 +48,26 @@ public class Approval extends BaseEntity implements Serializable, Cloneable {
     private List<ApprovalLine> approvalLines = new ArrayList<>();
 
     @OneToOne(mappedBy = "approval")
+    @AuditMappedBy(mappedBy = "approval")
     private SOPDeviationReport sopDeviationReport;
 
     @OneToOne(mappedBy = "approval")
+    @AuditMappedBy(mappedBy = "approval")
     private SopRfRequestForm sopRfRequestForm;
 
 //    @OneToOne
 //    private RDApprovalForm rdApprovalForm;
 
     @OneToOne(mappedBy = "approval")
+    @AuditMappedBy(mappedBy = "approval")
     private SOPWaiverApprovalForm sopWaiverApprovalForm;
 
     @OneToOne(mappedBy = "approval")
+    @AuditMappedBy(mappedBy = "approval")
     private SOPDisclosureRequestForm sopDisclosureRequestForm;
 
     @OneToOne(mappedBy = "approval")
+    @AuditMappedBy(mappedBy = "approval")
     private RetirementApprovalForm retirementApprovalForm;
 
     @Column(name = "username", length = 64, nullable = false, updatable = false)

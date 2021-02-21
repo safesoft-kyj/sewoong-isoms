@@ -60,7 +60,6 @@ public class ISO extends BaseEntity implements Serializable {
 
     //ISO 첨부 파일 (Training시, 강의 파일이 됨)
     @OneToMany(mappedBy = "iso")
-    @AuditMappedBy(mappedBy = "iso")
     private List<ISOAttachFile> attachFiles;
 
     @Transient
@@ -92,12 +91,10 @@ public class ISO extends BaseEntity implements Serializable {
 
     //ISO Training 배정 정보
     @OneToMany(mappedBy = "iso")
-    @NotAudited
     private List<ISOTrainingMatrix> isoTrainingMatrix;
 
     //ISO Training 기간 정보
     @OneToMany(mappedBy = "iso")
-    @NotAudited
     private List<ISOTrainingPeriod> isoTrainingPeriods;
 
     @Transient

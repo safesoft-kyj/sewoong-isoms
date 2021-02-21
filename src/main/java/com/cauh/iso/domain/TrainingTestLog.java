@@ -4,6 +4,7 @@ import com.cauh.common.entity.BaseEntity;
 import com.cauh.iso.domain.constant.TrainingStatus;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,6 +17,7 @@ import java.io.Serializable;
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @SequenceGenerator(name = "TRAINING_TEST_LOG_SEQ_GENERATOR", sequenceName = "SEQ_TRAINING_TEST_LOG", initialValue = 1, allocationSize = 1)
+@Audited(withModifiedFlag = true)
 public class TrainingTestLog extends BaseEntity implements Serializable {
     private static final long serialVersionUID = -8701587768958983931L;
 

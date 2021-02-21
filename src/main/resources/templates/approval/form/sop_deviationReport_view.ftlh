@@ -42,7 +42,7 @@
         <td>
 <#--            <@spring.formSingleSelect "approvalView.sopDeviationReport.deviatedSOPDocument.id" sopMap "class='form-control'"/>-->
 <#--            <@spring.showErrors "<br/>" "color:red;"/>-->
-            <div><span class="text-semibold"> SOP Document Id & Title:</span> ${approvalView.sopDeviationReport.deviatedSOPDocument.document.docId} & ${approvalView.sopDeviationReport.deviatedSOPDocument.document.title}</div>
+            <div><span class="text-semibold">SOP Document Id & Title:</span> ${approvalView.sopDeviationReport.deviatedSOPDocument.document.docId} & ${approvalView.sopDeviationReport.deviatedSOPDocument.document.title}</div>
             <div><span class="text-semibold">Version:</span> ${approvalView.sopDeviationReport.deviatedSOPDocument.version}</div>
             <div><span class="text-semibold">Effective Date:</span> ${approvalView.sopDeviationReport.deviatedSOPDocument.effectiveDate?string('dd-MMM-yyyy')}</div>
         </td>

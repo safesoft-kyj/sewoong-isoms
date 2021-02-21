@@ -49,6 +49,8 @@ public class AdminChangeControlController {
 
         Page<EntityAudit> revisionAuditList = changeAuditService.getRevisionAuditList(auditComponent.getClassType(), pageable);
 
+        log.info("Entity : {}", revisionAuditList.getContent());
+
         model.addAttribute("auditList", revisionAuditList);
         model.addAttribute("viewName", auditComponent.getViewName());
 
@@ -62,7 +64,6 @@ public class AdminChangeControlController {
     public List<EntityAudit> getChangeList(@PathVariable("audit") String auditString) {
         AuditComponent auditComponent = getAuditComponent(auditString);
         List<EntityAudit> resultList = changeAuditService.getRevisionAuditList(auditComponent.getClassType());
-
         log.info("Entity Audit Info : {}", resultList);
 
         return resultList;
@@ -71,14 +72,53 @@ public class AdminChangeControlController {
     private AuditComponent getAuditComponent(String auditString) {
         AuditComponent auditComponent = null;
 
+        //CASE 1. User Profile
         if(auditString.equals("account")) {
             auditComponent = AuditComponent.ACCOUNT;
-        } else if(auditString.equals("notice")) {
+        }
+        //CASE 2. User Role Change
+        else if(auditString.equals("user-role")) {
+            auditComponent = AuditComponent.USER_ROLE;
+        }
+        //CASE 3. 공지사항
+        else if(auditString.equals("notice")) {
             auditComponent = AuditComponent.NOTICE;
-        } else if(auditString.equals("document")) {
+        }
+        //CASE 4. 인증현황
+        else if(auditString.equals("certifications")) {
+            auditComponent = AuditComponent.CERTIFICATIONS;
+        }
+        //CASE 5. SOP/RF
+        else if(auditString.equals("document")) {
             auditComponent = AuditComponent.DOCUMENT;
-        } else if(auditString.equals("documentVersion")) {
+        }
+        //CASE 6. SOP/RF Version
+        else if(auditString.equals("documentVersion")) {
             auditComponent = AuditComponent.DOCUMENT_VERSION;
+        }
+        //CASE 7. SOP Training (Log)
+        else if(auditString.equals("sop-training")) {
+            auditComponent = AuditComponent.SOP_TRAINING;
+        }
+        //CASE 8. ISO 14155
+        else if(auditString.equals("iso")) {
+            auditComponent = AuditComponent.ISO;
+        }
+        //CASE 9. ISO Training (Log)
+        else if(auditString.equals("iso-training")) {
+            auditComponent = AuditComponent.ISO_TRAINING;
+        }
+        //CASE 10. Approvals
+        else if(auditString.equals("approval")) {
+            auditComponent = AuditComponent.APPROVAL;
+        }
+        //CASE 11. SOP Training Deviation
+        else if(auditString.equals("sop-training-deviation")) {
+            auditComponent = AuditComponent.SOP_TRAINING_DEVIATION;
+        }
+        //CASE 12. SOP ISO (& Training Log) Disclosure
+        else if(auditString.equals("sop-iso-disclosure")) {
+            auditComponent = AuditComponent.SOP_ISO_DISCLOSURE;
         }
 
         return auditComponent;

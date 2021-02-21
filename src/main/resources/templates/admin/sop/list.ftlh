@@ -200,13 +200,13 @@
                                         <a class="btn btn-xs btn-purple" href="/admin/${type.name()}/management/${status.name()?lower_case}/${documentVer.id}/revision"><i class="fa fa-plus"> Revision</i></a>
                                         <button name="retirement" type="button" class="btn btn-xs btn-danger" data-id="${documentVer.id}"><i class="fa fa-trash"> Retirement</i></button>
                                     <#else>
-                                        <span class="label label-dark add-popover mar-rgt"
+                                        <span class="label label-dark add-popover"
                                                 data-toggle="popover" data-container="body" data-placement="bottom"
                                                 data-trigger="hover" data-html="true"
-                                                data-content="Retirement 예정일 : ${documentVer.retirementDate?string('yyyy-MM-dd')}"
+                                                data-content="<div>Retirement 예정일 : ${documentVer.retirementDate?string('yyyy-MM-dd')}</div>"
                                                 style="max-width: 160px; cursor: pointer;">
-                                            <i class="fa fa-comment"></i>
-                                        </span>
+                                            <i class="fa fa-trash-o"></i>
+                                        </span>&nbsp;
                                     </#if>
                                 <#elseif status == 'DEVELOPMENT' || status == 'REVISION'>
                                     <button name="approved" type="button" class="btn btn-xs btn-success" data-id="${documentVer.id}"><i class="fa fa-check"> Approved</i></button>

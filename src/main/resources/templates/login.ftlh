@@ -912,8 +912,8 @@
                             <div class="alert alert-success">
                                 You have been logged out.
                             </div>
-                        <#elseif message?exists && type?exists>
-                            <div class="alert alert-${type}">
+                        <#elseif message?exists && messageType?exists>
+                            <div class="alert alert-${messageType}">
                                 ${message}
                             </div>
                         </#if>

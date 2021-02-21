@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,6 +20,7 @@ import java.io.Serializable;
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @SequenceGenerator(name = "SOP_DISCLOSURE_TRAINING_LOG_GENERATOR", sequenceName = "SEQ_SOP_DISCLOSURE_TRAINING_LOG", initialValue = 1, allocationSize = 1)
+@Audited(withModifiedFlag = true)
 public class DisclosureSOPTrainingLog extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = -6407142975311925813L;

@@ -100,7 +100,7 @@ public class ISOService {
         ISO savedISO = isoRepository.save(iso);
 
         //저장된 ISO의 속성이 Training인 경우 pdf파일을 image로 parsing,
-        if (!ObjectUtils.isEmpty(file.getOriginalFilename()) && savedISO.isTraining()) {
+        if (!ObjectUtils.isEmpty(file.getOriginalFilename())) {
 
             //파일 업로드 시, 기존에 있던 파일 삭제
             if (!ObjectUtils.isEmpty(iso.getAttachFiles())) {
@@ -121,10 +121,12 @@ public class ISOService {
                     .build();
 
             //강의 파일용으로 이미지 변환처리.
-            Integer totalPage = fileStorageService.conversionPdf2Img(file, savedISO.getId());
-            attacheFile.setTotalPage(totalPage);
-            attacheFile.setExt(ext);
+            if(savedISO.isTraining()) {
+                Integer totalPage = fileStorageService.conversionPdf2Img(file, savedISO.getId());
+                attacheFile.setTotalPage(totalPage);
+            }
 
+            attacheFile.setExt(ext);
             isoAttachFileRepository.save(attacheFile);
         }
 

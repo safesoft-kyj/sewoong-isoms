@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.ObjectUtils;
 
@@ -54,11 +55,11 @@ public class SOPDisclosureRequestForm extends BaseEntity implements Serializable
     @Column(name = "team_dept", columnDefinition = "nvarchar(100)")
     private String teamDept;
 
-    @Column(name = "protocol_title_or_no", length = 100)
-    private String protocolTitleOrNo;
-
-    @Column(name = "project_or_team_manager", columnDefinition = "nvarchar(50)")
-    private String projectOrTeamManager;
+//    @Column(name = "protocol_title_or_no", length = 100)
+//    private String protocolTitleOrNo;
+//
+//    @Column(name = "project_or_team_manager", columnDefinition = "nvarchar(50)")
+//    private String projectOrTeamManager;
 
     @Column(name = "company_name_or_institute_name", columnDefinition = "nvarchar(50)")
     private String companyNameOrInstituteName;
@@ -94,11 +95,9 @@ public class SOPDisclosureRequestForm extends BaseEntity implements Serializable
     private List<RequestedDocument> requestedDocumentRFs = new ArrayList<>();
 
     @OneToMany(mappedBy = "sopDisclosureRequestForm")
-    @NotAudited
     private List<DisclosureSOPTrainingLog> disclosureSOPTrainingLog = new ArrayList<>();
 
     @OneToMany(mappedBy = "sopDisclosureRequestForm")
-    @NotAudited
     private List<DisclosureISOTrainingLog> disclosureISOTrainingLog = new ArrayList<>();
 
     public boolean isRequestedSOP() {
@@ -120,6 +119,8 @@ public class SOPDisclosureRequestForm extends BaseEntity implements Serializable
     public String getStrRequestDate() {
         return DateUtils.format(requestStartDate, "dd-MMM-yyyy").toUpperCase() + " to " + DateUtils.format(requestEndDate, "dd-MMM-yyyy").toUpperCase();
     }
+
+
 
     public SOPDisclosureRequestForm(Approval approval, SOPDisclosureRequestForm sopDisclosureRequestForm) {
         this.approval = approval;
@@ -156,8 +157,8 @@ public class SOPDisclosureRequestForm extends BaseEntity implements Serializable
         this.documentAccess = sopDisclosureRequestForm.getDocumentAccess();
         this.nameOfRequester = sopDisclosureRequestForm.getNameOfRequester();
         this.teamDept = sopDisclosureRequestForm.getTeamDept();
-        this.protocolTitleOrNo = sopDisclosureRequestForm.getProtocolTitleOrNo();
-        this.projectOrTeamManager = sopDisclosureRequestForm.getProjectOrTeamManager();
+//        this.protocolTitleOrNo = sopDisclosureRequestForm.getProtocolTitleOrNo();
+//        this.projectOrTeamManager = sopDisclosureRequestForm.getProjectOrTeamManager();
         this.companyNameOrInstituteName = sopDisclosureRequestForm.getCompanyNameOrInstituteName();
         this.requestStartDate = sopDisclosureRequestForm.getRequestStartDate();
         this.requestEndDate = sopDisclosureRequestForm.getRequestEndDate();

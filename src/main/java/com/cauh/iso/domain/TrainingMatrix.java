@@ -33,7 +33,6 @@ public class TrainingMatrix extends BaseEntity implements Serializable {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "document_version_id", referencedColumnName = "id")
-    @NotAudited
     private DocumentVersion documentVersion;
 
     @Enumerated(EnumType.STRING)
@@ -48,7 +47,6 @@ public class TrainingMatrix extends BaseEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name="job_description_id", referencedColumnName = "id")
-    @NotAudited
     private JobDescription jobDescription;
 
 

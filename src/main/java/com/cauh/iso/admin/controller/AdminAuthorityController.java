@@ -6,6 +6,7 @@ import com.cauh.common.entity.constant.UserType;
 import com.cauh.common.mapper.DeptUserMapper;
 import com.cauh.common.repository.UserJobDescriptionChangeLogRepository;
 import com.cauh.common.repository.UserRepository;
+import com.cauh.common.security.annotation.CurrentUser;
 import com.cauh.common.service.UserService;
 import com.cauh.iso.admin.service.DepartmentService;
 import com.cauh.iso.domain.AgreementPersonalInformation;
@@ -191,7 +192,7 @@ public class AdminAuthorityController {
      * @return
      */
     @PostMapping("/authority/users")
-    public String userSignUpAction(
+    public String userSignUpAction(@CurrentUser Account user,
             @RequestParam(value = "result", required = false ) String actionCmd,
             @RequestParam(value = "department", required = false) Integer departmentId,
             @RequestParam(value = "jdIds", required = false) String[] jdIds,
@@ -207,25 +208,26 @@ public class AdminAuthorityController {
 
         //SignUp Accept / Reject
         if(!StringUtils.isEmpty(actionCmd)) {
+            Account savedUser;
+
             if(actionCmd.equals("accept")) {
                 log.debug("동의 : {}", account.getUsername());
 
                 if(!ObjectUtils.isEmpty(departmentId)) {
                     account.setDepartment(departmentService.getDepartmentById(departmentId));
-                    log.info("AC Dept : {}", account.getDepartment());
+                    log.debug("AC Dept : {}", account.getDepartment());
                 }
 
                 if(!ObjectUtils.isEmpty(jdIds)){
                     account.setJdIds(jdIds);
-                    log.info("JD IDs : {}", jdIds);
+                    log.debug("JD IDs : {}", jdIds);
                 }
 
                 //계정 유효기간 설정
-                Account acceptUser = userService.signUpAccept(account);
-
+                Account acceptUser = userService.signUpAccept(account, user);
                 log.info("User's JD : {}", acceptUser.getUserJobDescriptions());
 
-                Account savedUser = userService.saveOrUpdate(acceptUser);
+                savedUser = userService.saveOrUpdate(acceptUser);
 
                 String message = "[" + savedUser.getUsername() + "] 가입 요청이 수락되었습니다.";
                 attributes.addFlashAttribute("message", message);
@@ -233,11 +235,22 @@ public class AdminAuthorityController {
             }else if(actionCmd.equals("reject")){
                 log.debug("거절 : {}", account.getUsername());
                 Account rejectUser = userService.signUpReject(account);
-                Account savedUser = userService.saveOrUpdate(rejectUser);
+                savedUser = userService.saveOrUpdate(rejectUser);
 
                 String message = "[" + savedUser.getUsername() + "] 가입 요청이 거절되었습니다.";
+                attributes.addFlashAttribute("meesageType", "warning");
                 attributes.addFlashAttribute("message", message);
+            }else {
+                attributes.addFlashAttribute("meesageType", "danger");
+                attributes.addFlashAttribute("message", "비정상적인 Sign Up Action입니다.");
+                return "redirect:/admin/authority/users";
             }
+
+            //유저정보가 저장되었으면 메일 안내
+            if(!ObjectUtils.isEmpty(savedUser)) {
+                userService.signUpMailSend(savedUser);
+            }
+
         }
         return "redirect:/admin/authority/users";
     }
@@ -254,25 +267,25 @@ public class AdminAuthorityController {
     @Transactional
     public String roleRequest(@RequestParam("id") Integer id,
                               @RequestParam("action") String action,
+                              @CurrentUser Account manager,
                               RedirectAttributes attributes){
-        log.info("==== role Request");
-        log.info("id : {}", id);
-        log.info("action : {}", action);
-
+        log.debug("==== role Request");
+        log.debug("id : {}", id);
+        log.debug("action : {}", action);
 
         Optional<UserJobDescriptionChangeLog> userJobDescriptionChangeLogOptional
                 = userJobDescriptionChangeLogRepository.findById(id);
-        Account user = null;
 
         if(userJobDescriptionChangeLogOptional.isPresent()) {
             UserJobDescriptionChangeLog userJobDescriptionChangeLog = userJobDescriptionChangeLogOptional.get();
+            userJobDescriptionChangeLog.setManager(manager); //매니저 설정.
+            Account user = userJobDescriptionChangeLog.getRequester();
 
             //userJobDescriptionChangeLog Status Change
             if(action.equals("accept")) {
                 userJobDescriptionChangeLog.setRoleStatus(RoleStatus.ACCEPTED);
 
                 //UserJobDescription working
-                user = userJobDescriptionChangeLog.getUser();
                 String prevJDs = userJobDescriptionChangeLog.getPrevJobDescription();
                 String nextJDs = userJobDescriptionChangeLog.getNextJobDescription();
                 Date assignDate = userJobDescriptionChangeLog.getAssignDate();
@@ -282,12 +295,12 @@ public class AdminAuthorityController {
 
             } else if(action.equals("reject")){ //거절 하면 변동 없이 끝
                 userJobDescriptionChangeLog.setRoleStatus(RoleStatus.REJECTED);
-                user = userJobDescriptionChangeLog.getUser();
+                user = userJobDescriptionChangeLog.getRequester();
 
                 attributes.addFlashAttribute("messageType", "warning");
                 attributes.addFlashAttribute("message", "[" + user.getName() + "]의 ROLE 신청이 반려되었습니다.");
             } else {
-                attributes.addFlashAttribute("messageType", "dnager");
+                attributes.addFlashAttribute("messageType", "danger");
                 attributes.addFlashAttribute("message", "잘못된 동작을 수행하였습니다.");
                 return "redirect:/admin/authority/users";
             }

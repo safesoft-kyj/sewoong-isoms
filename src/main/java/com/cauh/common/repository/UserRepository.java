@@ -22,7 +22,7 @@ public interface UserRepository extends PagingAndSortingRepository<Account, Inte
 
     Optional<Account> findByUsernameAndEmail(String username, String email);
 
-    List<Account> findAllByUserTypeAndEnabledOrderByNameAsc(UserType userType, boolean enabled);
+    List<Account> findAllByUserTypeAndUserStatusOrderByNameAsc(UserType userType, UserStatus status);
 
     //WHERE enabled = ? and user_status in (?, ?)
     List<Account> findAllByEnabledAndUserStatusIn(boolean enabled, List<UserStatus> userStatus);

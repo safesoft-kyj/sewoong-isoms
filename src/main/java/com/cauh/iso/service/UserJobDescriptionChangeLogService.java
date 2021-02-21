@@ -38,7 +38,7 @@ public class UserJobDescriptionChangeLogService {
 
     public Boolean isRequestedRole(Account user) {
         Optional<UserJobDescriptionChangeLog> userJobDescriptionChangeLogOptional =
-                userJobDescriptionChangeLogRepository.findByUserAndRoleStatus(user , RoleStatus.REQUESTED);
+                userJobDescriptionChangeLogRepository.findByRequesterAndRoleStatus(user , RoleStatus.REQUESTED);
         return userJobDescriptionChangeLogOptional.isPresent();
     }
 

@@ -24,8 +24,8 @@
         </tbody>
     </table>
 </#if>
-<#if effectiveRDs?has_content>
-    <h5>Effective RD Information</h5>
+<#if effectiveRFs?has_content>
+    <h5>Effective RF Information</h5>
     <table class="table table-bordered">
         <thead>
         <tr>
@@ -37,12 +37,12 @@
         </tr>
         </thead>
         <tbody>
-        <#list effectiveRDs as rd>
+        <#list effectiveRFs as rf>
             <tr>
-                <td>${rd.document.docId}</td>
-                <td>${rd.version}</td>
-                <td>${rd.document.title}</td>
-                <td>${rd.effectiveDate?string('dd-MMM-yyyy')}</td>
+                <td>${rf.document.docId}</td>
+                <td>${rf.version}</td>
+                <td>${rf.document.title}</td>
+                <td>${rf.effectiveDate?string('dd-MMM-yyyy')}</td>
                 <td>Effective</td>
             </tr>
         </#list>
@@ -64,9 +64,9 @@
         <tbody>
         <#list retirementSOPs as sop>
             <tr>
-                <td>${sop.documentVersion.document.docId}</td>
-                <td>${sop.documentVersion.version}</td>
-                <td>${sop.documentVersion.document.title}</td>
+                <td>${sop.document.docId}</td>
+                <td>${sop.version}</td>
+                <td>${sop.document.title}</td>
                 <td>${sop.retirementDate?string('dd-MMM-yyyy')}</td>
                 <td>Retired</td>
             </tr>
@@ -74,7 +74,7 @@
         </tbody>
     </table>
 </#if>
-<#if retirementRDs?has_content>
+<#if retirementRFs?has_content>
     <h5>Retirement RF Information</h5>
     <table class="table table-bordered">
         <thead>
@@ -87,12 +87,12 @@
         </tr>
         </thead>
         <tbody>
-        <#list retirementRFs as rd>
+        <#list retirementRFs as rf>
             <tr>
-                <td>${rd.documentVersion.document.docId}</td>
-                <td>${rd.documentVersion.version}</td>
-                <td>${rd.documentVersion.document.title}</td>
-                <td>${rd.retirementDate?string('dd-MMM-yyyy')}</td>
+                <td>${rf.document.docId}</td>
+                <td>${rf.version}</td>
+                <td>${rf.document.title}</td>
+                <td>${rf.retirementDate?string('dd-MMM-yyyy')}</td>
                 <td>Retired</td>
             </tr>
         </#list>

@@ -100,11 +100,13 @@
             <th class="text-center">email</th>
             <th class="text-center">전화번호</th>
             <th class="text-center">생년월일</th>
+            <th class="text-center">교육 진행</th>
+            <th class="text-center">메일 수신</th>
             <th class="text-center">ROLE</th>
             <th class="text-center">Status</th>
-            <th class="text-center">비밀번호 기한</th>
-            <th class="text-center">계정 사용기한</th>
-            <th class="text-center">계정 잠금여부</th>
+            <th class="text-center">P/W 기한</th>
+            <th class="text-center">계정 기한</th>
+            <th class="text-center">잠금여부</th>
 
         </tr>
         </thead>
@@ -133,7 +135,9 @@
                     <td class="text-center ${new}" style="${audit.contains('email')?then('color:red;', '')}">${audit.entity.email!'N/A'}</td>
                     <td class="text-center ${new}" style="${audit.contains('phone')?then('color:red;', '')}">${audit.entity.phone!'N/A'}</td>
                     <td class="text-center ${new}" style="${audit.contains('birthDate')?then('color:red;', '')}">${audit.entity.birthDate?has_content?then(audit.entity.birthDate?string('yyyy-MM-dd'), 'N/A')}</td>
-                    <td class="text-center ${new}" style="${audit.contains('userJobDescriptions')?then('color:red;', '')}">${audit.entity.commaJobTitle!'N/A'}</td>
+                    <td class="text-center ${new}" style="${audit.contains('training')?then('color:red;', '')}">${audit.entity.training?then('Y', 'N')}</td>
+                    <td class="text-center ${new}" style="${audit.contains('receiveEmail')?then('color:red;', '')}">${audit.entity.receiveEmail?then('Y', 'N')}</td>
+                    <td class="text-center ${new}" style="${audit.contains('userJobDescriptions')?then('color:red;', '')}">${audit.entity.commaJobTitleHistory!'N/A'}</td>
                     <td class="text-center ${new}" style="${audit.contains('userStatus')?then('color:red;', '')}">${audit.entity.userStatus!'N/A'}</td>
                     <td class="text-center ${new}" style="${audit.contains('credentialsExpiredDate')?then('color:red;', '')}">${audit.entity.credentialsExpiredDate?has_content?then(audit.entity.credentialsExpiredDate?string('yyyy-MM-dd'), 'N/A')}</td>
                     <td class="text-center ${new}" style="${audit.contains('accountExpiredDate')?then('color:red;', '')}">${audit.entity.accountExpiredDate?has_content?then(audit.entity.accountExpiredDate?string('yyyy-MM-dd'), 'N/A')}</td>
@@ -142,7 +146,7 @@
             </#list>
         <#else>
             <tr>
-                <td colspan="16" class="text-center">Change History가 없습니다.</td>
+                <td colspan="18" class="text-center">Change History가 없습니다.</td>
             </tr>
         </#if>
         </tbody>

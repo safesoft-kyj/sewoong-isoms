@@ -3,6 +3,7 @@ package com.cauh.iso.controller;
 import com.cauh.common.entity.Account;
 import com.cauh.common.entity.QAccount;
 import com.cauh.common.entity.constant.UserStatus;
+import com.cauh.common.repository.SignatureRepository;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.annotation.CurrentUser;
 import com.cauh.iso.domain.*;
@@ -48,6 +49,7 @@ public class ApprovalController {
     private final ApprovalService approvalService;
     private final DocumentVersionService documentVersionService;
     private final DocumentVersionRepository documentVersionRepository;
+    private final SignatureRepository signatureRepository;
     private final CategoryService categoryService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -284,6 +286,14 @@ public class ApprovalController {
         log.info("=> @결재 알림 전송 여부 : {}", sendEmail);
 
         approval.setStatus(isTemp ? ApprovalStatus.temp : ApprovalStatus.request);
+
+        //서명정보가 없을 경우 예외처리
+        if(signatureRepository.findById(user.getUsername()).isEmpty()){
+
+            attributes.addFlashAttribute("messageType", "danger");
+            attributes.addFlashAttribute("message", "결제 요청 시, 서명 정보가 필요합니다.");
+            return "redirect:/user/signature";
+        }
 
         log.info("@Approval : {}, user : {}, sendMail : {}", approval.getSopDeviationReport(), user, sendEmail);
         approvalService.saveOrUpdate(approval, user, sendEmail);

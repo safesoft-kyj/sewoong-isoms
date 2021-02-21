@@ -111,13 +111,13 @@
                             <tbody>
                             <#if approvalList?has_content>
                                 <#list approvalList as app>
-                            <tr>
-                                <td class="text-center">${app.id}</td>
-                                <td><a href="#approval-modal" data-toggle="modal" data-title="${app.type.label}" data-id="${app.id}" class="btn-link">${app.type.label}</a></td>
-                                <td><span class="text-muted">${app.createdBy}</span></td>
-                                <td><span class="text-muted">${app.createdDate?string('yyyy-MM-dd')}</span></td>
-                                <td><span class="label label-${app.status.className}">${app.status.label}</span></td>
-                            </tr>
+                                <tr>
+                                    <td class="text-center">${app.id}</td>
+                                    <td><a href="#approval-modal" data-toggle="modal" data-title="${app.type.label}" data-id="${app.id}" class="btn-link">${app.type.label}</a></td>
+                                    <td><span class="text-muted">${app.createdBy}</span></td>
+                                    <td><span class="text-muted">${app.createdDate?string('yyyy-MM-dd')}</span></td>
+                                    <td><span class="label label-${app.status.className}">${app.status.label}</span></td>
+                                </tr>
                                 </#list>
                             <#else>
                                 <tr>

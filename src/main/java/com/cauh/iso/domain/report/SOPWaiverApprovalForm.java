@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.envers.Audited;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -25,6 +26,7 @@ import java.util.Date;
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @SequenceGenerator(name = "SOP_WAIVER_SEQ_GENERATOR", sequenceName = "SEQ_SOP_WAIVER_FORM", initialValue = 1, allocationSize = 1)
+@Audited(withModifiedFlag = true)
 public class SOPWaiverApprovalForm extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 5138960676465200069L;
 

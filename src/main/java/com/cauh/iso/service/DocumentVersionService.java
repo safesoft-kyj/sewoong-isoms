@@ -382,11 +382,14 @@ public class DocumentVersionService {
 
         List<DocumentVersion> effectiveSOPs = getApprovedToEffectiveDocuments(DocumentType.SOP, now);
         List<DocumentVersion> effectiveRFs = getApprovedToEffectiveDocuments(DocumentType.RF, now);
+        boolean hasEffectiveSOPs = ObjectUtils.isEmpty(effectiveSOPs) == false;
+        boolean hasEffectiveRFs = ObjectUtils.isEmpty(effectiveRFs) == false;
+
         log.debug("현재 기준 approved -> effective 되어야 하는 대상 SOP:{}/RF:{}", effectiveSOPs.size(), effectiveRFs.size());
 
 //        StringBuilder sb = new StringBuilder("[SOP 공지]");
         String subject = "[ISO MS] SOPs(RFs) Notification";
-        if(!ObjectUtils.isEmpty(effectiveSOPs)) {
+        if(hasEffectiveSOPs) {
 //            String categoryNames = effectiveSOPs.stream().map(d -> d.getDocument().getCategory().getShortName()).distinct().sorted().collect(Collectors.joining(","));
 //            sb.append(categoryNames).append(" SOP");
             log.debug("-> SOP effective 처리 시작");
@@ -397,7 +400,7 @@ public class DocumentVersionService {
 //            log.info("--> [DtnSM_QA 공지] {} SOP 및 RD Effective 공지", categoryNames);
         }
 
-        if(!ObjectUtils.isEmpty(effectiveRFs)) {
+        if(hasEffectiveRFs) {
 //            sb.append(" 및 RF");
             log.debug("-> RF effective 처리 시작");
             updateDocumentVersionStatus(effectiveRFs);
@@ -408,25 +411,27 @@ public class DocumentVersionService {
 //        Iterable<RetirementDocument> retirementRFDocuments = retirementDocumentService.findRetirementDocs(now, DocumentType.RF);
 
         //2021-02-04 : Retirement 작업
-        List<DocumentVersion> retirementSOPDocuments = getEffectiveToSupersededDocuments(DocumentType.SOP, now);
-        List<DocumentVersion> retirementRFDocuments = getEffectiveToSupersededDocuments(DocumentType.RF, now);
+        List<DocumentVersion> retirementSOPs = getEffectiveToSupersededDocuments(DocumentType.SOP, now);
+        List<DocumentVersion> retirementRFs = getEffectiveToSupersededDocuments(DocumentType.RF, now);
+        log.debug("현재 기준 effective -> superseded 되어야 하는 대상 SOP:{}/RF:{}", retirementSOPs.size(), retirementRFs.size());
 
-        boolean hasRetirementSOPs = ObjectUtils.isEmpty(retirementSOPDocuments) == false;
-        boolean hasRetirementRFs = ObjectUtils.isEmpty(retirementRFDocuments) == false;
+        boolean hasRetirementSOPs = ObjectUtils.isEmpty(retirementSOPs) == false;
+        boolean hasRetirementRFs = ObjectUtils.isEmpty(retirementRFs) == false;
+
 
         if(hasRetirementSOPs) {
             log.debug("-> SOP retirement 처리 시작");
-            retirementDocumentStatus(retirementSOPDocuments);
+            retirementDocumentStatus(retirementSOPs);
             log.debug("-> SOP retirement 처리 완료");
         }
 
         if(hasRetirementRFs) {
             log.debug("-> RF retirement 처리 시작");
-            retirementDocumentStatus(retirementRFDocuments);
+            retirementDocumentStatus(retirementRFs);
             log.debug("-> RF retirement 처리 완료");
         }
 
-        if(!ObjectUtils.isEmpty(effectiveSOPs) || !ObjectUtils.isEmpty(effectiveRFs) || hasRetirementSOPs || hasRetirementRFs) {
+        if(hasRetirementSOPs || hasRetirementRFs || hasRetirementSOPs || hasRetirementRFs) {
 //            if(!ObjectUtils.isEmpty(effectiveSOPs) || !ObjectUtils.isEmpty(effectiveRDs)) {
 //                sb.append(" Effective");
 //            }
@@ -444,8 +449,8 @@ public class DocumentVersionService {
             model.put("title", subject);
             model.put("effectiveSOPs", effectiveSOPs);
             model.put("effectiveRFs", effectiveRFs);
-            model.put("retirementSOPs", retirementSOPDocuments);
-            model.put("retirementRFs", retirementRFDocuments);
+            model.put("retirementSOPs", retirementSOPs);
+            model.put("retirementRFs", retirementRFs);
 //            Mail mail = Mail.builder()
 //                    .to(new String[]{"jhseo@dtnsm.com"})
 //                    .subject(sb.toString())
@@ -483,7 +488,7 @@ public class DocumentVersionService {
                         .build();
 
                 Notice savedSopNotice = noticeService.save(sopNotice, null);
-                log.info("=> SOP Current Index 공지 등록");
+                log.info("=> SOP Current Index 공지 등록 : {}", savedSopNotice);
             }
             if(!ObjectUtils.isEmpty(effectiveRFs)) {
                 Iterable<DocumentVersion> iterable = findAll(getPredicate(DocumentType.RF, DocumentStatus.EFFECTIVE, null, null, null));
@@ -498,7 +503,7 @@ public class DocumentVersionService {
                         .build();
 
                 Notice savedSopNotice = noticeService.save(sopNotice, null);
-                log.info("=> RF Current Index 공지 등록");
+                log.info("=> RF Current Index 공지 등록 : {}", savedSopNotice);
             }
         }
     }
@@ -524,6 +529,7 @@ public class DocumentVersionService {
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qDocumentVersion.document.type.eq(documentType));
         builder.and(qDocumentVersion.status.eq(DocumentStatus.EFFECTIVE));
+        builder.and(qDocumentVersion.retirement.eq(false));
         builder.and(qDocumentVersion.retirementDate.eq(now));
         Iterable<DocumentVersion> documentVersions = documentVersionRepository.findAll(builder);
 

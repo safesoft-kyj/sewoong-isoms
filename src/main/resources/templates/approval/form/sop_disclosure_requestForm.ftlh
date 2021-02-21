@@ -199,17 +199,17 @@
                                                 <#--                                    <input  id="${sop.id}" data-id="${sop.id}" value="${sop.id}" name="sop" type="checkbox" />-->
                                                 <@checkbox "approval.sopDisclosureRequestForm.sopIds" sop.id approval.sopDisclosureRequestForm.sopIds/>
                                                 <span class="label label-purple">SOP</span> ${sop.document.docId}/${sop.document.title}/${sop.version}</label>
-                                            <#if sop.document.rdList?has_content>
+                                            <#if sop.document.rfList?has_content>
                                             <#--                                    <ul style="list-style: none;">-->
-                                                <#list sop.document.rdList as rd>
-                                                    <#list rd.documentVersionList as rdVer>
-                                                        <#if rdVer.status == 'EFFECTIVE'>
+                                                <#list sop.document.rfList as rf>
+                                                    <#list rf.documentVersionList as rfVer>
+                                                        <#if rfVer.status == 'EFFECTIVE'>
                                                             <li style="padding-left:20px;">
                                                                 <label>
                                                                     <#--                                            <input class="hummingbirdNoParent" id="${rdVer.id}" data-id="${rdVer.id}" name="rd" value="${rdVer.id}" type="checkbox" />-->
                                                                     <#--                                            <@spring.formCheckbox "approval.sopDisclosureRequestForm.rdIds" "value='${rdVer.id}'"/>-->
-                                                                    <@checkbox "approval.sopDisclosureRequestForm.rdIds" rdVer.id approval.sopDisclosureRequestForm.rdIds/>
-                                                                    <span class="label label-info">RD</span> ${rdVer.document.docId}/${rdVer.document.title}/${rdVer.version} </label>
+                                                                    <@checkbox "approval.sopDisclosureRequestForm.rfIds" rfVer.id approval.sopDisclosureRequestForm.rfIds/>
+                                                                    <span class="label label-info">RF</span> ${rfVer.document.docId}/${rfVer.document.title}/${rfVer.version} </label>
                                                             </li>
                                                         </#if>
                                                     </#list>

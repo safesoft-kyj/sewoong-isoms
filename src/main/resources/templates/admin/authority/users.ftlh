@@ -369,7 +369,7 @@
                                     <form class="form-horizontal" method="POST">
                                         <input name="id" type="hidden" value="${t.id}" />
                                         <button class="btn btn-icon btn-info" type="button" id="acceptBtn" data-toggle="modal" data-id="${t.id}" data-value="${t.username}" data-jds="${t.commaJobIds}"
-                                                data-pdeptid="<#if t.department.parentDepartment?has_content>${t.department.parentDepartment.id}</#if>" data-deptid="${t.department.id!''}" data-target="#accept-modal">Accept</button>
+                                                data-pdeptid="<#if t.department?has_content && t.department.parentDepartment?has_content>${t.department.parentDepartment.id}</#if>" data-deptid="${t.department?has_content?then(t.department.id!'', '')}" data-target="#accept-modal">Accept</button>
                                         <button class="btn btn-icon btn-danger" id="rejectBtn" data-value="${t.username}" name="result" value="reject">Reject</button>
                                     </form>
                                 <#elseif t.userStatus?has_content && t.userStatus == 'RETIREE'>
@@ -478,8 +478,8 @@
                                     <#list roleRequestList.content as roleRequest>
                                         <tr>
                                             <td class="text-center">${(roleRequestList.totalElements - (roleRequestList.size * roleRequestList.number)) - roleRequest?index}</td>
-                                            <td class="text-center">${roleRequest.user.teamDept}</td>
-                                            <td class="text-center">${roleRequest.user.name}</td>
+                                            <td class="text-center">${roleRequest.requester.teamDept}</td>
+                                            <td class="text-center">${roleRequest.requester.name}</td>
                                             <td class="text-center"><span
                                                         class="label label-warning">${roleRequest.prevJobDescription}</span>
                                             </td>
@@ -494,11 +494,11 @@
                                             <td class="text-center">
                                                 <button type="button" class="btn btn-info" id="roleAcceptBtn"
                                                         data-value="${roleRequest.id}"
-                                                        data-name="${roleRequest.user.name}">Accept
+                                                        data-name="${roleRequest.requester.name}">Accept
                                                 </button>
                                                 <button type="button" class="btn btn-danger" id="roleRejectBtn"
                                                         data-value="${roleRequest.id}"
-                                                        data-name="${roleRequest.user.name}">Reject
+                                                        data-name="${roleRequest.requester.name}">Reject
                                                 </button>
                                             </td>
                                         </tr>

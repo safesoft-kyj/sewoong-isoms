@@ -55,6 +55,12 @@ public class UserJobDescriptionService {
                 userJobDescriptionRepository.save(newUserJd);
             }
         }
+
+        //기존 Role들의 직무 배정일 정보 Setting
+        user.getUserJobDescriptions().stream()
+                .filter(u -> !ObjectUtils.isEmpty(u.getId())).filter(u -> !u.isDelete())
+                .forEach(u -> {userJobDescriptionRepository.save(u);});
+
     }
 
 }

@@ -159,6 +159,7 @@ public class MyTraining implements Serializable {
                         return documentVersion.getApprovedDate();
                     }
                 }
+
                 if (documentVersion.getEffectiveDate().compareTo(inDateOrJobAssignDate) <= 0) {
                     return DateUtils.addDay(inDateOrJobAssignDate, 1);
                 } else {

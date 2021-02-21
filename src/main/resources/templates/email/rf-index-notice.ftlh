@@ -1,5 +1,5 @@
 <#setting locale="en_US">
-<#if currentRDs?has_content>
+<#if currentRFs?has_content>
     <table class="table table-bordered">
         <thead>
         <tr class="bg-gray-light">
@@ -10,12 +10,12 @@
         </tr>
         </thead>
         <tbody>
-        <#list currentRDs as sop>
+        <#list currentRFs as rf>
             <tr>
-                <td class="text-center">${sop.document.docId}</td>
-                <td>${sop.document.title}</td>
-                <td class="text-center">${sop.version}</td>
-                <td class="text-center">${sop.effectiveDate?string('dd-MMM-yyyy')}</td>
+                <td class="text-center">${rf.document.docId}</td>
+                <td>${rf.document.title}</td>
+                <td class="text-center">${rf.version}</td>
+                <td class="text-center">${rf.effectiveDate?string('dd-MMM-yyyy')}</td>
             </tr>
         </#list>
         </tbody>

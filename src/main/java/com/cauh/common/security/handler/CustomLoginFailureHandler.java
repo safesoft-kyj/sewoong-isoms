@@ -49,10 +49,10 @@ public class CustomLoginFailureHandler implements AuthenticationFailureHandler {
         sb.append("/login?error");
 
         if(!StringUtils.isEmpty(errormsg)){
-            sb.append("=");
-            sb.append(errormsg);
+            sb.append("=").append(errormsg);
         }
 
+        //TODO :: 비밀번호 특정 회수 입력 시 계정 잠금 구현 필요.
         if(!StringUtils.isEmpty(errorcnt)){
             sb.append("&errorcnt=");
             sb.append(errorcnt);

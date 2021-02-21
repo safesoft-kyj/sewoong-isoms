@@ -119,15 +119,16 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
         try {
             userDetailsChecker.check(userDetails);
         } catch (LockedException e) {
+            log.info("계정 잠금");
             throw e;
         } catch (DisabledException e) {
+            log.info("계정 유효 만료");
             throw e;
         } catch (AccountExpiredException e) {
+            log.info("계정 유효기한 만료");
             throw e;
         } catch (CredentialsExpiredException e) {
-//            throw e;
             log.info("비밀번호 기한 만료");
-
         } catch (UsernameNotFoundException e) {
             throw e;
         }
@@ -204,23 +205,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
 
         log.info("Application Name : {}, Username : {}, isAdmin : {}", applicationName, userDetails.getUsername(), userDetails.isAdmin());
 
-//        if("SOP".equals(applicationName)) {
-//            log.info("SOP JD(QA) -> Admin, JD(QMO) -> Super Admin !!!");
-//        }
-
-
-//        if(userDetails.isAdmin()) {
-//            log.debug("****** {}, 관리자로 로그인 되었습니다. ******", userDetails.getUsername());
-//        } else {
-//            /**
-//             * JD 정보 체크
-//             */
-//            if(ObjectUtils.isEmpty(userDetails.getJobDescriptions())) {
-//                log.warn("사용자[{}] JD가 지정 되지 않았습니다.", userDetails.getUsername());
-//            } else {
-//                log.debug("사용자[{}] 의 JD : {}", userDetails.getUsername(), userDetails.getJobDescriptions());
-//            }
-
         return createSuccessAuthentication(customWebAuthenticationDetails, userDetails);
     }
 
@@ -282,11 +266,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
      * @return
      */
     private CustomUsernamePasswordAuthenticationToken createSuccessAuthentication(CustomWebAuthenticationDetails customWebAuthenticationDetails, Account userDetails) {
-//        Collection<? extends GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList("QAA");
         List<GrantedAuthority> authorities = null;
         String username = userDetails.getUsername();
-//        log.debug("username = {}, User Authorities = {}", userDetails.getUsername(), userDetails.getAuthorityList());
-//
 
         log.info("==> username : {}, userType : {}", username, userDetails.getUserType().name());
         /**
@@ -320,8 +301,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
         /**
          * UserDetails 정보에 AccessLogId 설정
          */
-//        userDetails.setAccessLogId(accessLog.getAccessLogId());
-//        authorities = AuthorityUtils.commaSeparatedStringToAuthorityList("QAA");
         CustomUsernamePasswordAuthenticationToken customUsernamePasswordAuthenticationToken = new CustomUsernamePasswordAuthenticationToken(userDetails, null, authorities);
         customUsernamePasswordAuthenticationToken.setDetails(customWebAuthenticationDetails);
 

@@ -1,14 +1,11 @@
 package com.cauh.iso.controller;
 
-import com.cauh.common.entity.Account;
-import com.cauh.common.security.annotation.CurrentUser;
 import com.cauh.iso.component.DocumentViewer;
 import com.cauh.iso.domain.ISOAccessLog;
 import com.cauh.iso.domain.ISOCertification;
 import com.cauh.iso.domain.ISOCertificationAttachFile;
 import com.cauh.iso.domain.QISOCertification;
 import com.cauh.iso.domain.constant.DocumentAccessType;
-import com.cauh.iso.domain.constant.ISOType;
 import com.cauh.iso.domain.constant.PostStatus;
 import com.cauh.iso.exception.MyFileNotFoundException;
 import com.cauh.iso.security.annotation.IsAdmin;

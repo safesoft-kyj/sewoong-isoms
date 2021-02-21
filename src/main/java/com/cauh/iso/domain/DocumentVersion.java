@@ -17,6 +17,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -36,7 +37,6 @@ public class DocumentVersion extends BaseEntity implements Serializable {
     private String id;
 
     @OneToMany(mappedBy = "documentVersion")
-    @NotAudited
     private List<TrainingMatrix> trainingMatrixList;
 
     @ManyToOne
@@ -234,4 +234,14 @@ public class DocumentVersion extends BaseEntity implements Serializable {
             return DateUtils.format(effectiveDate, "dd-MMM-yyyy").toUpperCase();
         }
     }
+
+    public String getMatrixRoles(){
+        if(trainingMatrixList.stream().filter(m -> m.isTrainingAll()).count() > 0) {
+            return "ALL";
+        } else {
+            return trainingMatrixList.stream().filter(m -> !m.isTrainingAll())
+                    .map(m -> m.getJobDescription().getShortName()).collect(Collectors.joining(", "));
+        }
+    }
+
 }

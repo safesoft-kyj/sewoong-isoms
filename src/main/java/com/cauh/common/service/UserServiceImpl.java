@@ -182,7 +182,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Account signUpAccept(Account account) {
+    public Account signUpAccept(Account account, Account manager) {
         //가입 수락 - 가입 날짜 설정
         account.setIndate(new Date());
         //가입 수락 - 계정 기한 설정
@@ -254,7 +254,8 @@ public class UserServiceImpl implements UserService {
             log.info("Next : {}", nextRole);
 
             UserJobDescriptionChangeLog userJobDescriptionChangeLog = UserJobDescriptionChangeLog.builder()
-                    .user(account)
+                    .requester(account)
+                    .manager(manager)
                     .requestDate(new Date())
                     .assignDate(Date.from(now.atStartOfDay(ZoneId.systemDefault()).toInstant()))
                     .prevJobDescription(prevRole)
@@ -282,6 +283,27 @@ public class UserServiceImpl implements UserService {
         account.setEnabled(false);
 
         return account;
+    }
+
+    public void signUpMailSend(Account account) {
+        HashMap<String, Object> model = new HashMap<>();
+
+        if (account.getUserStatus() == UserStatus.ACTIVE) { //Accept
+            model.put("title", "회원가입 수락 안내");
+            model.put("content", "귀하의 회원가입 신청이 수락되었습니다.");
+        } else if (account.getUserStatus() == UserStatus.INACTIVE) { //Reject
+            model.put("message", "회원가입 거절 안내");
+            model.put("username", "귀하의 회원가입 신청이 거절되었습니다.");
+        }
+
+        Mail mail = Mail.builder()
+                .to(new String[]{account.getEmail()})
+                .subject(String.format("[ISO-MS] 회원가입 신청 결과 안내"))
+                .model(model)
+                .templateName("user-signup-request")
+                .build();
+
+        mailService.sendMail(mail);
     }
 
     @Override

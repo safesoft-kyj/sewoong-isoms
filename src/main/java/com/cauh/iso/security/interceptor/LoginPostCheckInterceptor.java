@@ -39,7 +39,7 @@ public class LoginPostCheckInterceptor extends HandlerInterceptorAdapter {
             String uri = request.getRequestURI();
             log.debug("@URI : {}", uri);
 
-            //CASE 1. 개인정보 활용 동의
+            //CASE 1. 개인정보 활용 동의 -> 해당 과정에서 Signature 등록 진행.
             if (user.isAgreementCollectUse()) {
                 log.trace("@Username : {} Agreement to Collect Use 동의 처리 되어 있음.", user.getUsername());
 

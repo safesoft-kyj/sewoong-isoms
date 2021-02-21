@@ -274,10 +274,17 @@ Detailed information and more samples can be found in the document.
     //         return chr.toUpperCase();
     //     });
     // }
-    <c:if test="${empty param['admin']}">
+
+    <sec:authorize var="isAdmin" access="hasAnyAuthority('ADMIN')"/>
+    <c:if test="${empty param['admin'] or isAdmin eq false}">
     var pathname = location.pathname;
     // var paths = pathname.split("/");
-    if (pathname.indexOf("/notice/") == -1 || pathname.indexOf("/iso-14155/") == -1) {
+
+    console.log("Path : ", pathname);
+    console.log("isAdmin : ", "${isAdmin}");
+
+
+    if(!((pathname.indexOf("/notice/") != -1 || pathname.indexOf("/iso-14155/") != -1) && ${isAdmin})) {
         $(document).ready(function () {
             $(document).bind("contextmenu", function (e) {
                 return false;

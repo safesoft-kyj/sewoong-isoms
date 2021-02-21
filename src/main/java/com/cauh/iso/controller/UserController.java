@@ -71,7 +71,7 @@ public class UserController {
 
         model.addAttribute("currentRoles", user.getUserJobDescriptions());
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-        booleanBuilder.and(qUserJobDescriptionChangeLog.user.eq(user));
+        booleanBuilder.and(qUserJobDescriptionChangeLog.requester.eq(user));
 
         model.addAttribute("roleList", userJobDescriptionChangeLogService.getUserChangeLog(booleanBuilder, pageable));
 
@@ -125,7 +125,7 @@ public class UserController {
             }
         }
 
-        userJobDescriptionChangeLog.setUser(user);
+        userJobDescriptionChangeLog.setRequester(user);
         userJobDescriptionChangeLog.setRoleStatus(RoleStatus.REQUESTED);
         userJobDescriptionChangeLog.setRequestDate(new Date());
         userJobDescriptionChangeLogService.saveChangeLog(userJobDescriptionChangeLog);
@@ -204,14 +204,19 @@ public class UserController {
     @ResponseBody
     public String getchildDepartments(@RequestParam("id") Integer id){
         StringBuffer sb = new StringBuffer();
-        List<Department> departmentList = departmentService.getChildDepartment(new Department(id));
 
-        if(departmentList.size() > 0){
-            sb.append("<option value='department'>----------</option>");
-        }
-        for(Department department : departmentList) {
-            sb.append("<option value='").append(department.getId()).append("'>");
-            sb.append(department.getName()).append("</option>");
+        if(!ObjectUtils.isEmpty(id)) {
+            List<Department> departmentList = departmentService.getChildDepartment(new Department(id));
+
+            if(departmentList.size() > 0){
+                sb.append("<option value='department'>----------</option>");
+            }
+            for(Department department : departmentList) {
+                sb.append("<option value='").append(department.getId()).append("'>");
+                sb.append(department.getName()).append("</option>");
+            }
+        } else {
+            log.error("불러오고자 하는 Id 값이 없음.");
         }
 
         return sb.toString();
@@ -223,7 +228,7 @@ public class UserController {
     public Map<String, Boolean> signUpUsernameValid(@RequestParam("type") String type,
                                                     @RequestParam("keyword") String keyword) {
         List<Account> currentUserAccountList = currentUserComponent.getCurrentUserList();
-        log.debug("Account List : {}", currentUserAccountList);
+        //log.debug("Account List : {}", currentUserAccountList);
         Map<String, Boolean> resultMap = new HashMap<>();
         Boolean result = true;
 
@@ -237,7 +242,7 @@ public class UserController {
                 }
             }
         }else if(type.equals("email")) {
-            log.info("Data Type : {}({})", type, keyword);
+            //log.info("Data Type : {}({})", type, keyword);
             //내용이 중복되면 false 반환
             for(Account account : currentUserAccountList){
                 if(!ObjectUtils.isEmpty(account.getEmail()) && account.getEmail().equals(keyword)){

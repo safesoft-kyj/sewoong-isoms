@@ -64,7 +64,7 @@
     <tr>
         <td class="bg-gray-light">Request Date<br/><small>(Date or Period to access ISO Management System)</small></td>
         <td>
-            ${approvalView.sopDisclosureRequestForm.requestStartDate?string('dd-MMM-yyyy')} ~ ${approvalView.sopDisclosureRequestForm.requestEndDate?string('dd-MMM-yyyy')}
+            ${approvalView.sopDisclosureRequestForm.requestStartDate?has_content?then(approvalView.sopDisclosureRequestForm.requestStartDate?string('dd-MMM-yyyy'), '')} ~ ${approvalView.sopDisclosureRequestForm.requestStartDate?has_content?then(approvalView.sopDisclosureRequestForm.requestEndDate?string('dd-MMM-yyyy'), '')}
         </td>
     </tr>
     <tr>

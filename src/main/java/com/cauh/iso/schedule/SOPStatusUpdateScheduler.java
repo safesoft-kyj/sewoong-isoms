@@ -14,7 +14,7 @@ public class SOPStatusUpdateScheduler {
     private final DocumentVersionService documentVersionService;
 
 //    @Scheduled(cron = "0 0 */1 * * * ")//초 분 시 일 월 요일 연(1시간 마다)
-//    @Scheduled(cron = "0 */2 * * * *")//초 분 시 일 월 요일 연(5분마다)
+//    @Scheduled(cron = "0 0/2 * * * *")//초 분 시 일 월 요일 연(5분마다)
     @Scheduled(cron = "${scheduler.sop-status-update}")//초 분 시 일 월 요일 연
     public void approvedToEffective() {
         log.info(" => Approved SOP의 Effective Date를 확인하여 effective 상태로 변경한다.");

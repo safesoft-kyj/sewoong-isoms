@@ -21,7 +21,7 @@
             <li><a href="/admin/SOP/management/approved">Approved SOP</a></li>
             <li><a href="/admin/SOP/management/effective">Effective SOP</a></li>
             <li><a href="/admin/SOP/management/superseded">Superseded SOP</a></li>
-            <li><a href="/admin/SOP/management/retirement">Retirement SOP</a></li>
+<%--            <li><a href="/admin/SOP/management/retirement">Retirement SOP</a></li>--%>
             <li><a href="/admin/sop/category">SOP Category</a></li>
         </ul>
     </li>
@@ -107,6 +107,7 @@
         <!--Submenu-->
         <ul class="collapse" aria-expanded="false">
             <li><a href="/admin/approval">전체문서함</a></li>
+            <li><a href="/admin/approval/temp">임시보관함</a></li>
             <li><a href="/admin/approval/request">요청함</a></li>
             <li><a href="/admin/approval/progress">진행함</a></li>
             <li><a href="/admin/approval/approved">완료함</a></li>

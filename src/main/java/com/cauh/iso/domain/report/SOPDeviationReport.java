@@ -9,6 +9,9 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.envers.AuditJoinTable;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.ObjectUtils;
 
@@ -24,6 +27,7 @@ import java.util.Date;
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @SequenceGenerator(name = "DEVIATION_REPORT_SEQ_GENERATOR", sequenceName = "SEQ_DEVIATION_REPORT", initialValue = 1, allocationSize = 1)
+@Audited(withModifiedFlag = true)
 public class SOPDeviationReport extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 5138960676465200069L;
 
@@ -33,6 +37,7 @@ public class SOPDeviationReport extends BaseEntity implements Serializable {
 
     @OneToOne
     @JoinColumn(name = "approval_id", referencedColumnName = "id")
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Approval approval;
 
 //    @Column(name = "project_no", columnDefinition = "nvarchar(255)")

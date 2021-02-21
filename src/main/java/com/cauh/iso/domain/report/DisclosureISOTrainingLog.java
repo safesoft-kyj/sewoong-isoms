@@ -1,13 +1,16 @@
 package com.cauh.iso.domain.report;
 
 import com.cauh.common.entity.Account;
+import com.cauh.common.entity.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
@@ -17,7 +20,8 @@ import javax.persistence.*;
 @ToString(of = {"id"})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @SequenceGenerator(name = "ISO_DISCLOSURE_TRAINING_LOG_GENERATOR", sequenceName = "SEQ_ISO_DISCLOSURE_TRAINING_LOG", initialValue = 1, allocationSize = 1)
-public class DisclosureISOTrainingLog {
+@Audited(withModifiedFlag = true)
+public class DisclosureISOTrainingLog extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = -8495768475311925813L;
     @Id

@@ -18,12 +18,18 @@ public class UserJobDescriptionChangeLogValidator implements Validator {
     public void validate(Object o, Errors errors) {
         UserJobDescriptionChangeLog userJobDescriptionChangeLog = (UserJobDescriptionChangeLog)o;
 
-        if(ObjectUtils.isEmpty(userJobDescriptionChangeLog.getPrevJobDescription())) {
-            errors.rejectValue("prevJobDescription", "message.required", "변경 전 role이 확인되지 않습니다.");
-        }
+//        if(ObjectUtils.isEmpty(userJobDescriptionChangeLog.getPrevJobDescription())) {
+//            errors.rejectValue("prevJobDescription", "message.required", "변경 전 role이 확인되지 않습니다.");
+//        }
 
         if(ObjectUtils.isEmpty(userJobDescriptionChangeLog.getNextJobDescription())) {
             errors.rejectValue("nextJobDescription", "message.required", "변경 후 role이 확인되지 않습니다.");
+        }
+
+        if(!(ObjectUtils.isEmpty(userJobDescriptionChangeLog.getNextJobDescription())) ||ObjectUtils.isEmpty(userJobDescriptionChangeLog.getPrevJobDescription())) {
+            if(userJobDescriptionChangeLog.getNextJobDescription().equals(userJobDescriptionChangeLog.getPrevJobDescription())) {
+                errors.rejectValue("jdIds", "message.no.change", "요청 Role과 현재 Role이 동일합니다.");
+            }
         }
 
         if(ObjectUtils.isEmpty(userJobDescriptionChangeLog.getJdIds())) {

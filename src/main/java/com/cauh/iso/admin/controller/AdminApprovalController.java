@@ -144,43 +144,7 @@ public class AdminApprovalController {
             } else if(approval.getType() == ReportType.SOP_Waiver_Approval_Form) {
                 sopWaiverRequestApprovalFormService.generateReport(approval.getSopWaiverApprovalForm(), approval.getApprovalLines(), response.getOutputStream());
             } else if(approval.getType() == ReportType.SOP_RF_Retirement_Form) {
-//                List<MyTraining> trainingList = sopTrainingMatrixRepository.getDownloadTrainingList(user.getDeptCode(), teamCode, userId, docId, user);
                 sopRfRetirementApprovalFormService.generateReport(approval.getRetirementApprovalForm(), approval.getApprovalLines(), response.getOutputStream());
-//                RetirementApprovalForm retirementApprovalForm = approval.getRetirementApprovalForm();
-//                List<RetirementDocument> retirementDocuments = new ArrayList<>();
-//                if(!ObjectUtils.isEmpty(retirementApprovalForm.getRetirementDocumentSOPs())) {
-//                    retirementDocuments.addAll(retirementApprovalForm.getRetirementDocumentSOPs());
-//                }
-//                if(!ObjectUtils.isEmpty(retirementApprovalForm.getRetirementDocumentRDs())) {
-//                    retirementDocuments.addAll(retirementApprovalForm.getRetirementDocumentRDs());
-//                }
-//                InputStream is = IndexReportService.class.getResourceAsStream("Retirement_Approval_Form.xlsx");
-//                ApprovalLine preparedBy = approval.getApprovalLines().get(0);
-//                int size = approval.getApprovalLines().size();
-//                Context context = new Context();
-//                context.putVar("retirementDocs", retirementDocuments);
-//                context.putVar("reason", retirementApprovalForm.getReason());
-//
-//                context.putVar("preSign", Base64Utils.decodeBase64ToBytes(preparedBy.getBase64signature()));
-//                context.putVar("preName", preparedBy.getUser().getEngName());
-//                context.putVar("preTitle", userJobDescriptionService.getUserShortJobD(preparedBy.getUser().getUsername()));
-//                context.putVar("preDate", preparedBy.getStrDate());
-//
-//                if(size == 3) {
-//                    ApprovalLine revBy = approval.getApprovalLines().get(1);
-//                    context.putVar("revSign", Base64Utils.decodeBase64ToBytes(revBy.getBase64signature()));
-//                    context.putVar("revName", revBy.getUser().getEngName());
-//                    context.putVar("revTitle", userJobDescriptionService.getUserShortJobD(revBy.getUser().getUsername()));
-//                    context.putVar("revDate", revBy.getStrDate());
-//                }
-//                ApprovalLine appBy = approval.getApprovalLines().get(size - 1);
-//                context.putVar("appSign", Base64Utils.decodeBase64ToBytes(appBy.getBase64signature()));
-//                context.putVar("appName", appBy.getUser().getEngName());
-//                context.putVar("appTitle", userJobDescriptionService.getUserShortJobD(appBy.getUser().getUsername()));
-//                context.putVar("appDate", appBy.getStrDate());
-//
-//                response.setHeader("Content-Disposition", "attachment; filename=\"Retirement Approval Form.xlsx\"");
-//                JxlsHelper.getInstance().processTemplate(is, response.getOutputStream(), context);
             }
         }
     }

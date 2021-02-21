@@ -104,6 +104,7 @@ public class ApprovalService {
                         .build());
             } else {
                 log.info("신규 요청");
+
                 approval.getApprovalLines().set(0, ApprovalLine.builder().username(user.getUsername())
                         .lineType(ApprovalLineType.requester)
                         .status(ApprovalStatus.approved)
@@ -232,7 +233,7 @@ public class ApprovalService {
                     builder.and(qDocumentVersion.id.in(approval.getRetirementApprovalForm().getRfIds()));
                 }
 
-                model.put("retirementRDs", documentVersionRepository.findAll(builder));
+                model.put("retirementRFs", documentVersionRepository.findAll(builder));
             }
         }
 
@@ -400,7 +401,7 @@ public class ApprovalService {
 
 
                 SOPDisclosureRequestForm savedSopDisclosureRequestForm = sopDisclosureRequestFormRepository.save(sopDisclosureRequestForm);
-                List<String> sopList = Arrays.asList(sopDisclosureRequestForm.getSopIds());
+                List<String> sopList = ObjectUtils.isEmpty(sopDisclosureRequestForm.getSopIds())?null:Arrays.asList(sopDisclosureRequestForm.getSopIds());
 
                 //RF가 없을경우 null삽입
                 List<String> rfList = ObjectUtils.isEmpty(sopDisclosureRequestForm.getRfIds())?null:Arrays.asList(sopDisclosureRequestForm.getRfIds());
@@ -419,7 +420,7 @@ public class ApprovalService {
                         if(ObjectUtils.isEmpty(sopDisclosureRequestForm.getRfIds())) {
                             requestedDocumentRepository.deleteAll(sopDisclosureRequestForm.getRequestedDocumentRFs());
                         } else {
-//                            List<String> rdList = Arrays.asList(sopDisclosureRequestForm.getRdIds());
+//                            List<String> rfList = Arrays.asList(sopDisclosureRequestForm.getRfIds());
                             for(RequestedDocument requestedDocument : sopDisclosureRequestForm.getRequestedDocumentRFs()) {
                                 if(!rfList.contains(requestedDocument.getDocumentVersion().getId())) {
                                     requestedDocumentRepository.delete(requestedDocument);
