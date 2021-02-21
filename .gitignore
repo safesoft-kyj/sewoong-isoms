@@ -106,8 +106,6 @@ fabric.properties
 .idea/codestream.xml
 
 ### Maven ###
-target
-target/**
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -120,3 +118,4 @@ buildNumber.properties
 .mvn/wrapper/maven-wrapper.jar
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,maven
+/target/
