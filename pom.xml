@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.cauh</groupId>
     <artifactId>cauh-iso-ms</artifactId>
-    <version>20201105</version>
+    <version>1.0</version>
     <packaging>war</packaging>
     <name>cauh-iso-ms</name>
     <description>CAUH ISO Management System</description>
