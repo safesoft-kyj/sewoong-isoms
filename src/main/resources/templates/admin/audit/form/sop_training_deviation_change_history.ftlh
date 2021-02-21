@@ -64,7 +64,7 @@
             </#list>
         <#else>
             <tr>
-                <td colspan="10" class="text-center">Change History가 없습니다.</td>
+                <td colspan="14" class="text-center">Change History가 없습니다.</td>
             </tr>
         </#if>
         </tbody>

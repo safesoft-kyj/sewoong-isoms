@@ -94,28 +94,11 @@
                     </td>
                     <td class="text-center ${new}" style="${audit.contains('topViewEndDate')?then('color:red;', '')}">${audit.entity.topViewEndDate?has_content?then(audit.entity.topViewEndDate?string('yyyy-MM-dd'), 'N/A')}</td>
                     <td class="text-center ${new}" style="${audit.contains('deleted')?then('color:red;', '')}">${audit.entity.deleted?then('Y', 'N')}</td>
-<#--                    <td class="text-center ${new}">${audit.entity.document.id}</td>-->
-<#--                    <td class="text-center ${new}">-->
-<#--                        <span class="label ${new?has_content?then('label-info', audit.contains('status')?then('label-danger;', 'label-gray'))}">-->
-<#--                            ${audit.entity.status}-->
-<#--                        </span>-->
-<#--                    </td>-->
-<#--                    <td class="text-center ${new}" style="${audit.contains('version')?then('color:red;', '')}">${audit.entity.version!'N/A'}</td>-->
-<#--                    <td class="text-center ${new}">-->
-<#--                        <#if audit.entity.quiz?has_content>-->
-<#--                            <button type="button" class="btn btn-sm ${audit.contains('quiz')?then('btn-danger', 'bg-gray-dark')}" data-quiz="${audit.entity.quiz}" data-toggle="modal" data-target="#quiz-modal">-->
-<#--                                <i class="pli-question-circle" style="font-size: 16px;"></i>-->
-<#--                            </button>-->
-<#--                        </#if>-->
-<#--                    </td>-->
-<#--                    <td class="text-center ${new}" style="${audit.contains('effectiveDate')?then('color:red;', '')}">${audit.entity.effectiveDate?has_content?then(audit.entity.effectiveDate?string('yyyy-MM-dd'), 'N/A')}</td>-->
-<#--                    <td class="text-center ${new}" style="${audit.contains('retirementDate')?then('color:red;', '')}">${audit.entity.retirementDate?has_content?then(audit.entity.retirementDate?string('yyyy-MM-dd'), 'N/A')}</td>-->
-
                 </tr>
             </#list>
         <#else>
             <tr>
-                <td colspan="12" class="text-center">Change History가 없습니다.</td>
+                <td colspan="16" class="text-center">Change History가 없습니다.</td>
             </tr>
         </#if>
         </tbody>

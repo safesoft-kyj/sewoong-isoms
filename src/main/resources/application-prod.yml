@@ -26,7 +26,7 @@ spring:
       naming:
         implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy #org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
         physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy #org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl # 기본 변수이름을 그대로 이용한다.
-      #      ddl-auto: create
+      #ddl-auto: create
       ddl-auto: update
     properties:
       #      javax:

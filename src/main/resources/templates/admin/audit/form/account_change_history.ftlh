@@ -107,7 +107,6 @@
             <th class="text-center">P/W 기한</th>
             <th class="text-center">계정 기한</th>
             <th class="text-center">잠금여부</th>
-
         </tr>
         </thead>
         <tbody>

@@ -60,7 +60,7 @@ public class InitializeDataRunner implements ApplicationRunner {
         //현재 유저 Update
         currentUserComponent.updateCurrentUserList();
 
-        if("dev".equals(activeProfile) && !userService.findByUsername("admin").isPresent()) {
+        if("prod".equals(activeProfile) && !userService.findByUsername("admin").isPresent()) {
             //DEV 환경에서 시작 시, 초기 세팅
             //Role savedRole = addRole(1L, "ADMIN", "관리자");
             JobDescription jobDescription = addJobDescription(1, "ADMIN", "관리자");
