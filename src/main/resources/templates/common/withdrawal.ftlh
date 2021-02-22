@@ -113,10 +113,11 @@
                     <@spring.formInput "user.name" "class='form-control'" />
                     <@spring.showErrors "" "color:red;"/>
                 </div>
-                <#--                <div class="form-group">-->
-                <#--                    <label class="control-label" for="withdrawalDate">철회 날짜 </label>-->
-                <#--                    <input class="form-control" type="text" id="withdrawalDate" name="name" />-->
-                <#--                </div>-->
+                <div class="form-group">
+                    <label class="control-label" for="withdrawalDate">비밀번호</label>
+                    <@spring.formPasswordInput "user.password" "class='form-control'" />
+                    <@spring.showErrors "" "color:red;"/>
+                </div>
                 <div class="form-group text-right">
                     <div class="col-lg-6">
                         <button class="btn btn-block btn-lg btn-primary" type="submit"><i class="pli-yes"></i> 계속

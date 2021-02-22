@@ -205,6 +205,16 @@
                     </div>
                 </div>
             </#if>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">공지 알림 여부</label>
+                <div class="col-sm-9">
+                    <div class="input-group date">
+                        <@spring.formCheckbox "documentVersion.trainingAll" "class='magic-checkbox'"/><label for="trainingAll">전체</label>
+                        <span class="input-group-addon"><i class="pli-calendar-4"></i></span>
+                    </div>
+                    <@spring.showErrors "<br/>" "color:red;"/>
+                </div>
+            </div>
 
         </div>
         <div class="panel-footer text-right">

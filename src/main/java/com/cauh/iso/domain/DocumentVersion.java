@@ -128,6 +128,10 @@ public class DocumentVersion extends BaseEntity implements Serializable {
 
     @Transient
     private String[] jdIds;
+    
+    //메일 알림 여부
+    @Transient
+    private boolean notification;
 
 //    /** ISO Option **/
 //    @Column(name = "title", columnDefinition = "nvarchar(255)")

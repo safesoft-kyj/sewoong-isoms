@@ -10,6 +10,7 @@ import com.cauh.iso.validator.AgreementsWithdrawalValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,6 +33,7 @@ public class WithdrawalController {
     private final AgreementsWithdrawalValidator agreementsWithdrawalValidator;
     private final AgreementsWithdrawalRepository agreementsWithdrawalRepository;
     private final AgreementsWithdrawalService agreementsWithdrawalService;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/agreements-withdrawal")
     public String agreementsWithdrawal(Model model) {
@@ -66,6 +68,7 @@ public class WithdrawalController {
         //사용자 정보 확인을 거쳤는지에 대한 경로확인
         if(ObjectUtils.isEmpty(user)){
             attributes.addFlashAttribute("message", "잘못된 경로입니다. 사용자 확인 화면으로 돌아갑니다.");
+            return "redirect:/agreements-withdrawal";
         } else if (!user.isWithdrawal()){
             attributes.addFlashAttribute("message", "잘못된 경로입니다. 사용자 확인 화면으로 돌아갑니다.");
             return "redirect:/agreements-withdrawal";
@@ -131,6 +134,13 @@ public class WithdrawalController {
                 !curUser.getName().equals(user.getName())) {
             result.rejectValue("name", "message.name.mismatch", "입력된 이름 정보가 일치하지 않습니다.");
         }
+
+        if(ObjectUtils.isEmpty(user.getPassword())) {
+            result.rejectValue("password", "message.password.required", "비밀번호를 입력해주세요.");
+        } else if (!passwordEncoder.matches(user.getPassword(), curUser.getPassword())){
+            result.rejectValue("password", "message.password.mismatched", "비밀번호가 일치하지 않습니다.");
+        }
+
     }
 
 //    //Authentication Update
