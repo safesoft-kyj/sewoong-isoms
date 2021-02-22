@@ -4,6 +4,7 @@ import com.cauh.common.entity.Account;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.annotation.CurrentUser;
 import com.cauh.common.service.UserService;
+import com.cauh.iso.domain.UserPasswordDTO;
 import com.cauh.iso.validator.UserForgotPasswordValidator;
 import com.cauh.iso.validator.UserPasswordChangeValidator;
 import lombok.RequiredArgsConstructor;
@@ -69,8 +70,13 @@ public class LoginController {
 
     @GetMapping("/password-change")
     public String passwordChange(@CurrentUser Account user, Model model){
-        model.addAttribute("user", Account.builder().id(user.getId()).name(user.getName()).build());
 
+        if(user.getCredentialsExpiredDate().after(new Date())) {
+            log.debug("현재 비밀번호 기한 : {}, 만료가 아닌 경우 홈화면으로 이동.", user.getCredentialsExpiredDate());
+            return "redirect:/";
+        }
+
+        model.addAttribute("user", Account.builder().id(user.getId()).name(user.getName()).build());
         return "common/pwchange";
     }
 
@@ -84,13 +90,13 @@ public class LoginController {
     @PostMapping("/password-change")
     public String passwordChangeProc(@CurrentUser Account currentUser,
                                      @ModelAttribute("user") Account user,
-                                     @RequestParam("newPassword") String password,
                                      SessionStatus status,
                                      RedirectAttributes attributes, BindingResult result) {
-        log.info("New Password : {}", password);
-        log.info("Current Password : {}", user.getPassword());
 
-        userPasswordChangeValidator.validate(user, result);
+        log.debug("New Password : {}", user.getNewPassword());
+        log.debug("Current Password : {}", user.getPassword());
+        UserPasswordDTO userPasswordDTO = new UserPasswordDTO(currentUser, user);
+        userPasswordChangeValidator.validate(userPasswordDTO, result);
 
         if(result.hasErrors()){
             log.debug("Errors : {}", result.getAllErrors());
@@ -99,7 +105,7 @@ public class LoginController {
 
         //비밀번호 기한 설정 및 비밀번호 변경
         currentUser.setCredentialsExpiredDate(Date.from(LocalDate.now().plusDays(90).atStartOfDay(ZoneId.systemDefault()).toInstant()));
-        currentUser.setPassword(passwordEncoder.encode(password));
+        currentUser.setPassword(passwordEncoder.encode(user.getNewPassword()));
         Account savedUser = userRepository.save(currentUser);
 
         log.info("저장된 유저 : {}", savedUser);

@@ -9,10 +9,13 @@ import com.cauh.common.security.authentication.CustomUsernamePasswordAuthenticat
 import com.cauh.common.service.UserService;
 import com.cauh.iso.admin.service.DepartmentService;
 import com.cauh.iso.component.CurrentUserComponent;
+import com.cauh.iso.domain.UserPasswordDTO;
 import com.cauh.iso.service.JDService;
 import com.cauh.iso.service.JobDescriptionService;
 import com.cauh.iso.service.UserJobDescriptionChangeLogService;
 import com.cauh.iso.validator.UserJobDescriptionChangeLogValidator;
+import com.cauh.iso.validator.UserPasswordChangeValidator;
+import com.cauh.iso.validator.UserProfileValidator;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,12 +35,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
 @Slf4j
-@SessionAttributes({"userJobDescriptionChangeLog"})
+@SessionAttributes({"account", "pwAccount", "userJobDescriptionChangeLog"})
 public class UserController {
     private final UserRepository userRepository;
 
@@ -49,6 +54,8 @@ public class UserController {
     private final DepartmentService departmentService;
     private final UserJobDescriptionChangeLogService userJobDescriptionChangeLogService;
     private final UserJobDescriptionChangeLogValidator userJobDescriptionChangeLogValidator;
+    private final UserProfileValidator userProfileValidator;
+    private final UserPasswordChangeValidator userPasswordChangeValidator;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -63,6 +70,75 @@ public class UserController {
     @GetMapping("/user/profile")
     public String profile() {
         return "user/profile";
+    }
+
+    @GetMapping("/user/profile/edit")
+    public String profileEdit(@CurrentUser Account user, Model model){
+
+        model.addAttribute("account", user);
+        model.addAttribute("departments", departmentService.getParentDepartment());
+
+        return "user/profile_edit";
+    }
+
+    @PostMapping("/user/profile/edit")
+    public String profileEditProc(@ModelAttribute("account") Account user, SessionStatus status,
+                                  BindingResult result, Model model, RedirectAttributes attributes) {
+        userProfileValidator.validate(user, result);
+
+        if(result.hasErrors()) {
+            log.debug("ERROR : {}", result.getAllErrors());
+            model.addAttribute("departments", departmentService.getParentDepartment());
+            return "user/profile_edit";
+        }
+
+        //부서 정보 갱신
+        if(!ObjectUtils.isEmpty(user.getDepartment()) && !ObjectUtils.isEmpty(user.getDepartment().getParentDepartment())) {
+            Department department = user.getDepartment();
+            user.setDeptName(department.getParentDepartment().getName());
+            user.setTeamName(department.getName());
+        } else {
+            Department department = user.getDepartment();
+            user.setDeptName(department.getName());
+            user.setTeamName(null);
+        }
+
+        Account savedUser = userService.saveOrUpdate(user);
+        log.debug("Save User : {}", savedUser);
+        status.setComplete();
+
+        attributes.addFlashAttribute("message", "Profile 정보가 수정되었습니다.");
+        return "redirect:/user/profile";
+    }
+
+    @GetMapping("/user/profile/pwchange")
+    public String profilePwChange(Model model){
+        model.addAttribute("pwUser", new Account());
+
+        return "user/profile_pwchange";
+    }
+
+    @PostMapping("/user/profile/pwchange")
+    public String profilePwChangeProc(@ModelAttribute("pwUser") Account user, @CurrentUser Account currentUser,
+                                      BindingResult result, RedirectAttributes attributes){
+
+        log.debug("New Password : {}", user.getNewPassword());
+        log.debug("Current Password : {}", user.getPassword());
+        UserPasswordDTO userPasswordDTO = new UserPasswordDTO(currentUser, user);
+        userPasswordChangeValidator.validate(userPasswordDTO, result);
+
+        if(result.hasErrors()) {
+            return "user/profile_pwchange";
+        }
+
+        //Password Encode 설정 및 패스워드 기한 초기화
+        currentUser.setCredentialsExpiredDate(Date.from(LocalDate.now().plusDays(90).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        currentUser.setPassword(passwordEncoder.encode(user.getNewPassword()));
+        Account savedUser = userService.saveOrUpdate(currentUser);
+        log.debug("저장된 User 정보값 : {}", savedUser);
+
+        attributes.addFlashAttribute("message", "User Password 정보가 수정되었습니다.");
+        return "redirect:/user/profile";
     }
 
     @GetMapping("/user/profile/role")

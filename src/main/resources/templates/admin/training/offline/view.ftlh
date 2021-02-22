@@ -87,9 +87,9 @@
                         <#list offlineTraining.offlineTrainingAttendees as atd>
                             <tr>
                                 <td>${atd?index + 1}</td>
-                                <td>${atd.user.orgDepart!''}</td>
-                                <td>${atd.user.orgTeam!''}</td>
-                                <td>${atd.user.name}</td>
+                                <td>${atd.account.deptName!''}</td>
+                                <td>${atd.account.teamName!''}</td>
+                                <td>${atd.account.name}</td>
                             </tr>
                         </#list>
                         </tbody>

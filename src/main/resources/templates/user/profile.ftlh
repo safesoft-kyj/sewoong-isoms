@@ -26,23 +26,31 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane fade active in">
-            <form class="form-horizontal form-padding" method="post" id="signForm">
+            <div class="form-horizontal form-padding">
                 <!--Static-->
                 <div class="form-group">
-                    <label class="control-label">Name</label>
+                    <label class="control-label">이름</label>
+                    <input type="text" class="form-control" value="${user.name!''}" readonly="readonly">
+                    <label class="control-label">이름 (영문명)</label>
                     <input type="text" class="form-control" value="${user.engName!''}" readonly="readonly">
-                    <label class="control-label">Team / Department</label>
+                    <label class="control-label">팀 / 부서</label>
                     <input type="text" class="form-control" value="${user.teamDept!''}" readonly="readonly">
-                    <label class="control-label">Email</label>
-                    <input type="text" class="form-control" value="${user.email!''}" readonly="readonly">
-                    <label class="control-label">Birth Date</label>
+                    <label class="control-label">생년월일</label>
                     <input type="text" class="form-control"
                            value="${user.birthDate?has_content?then(user.birthDate?string('yyyy-MM-dd'), 'N/A')}"
                            readonly="readonly">
-                    <label class="control-label">Phone</label>
+                    <label class="control-label">연락처</label>
                     <input type="text" class="form-control" value="${user.phone!'N/A'}" readonly="readonly">
+                    <label class="control-label">Email</label>
+                    <input type="text" class="form-control" value="${user.email!''}" readonly="readonly">
                 </div>
-            </form>
+
+                <div class="form-group">
+                    <a href="/user/profile/edit" class="btn btn-info">Edit</a>
+                    <a href="/user/profile/pwchange" class="btn btn-danger">P/W Change</a>
+                </div>
+
+            </div>
         </div>
     </div>
 </div>

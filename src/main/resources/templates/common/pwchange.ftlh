@@ -11,58 +11,6 @@
     <script src="/static/js/nifty.min.js"></script>
     <!--Bootstrap Validator -->
     <script src="/static/plugins/bootstrap-validator/bootstrapValidator.js"></script>
-
-    <script>
-        $(document).ready(function(){
-            $("#pwChangeForm").bootstrapValidator({
-                message: 'This value is not valid',
-                fields: {
-                    newPassword: {
-                        validators: {
-                            remote: {
-                                message: '현재 패스워드와 동일합니다.',
-                                url: '/ajax/password-chanage/validation',
-                                type: 'POST',
-                                name: 'data' // 입력된 데이터 name을 keyword로 한다.
-                            },
-                            notEmpty: {
-                                message: '신규 비밀번호를 입력해 주세요.'
-                            },
-                            identical: {
-                                field: 'confirmPassword',
-                                message: '신규 비밀번호와 비밀번호 확인란이 동일하지 않습니다.'
-                            },
-                            regexp: {
-                                //최소 8자, 대문자 하나 이상, 소문자 하나, 숫자 하나 및 특수문자 하나 이상
-                                // regexp: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}/,
-                                //최소 8자, 최소 하나의 문자, 숫자, 특수문자 조합
-                                regexp: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/,
-                                message: '최소 8자 이상 영문자, 숫자, 특수기호가 포함되어야 합니다.'
-                            }
-                        }
-                    },
-                    confirmPassword: {
-                        validators: {
-                            notEmpty: {
-                                message: '비밀번호 확인란을 입력해 주세요.'
-                            },
-                            identical: {
-                                field: 'newPassword',
-                                message: '신규 비밀번호와 비밀번호 확인란이 동일하지 않습니다.'
-                            },
-                            regexp: {
-                                //최소 8자, 대문자 하나 이상, 소문자 하나, 숫자 하나 및 특수문자 하나 이상
-                                regexp: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/,
-                                message: '최소 8자 이상 영문자, 숫자, 특수기호가 포함되어야 합니다.'
-                            }
-                        }
-                    }
-                }
-            });
-        })
-
-    </script>
-
 </head>
 <body>
 <div class="cls-content">
@@ -89,15 +37,15 @@
                     <div class="form-group" style="margin-bottom: 120px;">
                         <label class="control-label col-sm-3" for="newPassword">신규 비밀번호</label>
                         <div class="col-sm-9">
-                            <input type="password" id="newPw" name="newPassword" placeholder="(알파벳,숫자,특수기호 포함 8자 이상)"
-                                   class="form-control"/>
+                            <@spring.formPasswordInput "user.newPassword" "class='form-control' placeholder='(영문자,숫자,특수기호 포함 8자 이상)'" />
+                            <@spring.showErrors "" "color:red;" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-3" for="newPassword">비밀번호 확인</label>
                         <div class="col-sm-9">
-                            <input type="password" id="confirmPw" name="confirmPassword"
-                                   placeholder="(알파벳,숫자,특수기호 포함 8자 이상)" class="form-control"/>
+                            <@spring.formPasswordInput "user.confirmPassword" "class='form-control' placeholder='(영문자,숫자,특수기호 포함 8자 이상)'" />
+                            <@spring.showErrors "" "color:red;" />
                         </div>
                     </div>
                 </div>

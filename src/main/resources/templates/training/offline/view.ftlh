@@ -84,7 +84,7 @@
                         <#list offlineTraining.offlineTrainingAttendees as atd>
                             <tr>
                                 <td>${atd?index + 1}</td>
-                                <td>${atd.user.name}</td>
+                                <td>${atd.account.name}</td>
                             </tr>
                         </#list>
                         </tbody>

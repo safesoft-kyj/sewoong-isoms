@@ -35,7 +35,6 @@
             $('#document\\.category\\.shortName').select2({disabled:true});
             </#if>
 
-
             $("#document\\.category\\.shortName").change(function() {
                 var categoryId = $(this).val();
                 var documentNo = $("#document\\.documentNo").val();
@@ -168,7 +167,7 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label">RF Document File(ENG)</label>
                     <div class="col-sm-9">
-                        <#assign accept = '.xls,.xlsx,.doc,.docx'/>
+                        <#assign accept = '.xls,.xlsx,.doc,.docx,.hwp'/>
                         <@spring.formInput "documentVersion.uploadRfEngFile" "class='form-control' placeholder='RF Document File(ENG)' accept='${accept}'" "file"/>
                         <@spring.showErrors "" "color:red;"/>
                     </div>

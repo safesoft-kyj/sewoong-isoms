@@ -1,8 +1,9 @@
-<#import "/common/pagination.ftl" as pagination />
+<#assign security=JspTaglibs["http://www.springframework.org/security/tags"] />
+<@security.authentication property="principal" var="user"/>
 <#import "/spring.ftl" as spring />
 <html>
 <head>
-    <title>Admin > User Management > 사용자 관리</title>
+    <title>ISO Management System > User > Profile</title>
     <script src="/static/js/jquery.mask.min.js"></script>
     <link href="/static/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
     <script src="/static/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
@@ -11,21 +12,22 @@
 
     <script>
         $(document).ready(function() {
-            $("#birthDate").datepicker({format:'yyyy-mm-dd', autoclose:true, clearBtn:true, todayBtn: "linked", todayHighlight: true});
+            $("#birthDate").datepicker({format:'yyyy-mm-dd', autoclose:true, clearBtn:true, todayBtn: "linked", todayHighlight: true, "endDate":new Date()});
+            let departmentId = '${account.department?has_content?then(account.department.id, '')}';
 
             //초기 화면 전환시 세팅
             departmentSelect($("#deptSelect").val());
 
             let exists = false;
             $("#teamSelect option").each(function(){
-                if (this.value == '${account.department.id}') {
+                if (this.value == departmentId) {
                     exists = true;
                 }
             })
 
             if(exists){
-                $("#teamSelect").val(${account.department.id});
-                $("#department").val(${account.department.id});
+                $("#teamSelect").val(departmentId);
+                $("#department").val(departmentId);
             }
 
             $("#deptSelect").change(function(){
@@ -41,13 +43,6 @@
                     $("#department").val(res);
                 }
             })
-
-            //JD select2 Setting
-            let jds = "${account.commaJobIds}";
-            let JDList = String(jds).indexOf(",")!=-1?jds.split(','):jds;
-            $('#jdIds').select2({width : '100%'});
-            $("#jdIds").val(JDList).trigger("change");
-
         });
 
         function departmentSelect(value) {
@@ -72,6 +67,7 @@
             });
         }
     </script>
+
 </head>
 <body>
 <div class="panel">
@@ -79,18 +75,18 @@
         <h3 class="panel-title">내부 사용자 수정</h3>
     </div>
     <form class="form-horizontal" method="post">
-        <@spring.formHiddenInput "account.id" />
         <div class="panel-body">
             <div class="form-group">
-                <label class="col-sm-3 control-label">ID</label>
+                <label class="col-sm-3 control-label">이름*</label>
                 <div class="col-sm-9">
-                    <@spring.formInput "account.username" "class='form-control' readonly"/>
+                    <@spring.formInput "account.name" "class='form-control'"/>
+                    <@spring.showErrors "" "color:red;"/>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">이름</label>
+                <label class="col-sm-3 control-label">이름 (영문명)</label>
                 <div class="col-sm-9">
-                    <@spring.formInput "account.name" "class='form-control' readonly"/>
+                    <@spring.formInput "account.engName" "class='form-control'"/>
                 </div>
             </div>
             <div class="form-group">
@@ -124,7 +120,6 @@
                 <label class="col-sm-3 control-label">연락처</label>
                 <div class="col-sm-9">
                     <@spring.formInput "account.phone" "class='form-control'"/>
-                    <@spring.showErrors "" "color:red;"/>
                 </div>
             </div>
             <div class="form-group">
@@ -136,7 +131,7 @@
             </div>
         </div>
         <div class="panel-footer text-right">
-            <a class="btn btn-link" href="/admin/authority/users"><i class="fa fa-times"></i> 취소</a>
+            <a class="btn btn-danger" href="/user/profile"><i class="fa fa-times"></i> 취소</a>
             <button class="btn btn-primary" type="submit" id="submitBtn" data-save-text="Saving.." data-loading-text="정보 수정 중.. 잠시만 기다려 주세요."><i class="fa fa-check"></i>수정</button>
         </div>
     </form>
