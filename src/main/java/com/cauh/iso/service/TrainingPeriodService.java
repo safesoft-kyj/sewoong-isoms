@@ -1,6 +1,8 @@
 package com.cauh.iso.service;
 
+import com.cauh.iso.admin.domain.constant.SOPAction;
 import com.cauh.iso.domain.DocumentVersion;
+import com.cauh.iso.domain.Mail;
 import com.cauh.iso.domain.QTrainingPeriod;
 import com.cauh.iso.domain.TrainingPeriod;
 import com.cauh.iso.domain.constant.DocumentType;
@@ -14,7 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,6 +27,7 @@ import java.util.Optional;
 @Slf4j
 public class TrainingPeriodService {
     private final TrainingPeriodRepository trainingPeriodRepository;
+    private final MailService mailService;
 
     public Optional<TrainingPeriod> findOne(BooleanBuilder builder) {
         return trainingPeriodRepository.findOne(builder);
@@ -63,5 +69,30 @@ public class TrainingPeriodService {
 
     public void deleteById(Integer id) {
         trainingPeriodRepository.deleteById(id);
+    }
+
+    public void documentNotification(TrainingPeriod trainingPeriod) {
+
+        //계정 Mail 전송 구간.
+        HashMap<String, Object> model = new HashMap<>();
+        String title = "", templateTitle = "";
+
+        title = "Refresh Training이 등록 되었습니다.";
+        model.put("title", "Refresh Training 등록 알림");
+
+        //TODO :: 작업필요
+
+        model.put("trainingPeriod", trainingPeriod);
+        List<String> toList = mailService.getReceiveEmails();
+
+        Mail mail = Mail.builder()
+                .to(toList.toArray(new String[toList.size()]))
+                .subject(String.format("[ISO-MS/System] %s", title))
+                .model(model)
+                .templateName("document-version-notification")
+                .build();
+
+        mailService.sendMail(mail);
+        log.debug("Document 정보가 발송되었습니다. {}", mail);
     }
 }

@@ -6,16 +6,16 @@ import com.cauh.common.utils.Base64Utils;
 import com.cauh.iso.component.DocumentAssembly;
 import com.cauh.iso.component.DocumentViewer;
 import com.cauh.iso.domain.ISO;
-import com.cauh.iso.domain.TrainingLog;
+import com.cauh.iso.domain.ISOTrainingCertificationInfo;
+import com.cauh.iso.domain.QISOTrainingCertificationInfo;
+import com.cauh.iso.repository.ISOTrainingCertificationInfoRepository;
 import com.cauh.iso.xdocreport.dto.ISOCertificationDTO;
 import com.cauh.iso.domain.ISOTrainingCertification;
 import com.cauh.iso.repository.ISOTrainingCertificationRepository;
 import com.cauh.iso.utils.DateUtils;
 import com.groupdocs.assembly.DataSourceInfo;
-import com.groupdocs.assembly.DocumentAssembler;
-import com.groupdocs.assembly.FileFormat;
-import com.groupdocs.assembly.LoadSaveOptions;
 import com.groupdocs.conversion.internal.c.a.ms.System.IO.Directory;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -36,6 +35,7 @@ import java.util.Optional;
 public class ISOTrainingCertificationService {
 
     private final ISOTrainingCertificationRepository isoTrainingCertificationRepository;
+    private final ISOTrainingCertificationInfoRepository isoTrainingCertificationInfoRepository;
     private final SignatureRepository signatureRepository;
     private final DocumentAssembly documentAssembly;
     private final DocumentViewer documentViewer;
@@ -53,6 +53,16 @@ public class ISOTrainingCertificationService {
 
     public ISOTrainingCertification findById(Integer certId) {
         return isoTrainingCertificationRepository.findById(certId).get();
+    }
+
+    public ISOTrainingCertificationInfo getCurrentCertificateInfo() {
+        BooleanBuilder builder = new BooleanBuilder();
+        QISOTrainingCertificationInfo qisoTrainingCertificationInfo = QISOTrainingCertificationInfo.iSOTrainingCertificationInfo;
+        builder.and(qisoTrainingCertificationInfo.active.eq(true));
+
+        Optional<ISOTrainingCertificationInfo> infoOptional = isoTrainingCertificationInfoRepository.findOne(builder);
+
+        return infoOptional.isPresent()?infoOptional.get():null;
     }
 
     public ISOTrainingCertification findByIsoAndUser(ISO iso, Account user){
@@ -99,7 +109,7 @@ public class ISOTrainingCertificationService {
         isoCertificationDTO.setName(isoTrainingCertification.getUser().getName());
         isoCertificationDTO.setCertificateNo(isoTrainingCertification.getCertNo());
         isoCertificationDTO.setCompletionDate(DateUtils.format(isoTrainingCertification.getIsoTrainingLog().getCompleteDate(), "dd-MMM-yyyy").toUpperCase());
-        isoCertificationDTO.setSign(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(signatureRepository.findById(isoTrainingCertification.getUser().getUsername()).get().getBase64signature())));
+        isoCertificationDTO.setSign(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(signatureRepository.findById(isoTrainingCertification.getIsoTrainingCertificationInfo().getManager().getUsername()).get().getBase64signature())));
 
         DataSourceInfo dataSourceInfo = new DataSourceInfo(isoCertificationDTO, "");
         documentAssembly.assembleDocumentAsPdf(in, os, dataSourceInfo);

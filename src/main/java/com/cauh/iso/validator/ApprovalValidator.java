@@ -67,8 +67,8 @@ public class ApprovalValidator implements Validator {
                     } else {
                         sop.setDocId(sop.getDocId().toUpperCase());
 
-                        if(!sop.getDocId().startsWith("SOP-")) {
-                            errors.rejectValue("sopRdRequestForm.sopDevelopmentDocs["+idx+"].docId", "message.required", "Document Id는 \"SOP-\"로 시작 되어야 합니다.");
+                        if(!sop.getDocId().startsWith("CAUH-")) {
+                            errors.rejectValue("sopRdRequestForm.sopDevelopmentDocs["+idx+"].docId", "message.required", "Document Id는 \"CAUH-\"로 시작 되어야 합니다.");
                         } else {
                             String categoryAndNo = sop.getDocId().substring(sop.getDocId().indexOf("-") + 1);
                             log.debug("@categoryAndNo : {}", categoryAndNo);
@@ -119,8 +119,8 @@ public class ApprovalValidator implements Validator {
                     } else {
                         rd.setDocId(rd.getDocId().toUpperCase());
 
-                        if(!rd.getDocId().startsWith("SOP-")) {
-                            errors.rejectValue("sopRdRequestForm.rdDevelopmentDocs[" + idx + "].docId", "message.required", "Document Id는 \"SOP-\"로 시작 되어야 합니다.");
+                        if(!rd.getDocId().startsWith("CAUH-")) {
+                            errors.rejectValue("sopRdRequestForm.rdDevelopmentDocs[" + idx + "].docId", "message.required", "Document Id는 \"CAUH-\"로 시작 되어야 합니다.");
                         } else if(rd.getDocId().indexOf("_") == -1) {
                             errors.rejectValue("sopRdRequestForm.rdDevelopmentDocs["+idx+"].docId", "message.required", "Document Id 형식이 올바르지 않습니다.");
                         } else {

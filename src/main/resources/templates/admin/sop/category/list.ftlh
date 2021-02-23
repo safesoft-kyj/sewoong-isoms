@@ -9,11 +9,13 @@
             //삭제 버튼 동적 이벤트 할당.
             $(document).on("click", "#deleteBtn", function(){
                 let CategoryName = $(this).data("value");
+                let CategoryId = $(this).data("id");
+
                 let res = confirm("정말로 [" + CategoryName + "]을(를) 삭제하시겠습니까?");
                 if(res) {
-                    console.log("삭제");
+                    $("#categoryId").val(CategoryId);
+                    $("#deleteForm").submit();
                 }
-
             });
         })
     </script>
@@ -88,7 +90,7 @@
                                     <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 저장</button>
                                 <#else>
                                     <a class="btn btn-sm btn-mint" href="/admin/sop/category?action=edit&id=${Category.id}#edit${Category?index}"><i class="fa fa-pencil"> 수정</i></a>
-                                    <button class="btn btn-sm btn-danger" data-value="${Category.name}" type="button" id="deleteBtn"><i class="fa fa-trash"> 삭제</i></button>
+                                    <button class="btn btn-sm btn-danger" data-value="${Category.name}" data-id="${Category.id}" type="button" id="deleteBtn"><i class="fa fa-trash"> 삭제</i></button>
                                 </#if>
                             </td>
                         </tr>
@@ -114,6 +116,10 @@
                     </#if>
                 </tbody>
             </table>
+            </form>
+            <form method="post" id="deleteForm">
+                <input type="hidden" name="_method" value="delete" />
+                <input type="hidden" name="id" id="categoryId" />
             </form>
         </div>
     </div>

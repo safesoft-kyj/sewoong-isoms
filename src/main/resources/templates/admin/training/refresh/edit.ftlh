@@ -51,6 +51,16 @@
                     <@spring.showErrors "<br/>" "color:red;"/>
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">알림 발송 여부</label>
+                <div class="col-sm-9">
+                    <div class="input-group date">
+                        <@spring.formCheckbox "trainingPeriod.notification" "class='magic-checkbox'"/><label for="notification">발송</label>
+                        <span class="input-group-addon"><i class="pli-calendar-4"></i></span>
+                    </div>
+                    <@spring.showErrors "<br/>" "color:red;"/>
+                </div>
+            </div>
         </div>
         <div class="panel-footer text-right">
             <a class="btn btn-link" href="/admin/training/refresh-training"><i class="fa fa-times"></i> Cancel</a>

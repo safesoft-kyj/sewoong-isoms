@@ -3,6 +3,8 @@ package com.cauh.iso.service;
 import com.cauh.common.entity.Account;
 import com.cauh.common.entity.QAccount;
 import com.cauh.common.repository.UserRepository;
+import com.cauh.common.service.UserService;
+import com.cauh.iso.admin.domain.constant.SOPAction;
 import com.cauh.iso.domain.*;
 import com.cauh.iso.domain.constant.DocumentStatus;
 import com.cauh.iso.domain.constant.DocumentType;
@@ -47,6 +49,7 @@ public class DocumentVersionService {
     private final TrainingMatrixRepository trainingMatrixRepository;
     private final UserRepository userRepository;
     private final RetirementDocumentService retirementDocumentService;
+    private final UserService userService;
 
     private QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
 
@@ -102,8 +105,43 @@ public class DocumentVersionService {
 
         documentVersion.setId(null);
         return saveDocumentVersion(documentVersion);
-
     }
+
+    public void documentNotification(SOPAction sopAction, DocumentVersion documentVersion) {
+
+        //계정 Mail 전송 구간.
+        HashMap<String, Object> model = new HashMap<>();
+        String title = "", templateTitle = "";
+
+        //CASE 1. 신규 Document 생성
+        if(ObjectUtils.isEmpty(sopAction)){
+            title = "신규 SOP/RF가 등록 되었습니다.";
+            model.put("title", String.format("[%s] %s가 등록 되었습니다.", documentVersion.getStatus().getLabel(), documentVersion.getDocument().getType().name()));
+        }else if(sopAction == SOPAction.edit) {
+            title = "기존 SOP/RF의 정보가 수정 되었습니다.";
+            model.put("title", String.format("[%s] %s가 수정되었습니다.", documentVersion.getStatus().getLabel(), documentVersion.getDocument().getType().name()));
+
+        }else if(sopAction == SOPAction.revision) {
+            title = "기존 SOP/RF가 개정되었습니다.";
+            model.put("title", String.format("[%s] %s가 개정되었습니다.", documentVersion.getStatus().getLabel(), documentVersion.getDocument().getType().name()));
+        }
+
+        model.put("documentVersion", documentVersion);
+
+
+        List<String> toList = mailService.getReceiveEmails();
+
+        Mail mail = Mail.builder()
+                .to(toList.toArray(new String[toList.size()]))
+                .subject(String.format("[ISO-MS/System] %s", title))
+                .model(model)
+                .templateName("document-version-notification")
+                .build();
+
+        mailService.sendMail(mail);
+        log.debug("Document 정보가 발송되었습니다. {}", mail);
+    }
+
 
     @Transactional
     public void remove(String id) {
@@ -346,8 +384,8 @@ public class DocumentVersionService {
         }
 
         if(StringUtils.isEmpty(docId) == false) {
-            if(docId.indexOf("SOP-") == -1) {
-                docId = "SOP-" + docId;
+            if(!docId.toUpperCase().startsWith("CAUH-")) {
+                docId = "CAUH-" + docId;
             }
             builder.and(qDocumentVersion.document.docId.startsWith(docId));
         }

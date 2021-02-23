@@ -131,7 +131,7 @@ public class DocumentVersion extends BaseEntity implements Serializable {
     
     //메일 알림 여부
     @Transient
-    private boolean notification;
+    private Boolean notification;
 
 //    /** ISO Option **/
 //    @Column(name = "title", columnDefinition = "nvarchar(255)")

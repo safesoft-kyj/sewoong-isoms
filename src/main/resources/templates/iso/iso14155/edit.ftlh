@@ -167,7 +167,7 @@
                                     <label class="control-label" for="correctCount">합격 문항 개수</label>
                                 </div>
                                 <div class="col-lg-9 form-group">
-                                    <@spring.formInput "iso.correctCount" "class='form-control' placeholder='00'" "number" />
+                                    <@spring.formInput "iso.correctCount" "class='form-control' placeholder='최소 25 / 최대 30 문항 입력'" "number" />
                                     <@spring.showErrors "" "color:red;"/>
                                 </div>
                             </div>

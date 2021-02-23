@@ -73,7 +73,7 @@
                 <ul class="collapse" aria-expanded="false">
                     <li><a href="/admin/training/iso/trainingLog">ISO Training Log</a></li>
                     <li><a href="/admin/training/iso/offline-training">Off-line Training</a></li>
-                    <li><a href="/admin/training/iso/training-certification">ISO Cert 발행</a></li>
+                    <li><a href="/admin/training/iso/training-certification">ISO Certificate</a></li>
 <%--                    <li><a href="/admin/training/iso/refresh-training">Refresh Training</a></li>--%>
 <%--                    <li><a href="/admin/training/iso/matrix">ISO Training Matrix(Upload)</a></li>--%>
                 </ul>

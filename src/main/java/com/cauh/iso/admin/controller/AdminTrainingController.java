@@ -139,7 +139,10 @@ public class AdminTrainingController {
         model.addAttribute("sopMap", StreamSupport.stream(documentVersions.spliterator(), false)
                 .collect(Collectors.toMap(s -> s.getId(), s -> s.getDocument().getDocId() + " " + s.getDocument().getTitle() + "v" + s.getVersion())));
 
-        model.addAttribute("trainingPeriod", ObjectUtils.isEmpty(id) ? new TrainingPeriod() : trainingPeriodService.findById(id).get());
+        TrainingPeriod trainingPeriod = ObjectUtils.isEmpty(id) ? new TrainingPeriod() : trainingPeriodService.findById(id).get();
+        trainingPeriod.setNotification(false);
+
+        model.addAttribute("trainingPeriod", trainingPeriod);
 
         return "admin/training/refresh/edit";
     }
@@ -160,6 +163,12 @@ public class AdminTrainingController {
         trainingPeriodService.saveOrUpdateRefreshTraining(trainingPeriod);
         status.setComplete();
         attributes.addFlashAttribute("Refresh Training이 등록 되었습니다.");
+
+        if(trainingPeriod.getNotification()) {
+
+            trainingPeriodService.documentNotification(trainingPeriod);
+        }
+
         return "redirect:/admin/training/refresh-training";
     }
 

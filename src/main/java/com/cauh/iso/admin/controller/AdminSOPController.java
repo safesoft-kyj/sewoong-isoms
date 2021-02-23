@@ -99,10 +99,15 @@ public class AdminSOPController {
                     .build();
             documentVersion.setAction(action);
             documentVersion.setTrainingAll(true);
+            documentVersion.setNotification(false);
+
             model.addAttribute("documentVersion", documentVersion);
         } else {
             DocumentVersion documentVersion = documentVersionService.findById(id);
             documentVersion.setAction(action);
+            //신규 작성 시 공지 알림 설정 기본값 : ON
+            documentVersion.setNotification(false);
+
             if(type == DocumentType.SOP) {
                 if(!ObjectUtils.isEmpty(documentVersion.getTrainingMatrixList())) {
                     //ALL 선택 인경우
@@ -194,9 +199,12 @@ public class AdminSOPController {
                     documentVersionService.save(documentVersion);
                 } else if (action == SOPAction.revision) {
                     log.info("==> Revision : {}", id);
-
                     documentVersionService.revision(documentVersion);
                 }
+            }
+
+            if(documentVersion.getNotification()) {
+                documentVersionService.documentNotification(action, documentVersion);
             }
 
             sessionStatus.setComplete();

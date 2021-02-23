@@ -124,7 +124,9 @@ public class ISOTrainingController {
         if(isoTrainingLog.getStatus() == TrainingStatus.COMPLETED) {
             ISOTrainingCertification certification = ISOTrainingCertification.builder()
                     .certNo(isoTrainingCertificationService.getCertNo(iso))
-                    .iso(iso).user(user).isoTrainingLog(savedTrainingLog).build();
+                    .iso(iso).user(user).isoTrainingLog(savedTrainingLog)
+                    .isoTrainingCertificationInfo(isoTrainingCertificationService.getCurrentCertificateInfo())
+                    .build();
             isoTrainingCertificationService.createCertificationFile(certification);
             result.put("message", "교육이 완료 되었습니다.");
         }else if(isoTrainingLog.getStatus() == TrainingStatus.TRAINING_COMPLETED) {
@@ -284,9 +286,11 @@ public class ISOTrainingController {
         if(correctCount >= curtLineCount) {
             trainingLog.setStatus(TrainingStatus.COMPLETED);
             ISOTrainingCertification certification = ISOTrainingCertification.builder()
-                                                    .certNo(isoTrainingCertificationService.getCertNo(trainingLog.getIso()))
-                                                    .isoTrainingLog(trainingLog)
-                                                    .iso(trainingLog.getIso()).user(user).build();
+                    .certNo(isoTrainingCertificationService.getCertNo(trainingLog.getIso()))
+                    .isoTrainingLog(trainingLog)
+                    .iso(trainingLog.getIso()).user(user)
+                    .isoTrainingCertificationInfo(isoTrainingCertificationService.getCurrentCertificateInfo())
+                    .build();
 
                 log.debug("@Certification 생성 : {}", certification.getCertNo());
                 isoTrainingCertificationService.createCertificationFile(certification);

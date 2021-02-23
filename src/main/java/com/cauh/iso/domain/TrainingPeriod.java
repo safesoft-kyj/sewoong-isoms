@@ -63,6 +63,9 @@ public class TrainingPeriod extends BaseEntity implements Serializable {
     @NotAudited
     private List<TrainingLog> trainingLogs;
 
+    @Transient
+    private Boolean notification;
+
 
     @Builder
     private TrainingPeriod(DocumentVersion documentVersion, TrainingType trainingType, Date startDate, Date endDate) {

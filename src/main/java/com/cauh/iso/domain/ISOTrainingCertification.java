@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.ByteArrayInputStream;
@@ -18,10 +19,10 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Audited(withModifiedFlag = true)
 public class ISOTrainingCertification extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1329010014950482889L;
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ISO_TRAINING_CERT_SEQ_GENERATOR")
@@ -42,6 +43,10 @@ public class ISOTrainingCertification extends BaseEntity implements Serializable
     @ManyToOne
     @JoinColumn(name = "iso_training_log_id", referencedColumnName = "id")
     private ISOTrainingLog isoTrainingLog;
+
+    @ManyToOne
+    @JoinColumn(name = "certification_manager_id", referencedColumnName = "id")
+    private ISOTrainingCertificationInfo isoTrainingCertificationInfo;
 
     @Column(name = "cert_html", columnDefinition = "nvarchar(MAX)")
     String certHtml;

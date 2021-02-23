@@ -1,22 +1,24 @@
 package com.cauh.iso.admin.controller;
 
-import com.cauh.common.entity.Account;
-import com.cauh.common.entity.Department;
-import com.cauh.common.entity.QAccount;
+import com.cauh.common.entity.*;
+import com.cauh.common.repository.SignatureRepository;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.annotation.CurrentUser;
+import com.cauh.common.service.UserService;
 import com.cauh.iso.admin.service.DepartmentService;
 import com.cauh.iso.domain.*;
 import com.cauh.iso.domain.constant.DocumentAccessType;
 import com.cauh.iso.domain.constant.ISOType;
 import com.cauh.iso.domain.constant.TrainingLogType;
 import com.cauh.iso.domain.constant.TrainingStatus;
+import com.cauh.iso.repository.ISOTrainingCertificationInfoRepository;
 import com.cauh.iso.repository.TrainingMatrixRepository;
 import com.cauh.iso.service.ISOOfflineTrainingService;
 import com.cauh.iso.service.ISOService;
 import com.cauh.iso.service.ISOTrainingPeriodService;
 import com.cauh.iso.service.TrainingAccessLogService;
 import com.cauh.iso.utils.DateUtils;
+import com.cauh.iso.validator.ISOCertificateInfoValidator;
 import com.cauh.iso.validator.ISOTrainingPeriodValidator;
 import com.cauh.iso.xdocreport.ISOTrainingCertificationService;
 import com.cauh.iso.xdocreport.IndexReportService;
@@ -26,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jxls.common.Context;
 import org.jxls.util.JxlsHelper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -34,7 +37,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,7 +56,7 @@ import java.util.stream.StreamSupport;
 @Controller
 @RequestMapping({"/admin", "/ajax/admin"})
 @RequiredArgsConstructor
-@SessionAttributes({"isoTrainingPeriod", "isoMap"})
+@SessionAttributes({"isoTrainingPeriod", "infoList", "isoMap"})
 @Slf4j
 public class AdminISOTrainingController {
 
@@ -59,11 +64,16 @@ public class AdminISOTrainingController {
     private final ISOTrainingPeriodService isoTrainingPeriodService;
     private final ISOService isoService;
     private final ISOTrainingPeriodValidator isoTrainingPeriodValidator;
+    private final ISOCertificateInfoValidator isoCertificateInfoValidator;
     private final ISOTrainingCertificationService isoTrainingCertificationService;
     private final TrainingMatrixRepository trainingMatrixRepository;
+    private final ISOTrainingCertificationInfoRepository isoTrainingCertificationInfoRepository;
     private final TrainingAccessLogService trainingAccessLogService;
     private final DepartmentService departmentService;
     private final UserRepository userRepository;
+    private final SignatureRepository signatureRepository;
+
+    private final UserService userService;
 
     @Value("${cert.header}")
     String certHeader;
@@ -205,6 +215,71 @@ public class AdminISOTrainingController {
     public String trainingCertification(Model model){
 
         return "admin/iso/certList";
+    }
+
+    @GetMapping("/training/iso/training-certification/info")
+    public String trainingCertificateInfo(@RequestParam(value = "action", defaultValue = "list") String action,
+                                               @RequestParam(value = "id", required = false) Integer id, Model model){
+
+        Iterable<ISOTrainingCertificationInfo> infoList = isoTrainingCertificationInfoRepository.findAll();
+
+        model.addAttribute("infoList", infoList);
+        model.addAttribute("userMap", userService.getUserMap());
+
+        if("new".equals(action)){
+            model.addAttribute("info", new ISOTrainingCertificationInfo());
+        } else if ("edit".equals(action)) {
+            ISOTrainingCertificationInfo info = isoTrainingCertificationInfoRepository.findById(id).get();
+            model.addAttribute("info", info);
+        }
+
+        model.addAttribute("action", action);
+        model.addAttribute("id", id);
+
+        return "admin/iso/certificateInfoList";
+    }
+
+    @PostMapping("/training/iso/training-certification/info")
+    public String editJobDescription(@RequestParam(value = "action", defaultValue = "list") String action,
+                                     @RequestParam(value = "id", required = false) Integer id,
+                                     @ModelAttribute("info") ISOTrainingCertificationInfo isoTrainingCertificationInfo,
+                                     BindingResult result, SessionStatus status, Model model, RedirectAttributes attributes) {
+
+
+        Optional<Account> userOptional = userRepository.findById(Integer.parseInt(isoTrainingCertificationInfo.getUserId()));
+
+        if(userOptional.isPresent()) {
+            Account user = userOptional.get();
+
+            //Signature의 ID는 유저 ID값을 사용함.
+            Optional<Signature> signatureOptional = signatureRepository.findById(user.getUsername());
+            String base64Signature = signatureOptional.isPresent()?signatureOptional.get().getBase64signature():null;
+
+            isoTrainingCertificationInfo.setManager(user);
+            isoTrainingCertificationInfo.setManagerName(user.getName());
+            isoTrainingCertificationInfo.setBase64signature(base64Signature);
+
+            isoCertificateInfoValidator.validate(isoTrainingCertificationInfo, result);
+
+            if(result.hasErrors()) {
+                model.addAttribute("id", id);
+                model.addAttribute("action", action);
+                model.addAttribute("userMap", userService.getUserMap());
+                return "admin/iso/certificateInfoList";
+            }
+
+            isoTrainingCertificationInfoRepository.save(isoTrainingCertificationInfo);
+            status.setComplete();
+            attributes.addFlashAttribute("message", "수료증 정보가 등록 되었습니다.");
+        } else {
+            model.addAttribute("id", id);
+            model.addAttribute("action", action);
+            model.addAttribute("userMap", userService.getUserMap());
+            model.addAttribute("message", "등록할 대상의 유저 정보에 문제가 발생하였습니다.");
+            return "admin/iso/certificateInfoList";
+        }
+
+        return "redirect:/admin/training/iso/training-certification/info";
     }
 
 
