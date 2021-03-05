@@ -16,7 +16,7 @@
             <div class="content" style="width:800px;max-width:800px !important;">
                 <table class="main" width="100%" cellpadding="0" cellspacing="0">
                     <tr>
-                        <td class="alert alert-good">
+                        <td class="alert alert-good" style="font-size: 16px; color: #fff; font-weight: 500; padding: 20px; text-align: center; background-color: #8BC34A;">
                             <strong>[ISO MS] Off-line Training 반영 알림</strong>
                         </td>
                     </tr>
@@ -25,7 +25,7 @@
                             <table width="100%" cellpadding="0" cellspacing="0">
                                 <tr>
                                     <td class="content-block aligncenter">
-                                        <table class="invoice" style="margin: 25px auto; text-align: left; width: 100%;>
+                                        <table class="invoice" style="margin: 25px auto; text-align: left; width: 100%;">
                                             <!--                                            <tr>-->
                                             <!--                                                <td>[e-SOP] SOP Off-line Training 등록 요청</td>-->
                                             <!--                                            </tr>-->
@@ -43,19 +43,9 @@
                                                         <tr>
                                                             <td>Training SOP</td>
                                                             <td class="alignleft">
-                                                                <#--                                                                <table width="100%">-->
-                                                                <#--                                                                    <tr>-->
-                                                                <#--                                                                        <th>SOP</th>-->
-                                                                <#--                                                                        <th class="aligncenter">Training Hr.</th>-->
-                                                                <#--                                                                    </tr>-->
                                                                 <#list offlineTraining.offlineTrainingDocuments as doc>
-                                                                <#--                                                                    <tr>-->
                                                                     ${doc.documentVersion.document.docId} ${doc.documentVersion.document.title} v${doc.documentVersion.version} / (${doc.hour}H)<br/>
                                                                 </#list>
-                                                                <!--                                                                 / 1.0<br/>-->
-                                                                <!--                                                                SOP-QM0001 Audit Procedure v1.0 / 1.0<br/>-->
-                                                                <!--                                                                SOP-QM0001 Audit Procedure v1.0 / 1.0<br/>-->
-                                                                <!--                                                                SOP-QM0001 Audit Procedure v1.0 / 1.0-->
                                                             </td>
                                                         </tr>
                                                     </table>

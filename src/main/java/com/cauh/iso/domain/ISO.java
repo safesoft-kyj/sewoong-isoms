@@ -110,6 +110,9 @@ public class ISO extends BaseEntity implements Serializable {
     @Column(name = "quiz", columnDefinition = "nvarchar(MAX)")
     private String quiz;
 
+    //퀴즈 임시저장 여부.
+    private Boolean isQuizTemp;
+
     public String getTrainingDate() {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 

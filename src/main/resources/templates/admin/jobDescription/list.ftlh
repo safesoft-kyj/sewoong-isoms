@@ -120,10 +120,10 @@
                         <tr>
                             <td class="text-center">#<a name="edit0"></a></td>
                             <td>
-                                <@spring.formInput "jobDescription.shortName" "class='form-control' placeholder='Abbreviation Name'"/>
+                                <@spring.formInput "jobDescription.shortName" "class='form-control' placeholder='ROLE'"/>
                                 <@spring.showErrors "" "color:red;"/></td>
                             <td>
-                                <@spring.formInput "jobDescription.title" "class='form-control' placeholder='Job Title'"/>
+                                <@spring.formInput "jobDescription.title" "class='form-control' placeholder='ROLE Alias'"/>
                                 <@spring.showErrors "" "color:red;"/></td>
                             <td class="text-center">
                                 <@spring.formCheckbox "jobDescription.manager" />
@@ -141,7 +141,6 @@
                             </td>
                         </tr>
                     </#if>
-
                     </tbody>
                 </table>
             </form>

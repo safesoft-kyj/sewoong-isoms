@@ -17,6 +17,7 @@
             $("#cert-modal").on("show.bs.modal", function (event) {
                 let btn = $(event.relatedTarget);
                 let certId = btn.data("cert");
+                console.log(certId);
 
                 $("#certId").val(certId);
 
@@ -51,16 +52,16 @@
 <div class="panel">
     <div class="panel-heading">
         <h3 class="panel-title">ISO Certificate</h3>
-        <div class="panel-control" style="float:left;">
-            <ul class="nav nav-tabs">
-                <li class='active'>
-                    <a href="/admin/training/iso/training-certification">ISO Cetificate</a>
-                </li>
-                <li>
-                    <a href="/admin/training/iso/training-certification/info">ISO Cetificate Setting</a>
-                </li>
-            </ul>
-        </div>
+<#--        <div class="panel-control" style="float:left;">-->
+<#--            <ul class="nav nav-tabs">-->
+<#--                <li class='active'>-->
+<#--                    <a href="/admin/training/iso/training-certification">ISO Cetificate</a>-->
+<#--                </li>-->
+<#--                <li>-->
+<#--                    <a href="/admin/training/iso/training-certification/info">ISO Cetificate Setting</a>-->
+<#--                </li>-->
+<#--            </ul>-->
+<#--        </div>-->
     </div>
     <div class="panel-body">
         <#--    <ul class="nav nav-tabs">-->
@@ -116,8 +117,8 @@
             <script>
                 function tableActions(value, row, index) {
                     return [
-                        '<button type="button" id="certBtn" name="certificationBtn" data-target="#cert-modal" data-toggle="modal" class="btn btn-info btn-xs" data-id="'
-                        + row.id + '" data-cert="' + row.certNo + '">',
+                        '<button type="button" id="certBtn" name="certificationBtn" data-target="#cert-modal" data-toggle="modal" class="btn btn-info btn-xs" ',
+                        'data-cert="' + row.id + '">',
                         'Certification Output',
                         '</button>'
                     ].join('');
@@ -136,7 +137,7 @@
                    id="codingTbl">
                 <thead>
                 <tr class="bg-gray-light">
-                    <th data-sortable="true" data-field="index">No.</th>
+                    <th class="text-center" data-sortable="true" data-field="index">No.</th>
                     <th data-sortable="true" data-field="certNo">Cert No.</th>
                     <th data-sortable="true" data-field="teamDept">Affiliation/Department</th>
                     <th data-sortable="true" data-field="name">name</th>
@@ -157,7 +158,7 @@
 
     <div class="modal fade" id="cert-modal" role="dialog" tabindex="-1" aria-labelledby="training-modal"
          aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog" style="display: inline-grid">
             <div class="modal-content">
                 <!--Modal header-->
                 <div class="modal-header">

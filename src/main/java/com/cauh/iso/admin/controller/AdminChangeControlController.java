@@ -116,7 +116,7 @@ public class AdminChangeControlController {
         else if(auditString.equals("sop-training-deviation")) {
             auditComponent = AuditComponent.SOP_TRAINING_DEVIATION;
         }
-        //CASE 12. SOP ISO (& Training Log) Disclosure
+        //CASE 12. SOP  & Training Log Disclosure
         else if(auditString.equals("sop-iso-disclosure")) {
             auditComponent = AuditComponent.SOP_ISO_DISCLOSURE;
         }

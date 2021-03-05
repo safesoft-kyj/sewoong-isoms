@@ -93,7 +93,7 @@
             <li><a href="/admin/department">부서 관리</a></li>
             <li><a href="/admin/role">ROLE 관리</a></li>
             <li><a href="/admin/authority/agreement-to-collect-and-use">개인정보 활용동의</a></li>
-            <li><a href="/admin/authority/confidentiality-pledge">비밀 유지 서약동의</a></li>
+            <li><a href="/admin/authority/confidentiality-pledge">비밀 보장 서약동의</a></li>
             <li><a href="/admin/authority/non-disclosure-agreement-for-sop">SOP 비공개 동의</a></li>
             <li><a href="/admin/authority/agreements-withdrawal">철회 신청 내역</a></li>
         </ul>

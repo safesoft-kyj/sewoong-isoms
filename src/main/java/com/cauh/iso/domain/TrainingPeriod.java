@@ -4,6 +4,7 @@ import com.cauh.common.entity.Account;
 import com.cauh.common.entity.BaseEntity;
 import com.cauh.iso.domain.constant.DocumentType;
 import com.cauh.iso.domain.constant.TrainingType;
+import com.cauh.iso.utils.DateUtils;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.envers.AuditOverride;
@@ -73,5 +74,14 @@ public class TrainingPeriod extends BaseEntity implements Serializable {
         this.trainingType = trainingType;
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+
+
+    public String getStrTrainingDate(String dateFormat){
+        if(startDate.equals(endDate)) {
+            return DateUtils.format(getStartDate(), dateFormat);
+        } else {
+            return DateUtils.format(getStartDate(), dateFormat) + " to " + DateUtils.format(getEndDate(), dateFormat);
+        }
     }
 }

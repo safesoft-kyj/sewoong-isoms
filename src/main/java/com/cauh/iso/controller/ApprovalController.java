@@ -9,6 +9,7 @@ import com.cauh.common.security.annotation.CurrentUser;
 import com.cauh.iso.domain.*;
 import com.cauh.iso.domain.constant.*;
 import com.cauh.iso.domain.report.*;
+import com.cauh.iso.repository.ApprovalLineRepository;
 import com.cauh.iso.repository.DocumentVersionRepository;
 import com.cauh.iso.repository.TrainingMatrixRepository;
 import com.cauh.iso.service.ApprovalService;
@@ -47,6 +48,7 @@ public class ApprovalController {
     private final TrainingMatrixRepository trainingMatrixRepository;
     private final ApprovalValidator approvalValidator;
     private final ApprovalService approvalService;
+    private final ApprovalLineRepository approvalLineRepository;
     private final DocumentVersionService documentVersionService;
     private final DocumentVersionRepository documentVersionRepository;
     private final SignatureRepository signatureRepository;
@@ -272,6 +274,7 @@ public class ApprovalController {
             approval.getRetirementApprovalForm().setRfIds(ServletRequestUtils.getStringParameters(request, "retirementApprovalForm.rdIds"));
         }
 
+        //승인자 정보 가져오기
         boolean isTemp = WebUtils.hasSubmitParameter(request, "_temp");
         if (isTemp == false) {
             approvalValidator.validate(approval, result);
@@ -521,7 +524,9 @@ public class ApprovalController {
         if (ObjectUtils.isEmpty(approval.getId()) && !approval.isRenew()) {
             approval.setSopDisclosureRequestForm(new SOPDisclosureRequestForm());
 
-            approval.getSopDisclosureRequestForm().setNameOfRequester(user.getEngName());
+            //name으로 수정
+            approval.getSopDisclosureRequestForm().setNameOfRequester(user.getName());
+            //approval.getSopDisclosureRequestForm().setNameOfRequester(user.getEngName());
 
             String teamDept = "";
             if(!StringUtils.isEmpty(user.getTeamName())) {

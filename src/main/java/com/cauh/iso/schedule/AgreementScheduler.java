@@ -8,12 +8,15 @@ import org.springframework.scheduling.annotation.Scheduled;
 //@Component
 @Slf4j
 @RequiredArgsConstructor
-public class UserRefreshScheduler {
+public class AgreementScheduler {
     private final UserService userService;
 
-//    @Scheduled(cron = "${scheduler.user-sync}")//초 분 시 일 월 요일 연(0시 1분)
-//    public void userSync() {
-//        userService.sync();
+//    /**
+//     * 개인정보 활용동의, 비밀 보장 서약서, SOP 비공개 동의 5년 경과 확인 후 거절 및 폐기.
+//     */
+//    @Scheduled(cron = "${scheduler.agreement-check}")//초 분 시 일 월 요일 연(0시 25분)
+//    public void agreementCheck() {
+//        userService.agreementCheck();
 //    }
 //
 //    User 정보 갱신

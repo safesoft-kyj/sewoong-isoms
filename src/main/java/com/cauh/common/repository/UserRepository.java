@@ -6,6 +6,7 @@ import com.cauh.common.entity.UserJobDescription;
 import com.cauh.common.entity.constant.UserStatus;
 import com.cauh.common.entity.constant.UserType;
 import com.cauh.iso.domain.Notice;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.history.RevisionRepository;

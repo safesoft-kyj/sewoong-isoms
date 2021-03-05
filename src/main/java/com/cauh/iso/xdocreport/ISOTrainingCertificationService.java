@@ -1,6 +1,7 @@
 package com.cauh.iso.xdocreport;
 
 import com.cauh.common.entity.Account;
+import com.cauh.common.entity.Signature;
 import com.cauh.common.repository.SignatureRepository;
 import com.cauh.common.utils.Base64Utils;
 import com.cauh.iso.component.DocumentAssembly;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.io.*;
 import java.util.Date;
@@ -109,7 +111,16 @@ public class ISOTrainingCertificationService {
         isoCertificationDTO.setName(isoTrainingCertification.getUser().getName());
         isoCertificationDTO.setCertificateNo(isoTrainingCertification.getCertNo());
         isoCertificationDTO.setCompletionDate(DateUtils.format(isoTrainingCertification.getIsoTrainingLog().getCompleteDate(), "dd-MMM-yyyy").toUpperCase());
-        isoCertificationDTO.setSign(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(signatureRepository.findById(isoTrainingCertification.getIsoTrainingCertificationInfo().getManager().getUsername()).get().getBase64signature())));
+
+        //등록된 수료증 정보가 있으면,
+        if(!ObjectUtils.isEmpty(isoTrainingCertification.getIsoTrainingCertificationInfo())) {
+            Optional<Signature> signatureOptional = signatureRepository.findById(isoTrainingCertification.getIsoTrainingCertificationInfo().getManager().getUsername());
+            //수료증 정보에 서명정보가 있으면,
+            if(signatureOptional.isPresent()) {
+                Signature signature = signatureOptional.get();
+                isoCertificationDTO.setSign(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(signature.getBase64signature())));
+            }
+        }
 
         DataSourceInfo dataSourceInfo = new DataSourceInfo(isoCertificationDTO, "");
         documentAssembly.assembleDocumentAsPdf(in, os, dataSourceInfo);

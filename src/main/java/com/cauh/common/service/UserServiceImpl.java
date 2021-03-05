@@ -11,11 +11,16 @@ import com.cauh.common.repository.UserJobDescriptionRepository;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.authentication.InternalAccountAuthenticationException;
 import com.cauh.common.security.authentication.SignUpRequestedAccountException;
-import com.cauh.common.utils.DateUtils;
+import com.cauh.iso.domain.ConfidentialityPledge;
+import com.cauh.iso.domain.NonDisclosureAgreement;
+import com.cauh.iso.utils.DateUtils;
 import com.cauh.iso.component.CurrentUserComponent;
+import com.cauh.iso.domain.AgreementPersonalInformation;
 import com.cauh.iso.domain.Mail;
-import com.cauh.iso.service.JobDescriptionService;
-import com.cauh.iso.service.MailService;
+import com.cauh.iso.repository.AgreementPersonalInformationRepository;
+import com.cauh.iso.repository.ConfidentialityPledgeRepository;
+import com.cauh.iso.repository.NonDisclosureAgreementRepository;
+import com.cauh.iso.service.*;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +55,9 @@ public class UserServiceImpl implements UserService {
     private final UserJobDescriptionChangeLogRepository userJobDescriptionChangeLogRepository;
     private final JobDescriptionService jobDescriptionService;
     private final MailService mailService;
+    private final AgreementPersonalInformationRepository agreementPersonalInformationRepository;
+    private final ConfidentialityPledgeRepository confidentialityPledgeRepository;
+    private final NonDisclosureAgreementRepository nonDisclosureAgreementRepository;
 
 //    private final DeptUserMapper deptUserMapper;
 //
@@ -307,26 +315,95 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void sync() {
-//        Map<String, String> param = new HashMap<>();
-//        param.put("gwUserTbl", gwUserTbl);
-//        param.put("gwDeptTbl", gwDeptTbl);
+    public void agreementCheck() {
+        //로그인 시, 자동 유효기한 처리로 인해 사용안함.
+//        List<Account> accountList = userRepository.findAll();
+//        //계정 사용 기한 만료 시 계정 비활성화 처리
+//        accountList.stream().filter(account -> !DateUtils.isFutureDate(account.getAccountExpiredDate()))
+//        .forEach( account -> {
+//                account.setEnabled(false);
+//                account.setUserStatus(UserStatus.INACTIVE);
+//                Account savedUser = userRepository.save(account);
+//                log.debug("@@비활성화된 사용자 : {}", savedUser);
+//        });
+
+//        //개인정보 활용동의가 처리된 내용 중, 5년이 경과된 것만 비동의 처리
+//        Iterable<AgreementPersonalInformation> agreementPIs = agreementPersonalInformationRepository.findAll();
+//        StreamSupport.stream(agreementPIs.spliterator(), false).filter(a -> a.isAgree())
+//                .forEach(a -> {
+//                    //CASE 1. 수정된 날짜가 존재하면 (수정 날짜 기준)
+//                    if (!ObjectUtils.isEmpty(a.getLastModifiedDate())) {
+//                        //마지막 수정일자로부터 5년 뒤
+//                        Date dueDate = DateUtils.addDay(a.getLastModifiedDate(), 365*5);
+//                        if(!DateUtils.isFutureDate(dueDate)) {
+//                            a.setAgree(false);
+//                            // Log 기록
+//                            log.debug("User Agreement 5년 경과로 인한 거부 처리 : {}", ObjectUtils.isEmpty(a.getInternalUser())?a.getExternalCustomer():a.getInternalUser());
+//                        }
+//                    }
+//                    //CASE 2. 수정된 날짜가 없으면, (생성 날짜 기준)
+//                    else {
+//                        //생성일자로부터 5년 뒤
+//                        Date dueDate = DateUtils.addDay(a.getCreatedDate(), 365*5);
+//                        if(!DateUtils.isFutureDate(dueDate)) {
+//                            a.setAgree(false);
+//                            // Log 기록
+//                            log.debug("User Agreement 5년 경과로 인한 거부 처리 : {}", ObjectUtils.isEmpty(a.getInternalUser())?a.getExternalCustomer():a.getInternalUser());
+//                        }
+//                    }
+//                });
 //
-//        List<Map<String, String>> allUsers = deptUserMapper.getAllUsers(param);
-//        List<String> usernames = allUsers.stream().map(m -> m.get("username"))
-//                .collect(Collectors.toList());
-//        for(Map<String, String> userMap : allUsers) {
-//            String username = userMap.get("username");
+//        //비밀 보장 서약 동의가 처리된 내용 중, 5년이 경과된 것만 비동의 처리
+//        Iterable<ConfidentialityPledge> agreementCPs = confidentialityPledgeRepository.findAll();
+//        StreamSupport.stream(agreementCPs.spliterator(), false).filter(a -> a.isAgree())
+//                .forEach(cp -> {
+//                    //CASE 1. 수정된 날짜가 존재하면 (수정 날짜 기준)
+//                    if (!ObjectUtils.isEmpty(cp.getLastModifiedDate())) {
+//                        //마지막 수정일자로부터 5년 뒤
+//                        Date dueDate = DateUtils.addDay(cp.getLastModifiedDate(), 365*5);
+//                        if(!DateUtils.isFutureDate(dueDate)) {
+//                            cp.setAgree(false);
+//                            // Log 기록
+//                            log.debug("User Agreement 5년 경과로 인한 거부 처리 : {}", cp.getInternalUser());
+//                        }
+//                    }
+//                    //CASE 2. 수정된 날짜가 없으면, (생성 날짜 기준)
+//                    else {
+//                        //생성일자로부터 5년 뒤
+//                        Date dueDate = DateUtils.addDay(cp.getCreatedDate(), 365*5);
+//                        if(!DateUtils.isFutureDate(dueDate)) {
+//                            cp.setAgree(false);
+//                            // Log 기록
+//                            log.debug("User Agreement 5년 경과로 인한 거부 처리 : {}", cp.getInternalUser());
+//                        }
+//                    }
+//                });
 //
-//            log.debug("@username = {}", username);
-//            if(StringUtils.isEmpty(userMap.get("empNo")) == false && userMap.get("empNo").length() == 9) {
-//                //S18052801
-//                updateUserInfo(username);
-//            } else {
-//                log.warn("@@ 사용자 : {}, 사번 : {} 오류 ", username, userMap.get("empNo"));
-//            }
-//        }
-//        userDisabled(usernames);//비활성화 처리
+//        //SOP 비공개 동의가 처리된 내용 중, 5년이 경과된 것만 삭제
+//        Iterable<NonDisclosureAgreement> agreementNDAs = nonDisclosureAgreementRepository.findAll();
+//        StreamSupport.stream(agreementNDAs.spliterator(), false)
+//                .forEach(nda -> {
+//                    //CASE 1. 수정된 날짜가 존재하면 (수정 날짜 기준)
+//                    if (!ObjectUtils.isEmpty(nda.getLastModifiedDate())) {
+//                        //마지막 수정일자로부터 5년 뒤
+//                        Date dueDate = DateUtils.addDay(nda.getLastModifiedDate(), 365*5);
+//                        if(!DateUtils.isFutureDate(dueDate)) {
+//                            // Log 기록
+//                            log.debug("Non Disclosure 5년 경과로 인한 삭제 처리 : {}", nda.getExternalCustomer());
+//                            nonDisclosureAgreementRepository.delete(nda);
+//                        }
+//                    }
+//                    //CASE 2. 수정된 날짜가 없으면, (생성 날짜 기준)
+//                    else {
+//                        //생성일자로부터 5년 뒤
+//                        Date dueDate = DateUtils.addDay(nda.getCreatedDate(), 365*5);
+//                        if(!DateUtils.isFutureDate(dueDate)) {
+//                            // Log 기록
+//                            log.debug("Non Disclosure 5년 경과로 인한 삭제 처리 : {}", nda.getExternalCustomer());
+//                            nonDisclosureAgreementRepository.delete(nda);
+//                        }
+//                    }
+//                });
     }
 
 

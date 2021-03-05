@@ -109,9 +109,9 @@
         <script>
             function tableActions(value, row, index) {
                     return [
-                        '<button type="button" id="certBtn" name="certificationBtn" data-target="#cert-modal" data-toggle="modal" class="btn btn-info btn-xs" data-id="'
-                        + row.id + '" data-cert="' + row.certId + '">',
-                        'Certification Output',
+                        '<button type="button" id="certBtn" name="certificationBtn" data-target="#cert-modal" data-toggle="modal" class="btn btn-info btn-xs" ',
+                        '" data-cert="' + row.certId + '">',
+                        'Certificate Output',
                         '</button>'
                     ].join('');
             }
@@ -149,7 +149,7 @@
 
 <div class="modal fade" id="cert-modal" role="dialog" tabindex="-1" aria-labelledby="training-modal"
      aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog" style="display:inline-grid">
         <div class="modal-content">
             <!--Modal header-->
             <div class="modal-header">

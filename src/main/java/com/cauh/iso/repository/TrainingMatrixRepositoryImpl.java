@@ -148,7 +148,7 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
                                             .and(qDocumentVersion.parentVersion.isNotNull())
                                             .and(qDocumentVersion.effectiveDate.loe(DateUtils.addDay(user.getIndate(), 56))))
                     ))
-                    .orderBy(qTrainingLog.completeDate.asc())
+                    .orderBy(trainingMatrix.documentVersion.effectiveDate.asc()) // 2021-03-04 :: 요구사항 내 SOP Effective Date 임박 순으로 조회로 명시.
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetchResults();
@@ -228,7 +228,7 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
                                 .notIn(DeviationReportStatus.REJECTED, DeviationReportStatus.DELETED))))
         .where(builder)
         .where(completeStatus)
-        .orderBy(qDocumentVersion.document.docId.asc());
+        .orderBy(qDocumentVersion.effectiveDate.asc()); //2021-03-04 :: Effective가 임박한 순으로 조회 되어야 함.
 
         return jpaQuery;
     }
@@ -410,6 +410,7 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
                         .and(qIsoTrainingLog.user.id.eq(user.getId())))
                 .where(qIsoTrainingLog.status.ne(TrainingStatus.COMPLETED)
                         .or(qIsoTrainingLog.isNull()))
+                .orderBy(qIsoTrainingPeriod.endDate.asc()) //완료일자가 임박한 순으로 정렬.
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();

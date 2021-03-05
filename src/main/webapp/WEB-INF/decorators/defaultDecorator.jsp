@@ -9,6 +9,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <sec:authentication property="principal" var="user"/>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -161,7 +162,8 @@
         </div>
 
         <div class="hide-fixed pull-right pad-rgt">
-            <a href="https://ch.cauhs.or.kr/" target="_blank"><img src="https://ch.cauhs.or.kr/images/main_re_logo.gif" alt="cauh" class="brand-icon" style="margin-top:0px;padding-left:15px;padding-bottom:3px; width:150px;height:30px;"></a>
+            <!-- TODO:: 수정 필요. -->
+            <a href="https://ch.cauhs.or.kr" target="_blank"><img src="https://ch.cauhs.or.kr/images/main_re_logo.gif" alt="cauh" class="brand-icon" style="margin-top:0px;padding-left:15px;padding-bottom:3px; width:150px;height:30px;"></a>
         </div>
 
 

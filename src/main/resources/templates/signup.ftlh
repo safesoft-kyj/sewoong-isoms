@@ -286,7 +286,7 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label class="control-label" for="name">Name(KOR)* : </label>
+                            <label class="control-label" for="name">Name* : </label>
                             <@spring.formInput "account.name" "class='form-control'" />
                             <@spring.showErrors "" "color:red;"/>
                         </div>
@@ -310,7 +310,7 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label class="control-label" for="phone">phone : </label>
+                            <label class="control-label" for="phone">Phone : </label>
                             <@spring.formInput "account.phone" "class='form-control'" />
                             <@spring.showErrors "" "color:red;"/>
                         </div>

@@ -6,10 +6,10 @@
     <table class="table table-hover table-bordered">
         <thead>
         <tr class="bg-gray-light">
-            <th class="text-center" style="width:80px">Rev No.</th>
+<#--            <th class="text-center" style="width:80px">Rev No.</th>-->
             <th class="text-center">Revision Date</th>
             <th class="text-center">Revision Type</th>
-            <th class="text-center">ID</th>
+<#--            <th class="text-center">ID</th>-->
             <th >Title</th>
             <th class="text-center">Attach Files</th>
             <th class="text-center">postStatus</th>
@@ -30,10 +30,10 @@
                         <#assign revType = 'danger' />
                     </#if>
 
-                    <td class="text-center ${new}" style="vertical-align: middle;">${audit.revisionEntity.rev!''}</td>
+<#--                    <td class="text-center ${new}" style="vertical-align: middle;">${audit.revisionEntity.rev!''}</td>-->
                     <td class="text-center ${new}" style="vertical-align: middle;">${audit.revisionEntity.revisionDate?string('yyyy-MM-dd HH:mm:ss')}</td>
                     <td class="text-center ${new}" style="vertical-align: middle;"><span class="label label-${revType}">${audit.revisionType}</span></td>
-                    <td class="text-center ${new}" style="${audit.contains('attachFiles')?then('color:red;', '')}">${audit.entity.id}</td>
+<#--                    <td class="text-center ${new}" style="${audit.contains('attachFiles')?then('color:red;', '')}">${audit.entity.id}</td>-->
                     <td class="${new}" style="${audit.contains('attachFiles')?then('color:red;', '')}">${audit.entity.title!'N/A'}</td>
                     <td class="text-center ${new}" style="${audit.contains('attachFiles')?then('color:red;', '')}">
                         <#if audit.entity.attachFiles?has_content>

@@ -175,11 +175,11 @@
                         <tbody>
                         <tr>
                             <td class="text-center">
-                                <span class="label label-${viewIso.trainingAll?then('info', 'purple')}">${viewIso.trainingAll?then('ALL', 'SOME PART')}</span>
+                                <span class="label label-${viewIso.trainingAll?then('info', 'purple')}">${viewIso.trainingAll?then('ALL', 'PART')}</span>
                             </td>
                             <td class="text-center">
                                 <#if userPageList?has_content>
-                                    <button type="button" data-target="#attend-modal" data-toggle="modal" class="btn btn-purple btn-sm">${userPageList.content?size}명</button>
+                                    <button type="button" data-target="#attend-modal" data-toggle="modal" class="btn btn-purple btn-xs">${userPageList.content?size}명</button>
                                 <#else>
                                     -
                                 </#if>

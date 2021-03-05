@@ -45,7 +45,7 @@ public class ISOTrainingCertification extends BaseEntity implements Serializable
     private ISOTrainingLog isoTrainingLog;
 
     @ManyToOne
-    @JoinColumn(name = "certification_manager_id", referencedColumnName = "id")
+    @JoinColumn(name = "certification_info_id", referencedColumnName = "id")
     private ISOTrainingCertificationInfo isoTrainingCertificationInfo;
 
     @Column(name = "cert_html", columnDefinition = "nvarchar(MAX)")

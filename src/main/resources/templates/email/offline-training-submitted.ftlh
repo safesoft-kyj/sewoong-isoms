@@ -16,7 +16,7 @@
             <div class="content" style="width:800px;max-width:800px !important;">
                 <table class="main" width="100%" cellpadding="0" cellspacing="0">
                     <tr>
-                        <td class="alert alert-good">
+                        <td class="alert alert-good" style="font-size: 16px; color: #fff; font-weight: 500; padding: 20px; text-align: center; background-color: #8BC34A;">
                             <strong>[ISO-MS] Off-line Training 등록 요청</strong>
                         </td>
                     </tr>
@@ -25,7 +25,7 @@
                             <table width="100%" cellpadding="0" cellspacing="0">
                                 <tr>
                                     <td class="content-block aligncenter">
-                                        <table class="invoice">
+                                        <table class="invoice" style="margin: 25px auto; text-align: left; width: 100%;">
                                             <!--                                            <tr>-->
                                             <!--                                                <td>[e-SOP] SOP Off-line Training 등록 요청</td>-->
                                             <!--                                            </tr>-->
@@ -63,7 +63,7 @@
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td>Trainee</td>
+                                                            <td >Trainee</td>
                                                             <td class="alignleft"><#list attendees as attendee><#if attendee?is_first == false>, </#if>${attendee.name?default('')}</#list>
                                                             </td>
                                                         </tr>
@@ -71,7 +71,7 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td class="content-block aligncenter">
+                                                <td class="content-block aligncenter" style="padding: 0 0 20px; text-align: center">
                                                     <a href="http://${domain}" target="_blank">ISO MS 바로가기</a>
                                                 </td>
                                             </tr>

@@ -77,9 +77,9 @@
                 <label class="checkbox-inline">
                     <input type="checkbox" disabled${(nonDisclosureAgreement.externalCustomer.sopDisclosureRequestForm.purposeOfDisclosure == 'INSPECTION')?then(' checked', '')}> Inspection
                 </label>
-                <label class="checkbox-inline">
-                    <input type="checkbox" disabled${(nonDisclosureAgreement.externalCustomer.sopDisclosureRequestForm.purposeOfDisclosure == 'ASSESSMENT')?then(' checked', '')}> Assessment/Evaluation Visit
-                </label>
+<#--                <label class="checkbox-inline">-->
+<#--                    <input type="checkbox" disabled${(nonDisclosureAgreement.externalCustomer.sopDisclosureRequestForm.purposeOfDisclosure == 'ASSESSMENT')?then(' checked', '')}> Assessment/Evaluation Visit-->
+<#--                </label>-->
                 <label class="checkbox-inline">
                     <input type="checkbox" disabled${(nonDisclosureAgreement.externalCustomer.sopDisclosureRequestForm.purposeOfDisclosure == 'OTHER')?then(' checked', '')}> Other:${(nonDisclosureAgreement.externalCustomer.sopDisclosureRequestForm.purposeOfDisclosure == 'OTHER')?then(nonDisclosureAgreement.externalCustomer.sopDisclosureRequestForm.purposeOfDisclosureOther, '_______________________')}
                 </label>

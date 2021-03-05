@@ -40,7 +40,7 @@
             <div class="row">
                 <div class="col-sm-6 table-toolbar-left">
                     <@security.authorize access="hasAnyAuthority('ADMIN')">
-                        <a class="btn btn-primary" href="javascript:goToURL('/iso-14155/new')"><i
+                        <a class="btn btn-primary" href="javascript:goToURL('/iso-14155/new?type=board')"><i
                                     class="pli-pencil"></i> ISO-14155 등록</a>
                     </@security.authorize>
                     <#--                    <button class="btn btn-default"><i class="pli-printer"></i></button>-->

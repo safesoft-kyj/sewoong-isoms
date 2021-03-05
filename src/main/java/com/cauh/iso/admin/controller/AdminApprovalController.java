@@ -24,8 +24,12 @@ import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.FlashMap;
+import org.springframework.web.servlet.FlashMapManager;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -94,7 +98,7 @@ public class AdminApprovalController {
     @GetMapping({"/approval/training/deviation/print", "/approval/training/deviation/{status}/print"})
     @Transactional(readOnly = true)
     public void generateTrainingDeviationLog(@PathVariable(value = "status", required = false) ApprovalStatus status,
-                                             HttpServletResponse response) throws Exception {
+                                             HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         List<TrainingDeviationLogDTO> DTOList = null;
 
@@ -116,6 +120,17 @@ public class AdminApprovalController {
             context.putVar("DTOList", DTOList);
             response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Training_Deviation_Log" + strType +"_" + DateUtils.format(new Date(), "yyyyMMdd") +".xlsx");
             JxlsHelper.getInstance().processTemplate(is, response.getOutputStream(), context);
+        } else {
+
+            //FlashMap을 이용하여 request에 attribute 전달
+            FlashMap flashMap = new FlashMap();
+            flashMap.put("messageType", "danger");
+            flashMap.put("message", "Training Deviation List가 없습니다.");
+            FlashMapManager flashMapManager = RequestContextUtils.getFlashMapManager(request);
+            flashMapManager.saveOutputFlashMap(flashMap, request, response);
+
+            String url = String.format("/admin/approval%s?type=SOP_Training_Deviation_Report", ObjectUtils.isEmpty(status)?"":("/"+status.name()));
+            response.sendRedirect(url);
         }
     }
 

@@ -96,7 +96,7 @@ public class AdminTrainingController {
         offlineTrainingService.sendApplyEmail(savedOfflineTraining);
 
         attributes.addFlashAttribute("message", "트레이닝 이력이 반영 되었습니다.");
-        return "redirect:/admin/training/offline-training";
+        return "redirect:/admin/training/sop/offline-training";
     }
 
     @DeleteMapping("/training/sop/offline-training/{id}")
@@ -104,7 +104,7 @@ public class AdminTrainingController {
         offlineTrainingService.delete(id);
 
         attributes.addFlashAttribute("message", "Offline Training 요청 정보가 삭제 되었습니다.");
-        return "redirect:/admin/training/offline-training";
+        return "redirect:/admin/training/sop/offline-training";
     }
 
     @GetMapping("/training/sop/refresh-training")
@@ -124,7 +124,7 @@ public class AdminTrainingController {
     public String removeRefreshTraining(@RequestParam("id") Integer id, RedirectAttributes attributes) {
         trainingPeriodService.deleteById(id);
         attributes.addFlashAttribute("message", "삭제 되었습니다.");
-        return "redirect:/admin/training/refresh-training";
+        return "redirect:/admin/training/sop/refresh-training";
     }
 
     //SOP 및 ISO refresh-training 신규 및 수정 화면 이동 시,
@@ -156,20 +156,23 @@ public class AdminTrainingController {
         if(result.hasErrors()) {
             return "admin/training/refresh/edit";
         }
-        if(!ObjectUtils.isEmpty(id)) {
+
+        if(!ObjectUtils.isEmpty(id)) { // 수정
             trainingPeriod.setId(id);
+            attributes.addFlashAttribute("Refresh Training이 수정 되었습니다.");
+        } else { //신규 등록
+            attributes.addFlashAttribute("Refresh Training이 등록 되었습니다.");
         }
 
         trainingPeriodService.saveOrUpdateRefreshTraining(trainingPeriod);
         status.setComplete();
-        attributes.addFlashAttribute("Refresh Training이 등록 되었습니다.");
+
 
         if(trainingPeriod.getNotification()) {
-
-            trainingPeriodService.documentNotification(trainingPeriod);
+            trainingPeriodService.refreshNotification(trainingPeriod);
         }
 
-        return "redirect:/admin/training/refresh-training";
+        return "redirect:/admin/training/sop/refresh-training";
     }
 
     @GetMapping({"/training/sop/trainingLog", "/training/sop/trainingLog/{complete}"})

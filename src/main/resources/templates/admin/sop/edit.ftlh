@@ -9,6 +9,10 @@
     <#--    <script src="/static/plugins/chosen/chosen.jquery.min.js"></script>-->
     <link href="/static/plugins/select2/css/select2.min.css" rel="stylesheet">
     <script src="/static/plugins/select2/js/select2.min.js"></script>
+
+    <!--Bootbox Modals [ OPTIONAL ]-->
+    <script src="/static/plugins/bootbox/bootbox.min.js"></script>
+
     <#if type == 'SOP' && (CategoryList?has_content == false || CategoryList?size == 0)>
         <script>
             alert('SOP Category 정보가 존재하지 않습니다. Category 관리 페이지로 이동 합니다.');
@@ -182,7 +186,7 @@
             </#if>
             <#if type == 'SOP'>
                 <div class="form-group">
-                    <label class="col-sm-3 control-label">교육 대상(JD)</label>
+                    <label class="col-sm-3 control-label">교육 대상(ROLE)</label>
                     <div class="col-sm-9">
                         <div class="row">
                             <div class="col-sm-2">
@@ -239,6 +243,28 @@
 
             }, 1500);
         });
+
+
+        $("#uploadRfEngFile").change(function(e){
+            if ($(this).val().indexOf('.hwp') > -1) {
+                bootbox.confirm("[한글 문서 확인] .hwp 파일은 Viewer가 제공되지 않습니다. 계속 하시겠습니까?", function (result) {
+                    if (result == false) {
+                        $("#uploadRfEngFile").val("");
+                    }
+                });
+            }
+        });
+
+        $("#uploadRfKorFile").change(function(e){
+            if ($(this).val().indexOf('.hwp') > -1) {
+                bootbox.confirm("[한글 문서 확인] .hwp 파일은 Viewer가 제공되지 않습니다. 계속 하시겠습니까?", function (result) {
+                    if (result == false) {
+                        $("#uploadRfKorFile").val("");
+                    }
+                });
+            }
+        });
+
     });
 </script>
 </body>

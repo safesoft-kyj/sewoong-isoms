@@ -49,7 +49,7 @@
             <#elseif audit == 'sop-training-deviation'>
                 &nbsp;SOP Training Deviation
             <#elseif audit == 'sop-iso-disclosure'>
-                &nbsp;SOP/ISO & Training Log Disclosure
+                &nbsp;SOP & Training Log Disclosure
             </#if>
         </h4>
 
@@ -71,7 +71,7 @@
                 <#elseif audit == 'sop-training-deviation'>
                     SOP Training Deviation
                 <#elseif audit == 'sop-iso-disclosure'>
-                    SOP/ISO & Training Log...
+                    SOP & Training Log Dis...
                 <#else>
                     전자 결재
                 </#if>
@@ -85,7 +85,7 @@
                     <a href="/admin/change-control/sop-training-deviation">SOP Training Deviation</a>
                 </li>
                 <li>
-                    <a href="/admin/change-control/sop-iso-disclosure">SOP/ISO & Training Log Disclosure</a>
+                    <a href="/admin/change-control/sop-iso-disclosure">SOP & Training Log Disclosure</a>
                 </li>
             </ul>
         </div>

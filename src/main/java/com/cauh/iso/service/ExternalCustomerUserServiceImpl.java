@@ -56,6 +56,7 @@ public class ExternalCustomerUserServiceImpl implements ExternalCustomUserServic
 
                 Optional<AgreementPersonalInformation> optionalAgreementPersonalInformation = agreementPersonalInformationService.findOneAgreementPersonalInformation(email);
                 Optional<NonDisclosureAgreement> optionalNonDisclosureAgreement = nonDisclosureAgreementService.findOneNonDisclosureAgreement(email);
+
                 Account user = new Account();
                 user.setId(9999999 + externalCustomer.getId()); //2021-01-14) Session Id 중복으로 인해 자동 로그아웃 방지 (내부사용자와 id값이 다르게 하기 위함.)
                 user.setName(externalCustomer.getName());

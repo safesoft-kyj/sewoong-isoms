@@ -114,8 +114,12 @@ public class ISOController {
 
     @IsAdmin
     @GetMapping("/iso-14155/new")
-    public String newISO(Model model) {
+    public String newISO(Model model, @RequestParam(value = "type", required = false) String type) {
         ISO iso = new ISO();
+        if(!StringUtils.isEmpty(type) && type.equals("training")) {
+            iso.setTraining(true);
+        }
+
         iso.setTrainingAll(true);
         model.addAttribute("userMap", userService.getUserMap());
         model.addAttribute("iso", iso);

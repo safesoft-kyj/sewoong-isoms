@@ -2,6 +2,7 @@ package com.cauh.iso.xdocreport;
 
 import com.cauh.common.entity.Account;
 import com.cauh.common.entity.QTrainingRecord;
+import com.cauh.common.entity.Signature;
 import com.cauh.common.entity.TrainingRecord;
 import com.cauh.common.entity.constant.TrainingRecordStatus;
 import com.cauh.common.repository.SignatureRepository;
@@ -65,7 +66,14 @@ public class TrainingLogReportService {
         InputStream in = TrainingLogReportService.class.getResourceAsStream("Training_Log_01.docx");
 
         TrainingLogDTO dto = new TrainingLogDTO();
-        dto.setSign(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(signatureRepository.findById(user.getUsername()).get().getBase64signature())));
+
+        //등록된 서명정보가 있으면,
+        Optional<Signature> signatureOptional = signatureRepository.findById(user.getUsername());
+        if(signatureOptional.isPresent()) {
+            Signature signature = signatureOptional.get();
+            dto.setSign(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(signature.getBase64signature())));
+        }
+
         dto.setTrainingLogs(trainingLogs);
         dto.setUser(user);
         dto.setBirthDate(ObjectUtils.isEmpty(user.getBirthDate())?"N/A":DateUtils.format(user.getBirthDate(), "dd-MMM-yyyy").toUpperCase());
@@ -79,11 +87,18 @@ public class TrainingLogReportService {
         InputStream in = TrainingLogReportService.class.getResourceAsStream("Training_Log_02.docx");
 
         TrainingLogDTO dto = new TrainingLogDTO();
-        dto.setSign(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(signatureRepository.findById(user.getUsername()).get().getBase64signature())));
+
+        //등록된 서명정보가 있으면,
+        Optional<Signature> signatureOptional = signatureRepository.findById(user.getUsername());
+        if(signatureOptional.isPresent()) {
+            Signature signature = signatureOptional.get();
+            dto.setSign(new ByteArrayInputStream(Base64Utils.decodeBase64ToBytes(signature.getBase64signature())));
+        }
+
         dto.setTrainingLogs(trainingLogs);
         dto.setUser(user);
         dto.setBirthDate(ObjectUtils.isEmpty(user.getBirthDate())?"N/A":DateUtils.format(user.getBirthDate(), "dd-MMM-yyyy").toUpperCase());
-        dto.setPrintDate(DateUtils.format(new Date(), "dd/MMM/yyyy").toUpperCase());
+        dto.setPrintDate(DateUtils.format(new Date(), "dd-MMM-yyyy").toUpperCase());
         DataSourceInfo dataSourceInfo = new DataSourceInfo(dto, "");
 
         return documentAssembly.assembleDocumentAsPdf(in, os, dataSourceInfo);

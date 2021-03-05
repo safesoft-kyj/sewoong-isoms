@@ -119,7 +119,7 @@ public class DocumentVersionValidator implements Validator {
                     || documentVersion.getAction() == SOPAction.revision) {
                 if ((ObjectUtils.isEmpty(documentVersion.getUploadRfEngFile()) || documentVersion.getUploadRfEngFile().isEmpty()) &&
                         (ObjectUtils.isEmpty(documentVersion.getUploadRfKorFile()) || documentVersion.getUploadRfKorFile().isEmpty())) {
-                    errors.rejectValue("uploadRdKorFile", "message.required", "[KOR/ENG] 중 하나는 필수 등록 되어야 합니다.");
+                    errors.rejectValue("uploadRfKorFile", "message.required", "[KOR/ENG] 중 하나는 필수 등록 되어야 합니다.");
                 }
             }
         }

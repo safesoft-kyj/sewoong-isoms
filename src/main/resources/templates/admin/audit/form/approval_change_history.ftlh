@@ -6,10 +6,10 @@
     <table class="table table-hover table-bordered">
         <thead>
         <tr class="bg-gray-light">
-            <th class="text-center" style="width:80px">Rev No.</th>
+<#--            <th class="text-center" style="width:80px">Rev No.</th>-->
             <th class="text-center">Revision Date</th>
             <th class="text-center">Revision Type</th>
-            <th class="text-center">ID</th>
+<#--            <th class="text-center">ID</th>-->
             <th class="text-center">Report Type</th>
             <th class="text-center">Approval Status</th>
             <th class="text-center">Approval Lines</th>
@@ -30,10 +30,10 @@
                     <#elseif audit.revisionType == 'DEL'>
                         <#assign revType = 'danger' />
                     </#if>
-                <td class="text-center ${new}">${audit.revisionEntity.rev!''}</td>
+<#--                <td class="text-center ${new}">${audit.revisionEntity.rev!''}</td>-->
                 <td class="text-center ${new}">${audit.revisionEntity.revisionDate?string('yyyy-MM-dd HH:mm:ss')}</td>
                 <td class="text-center ${new}"><span class="label label-${revType}">${audit.revisionType}</span></td>
-                <td class="text-center ${new}">${audit.entity.id}</td>
+<#--                <td class="text-center ${new}">${audit.entity.id}</td>-->
                 <td class="text-center ${new}" style="${audit.contains('type')?then('color:red;', '')}">${audit.entity.type.label!'N/A'}</td>
                 <td class="text-center ${new}" style="${audit.contains('status')?then('color:red;', '')}">${audit.entity.status!'N/A'}</td>
                 <td class="text-center ${new}">

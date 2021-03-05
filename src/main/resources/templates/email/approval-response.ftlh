@@ -36,7 +36,7 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td class="content-block">
+                                                <td class="content-block" style="padding: 0 0 20px;">
                                                     상세 내용을 확인하여 주십시오.
                                                 </td>
                                             </tr>

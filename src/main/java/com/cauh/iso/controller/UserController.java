@@ -2,6 +2,7 @@ package com.cauh.iso.controller;
 
 import com.cauh.common.entity.*;
 import com.cauh.common.entity.constant.RoleStatus;
+import com.cauh.common.entity.constant.UserStatus;
 import com.cauh.common.repository.SignatureRepository;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.annotation.CurrentUser;
@@ -38,6 +39,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -312,17 +314,22 @@ public class UserController {
             //내용이 중복되면 false 반환
             for(Account account : currentUserAccountList){
                 if(!ObjectUtils.isEmpty(account.getUsername()) && account.getUsername().equals(keyword)){
-                    log.info("Validation Field : {}({})", type, keyword);
+                    //log.info("Validation Field : {}({})", type, keyword);
                     result = false;
                     break;
                 }
             }
         }else if(type.equals("email")) {
             //log.info("Data Type : {}({})", type, keyword);
+            // 2020-12-17 :: 추가 요구 사항 : 활성화된 유저 혹은 회원가입 신청중인 유저에서만 이메일 확인.
+            List<Account> activeAccountList = currentUserAccountList.stream()
+                    .filter(u -> u.getUserStatus() == UserStatus.ACTIVE || u.getUserStatus() == UserStatus.SIGNUP_REQUEST)
+                    .collect(Collectors.toList());
+
             //내용이 중복되면 false 반환
-            for(Account account : currentUserAccountList){
+            for(Account account : activeAccountList){
                 if(!ObjectUtils.isEmpty(account.getEmail()) && account.getEmail().equals(keyword)){
-                    log.info("Validation Field : {}({})", type, keyword);
+                    //log.info("Validation Field : {}({})", type, keyword);
                     result = false;
                     break;
                 }

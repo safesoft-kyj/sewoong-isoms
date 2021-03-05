@@ -239,8 +239,41 @@ public class AdminISOTrainingController {
         return "admin/iso/certificateInfoList";
     }
 
+    @GetMapping("/training/iso/trainingCertList")
+    @ResponseBody
+    public List<ISOTrainingCertificationDTO> ajaxTrainingCertification() {
+        QISOTrainingCertification qisoTrainingCertification = QISOTrainingCertification.iSOTrainingCertification;
+        BooleanBuilder builder = new BooleanBuilder();
+
+        Iterable<ISOTrainingCertification> isoTrainingCertifications = isoTrainingCertificationService.findAll(builder, qisoTrainingCertification.id.desc());
+        List<ISOTrainingCertification> isoTrainingCertificationList = StreamSupport.stream(isoTrainingCertifications.spliterator(), false).collect(Collectors.toList());
+        log.info("@Test : {}", isoTrainingCertificationList);
+
+        int size = isoTrainingCertificationList.size();
+        AtomicInteger atomicInteger = new AtomicInteger();
+        atomicInteger.set(size);
+        List<ISOTrainingCertificationDTO> isoTrainingCertificationDTOS = new ArrayList<>();
+        isoTrainingCertificationList.forEach(cert -> {
+            ISOTrainingCertificationDTO dto = new ISOTrainingCertificationDTO();
+
+            dto.setIndex(atomicInteger.getAndDecrement());
+            dto.setId(cert.getId());
+            dto.setCertNo(certHeader + cert.getCertNo());
+            dto.setName(cert.getUser().getName());
+            dto.setTeamDept(cert.getUser().getTeamDept());
+            dto.setRole(cert.getUser().getCommaJobTitle());
+            dto.setIsoType(cert.getIso().getIsoType().getLabel());
+            dto.setTrainingTitle(cert.getIso().getTitle());
+            dto.setCompletionDate(DateUtils.format(cert.getIsoTrainingLog().getCompleteDate(), "dd-MMM-yyyy").toUpperCase());
+
+            isoTrainingCertificationDTOS.add(dto);
+        });
+
+        return isoTrainingCertificationDTOS;
+    }
+
     @PostMapping("/training/iso/training-certification/info")
-    public String editJobDescription(@RequestParam(value = "action", defaultValue = "list") String action,
+    public String certificationInfo(@RequestParam(value = "action", defaultValue = "list") String action,
                                      @RequestParam(value = "id", required = false) Integer id,
                                      @ModelAttribute("info") ISOTrainingCertificationInfo isoTrainingCertificationInfo,
                                      BindingResult result, SessionStatus status, Model model, RedirectAttributes attributes) {
@@ -281,39 +314,4 @@ public class AdminISOTrainingController {
 
         return "redirect:/admin/training/iso/training-certification/info";
     }
-
-
-    @GetMapping("/training/iso/trainingCertList")
-    @ResponseBody
-    public List<ISOTrainingCertificationDTO> ajaxTrainingCertification() {
-        QISOTrainingCertification qisoTrainingCertification = QISOTrainingCertification.iSOTrainingCertification;
-        BooleanBuilder builder = new BooleanBuilder();
-
-        Iterable<ISOTrainingCertification> isoTrainingCertifications = isoTrainingCertificationService.findAll(builder, qisoTrainingCertification.id.desc());
-        List<ISOTrainingCertification> isoTrainingCertificationList = StreamSupport.stream(isoTrainingCertifications.spliterator(), false).collect(Collectors.toList());
-        log.info("@Test : {}", isoTrainingCertificationList);
-
-        int size = isoTrainingCertificationList.size();
-        AtomicInteger atomicInteger = new AtomicInteger();
-        atomicInteger.set(size);
-        List<ISOTrainingCertificationDTO> isoTrainingCertificationDTOS = new ArrayList<>();
-        isoTrainingCertificationList.forEach(cert -> {
-            ISOTrainingCertificationDTO dto = new ISOTrainingCertificationDTO();
-
-            dto.setIndex(atomicInteger.getAndDecrement());
-            dto.setId(cert.getId());
-            dto.setCertNo(certHeader + cert.getCertNo());
-            dto.setName(cert.getUser().getName());
-            dto.setTeamDept(cert.getUser().getTeamDept());
-            dto.setRole(cert.getUser().getCommaJobTitle());
-            dto.setIsoType(cert.getIso().getIsoType().getLabel());
-            dto.setTrainingTitle(cert.getIso().getTitle());
-            dto.setCompletionDate(DateUtils.format(cert.getIsoTrainingLog().getCompleteDate(), "dd-MMM-yyyy").toUpperCase());
-
-            isoTrainingCertificationDTOS.add(dto);
-        });
-
-        return isoTrainingCertificationDTOS;
-    }
-
 }

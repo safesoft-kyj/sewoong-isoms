@@ -72,7 +72,7 @@ logging.level:
 #  com.dtnsm: debug
 
 server:
-  domain: esop.safesoft.co.kr
+  domain: cauhiso.safesoft.co.kr
   port: 9090
 
 file:

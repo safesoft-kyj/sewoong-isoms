@@ -70,11 +70,6 @@ public class ISOTrainingController {
     public String myTraining(@PageableDefault(size = 25) Pageable pageable, @CurrentUser Account user, Model model) {
 
         Page<MyTraining> isoTrainingMatrices = trainingMatrixRepository.getISOMyTraining(pageable, user);
-
-        isoTrainingMatrices.getContent().forEach(t -> {
-                log.info("Quiz? : {}", t.getIso().getQuiz());
-        });
-
         model.addAttribute("trainingMatrix", isoTrainingMatrices);
 
         return "iso/training/trainingList";
@@ -192,9 +187,14 @@ public class ISOTrainingController {
     //수료증 html .return
     @PutMapping(value = "/ajax/training/iso/certification/{isoCertId}", produces = "application/text;charset=utf8")
     @ResponseBody
-    public String ajaxCompletedTraining(@PathVariable("isoCertId") Integer isoCertId) {
-        ISOTrainingCertification isoTrainingCertification = isoTrainingCertificationService.findById(isoCertId);
-        return isoTrainingCertification.getCertHtml();
+    public String ajaxCompletedTraining(@PathVariable("isoCertId") String isoCertId) {
+
+        if(isoCertId.equals("null") || isoCertId.equals("undefined")){
+            return "<h2 style=''>수료증 내용이 확인되지 않습니다</h2>";
+        } else {
+            ISOTrainingCertification isoTrainingCertification = isoTrainingCertificationService.findById(Integer.parseInt(isoCertId));
+            return isoTrainingCertification.getCertHtml();
+        }
     }
 
     @PostMapping("/training/iso/mytraining/completed/downloadCertFile")

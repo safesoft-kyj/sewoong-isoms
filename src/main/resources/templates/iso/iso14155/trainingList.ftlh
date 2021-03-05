@@ -211,7 +211,7 @@
             <div class="row">
                 <div class="col-sm-6 table-toolbar-left">
                     <@security.authorize access="hasAnyAuthority('ADMIN')">
-                        <a class="btn btn-primary" href="javascript:goToURL('/iso-14155/new')"><i
+                        <a class="btn btn-primary" href="javascript:goToURL('/iso-14155/new?type=training')"><i
                                     class="pli-pencil"></i> ISO-14155 등록</a>
                     </@security.authorize>
                     <#--                    <button class="btn btn-default"><i class="pli-printer"></i></button>-->
@@ -257,7 +257,7 @@
                     <th class="text-center" style="width:120px;">등록일</th>
                     <th class="text-center" style="width:100px;">작성자</th>
                     <@security.authorize access="hasAnyAuthority('ADMIN')">
-                        <th class="text-center" style="width:140px">Active</th>
+                        <th class="text-center" style="width:140px">Activate</th>
                     </@security.authorize>
                 </tr>
                 </thead>
@@ -301,10 +301,14 @@
                             <td class="text-center">
                                 <#if iso.training>
                                     <#if iso.active>
-                                        <span class="label label-primary">Activated</span>
+                                        <button id="expandBtn" class="btn btn-primary btn-xs" data-id="${iso.id}"
+                                                data-start="${iso.startDate?string('yyyy-MM-dd')}" data-date="${iso.trainingDate}"
+                                                data-end="${iso.endDate?string('yyyy-MM-dd')}" data-name="${iso.title}">
+                                            Period Expand
+                                        </button>
                                     <#else>
                                         <button id="activeBtn" data-date="${iso.trainingDate}" data-attendee="${iso.attendee}" data-correct="${iso.correctCount}"
-                                                data-test="${iso.quiz?has_content?then('Y', 'N')}" data-id="${iso.id}" class="btn btn-purple btn-xs">Active</button>
+                                                data-test="${iso.quiz?has_content?then('Y', 'N')}" data-id="${iso.id}" class="btn btn-purple btn-xs">Activate</button>
                                     </#if>
                                 <#else>
                                     -
@@ -364,7 +368,7 @@
                                         <button id="activeBtn" class="btn btn-purple btn-xs" data-id="${iso.id}"
                                                 data-date="${iso.trainingDate}" data-attendee="${iso.attendee}" data-correct="${iso.correctCount}"
                                                 data-test="${iso.quiz?has_content?then('Y', 'N')}">
-                                            Active
+                                            Activate
                                         </button>
                                     </#if>
                                 <#else>

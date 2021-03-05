@@ -163,7 +163,7 @@
                             <tr>
                                 <td class="text-center">${app.id}</td>
                                 <td><span class="text-muted">${app.trainingDate?string('yyyy-MM-dd')}</span></td>
-                                <td><a href="/admin/training/offline-training/${app.id}" class="btn-link">${app.organization}</a></td>
+                                <td><a href="/admin/training/sop/offline-training/${app.id}" class="btn-link">${app.organization}</a></td>
                                 <td>${app.createdBy}(${app.offlineTrainingAttendees?size})</td>
                                 <td><span class="label label-${app.status.className}">${app.status.label}</span></td>
                             </tr>

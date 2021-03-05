@@ -36,7 +36,7 @@ public interface UserService {
     void signUpMailSend(Account account);
 
     void userPasswordReset(Account account);
-    void sync();
+    void agreementCheck();
     void refresh();
     //Login Failure Handler Method
     void countFailure(String username);

@@ -50,11 +50,33 @@ public class AgreementPersonalInformationService {
         return resultMap;
     }
 
+    /**
+     * 내부 사용자의 개인정보 활용 동의 확인
+     * @param account
+     * @return
+     */
+    public Optional<AgreementPersonalInformation> findOneAgreementPersonalInformation(Account account) {
+        QAgreementPersonalInformation qAgreementPersonalInformation = QAgreementPersonalInformation.agreementPersonalInformation;
+        Date today = new Date();
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qAgreementPersonalInformation.internalUser.id.eq(account.getId()));
+        builder.and(qAgreementPersonalInformation.agree.eq(true));
+        builder.and(qAgreementPersonalInformation.createdDate.goe(new Timestamp(DateUtils.addDay(today, -1825).getTime())));//5년(365*5)
+
+        return agreementPersonalInformationRepository.findOne(builder);
+    }
+
+    /**
+     * 외부 사용자의 개인정보 활용 동의 확인
+     * @param email
+     * @return
+     */
     public Optional<AgreementPersonalInformation> findOneAgreementPersonalInformation(String email) {
         QAgreementPersonalInformation qAgreementPersonalInformation = QAgreementPersonalInformation.agreementPersonalInformation;
         Date today = new Date();
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qAgreementPersonalInformation.email.eq(email));
+        builder.and(qAgreementPersonalInformation.externalCustomer.isNotNull()); //2021-03-04 :: 외부사용자인경우 추가.
         builder.and(qAgreementPersonalInformation.agree.eq(true));
         builder.and(qAgreementPersonalInformation.createdDate.goe(new Timestamp(DateUtils.addDay(today, -1825).getTime())));//5년(365*5)
 

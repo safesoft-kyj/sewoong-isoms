@@ -6,11 +6,11 @@
     <table class="table table-hover table-bordered">
         <thead>
         <tr class="bg-gray-light">
-            <th class="text-center" style="width:80px">Rev No.</th>
+<#--            <th class="text-center" style="width:80px">Rev No.</th>-->
             <th class="text-center">Revision Date</th>
             <th class="text-center">Revision Type</th>
-            <th class="text-center">ID</th>
-            <th class="text-center">Document ID</th>
+<#--            <th class="text-center">ID</th>-->
+<#--            <th class="text-center">Document ID</th>-->
             <th class="text-center">State</th>
             <th class="text-center">Version</th>
             <th class="text-center">File Name</th>
@@ -38,11 +38,11 @@
                     <#elseif audit.revisionType == 'DEL'>
                         <#assign revType = 'danger' />
                     </#if>
-                    <td class="text-center ${new}">${audit.revisionEntity.rev!''}</td>
+<#--                    <td class="text-center ${new}">${audit.revisionEntity.rev!''}</td>-->
                     <td class="text-center ${new}">${audit.revisionEntity.revisionDate?string('yyyy-MM-dd HH:mm:ss')}</td>
                     <td class="text-center ${new}"><span class="label label-${revType}">${audit.revisionType}</span></td>
-                    <td class="text-center ${new}">${audit.entity.id}</td>
-                    <td class="text-center ${new}">${audit.entity.document.id}</td>
+<#--                    <td class="text-center ${new}">${audit.entity.id}</td>-->
+<#--                    <td class="text-center ${new}">${audit.entity.document.id}</td>-->
                     <td class="text-center ${new}">
                         <span class="label ${new?has_content?then('label-info', audit.contains('status')?then('label-danger', 'bg-gray-dark'))}">
                             ${audit.entity.status}

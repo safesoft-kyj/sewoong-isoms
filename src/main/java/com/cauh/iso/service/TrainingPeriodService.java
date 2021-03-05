@@ -71,25 +71,28 @@ public class TrainingPeriodService {
         trainingPeriodRepository.deleteById(id);
     }
 
-    public void documentNotification(TrainingPeriod trainingPeriod) {
+    public void refreshNotification(TrainingPeriod trainingPeriod) {
 
         //계정 Mail 전송 구간.
         HashMap<String, Object> model = new HashMap<>();
-        String title = "", templateTitle = "";
-
-        title = "Refresh Training이 등록 되었습니다.";
         model.put("title", "Refresh Training 등록 알림");
+        model.put("docVerInfo", trainingPeriod.getDocumentVersion().getDocInfo());
+        model.put("trainingPeriod", trainingPeriod.getStrTrainingDate("yyyy-MM-dd"));
+        String title = "";
 
-        //TODO :: 작업필요
+        if(ObjectUtils.isEmpty(trainingPeriod.getId())) {
+            title = "Refresh Training이 등록 되었습니다.";
+        } else {
+            title = "Refresh Training이 수정 되었습니다.";
+        }
 
-        model.put("trainingPeriod", trainingPeriod);
         List<String> toList = mailService.getReceiveEmails();
 
         Mail mail = Mail.builder()
                 .to(toList.toArray(new String[toList.size()]))
                 .subject(String.format("[ISO-MS/System] %s", title))
                 .model(model)
-                .templateName("document-version-notification")
+                .templateName("refresh-training-notification")
                 .build();
 
         mailService.sendMail(mail);

@@ -16,6 +16,8 @@ import com.cauh.iso.domain.AgreementPersonalInformation;
 import com.cauh.iso.domain.ConfidentialityPledge;
 import com.cauh.iso.repository.AgreementPersonalInformationRepository;
 import com.cauh.iso.repository.ConfidentialityPledgeRepository;
+import com.cauh.iso.service.AgreementPersonalInformationService;
+import com.cauh.iso.service.ConfidentialityPledgeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,9 +73,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
     @Autowired
     private SignatureRepository signatureRepository;
     @Autowired
-    private AgreementPersonalInformationRepository agreementPersonalInformationRepository;
+    private AgreementPersonalInformationService agreementPersonalInformationService;
     @Autowired
-    private ConfidentialityPledgeRepository confidentialityPledgeRepository;
+    private ConfidentialityPledgeService confidentialityPledgeService;
 
 
     @Value("${spring.profiles.active}")
@@ -177,14 +179,16 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
             userDetails.setSignature(signatureRepository.findById(username).isPresent());
 
             //개인정보 활용동의 여부
-            Optional<AgreementPersonalInformation> informationOptional = agreementPersonalInformationRepository.findByInternalUser(userDetails);
+            Optional<AgreementPersonalInformation> informationOptional = agreementPersonalInformationService.findOneAgreementPersonalInformation(userDetails);
+
+
             if(informationOptional.isPresent()){
                 AgreementPersonalInformation information = informationOptional.get();
                 userDetails.setAgreementCollectUse(information.isAgree());
             }
 
             //기밀유지 서약 여부
-            Optional<ConfidentialityPledge> confidentialityPledgeOptional = confidentialityPledgeRepository.findByInternalUser(userDetails);
+            Optional<ConfidentialityPledge> confidentialityPledgeOptional = confidentialityPledgeService.findOneConfidentialityPledge(userDetails);
             if(confidentialityPledgeOptional.isPresent()) {
                 ConfidentialityPledge confidentialityPledge = confidentialityPledgeOptional.get();
                 userDetails.setConfidentialityPledge(confidentialityPledge.isAgree());

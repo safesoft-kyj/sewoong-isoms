@@ -6,11 +6,11 @@
     <table class="table table-hover table-bordered">
         <thead>
         <tr class="bg-gray-light">
-            <th class="text-center" style="width:80px">Rev No.</th>
+<#--            <th class="text-center" style="width:80px">Rev No.</th>-->
             <th class="text-center">Revision Date</th>
             <th class="text-center">Revision Type</th>
-            <th class="text-center">ID</th>
-            <th class="text-center">SOP ID </th>
+<#--            <th class="text-center">ID</th>-->
+<#--            <th class="text-center">SOP ID </th>-->
             <th class="text-center">Document Type</th>
             <th class="text-center">Document Category</th>
             <th class="text-center">Document No</th>
@@ -32,11 +32,11 @@
                     <#elseif audit.revisionType == 'DEL'>
                         <#assign revType = 'danger' />
                     </#if>
-                    <td class="text-center ${new}">${audit.revisionEntity.rev!''}</td>
+<#--                    <td class="text-center ${new}">${audit.revisionEntity.rev!''}</td>-->
                     <td class="text-center ${new}">${audit.revisionEntity.revisionDate?string('yyyy-MM-dd HH:mm:ss')}</td>
                     <td class="text-center ${new}"><span class="label label-${revType}">${audit.revisionType}</span></td>
-                    <td class="text-center ${new}">${audit.entity.id}</td>
-                    <td class="text-center ${new}" style="${audit.contains('sop')?then('color:red;', '')}">${audit.entity.sop?has_content?then(audit.entity.sop.id, 'None')}</td>
+<#--                    <td class="text-center ${new}">${audit.entity.id}</td>-->
+<#--                    <td class="text-center ${new}" style="${audit.contains('sop')?then('color:red;', '')}">${audit.entity.sop?has_content?then(audit.entity.sop.id, 'None')}</td>-->
                     <td class="text-center ${new}" style="${audit.contains('type')?then('color:red;', '')}">
                         <#if audit.entity.type=='SOP'>
                             <span class="label label-dark">${audit.entity.type}</span>
@@ -53,7 +53,7 @@
                             <span class="badge badge-${audit.contains('rfList')?then('danger', 'gray')} add-popover"
                                   data-toggle="popover" data-container="body" data-placement="left"
                                   data-trigger="hover" data-html="true"
-                                  data-content="<div class='pad-top'><#list audit.entity.rfList as rf>${rf?index+1}:: <span class='label label-purple'>${rf.docId} :: ${rf.title}</span></#list></div>">
+                                  data-content="<div class='pad-top'><#list audit.entity.rfList as rf><span class='label label-purple'>${rf.docId} :: ${rf.title}</span><br /></#list></div>">
                                 <i class="fa fa-file-o"></i>&nbsp;(${audit.entity.rfList?size})
                             </span>
                         <#else>

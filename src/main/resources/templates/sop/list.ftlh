@@ -69,7 +69,14 @@
                                                     <#if user.userType != 'AUDITOR'>
                                                         <a href="/rf/${status.name()?lower_case}/download/${rfVer.id}?lang=eng" class="btn btn-default"><i class="fa fa-download"></i></a>
                                                     </#if>
-                                                    <a href="#rf-modal" data-toggle="modal" data-id="${rfVer.id}" data-lang="eng" class="btn btn-default"><i class="fa fa-search-plus"></i></a>
+
+
+                                                    <#if rfVer.rfEngOriginalFileName?last_index_of(".hwp") == -1>
+                                                        <button data-target="#rf-modal" data-toggle="modal" data-id="${rfVer.id}" data-lang="eng" class="btn btn-default"><i class="fa fa-search-plus"></i></button>
+                                                    <#else>
+                                                        <button class="btn btn-default" disabled><i class="fa fa-search-plus"></i></button>
+                                                    </#if>
+
                                                 </div>
                                                 <div class="media-left"><i class="fa ${getExtIcon(rfVer.ext?default('')?lower_case)}"></i></div>
                                                 <div class="media-body">
@@ -91,7 +98,13 @@
                                     <#if user.userType != 'AUDITOR'>
                                         <a href="/rf/${status.name()?lower_case}/download/${rfVer.id}?lang=kor" class="btn btn-default"><i class="fa fa-download"></i></a>
                                     </#if>
-                                    <a href="#rf-modal" data-toggle="modal" data-id="${rfVer.id}" data-lang="kor" class="btn btn-default"><i class="fa fa-search-plus"></i></a>
+
+                                    <#if rfVer.rfKorOriginalFileName?last_index_of(".hwp") == -1>
+                                        <button data-target="#rf-modal" data-toggle="modal" data-id="${rfVer.id}" data-lang="kor" class="btn btn-default"><i class="fa fa-search-plus"></i></button>
+                                    <#else>
+                                        <button class="btn btn-default" disabled><i class="fa fa-search-plus"></i></button>
+                                    </#if>
+
                                 </div>
                                 <div class="media-left"><i class="fa ${getExtIcon(rfVer.ext?default('')?lower_case)}"></i></div>
                                 <div class="media-body">

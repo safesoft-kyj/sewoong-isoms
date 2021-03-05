@@ -239,6 +239,10 @@ public class DocumentVersion extends BaseEntity implements Serializable {
         }
     }
 
+    public String getDocInfo(){
+        return String.format("[%s] %s v%s", document.getDocId(), document.getTitle(), version);
+    }
+
     public String getMatrixRoles(){
         if(trainingMatrixList.stream().filter(m -> m.isTrainingAll()).count() > 0) {
             return "ALL";

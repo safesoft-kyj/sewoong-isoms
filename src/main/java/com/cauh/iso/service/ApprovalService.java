@@ -112,8 +112,9 @@ public class ApprovalService {
                         .displayName(user.getName() + (StringUtils.isEmpty(user.getPosition()) ? "" : "(" + user.getPosition() + ")"))
                         .build());
             }
-
         }
+
+
         //Report 별로 커스텀 로직 구현
         reportCustomProcess(approval, user);
         approval.setUsername(user.getUsername());
@@ -128,7 +129,8 @@ public class ApprovalService {
         Optional<ApprovalLine> optionalApprovalLine = approval.getApprovalLines().stream().filter(l -> l.getLineType() != ApprovalLineType.requester).findFirst();
         if(optionalApprovalLine.isPresent()) {
             ApprovalLine approvalLine = optionalApprovalLine.get();
-            approvalLine.setStatus(ApprovalStatus.request);
+            //임시저장인 경우 temp로 상태지정
+            approvalLine.setStatus(approval.getStatus()==ApprovalStatus.temp?ApprovalStatus.temp:ApprovalStatus.request);
             log.info("** 첫번째 결재할 유저 확인 됨. {}", approvalLine.getDisplayName());
         }
 
