@@ -23,7 +23,7 @@ public class UserProfileValidator implements Validator {
         Account account = (Account) target;
 
         if(ObjectUtils.isEmpty(account.getId())) {
-            errors.rejectValue("birthDate", "message.birthDate.required", "ID를 입력해주세요.");
+            errors.rejectValue("username", "message.username.required", "ID를 입력해주세요.");
         }
 
         if(ObjectUtils.isEmpty(account.getBirthDate())) {

@@ -71,7 +71,7 @@
                 <#elseif audit == 'sop-training-deviation'>
                     SOP Training Deviation
                 <#elseif audit == 'sop-iso-disclosure'>
-                    SOP & Training Log Dis...
+                    SOP & Training Log...
                 <#else>
                     전자 결재
                 </#if>

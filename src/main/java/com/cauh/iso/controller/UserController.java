@@ -76,14 +76,14 @@ public class UserController {
 
     @GetMapping("/user/profile/edit")
     public String profileEdit(@CurrentUser Account user, Model model){
-
-        model.addAttribute("account", user);
+        model.addAttribute("account", userService.findByUsername(user.getUsername()).get());
         model.addAttribute("departments", departmentService.getParentDepartment());
 
         return "user/profile_edit";
     }
 
     @PostMapping("/user/profile/edit")
+    @Transactional
     public String profileEditProc(@ModelAttribute("account") Account user, SessionStatus status,
                                   BindingResult result, Model model, RedirectAttributes attributes) {
         userProfileValidator.validate(user, result);

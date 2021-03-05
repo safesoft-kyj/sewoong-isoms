@@ -76,7 +76,7 @@ public class ApprovalController {
                            @RequestParam(value = "trainingPeriodId", required = false) Integer trainingPeriodId,
                            @RequestParam(value = "sopId", required = false) String sopId,
                            @RequestParam(value = "renewId", required = false, defaultValue = "0") Integer renewId,
-                           @CurrentUser Account user, Model model) throws Exception {
+                           @CurrentUser Account user, RedirectAttributes attributes, Model model) throws Exception {
         Approval approval;
         if(renewId.intValue() > 0) {
             //재상신인 경우 기존 데이터 복제 한다.
@@ -92,7 +92,13 @@ public class ApprovalController {
 
         switch (approval.getType()) {
             case SOP_Training_Deviation_Report:
-                sopDeviationReport(approval, user, trainingPeriodId, sopId, model);
+                try{
+                    sopDeviationReport(approval, user, trainingPeriodId, sopId, model);
+                } catch(Exception e) {
+                    attributes.addFlashAttribute("messageType", "danger");
+                    attributes.addFlashAttribute("message", "SOP Training Deviation에 관한 SOP 문서를 찾을 수 없습니다.");
+                    return "redirect:/training/sop/mandatory-training";
+                }
                 break;
             case SOP_RF_Request_Form:
                 sopRfRequestForm(approval, user, model);
@@ -377,7 +383,7 @@ public class ApprovalController {
 
 
 
-    private void sopDeviationReport(Approval approval, Account user, Integer trainingPeriodId, String sopId, Model model) {
+    private void sopDeviationReport(Approval approval, Account user, Integer trainingPeriodId, String sopId, Model model) throws Exception {
         if (ObjectUtils.isEmpty(approval.getId()) && !approval.isRenew()) {
             approval.setSopDeviationReport(new SOPDeviationReport());
             approval.getSopDeviationReport().setTrainingPeriodId(trainingPeriodId);

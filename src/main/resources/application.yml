@@ -92,7 +92,7 @@ gw:
 mail:
   notice:
     name: CAUH System
-    adress: ISOCAU@caumc.or.kr
+    address: ISOCAU@caumc.or.kr
 
 
 cert:
