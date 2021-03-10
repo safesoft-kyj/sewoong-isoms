@@ -192,6 +192,23 @@ public class AdminSOPController {
         }
 
         try {
+
+//            //SOP Version - document id Duplicate Check
+//            BooleanBuilder builder = new BooleanBuilder();
+//            QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
+//            builder.and(qDocumeCurrent SOPntVersion.version.eq(documentVersion.getVersion()));
+//            builder.and(qDocumentVersion.document.id.eq(documentVersion.getId()));
+//            if(!StringUtils.isEmpty(documentVersion.getId())) {
+//                builder.and(qDocumentVersion.id.ne(documentVersion.getId()));
+//            }
+//
+//            if(documentVersionRepository.findOne(builder).isPresent()) {
+//                attributes.addFlashAttribute("messageType", "danger");
+//                attributes.addFlashAttribute("message", "이미 등록된 버전입니다. (기존 SOP 정보를 확인해주세요.)");
+//                return "redirect:/admin/{type}/management/{stringStatus}";
+//            }
+
+
             if (ObjectUtils.isEmpty(action)) {
                 documentVersionService.save(documentVersion);
             } else {

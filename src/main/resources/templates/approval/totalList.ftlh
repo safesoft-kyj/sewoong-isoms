@@ -15,11 +15,11 @@
         <li<#if reportStatus?has_content && reportStatus == 'request'> class="active"</#if>>
             <a href="/approval/box/${type}/request">요청</a>
         </li>
-        <#if type == 'requester'>
-        <li<#if reportStatus?has_content && reportStatus == 'progress'> class="active"</#if>>
-            <a href="/approval/box/${type}/progress">진행</a>
-        </li>
-        </#if>
+<#--        <#if type == 'requester'>-->
+<#--        <li<#if reportStatus?has_content && reportStatus == 'progress'> class="active"</#if>>-->
+<#--            <a href="/approval/box/${type}/progress">진행</a>-->
+<#--        </li>-->
+<#--        </#if>-->
         <li<#if reportStatus?has_content && reportStatus == 'approved'> class="active"</#if>>
             <a href="/approval/box/${type}/approved">완료</a>
         </li>

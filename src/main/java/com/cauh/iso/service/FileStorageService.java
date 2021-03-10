@@ -46,7 +46,6 @@ public class FileStorageService {
         // Normalize file name
         String fileName = prefix + "_" + UUID.randomUUID() + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
 
-
         try {
             // Check if the file's name contains invalid characters
             if(fileName.contains("..")) {
@@ -65,6 +64,12 @@ public class FileStorageService {
         } catch (IOException ex) {
             throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
         }
+    }
+
+    public Boolean conversionHwp2Pdf(MultipartFile uploadedHwpFile, String id){
+
+
+        return false;
     }
 
     public Integer conversionPdf2Img(MultipartFile uploadedPdfFile, String id) {

@@ -265,8 +265,9 @@ public class UserController {
 
             signatureRepository.save(signature);
 
-            user.setSignature(true);
-            updateAuthentication(user);
+            //2021-03-10 YSH :: Signature Interceptor 미사용으로 주석처리.
+//            user.setSignature(true);
+//            updateAuthentication(user);
         }
 
         attributes.addFlashAttribute("message", "서명 정보가 등록 되었습니다.");

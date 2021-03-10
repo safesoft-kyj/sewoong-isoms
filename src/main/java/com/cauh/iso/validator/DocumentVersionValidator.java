@@ -3,11 +3,14 @@ package com.cauh.iso.validator;
 import com.cauh.iso.admin.domain.constant.SOPAction;
 import com.cauh.iso.domain.Document;
 import com.cauh.iso.domain.DocumentVersion;
+import com.cauh.iso.domain.QDocumentVersion;
 import com.cauh.iso.domain.constant.DocumentStatus;
 import com.cauh.iso.domain.constant.DocumentType;
+import com.cauh.iso.repository.DocumentVersionRepository;
 import com.cauh.iso.service.DocumentService;
 import com.cauh.iso.service.DocumentVersionService;
 import com.cauh.iso.utils.NumberUtils;
+import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -25,6 +28,8 @@ import java.util.Optional;
 public class DocumentVersionValidator implements Validator {
     private final DocumentService documentService;
     private final DocumentVersionService documentVersionService;
+
+    private final DocumentVersionRepository documentVersionRepository;
 
     @Override
     public boolean supports(Class<?> aClass) {

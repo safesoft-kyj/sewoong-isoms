@@ -278,7 +278,7 @@
         }
 
         .container {
-            width: 1200px;
+            width: 1250px;
             background: #fff;
             margin: 0 auto;
             border: 1px solid RGBA(232, 232, 232, 0.6);
@@ -346,8 +346,9 @@
         }
 
         .signup-image {
-            background-image: url("/static/img/login_logo2.jpg");
-            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             margin-right: 50px;
         }
 
@@ -696,7 +697,7 @@
 
         @media screen and (min-width: 1024px) {
             .container {
-                max-width: 1200px;
+                max-width: 1250px;
             }
         }
 
@@ -952,7 +953,7 @@
                     </form>
                 </div>
                 <div class="signup-image">
-<#--                    <img src="/static/img/login_logo.jpg" alt="sing up image">-->
+                    <img src="/static/img/login_logo.jpg" alt="sing up image">
                 </div>
             </div>
         </div>

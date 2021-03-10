@@ -14,7 +14,7 @@
         <tbody>
         <#list currentSOPs as sop>
             <tr>
-                <td class="text-center">${sop.document.Category.shortName}</td>
+                <td class="text-center">${sop.document.category.shortName}</td>
                 <td class="text-center">${sop.document.documentNo}</td>
                 <td>${sop.document.title}</td>
                 <td class="text-center">${sop.document.docId}</td>
