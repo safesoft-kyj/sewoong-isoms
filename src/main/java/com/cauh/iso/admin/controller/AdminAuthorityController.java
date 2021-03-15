@@ -2,6 +2,7 @@ package com.cauh.iso.admin.controller;
 
 import com.cauh.common.entity.*;
 import com.cauh.common.entity.constant.RoleStatus;
+import com.cauh.common.entity.constant.UserStatus;
 import com.cauh.common.entity.constant.UserType;
 import com.cauh.common.mapper.DeptUserMapper;
 import com.cauh.common.repository.UserJobDescriptionChangeLogRepository;
@@ -201,10 +202,18 @@ public class AdminAuthorityController {
         Optional<Account> optionalAccount = userRepository.findById(id);
 
         if(!optionalAccount.isPresent()) {
+            attributes.addFlashAttribute("messageType", "danger");
             attributes.addFlashAttribute("message", "User 정보가 잘못되었습니다.");
             return "redirect:/admin/authority/users";
         }
         Account account = optionalAccount.get();
+
+        //2021-03-12 추가
+        if(account.getUserStatus() == UserStatus.SIGNUP_REQUEST) {
+            attributes.addFlashAttribute("messageType", "danger");
+            attributes.addFlashAttribute("message", "가입 신청 중인 사용자가 아닙니다.");
+            return "redirect:/admin/authority/users";
+        }
 
         //SignUp Accept / Reject
         if(!StringUtils.isEmpty(actionCmd)) {

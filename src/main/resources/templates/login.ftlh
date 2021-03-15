@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html>
 <head>
     <meta charset="UTF-8">
@@ -278,7 +279,7 @@
         }
 
         .container {
-            width: 1250px;
+            min-width: 900px;
             background: #fff;
             margin: 0 auto;
             border: 1px solid RGBA(232, 232, 232, 0.6);
@@ -865,9 +866,9 @@
         <div class="container">
             <div class="signup-content">
                 <div class="signup-form" style="padding: 0">
-                    <a href="https://ch.cauhs.or.kr/" target="_blank"><img
-                                src="https://ch.cauhs.or.kr/images/main_re_logo.gif"
-                                style="height: 40px; padding-bottom: 10px" alt="CAUH"></a>
+                    <a href="https://ch.cauhs.or.kr/" target="_blank">
+                        <#-- TODO:// Image Logo 변경 -->
+                        <img src="http://www.safesoft.co.kr/wp-content/uploads/2020/04/%ED%9A%8C%EC%82%AC%EB%A1%9C%EA%B3%A0.jpg" style="height: 40px; padding-bottom: 10px" alt="Image"></a>
                     <h2 class="form-title" style="padding-bottom: 5px">
                         <span class="title-head" style="padding-top: 5px;">ISO</span>
                         <span class="title-head">M</span>anagement
@@ -953,7 +954,8 @@
                     </form>
                 </div>
                 <div class="signup-image">
-                    <img src="/static/img/login_logo.jpg" alt="sing up image">
+                    <#-- TODO:// Image Logo 변경 -->
+                    <img src="/static/img/signup-Image.jpg" alt="sing up image">
                 </div>
             </div>
         </div>

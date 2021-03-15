@@ -119,7 +119,7 @@ public class AdminISOTrainingController {
                                        @RequestParam(value = "deptId", required = false) Integer deptId,
                                        @RequestParam(value = "teamId", required = false) Integer teamId,
                                        @RequestParam(value = "userId", required = false) Integer userId,
-                                       @RequestParam(value = "docId", required = false) String docId,
+                                       @RequestParam(value = "title", required = false) String title,
                                        Model model) {
         //부서 목록
         model.addAttribute("deptList", departmentService.getParentDepartment());
@@ -150,7 +150,7 @@ public class AdminISOTrainingController {
             return "redirect:/admin/training/iso/trainingLog";
         }
 
-        model.addAttribute("isoTrainingLog", trainingMatrixRepository.getISOTrainingList(department, userId, ISOType.ISO_14155, pageable, completeStatus));
+        model.addAttribute("isoTrainingLog", trainingMatrixRepository.getISOTrainingList(department, userId, ISOType.ISO_14155, title, pageable, completeStatus));
         return "iso/training/teamDeptTrainingLog2";
     }
 
@@ -160,7 +160,7 @@ public class AdminISOTrainingController {
                                             @RequestParam(value = "deptId", required = false) Integer deptId,
                                             @RequestParam(value = "teamId", required = false) Integer teamId,
                                             @RequestParam(value = "userId", required = false) Integer userId,
-                                            @RequestParam(value = "docId", required = false) String docId,
+                                            @RequestParam(value = "title", required = false) String title,
                                             @CurrentUser Account user,
                                             HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -197,7 +197,7 @@ public class AdminISOTrainingController {
             return;
         }
 
-        List<MyTraining> trainingList = trainingMatrixRepository.getDownloadISOTrainingList(department, userId, ISOType.ISO_14155, completeStatus);
+        List<MyTraining> trainingList = trainingMatrixRepository.getDownloadISOTrainingList(department, userId, ISOType.ISO_14155, title, completeStatus);
         InputStream is = IndexReportService.class.getResourceAsStream("Admin_ISO_TrainingLog.xlsx");
 
         Context context = new Context();

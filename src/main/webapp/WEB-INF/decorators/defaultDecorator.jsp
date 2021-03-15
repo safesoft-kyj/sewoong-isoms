@@ -7,8 +7,16 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+
 <sec:authentication property="principal" var="user"/>
+
+<spring:eval expression="@environment.getProperty('site.footer-msg')" var="footerMessage" />
+<spring:eval expression="@environment.getProperty('site.footer-link')" var="footerSiteLink" />
+<spring:eval expression="@environment.getProperty('site.image-logo')" var="imageLogo" />
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -162,13 +170,12 @@
         </div>
 
         <div class="hide-fixed pull-right pad-rgt">
-            <!-- TODO:: 수정 필요. -->
-            <a href="https://ch.cauhs.or.kr" target="_blank"><img src="https://ch.cauhs.or.kr/images/main_re_logo.gif" alt="cauh" class="brand-icon" style="margin-top:0px;padding-left:15px;padding-bottom:3px; width:150px;height:30px;"></a>
+            <a href="${footerSiteLink}" target="_blank"><img src="${imageLogo}" alt="cauh" class="brand-icon" style="margin-top:0px;padding-left:15px;padding-bottom:3px; width:150px;height:30px;"></a>
         </div>
 
 
         <!-- Visible when footer positions are static -->
-        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
         <div class="hide-fixed pull-right pad-rgt">
 <%--            14GB of <strong>512GB</strong> Free.--%>
         </div>
@@ -179,10 +186,7 @@
         <!-- Remove the class "show-fixed" and "hide-fixed" to make the content always appears. -->
         <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
-        <p class="pad-lft">COPYRIGHT© Chung-Ang University Hospital. ALL RIGHTS RESERVED.</p>
-
-
-
+        <p class="pad-lft">${footerMessage}</p>
     </footer>
     <!--===================================================-->
     <!-- END FOOTER -->

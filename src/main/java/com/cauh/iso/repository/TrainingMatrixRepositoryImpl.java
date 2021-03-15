@@ -421,7 +421,7 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
     /**
      * ISO 트레이닝 이며, Training을 완료한 경우는 제외하고 리스트를 가져온다.
      */
-    private JPAQuery getMyISOTrainingListJpaQuery(Department department, Integer userId, ISOType isoType, BooleanBuilder completeStatus) {
+    private JPAQuery getMyISOTrainingListJpaQuery(Department department, Integer userId, ISOType isoType, String title, BooleanBuilder completeStatus) {
         QISO qISO = QISO.iSO;
         QISOTrainingPeriod qISOTrainingPeriod = QISOTrainingPeriod.iSOTrainingPeriod;
         QISOTrainingLog qISOTrainingLog = QISOTrainingLog.iSOTrainingLog;
@@ -442,6 +442,11 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
         if(!ObjectUtils.isEmpty(userId)) {
             builder.and(qUser.id.eq(userId));
         }
+
+        if(!ObjectUtils.isEmpty(title)) {
+            builder.and(qISO.title.startsWithIgnoreCase(title));
+        }
+
 
         if(!ObjectUtils.isEmpty(isoType)) {
             log.info("@isoType : {}", isoType);
@@ -480,9 +485,9 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
     }
 
     @Override
-    public Page<MyTraining> getISOTrainingList(Department department, Integer userId, ISOType isoType, Pageable pageable, BooleanBuilder completeStatus) {
+    public Page<MyTraining> getISOTrainingList(Department department, Integer userId, ISOType isoType, String title, Pageable pageable, BooleanBuilder completeStatus) {
 
-        JPAQuery<MyTraining> jpaQuery = getMyISOTrainingListJpaQuery(department, userId, isoType, completeStatus);
+        JPAQuery<MyTraining> jpaQuery = getMyISOTrainingListJpaQuery(department, userId, isoType, title, completeStatus);
         QueryResults<MyTraining> results;
 
         try{
@@ -498,8 +503,8 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
     }
 
     @Override
-    public List<MyTraining> getDownloadISOTrainingList(Department department, Integer userId, ISOType isoType, BooleanBuilder completeStatus) {
-        JPAQuery<MyTraining> jpaQuery = getMyISOTrainingListJpaQuery(department, userId, isoType, completeStatus);
+    public List<MyTraining> getDownloadISOTrainingList(Department department, Integer userId, ISOType isoType, String title, BooleanBuilder completeStatus) {
+        JPAQuery<MyTraining> jpaQuery = getMyISOTrainingListJpaQuery(department, userId, isoType, title, completeStatus);
 
         try{
             return jpaQuery.fetch();

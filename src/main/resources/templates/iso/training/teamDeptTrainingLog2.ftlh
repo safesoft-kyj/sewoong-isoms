@@ -102,8 +102,8 @@
                     </div>
                 </#if>
                 <div class="box-inline mar-btm">
-                    <input type="text" name="docId" value="${RequestParameters['docId']?default('')}"
-                           class="form-control" placeholder="Document ID">
+                    <input type="text" name="title" value="${RequestParameters['title']?default('')}"
+                           class="form-control" placeholder="Title">
                 </div>
                 <div class="box-inline mar-btm">
                     <button class="btn btn-default" style="margin-top:-5px !important;" type="button"

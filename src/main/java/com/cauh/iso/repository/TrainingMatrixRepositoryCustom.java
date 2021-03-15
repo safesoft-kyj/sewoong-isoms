@@ -25,6 +25,6 @@ public interface TrainingMatrixRepositoryCustom {
 
     //ISO Training
     Page<MyTraining> getISOMyTraining(Pageable pageable, Account user);
-    Page<MyTraining> getISOTrainingList(Department department, Integer userId, ISOType isoType, Pageable pageable, BooleanBuilder completeStatus);
-    List<MyTraining> getDownloadISOTrainingList(Department department, Integer userId, ISOType isoType, BooleanBuilder completeStatus);
+    Page<MyTraining> getISOTrainingList(Department department, Integer userId, ISOType isoType, String title, Pageable pageable, BooleanBuilder completeStatus);
+    List<MyTraining> getDownloadISOTrainingList(Department department, Integer userId, ISOType isoType, String title, BooleanBuilder completeStatus);
 }

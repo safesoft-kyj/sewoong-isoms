@@ -35,10 +35,10 @@
         <ul class="collapse" aria-expanded="false">
             <%--            <li><a href="/admin/RD/management/development">Development</a></li>--%>
             <%--            <li><a href="/admin/RD/management/revision">Revision</a></li>--%>
-            <li><a href="/admin/RF/management/approved">Approved RF</a></li>
+            <li><a href="/admin/RF/management/appr@oved">Approved RF</a></li>
             <li><a href="/admin/RF/management/effective">Effective RF</a></li>
             <li><a href="/admin/RF/management/superseded">Superseded RF</a></li>
-            <li><a href="/admin/RF/management/retirement">Retirement RF</a></li>
+<%--            <li><a href="/admin/RF/management/retirement">Retirement RF</a></li>--%>
         </ul>
 
     </li>
@@ -109,7 +109,7 @@
             <li><a href="/admin/approval">전체문서함</a></li>
             <li><a href="/admin/approval/temp">임시보관함</a></li>
             <li><a href="/admin/approval/request">요청함</a></li>
-            <li><a href="/admin/approval/progress">진행함</a></li>
+<%--            <li><a href="/admin/approval/progress">진행함</a></li>--%>
             <li><a href="/admin/approval/approved">완료함</a></li>
             <li><a href="/admin/approval/rejected">반려함</a></li>
         </ul>

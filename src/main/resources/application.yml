@@ -63,18 +63,18 @@ spring:
       filter:
         enabled: true
   mail:
-#    host: smtp.gmail.com
-#    port: 587
-#    protocol: smtp
-#    username: safesoft.dev@gmail.com
-#    password: sa12fe30
-
-#   메일 확인 필요. Could't connect to host 에러 발생
-    host: smtp.office365.com
+    host: smtp.gmail.com
     port: 587
     protocol: smtp
-    username: ISOCAU@caumc.or.kr
-    password: ISO14155cau
+    username: safesoft.dev@gmail.com
+    password: sa12fe30
+
+#   중앙대학교 병원
+#    host: smtp.office365.com
+#    port: 587
+#    protocol: smtp
+#    username: ISOCAU@caumc.or.kr
+#    password: ISO14155cau
 
     default-encoding: UTF-8
     properties:
@@ -93,6 +93,13 @@ mail:
   notice:
     name: CAUH System
     address: ISOCAU@caumc.or.kr
+
+#
+site:
+  footer-msg: "Copyright© SafeSoft Co.,Ltd. All Rights Reserved."
+  footer-link: "https://www.safesoft.co.kr/"
+  image-logo: "http://www.safesoft.co.kr/wp-content/uploads/2020/04/%ED%9A%8C%EC%82%AC%EB%A1%9C%EA%B3%A0.jpg"
+  login-image: "/static/img/login_logo.jpg"
 
 
 cert:

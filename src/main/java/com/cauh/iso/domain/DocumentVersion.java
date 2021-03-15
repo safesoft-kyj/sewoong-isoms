@@ -22,7 +22,11 @@ import java.util.stream.Collectors;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "s_document_version", indexes = {
+@Table(name = "s_document_version",
+        uniqueConstraints = {
+            @UniqueConstraint(columnNames = {"document_id", "version"})
+        },
+        indexes = {
         @Index(columnList = "document_id, version"),
         @Index(columnList = "status")
 })
