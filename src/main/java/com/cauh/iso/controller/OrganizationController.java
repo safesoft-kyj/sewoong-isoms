@@ -37,6 +37,9 @@ public class OrganizationController {
 //    @Value("${gw.deptTbl}")
 //    private String gwDeptTbl;
 
+    @Value("${site.code}")
+    private String siteCode;
+
     @GetMapping("/common/organization/chart")
     @ResponseBody
     public List<JsTreeNode> organization() {
@@ -53,8 +56,8 @@ public class OrganizationController {
 //                                .filter(uj -> uj.getJobDescription().isManager()).count() > 0).collect(Collectors.toList());
 
         List<JsTreeNode> jsTreeNodes = new ArrayList<>();
-        String mainCode = "CAUH";
-        String mainName = "CAUH(" + accounts.size() + ")";
+        String mainCode = siteCode;
+        String mainName = mainCode + "(" + accounts.size() + ")";
 
         JsTreeNode rootNode = new JsTreeNode(mainCode, mainName);
 //        rootNode.setIcon("jstree-folder");
