@@ -6,10 +6,15 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <sec:authentication property="principal" var="user"/>
 <%--<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>--%>
+
+<spring:eval expression="@environment.getProperty('site.session-minute')" var="time-min" />
+<spring:eval expression="@environment.getProperty('site.session-second')" var="time-sec" />
+
 <!--NAVBAR-->
 <!--===================================================-->
 <header id="navbar">
@@ -232,7 +237,7 @@
                     <a href="#" data-toggle="dropdown" class="dropdown-toggle text-right">
                             <span class="ic-user pull-right">
                                 <i class="fa fa-clock-o"></i>
-                                <small class="text-xs text-semibold"><span id="time-min">10</span>:<span id="time-sec">00</span></small>
+                                <small class="text-xs text-semibold"><span id="time-min">${time-min}</span>:<span id="time-sec">${time-sec}</span></small>
                             </span>
                     </a>
 
