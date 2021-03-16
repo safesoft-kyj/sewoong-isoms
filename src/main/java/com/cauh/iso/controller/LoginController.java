@@ -9,6 +9,7 @@ import com.cauh.iso.validator.UserForgotPasswordValidator;
 import com.cauh.iso.validator.UserPasswordChangeValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -37,9 +38,18 @@ public class LoginController {
     private final UserForgotPasswordValidator userForgotPasswordValidator;
     private final PasswordEncoder passwordEncoder;
 
+    @Value("${site.image-logo}")
+    private String imageLogo;
+
+    @Value("${site.login-image}")
+    private String loginImage;
+
     @GetMapping("/login")
-    public String login(Authentication authentication) {
+    public String login(Authentication authentication, Model model) {
         if(ObjectUtils.isEmpty(authentication)) {
+            model.addAttribute("imageLogo", imageLogo);
+            model.addAttribute("loginImage", loginImage);
+
             return "login";
         } else {
             return "redirect:/notice";
@@ -48,6 +58,8 @@ public class LoginController {
 
     @GetMapping("/forgot-password")
     public String forgotPassword(Model model) {
+        //2021-03-16 YSH :: 설정된 Image Logo 사용
+        model.addAttribute("imageLogo", imageLogo);
         model.addAttribute("user", new Account());
 
         return "common/forgot-password";

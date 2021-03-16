@@ -20,6 +20,7 @@ import com.cauh.iso.validator.UserProfileValidator;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -62,6 +63,11 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
 
     private List<Account> accounts = new ArrayList<>();
+
+
+    @Value("${site.image-logo}")
+    private String imageLogo;
+
 
     @GetMapping("/user/password-changed")
     public String passwordChange(){ //비밀번호 기한 만료 시, 자동으로 비밀번호 변경 화면으로 이동.
@@ -216,9 +222,14 @@ public class UserController {
 
     @GetMapping("/signUp")
     public String signUp(Model model) {
+
+        //2021-03-16 YSH :: 설정된 Image Logo 사용
+        model.addAttribute("imageLogo", imageLogo);
+
         model.addAttribute("account", new Account());
         model.addAttribute("jobDescriptionMap", jdService.getJDMap());
         model.addAttribute("departments", departmentService.getParentDepartment());
+
         return "/signup";
     }
 
@@ -229,8 +240,8 @@ public class UserController {
         log.info("@Sign Up Request : {}", account.getUsername());
 
         Optional<Account> user = userRepository.findByUsername(account.getUsername());
-        if(user.isPresent()) {
 
+        if(user.isPresent()) {
             attributes.addFlashAttribute("messageType", "danger");
             attributes.addFlashAttribute("message", "Sign Up request was failed");
         } else {

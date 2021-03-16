@@ -20,7 +20,7 @@
                 <div class="panel-body text-left">
                     <div class="text-center mar-btm">
                         <div class="row">
-                            <div class="col-xs-4"><img src="https://ch.caumc.or.kr/images/main_re_logo.gif"></div>
+                            <div class="col-xs-4"><img src="${imageLogo}"></div>
                             <div class="text-right"><span class="text-bold" style="font-size:25px;">임시 비밀번호 발급</span>
                             </div>
                         </div>

@@ -19,6 +19,7 @@ import com.cauh.iso.validator.ApprovalValidator;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -55,6 +56,9 @@ public class ApprovalController {
     private final CategoryService categoryService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    @Value("${sop.deviation-doc-id}")
+    private String DeviationDocId;
 
     @GetMapping({"/approval/box/{type}", "/approval/box/{type}/{status}"})
     public String totalList(@PathVariable("type") ApprovalLineType type,
@@ -401,7 +405,7 @@ public class ApprovalController {
         log.info("My Training Matrix : {}", myTrainingMatrices);
 
         if(!ObjectUtils.isEmpty(approval.getSopDeviationReport().getTrainingPeriodId())) {//SOP Training Period 위반 기안
-            final String sopDevDocId = "CAUH-QM002";
+            final String sopDevDocId = DeviationDocId;
             Optional<DocumentVersion> optionalDocumentVersion = myTrainingMatrices.stream().filter(m -> {
                 Document doc = m.getDocumentVersion().getDocument();
                 if (doc.getDocId().equals(sopDevDocId) && m.getDocumentVersion().getStatus() == DocumentStatus.EFFECTIVE) {
@@ -424,8 +428,8 @@ public class ApprovalController {
                     approval.getSopDeviationReport().setDeviationDetails("[" + t.getDocument().getDocId() + " & " + t.getDocument().getTitle() + "/" + t.getVersion() + "/" + t.getStrEffectiveDate() + "]의 training period 이내에 training을 완료하지 못함.");
                 }
             } else {
-                log.error("CAUH-QM002를 찾지 못함");
-                throw new RuntimeException("CAUH-QM002를 찾을 수 없습니다.");
+                log.error("{}를 찾지 못함", DeviationDocId);
+                throw new RuntimeException(DeviationDocId + "를 찾을 수 없습니다.");
             }
         } else if(!StringUtils.isEmpty(sopId)) { //수정 기안
             DocumentVersion v = documentVersionService.findById(sopId);

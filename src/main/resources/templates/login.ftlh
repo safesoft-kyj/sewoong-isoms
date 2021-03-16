@@ -868,7 +868,7 @@
                 <div class="signup-form" style="padding: 0">
                     <a href="https://ch.cauhs.or.kr/" target="_blank">
                         <#-- TODO:// Image Logo 변경 -->
-                        <img src="http://www.safesoft.co.kr/wp-content/uploads/2020/04/%ED%9A%8C%EC%82%AC%EB%A1%9C%EA%B3%A0.jpg" style="height: 40px; padding-bottom: 10px" alt="Image"></a>
+                        <img src="${imageLogo}" style="height: 40px; padding-bottom: 10px" alt="image"></a>
                     <h2 class="form-title" style="padding-bottom: 5px">
                         <span class="title-head" style="padding-top: 5px;">ISO</span>
                         <span class="title-head">M</span>anagement
@@ -954,8 +954,7 @@
                     </form>
                 </div>
                 <div class="signup-image">
-                    <#-- TODO:// Image Logo 변경 -->
-                    <img src="/static/img/signup-Image.jpg" alt="sing up image">
+                    <img src="${loginImage}" alt="sing up image">
                 </div>
             </div>
         </div>

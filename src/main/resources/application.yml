@@ -98,8 +98,15 @@ mail:
 site:
   footer-msg: "Copyright© SafeSoft Co.,Ltd. All Rights Reserved."
   footer-link: "https://www.safesoft.co.kr/"
-  image-logo: "http://www.safesoft.co.kr/wp-content/uploads/2020/04/%ED%9A%8C%EC%82%AC%EB%A1%9C%EA%B3%A0.jpg"
-  login-image: "/static/img/login_logo.jpg"
+  #image-logo: "http://www.safesoft.co.kr/wp-content/uploads/2020/04/%ED%9A%8C%EC%82%AC%EB%A1%9C%EA%B3%A0.jpg"
+  image-logo: "https://ch.cauhs.or.kr/images/main_re_logo.gif"
+  login-image: "/static/img/signup-image.jpg"
+
+sop:
+  deviation-doc-id: "CAUH-QM002"
+  agreement-personal-information-doc-id: "CAUH-QM002-RF11"
+  disclosure-doc-id: "CAUH-QM002-RF10"
+
 
 
 cert:
@@ -111,7 +118,7 @@ scheduler:
   sop-status-update: 0 5 0 * * * #매일 12시 5분 갱신
   training-alert: 0 30 0 * * * #매일 12시 30분 1, 3, 7, 14 일전 교육 알림
 #  user-sync: 0 0 8,10,12,14,16,18,20 * * 1-5 #월~금 8시~20시 매 정시
-  agreement-check: 0 25 0 * * * #매일 12시 25분 갱신
+#  agreement-check: 0 25 0 * * * #매일 12시 25분 갱신
   user-refresh: 0 10 0 * * * #매일 12시 10분 갱신
   user-withdrawal: 0 15 0 * * * #매일 12시 15분 갱신
 

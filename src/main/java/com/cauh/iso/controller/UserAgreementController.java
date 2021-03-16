@@ -1,27 +1,20 @@
 package com.cauh.iso.controller;
 
-import com.cauh.common.entity.QAccount;
 import com.cauh.common.entity.Account;
 import com.cauh.common.entity.Signature;
 import com.cauh.common.entity.constant.UserType;
 import com.cauh.common.repository.SignatureRepository;
-import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.annotation.CurrentUser;
 import com.cauh.common.security.authentication.CustomUsernamePasswordAuthenticationToken;
-import com.cauh.iso.component.DocumentViewer;
 import com.cauh.iso.domain.*;
-import com.cauh.iso.domain.constant.DocumentStatus;
-import com.cauh.iso.domain.constant.DocumentType;
 import com.cauh.iso.domain.report.ExternalCustomer;
 import com.cauh.iso.repository.ExternalCustomerRepository;
 import com.cauh.iso.service.*;
-import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,15 +27,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * 기존 ExternalCustomerController
@@ -59,6 +46,15 @@ public class UserAgreementController {
     private final ConfidentialityPledgeService confidentialityPledgeService;
     private final ExternalCustomerRepository externalCustomerRepository;
     private final SignatureRepository signatureRepository;
+
+    @Value("${sop.agreement-personal-information-doc-id}")
+    private String apiDocId;
+
+    @Value("${sop.disclosure-doc-id}")
+    private String disclosureDocId;
+
+    @Value("${site.image-logo}")
+    private String imageLogo;
 
     @GetMapping("/please-enter-your-access-code")
     public String auth() {
@@ -90,11 +86,11 @@ public class UserAgreementController {
     public String agreementCollectUse(@CurrentUser Account user, Model model) {
         AgreementPersonalInformation agreementPersonalInformation = new AgreementPersonalInformation();
 
-        Optional<DocumentVersion> optionalDocumentVersion = documentService.findLatestDocument("CAUH-QM002-RF11");
+        Optional<DocumentVersion> optionalDocumentVersion = documentService.findLatestDocument(apiDocId);
         if(optionalDocumentVersion.isPresent()) {
             agreementPersonalInformation.setDocumentVersion(optionalDocumentVersion.get());
         } else {
-            log.error("[CAUH-QM002-RF11] 문서가 존재하지 않습니다.");
+            log.error("[{}] 문서가 존재하지 않습니다.", apiDocId);
         }
 
         //CASE Common :: 공통 데이터
@@ -117,6 +113,10 @@ public class UserAgreementController {
 
         model.addAttribute("agreeMaps", agreementPersonalInformationService.getAgreeMap());
         model.addAttribute("agreementPersonalInformation", agreementPersonalInformation);
+
+        //2021.03.16 - 이미지 로고 공통화
+        model.addAttribute("imageLogo", imageLogo);
+
         return "common/agreementCollectUse";
     }
 
@@ -172,6 +172,10 @@ public class UserAgreementController {
         confidentialityPledge.setAgree(true);
 
         model.addAttribute("confidentialityPledge", confidentialityPledge);
+
+        //2021.03.16 - 이미지 로고 공통화
+        model.addAttribute("imageLogo", imageLogo);
+
         return "common/confientialityPledge";
     }
 
@@ -213,17 +217,21 @@ public class UserAgreementController {
     public String nonDisclosureAgreement(@CurrentUser Account user, Model model) {
         NonDisclosureAgreement nonDisclosureAgreement = new NonDisclosureAgreement();
 
-        Optional<DocumentVersion> optionalDocumentVersion = documentService.findLatestDocument("CAUH-QM002-RF10");
+        Optional<DocumentVersion> optionalDocumentVersion = documentService.findLatestDocument(disclosureDocId);
         if(optionalDocumentVersion.isPresent()) {
             nonDisclosureAgreement.setDocumentVersion(optionalDocumentVersion.get());
         } else {
-            log.error("[CAUH-QM002-RF10] 문서가 존재하지 않습니다.");
+            log.error("[{}] 문서가 존재하지 않습니다.", disclosureDocId);
         }
 
         nonDisclosureAgreement.setEmail(user.getEmail());
         nonDisclosureAgreement.setExternalCustomer(externalCustomerRepository.findById(user.getExternalCustomerId()).get());
 
         model.addAttribute("nonDisclosureAgreement", nonDisclosureAgreement);
+
+        //2021.03.16 - 이미지 로고 공통화
+        model.addAttribute("imageLogo", imageLogo);
+
         return "common/nonDisclosureAgreement";
     }
 
@@ -241,22 +249,43 @@ public class UserAgreementController {
 
     //Authentication Update
     public void updateAuthentication(Account userDetails) {
-        //CASE 1. 내부 사용자인 경우 TODO :: admin 계정도 사용하게 활성화시킴
-        if(userDetails.getUserType() == UserType.USER || ObjectUtils.isEmpty(userDetails.getUserType())){
+        List<GrantedAuthority> authorities = null;
+
+        //CASE 0. 관리자인 경우 적용
+        if(userDetails.getUserType() == UserType.ADMIN) { //초기 ADMIN 계정
+            authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(UserType.ADMIN.name());
+
+            Authentication authentication = new CustomUsernamePasswordAuthenticationToken(userDetails, null, authorities);
+            SecurityContext context = SecurityContextHolder.getContext();
+            context.setAuthentication(authentication);
+        }
+        //CASE 1. 내부 사용자인 경우
+        else if(userDetails.getUserType() == UserType.USER){
             if (!ObjectUtils.isEmpty(userDetails.getUserJobDescriptions())) {
-                String commaStringAuthorities = userDetails.getUserJobDescriptions().stream().map(jd -> jd.getJobDescription().getShortName()).collect(Collectors.joining(","));
-                Collection authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(commaStringAuthorities);
-                Authentication authentication = new CustomUsernamePasswordAuthenticationToken(userDetails, null, authorities);
-                SecurityContext context = SecurityContextHolder.getContext();
-                context.setAuthentication(authentication);
+                //Enabled Y / Manager Y 된 role이 있으면 ADMIN으로 적용, 아니면 USER로 적용
+                String managerAuthorities = userDetails.getUserJobDescriptions().stream()
+                        .filter(role -> role.getJobDescription().isEnabled() && role.getJobDescription().isManager())
+                        .map(role -> role.getJobDescription().getShortName()).collect(Collectors.joining(","));
+
+                if(!StringUtils.isEmpty(managerAuthorities)) {
+                    authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(UserType.ADMIN.name());
+                } else {
+                    authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(UserType.USER.name());
+                }
+            } else {
+                authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(UserType.USER.name());
             }
+
+            Authentication authentication = new CustomUsernamePasswordAuthenticationToken(userDetails, null, authorities);
+            SecurityContext context = SecurityContextHolder.getContext();
+            context.setAuthentication(authentication);
         } 
         //CASE 2. 외부 사용자인 경우
         else if(userDetails.getUserType() == UserType.AUDITOR){
             //외부사용자 접속 시, 특정 SOP 열람이 아닌 Effective / Superseded 대상으로 전체 열람가능하게 설정
             //Collection authorities = userDetails.getSopAuthorities();
 
-            Collection authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(UserType.AUDITOR.name());
+            authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(UserType.AUDITOR.name());
             Authentication authentication = new CustomUsernamePasswordAuthenticationToken(userDetails, null, authorities);
             SecurityContext context = SecurityContextHolder.getContext();
             context.setAuthentication(authentication);

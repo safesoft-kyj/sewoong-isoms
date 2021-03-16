@@ -283,7 +283,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
 
         } else if (userDetails.getUserType() == UserType.USER) { // 내부 사용자 인 경우,
             if (!ObjectUtils.isEmpty(userDetails.getUserJobDescriptions())) {
-
                 //Enabled Y / Manager Y 된 role이 있으면 ADMIN으로 적용, 아니면 USER로 적용
                 String managerAuthorities = userDetails.getUserJobDescriptions().stream()
                         .filter(role -> role.getJobDescription().isEnabled() && role.getJobDescription().isManager())
@@ -295,6 +294,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
                     authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(UserType.USER.name());
                 }
                 log.debug("==> Username : {}, Role : {}", username, authorities);
+            } else {
+                authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(UserType.USER.name());
             }
         } else if (userDetails.getUserType() == UserType.AUDITOR) {
             authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(UserType.AUDITOR.name());

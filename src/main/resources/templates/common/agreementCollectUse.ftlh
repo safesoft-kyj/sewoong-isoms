@@ -58,7 +58,7 @@
     <div class="cls-content-lg panel" style="width:750px !important;">
         <div class="panel-body text-left">
             <div class="mar-btm row">
-                <div class="col-xs-4"><img src="https://ch.caumc.or.kr/images/main_re_logo.gif" height="45px"/></div>
+                <div class="col-xs-4"><img src="${imageLogo}" height="45px"/></div>
                 <div class="col-xs-8 text-right pad-top"><span class="text-bold text-lg">&nbsp;&nbsp;Agreement to Collect and Use Personal Information</span></div>
             </div>
             <hr/>

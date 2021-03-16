@@ -240,7 +240,7 @@
         <!--Modal header-->
         <div class="text-center mar-btm">
             <div class="row">
-                <div class="col-xs-4"><img src="https://ch.caumc.or.kr/images/main_re_logo.gif"></div>
+                <div class="col-xs-4"><img src="${imageLogo}"></div>
                 <div class="col-xs-8 text-right pad-top"><span class="text-bold pad-rgt" style="font-size:24px;">ISO Management System > Sign Up</span></div>
             </div>
         </div>
