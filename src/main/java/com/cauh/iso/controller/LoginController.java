@@ -44,10 +44,14 @@ public class LoginController {
     @Value("${site.login-image}")
     private String loginImage;
 
+    @Value("${site.link}")
+    private String siteLink;
+
     @GetMapping("/login")
     public String login(Authentication authentication, Model model) {
         if(ObjectUtils.isEmpty(authentication)) {
             model.addAttribute("imageLogo", imageLogo);
+            model.addAttribute("siteLink", siteLink);
             model.addAttribute("loginImage", loginImage);
 
             return "login";

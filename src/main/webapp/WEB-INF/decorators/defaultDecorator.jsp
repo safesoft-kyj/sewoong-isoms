@@ -14,7 +14,7 @@
 <sec:authentication property="principal" var="user"/>
 
 <spring:eval expression="@environment.getProperty('site.footer-msg')" var="footerMessage" />
-<spring:eval expression="@environment.getProperty('site.footer-link')" var="footerSiteLink" />
+<spring:eval expression="@environment.getProperty('site.link')" var="siteLink" />
 <spring:eval expression="@environment.getProperty('site.image-logo')" var="imageLogo" />
 
 
@@ -170,7 +170,7 @@
         </div>
 
         <div class="hide-fixed pull-right pad-rgt">
-            <a href="${footerSiteLink}" target="_blank"><img src="${imageLogo}" alt="cauh" class="brand-icon" style="margin-top:0px;padding-left:15px;padding-bottom:3px; width:150px;height:30px;"></a>
+            <a href="${siteLink}" target="_blank"><img src="${imageLogo}" alt="cauh" class="brand-icon" style="margin-top:0px;padding-left:15px;padding-bottom:3px; width:150px;height:30px;"></a>
         </div>
 
 

@@ -96,10 +96,10 @@ mail:
 
 #
 site:
+  link: "https://www.safesoft.co.kr/"
   footer-msg: "Copyright© SafeSoft Co.,Ltd. All Rights Reserved."
-  footer-link: "https://www.safesoft.co.kr/"
-  #image-logo: "http://www.safesoft.co.kr/wp-content/uploads/2020/04/%ED%9A%8C%EC%82%AC%EB%A1%9C%EA%B3%A0.jpg"
-  image-logo: "https://ch.cauhs.or.kr/images/main_re_logo.gif"
+  image-logo: "http://www.safesoft.co.kr/wp-content/uploads/2020/04/%ED%9A%8C%EC%82%AC%EB%A1%9C%EA%B3%A0.jpg"
+  #image-logo: "https://ch.cauhs.or.kr/images/main_re_logo.gif"
   login-image: "/static/img/signup-image.jpg"
 
 sop:

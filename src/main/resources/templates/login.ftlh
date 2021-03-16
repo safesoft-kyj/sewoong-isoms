@@ -866,7 +866,7 @@
         <div class="container">
             <div class="signup-content">
                 <div class="signup-form" style="padding: 0">
-                    <a href="https://ch.cauhs.or.kr/" target="_blank">
+                    <a href="${siteLink}" target="_blank">
                         <#-- TODO:// Image Logo 변경 -->
                         <img src="${imageLogo}" style="height: 40px; padding-bottom: 10px" alt="image"></a>
                     <h2 class="form-title" style="padding-bottom: 5px">

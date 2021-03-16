@@ -78,15 +78,15 @@ public class CustomAuthenticationProvider implements AuthenticationProvider, Mes
     private ConfidentialityPledgeService confidentialityPledgeService;
 
 
-    @Value("${spring.profiles.active}")
-    private String activeProfile;
-
-    @Value("${gw.sign-image}")
-    private String gwSignURL;
-
-    @Value("${file.upload-dir}")
-    private String fileUploadDir;
-
+//    @Value("${spring.profiles.active}")
+//    private String activeProfile;
+//
+//    @Value("${gw.sign-image}")
+//    private String gwSignURL;
+//
+//    @Value("${file.upload-dir}")
+//    private String fileUploadDir;
+//
 //    @Value("${gw.userTbl}")
 //    private String gwUserTbl;
 //

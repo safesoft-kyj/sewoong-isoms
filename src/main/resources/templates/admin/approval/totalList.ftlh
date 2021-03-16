@@ -91,7 +91,7 @@
                             </#list>
                         <#else>
                             <tr>
-                                <td colspan="6" class="text-center">등록된 데이터가 없습니다.</td>
+                                <td colspan="7" class="text-center">등록된 데이터가 없습니다.</td>
                             </tr>
                         </#if>
                         </tbody>
