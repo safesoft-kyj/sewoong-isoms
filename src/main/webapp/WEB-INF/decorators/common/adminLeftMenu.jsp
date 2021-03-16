@@ -35,7 +35,7 @@
         <ul class="collapse" aria-expanded="false">
             <%--            <li><a href="/admin/RD/management/development">Development</a></li>--%>
             <%--            <li><a href="/admin/RD/management/revision">Revision</a></li>--%>
-            <li><a href="/admin/RF/management/appr@oved">Approved RF</a></li>
+            <li><a href="/admin/RF/management/approved">Approved RF</a></li>
             <li><a href="/admin/RF/management/effective">Effective RF</a></li>
             <li><a href="/admin/RF/management/superseded">Superseded RF</a></li>
 <%--            <li><a href="/admin/RF/management/retirement">Retirement RF</a></li>--%>
