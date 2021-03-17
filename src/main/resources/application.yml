@@ -98,6 +98,7 @@ mail:
 site:
   code: "SAFESOFT"
   link: "http://www.safesoft.co.kr/"
+  company-title: "SafeSoft"
   footer-msg: "Copyright© SafeSoft Co.,Ltd. All Rights Reserved."
   image-logo: "http://www.safesoft.co.kr/wp-content/uploads/2020/04/%ED%9A%8C%EC%82%AC%EB%A1%9C%EA%B3%A0.jpg"
   login-image: "/static/img/signup-image.jpg"
@@ -108,7 +109,7 @@ site:
   session-second: "00"
 
   meta:
-    description: "CHUNG-ANG University Healthcare System ISO Management System"
+    description: "SafeSoft ISO Management System"
     keywords: "세이프소프트,iso"
 
 sop:
