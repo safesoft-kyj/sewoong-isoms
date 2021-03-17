@@ -17,6 +17,9 @@
 <spring:eval expression="@environment.getProperty('site.link')" var="siteLink" />
 <spring:eval expression="@environment.getProperty('site.image-logo')" var="imageLogo" />
 
+<spring:eval expression="@environment.getProperty('site.meta.description')" var="description" />
+<spring:eval expression="@environment.getProperty('site.meta.keywords')" var="keywords" />
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -27,8 +30,8 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1, minimum-scale=1,maximum-scale=1"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
 
-    <meta name="description" content="CHUNG-ANG University Healthcare System ISO Management System" />
-    <meta name="keywords" content="중앙대학교병원,의료기기,임상시험,iso" />
+    <meta name="description" content="${description}" />
+    <meta name="keywords" content="${keywords}" />
 
     <title><sitemesh:write property='title'/></title>
 
