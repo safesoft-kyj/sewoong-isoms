@@ -91,8 +91,8 @@ gw:
 
 mail:
   notice:
-    name: CAUH System
-    address: ISOCAU@caumc.or.kr
+    name: SafeSoft System
+    address: system@safesoft.co.kr
 
 #Site별 설정.
 site:
@@ -119,7 +119,7 @@ sop:
 
 
 cert:
-  header: "CAUH-ISO 14155 GCP-"
+  header: "SAFESOFT-ISO 14155 GCP-"
 
 
 #초 분 시 일 월 요일 연도
