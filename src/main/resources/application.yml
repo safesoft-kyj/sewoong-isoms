@@ -99,6 +99,7 @@ site:
   code: "SafeSoft"
   link: "http://www.safesoft.co.kr/"
   company-title: "SafeSoft"
+  company-kor-title: "세이프소프트"
   footer-msg: "Copyright© SafeSoft Co.,Ltd. All Rights Reserved."
   image-logo: "http://www.safesoft.co.kr/wp-content/uploads/2020/04/%ED%9A%8C%EC%82%AC%EB%A1%9C%EA%B3%A0.jpg"
   login-image: "/static/img/signup-image.jpg"
