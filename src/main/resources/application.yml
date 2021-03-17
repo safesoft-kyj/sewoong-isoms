@@ -96,7 +96,7 @@ mail:
 
 #Site별 설정.
 site:
-  code: "SAFESOFT"
+  code: "SafeSoft"
   link: "http://www.safesoft.co.kr/"
   company-title: "SafeSoft"
   footer-msg: "Copyright© SafeSoft Co.,Ltd. All Rights Reserved."
