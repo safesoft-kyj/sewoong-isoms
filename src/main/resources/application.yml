@@ -108,11 +108,12 @@ site:
   session-minute: "10"
   session-second: "00"
 
-  meta:
-    description: "SafeSoft ISO Management System"
-    keywords: "세이프소프트,iso"
+meta:
+  description: "SafeSoft ISO Management System"
+  keywords: "세이프소프트,iso"
 
 sop:
+  prefix: "SS-"
   deviation-doc-id: "SS-SSP700"
   agreement-personal-information-doc-id: "SS-SSP700-RF11"
   disclosure-doc-id: "SS-SSP700-RF10"
