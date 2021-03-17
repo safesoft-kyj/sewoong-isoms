@@ -53,7 +53,7 @@
                         비밀번호 발급
                     </button>
                     <a class="btn btn-warning" href="/login"><i class="pli-back"></i>
-                        다음에 변경하기
+                        로그인 화면 이동
                     </a>
                 </div>
             </form>

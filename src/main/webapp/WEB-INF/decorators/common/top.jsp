@@ -12,8 +12,8 @@
 <sec:authentication property="principal" var="user"/>
 <%--<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>--%>
 
-<spring:eval expression="@environment.getProperty('site.session-minute')" var="time-min" />
-<spring:eval expression="@environment.getProperty('site.session-second')" var="time-sec" />
+<spring:eval expression="@environment.getProperty('site.session-minute')" var="minute" />
+<spring:eval expression="@environment.getProperty('site.session-second')" var="second" />
 
 <!--NAVBAR-->
 <!--===================================================-->
@@ -237,7 +237,7 @@
                     <a href="#" data-toggle="dropdown" class="dropdown-toggle text-right">
                             <span class="ic-user pull-right">
                                 <i class="fa fa-clock-o"></i>
-                                <small class="text-xs text-semibold"><span id="time-min">${time-min}</span>:<span id="time-sec">${time-sec}</span></small>
+                                <small class="text-xs text-semibold"><span id="time-min">${minute}</span>:<span id="time-sec">${second}</span></small>
                             </span>
                     </a>
 

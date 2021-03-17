@@ -96,26 +96,27 @@ mail:
 
 #Site별 설정.
 site:
-  code: "CAUH"
-  link: "https://www.caumc.or.kr/"
-  footer-msg: "Copyright(c) CHUNG-ANG UNIVERSITY HEALTHCARE SYSTEM, All Rights Reserved."
-  image-logo: "https://ch.cauhs.or.kr/images/main_re_logo.gif"
-  login-image: "/static/img/login_logo.jpg"
+  code: "SAFESOFT"
+  link: "http://www.safesoft.co.kr/"
+  footer-msg: "Copyright© SafeSoft Co.,Ltd. All Rights Reserved."
+  image-logo: "http://www.safesoft.co.kr/wp-content/uploads/2020/04/%ED%9A%8C%EC%82%AC%EB%A1%9C%EA%B3%A0.jpg"
+  login-image: "/static/img/signup-image.jpg"
 
   #세션 타이머(초 단위)
-  session-timer: 1800
-  session-minute: 30
-  session-second: 00
+  session-timer: "600"
+  session-minute: "10"
+  session-second: "00"
 
 sop:
-  deviation-doc-id: "CAUH-QM002"
-  agreement-personal-information-doc-id: "CAUH-QM002-RF11"
-  disclosure-doc-id: "CAUH-QM002-RF10"
+  deviation-doc-id: "SS-SSP700"
+  agreement-personal-information-doc-id: "SS-SSP700-RF11"
+  disclosure-doc-id: "SS-SSP700-RF10"
 
 
 
 cert:
-  header: "CAUH-ISO 14155 GCP-"
+  #header: "CAUH-ISO 14155 GCP-"
+  header: "SAFESOFT-ISO 14155 GCP-"
 
 
 #초 분 시 일 월 요일 연도

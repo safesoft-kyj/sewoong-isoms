@@ -27,6 +27,9 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1, minimum-scale=1,maximum-scale=1"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
 
+    <meta name="description" content="CHUNG-ANG University Healthcare System ISO Management System" />
+    <meta name="keywords" content="중앙대학교병원,의료기기,임상시험,iso" />
+
     <title><sitemesh:write property='title'/></title>
 
 
