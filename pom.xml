@@ -9,8 +9,8 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.cauh</groupId>
-    <artifactId>cauh-iso-ms</artifactId>
-    <version>1.0</version>
+    <artifactId>ss-iso-ms</artifactId>
+    <version>1.0.0</version>
     <packaging>war</packaging>
     <name>ss-iso-ms</name>
     <description>SafeSoft ISO Management System</description>
