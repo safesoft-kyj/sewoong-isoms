@@ -88,6 +88,53 @@ public class UserAgreementController {
         return result;
     }
 
+    @GetMapping("/internal-user-terms-of-use")
+    public String internalUserTermsOfUse(@CurrentUser Account user, Model model){
+        Boolean isAPI = agreementPersonalInformationService.findOneAgreementPersonalInformation(user).isPresent();
+        Boolean isCP = confidentialityPledgeService.findOneConfidentialityPledge(user).isPresent();
+
+        if(isAPI && isCP) {
+            log.debug("@내부 사용자 이용 약관 / 이미 동의한 내역이 있음 : {}", user.getUsername());
+            return "redirect:/";
+        }
+
+        //내부 사용자 개인 정보 활용 동의
+        AgreementPersonalInformation agreementPersonalInformation = new AgreementPersonalInformation();
+        agreementPersonalInformation.setEmail(user.getEmail());
+        agreementPersonalInformation.setAgree(true);
+        agreementPersonalInformation.setInternalUser(user);
+
+        //내부 사용자 비밀 보장 서약
+        ConfidentialityPledge confidentialityPledge = new ConfidentialityPledge();
+        confidentialityPledge.setEmail(user.getEmail());
+        confidentialityPledge.setInternalUser(user);
+        confidentialityPledge.setAgree(true);
+
+        if(user.isSignature()) {
+            Signature signature = signatureRepository.findById(user.getUsername()).get();
+            model.addAttribute("signatureData", signature.getBase64signature());
+        }
+
+        //서식 정보 포함.
+        model.addAttribute("agreementPersonalInformation", agreementPersonalInformation);
+        model.addAttribute("confidentialityPledge", confidentialityPledge);
+
+        //2021.03.16 - 이미지 로고 / 회사 이름 공통화
+        model.addAttribute("imageLogo", imageLogo);
+        model.addAttribute("siteCompanyKorTitle", siteCompanyTitle);
+        model.addAttribute("isoTitle", isoTitle);
+
+        return "common/internalUserTermsOfUse";
+    }
+
+    @PostMapping("/internal-user-terms-of-use")
+    @Transactional
+    //TODO :: 작업 필요
+    public String internalUserTermsOfUseProc(){
+
+    }
+
+
     /**
      * 개인정보 활용동의
      * @param user
@@ -135,7 +182,7 @@ public class UserAgreementController {
             agreementPersonalInformation.setExternalCustomer(ExternalCustomer.builder().id(user.getExternalCustomerId()).build());
         }
 
-        model.addAttribute("agreeMaps", agreementPersonalInformationService.getAgreeMap());
+        //model.addAttribute("agreeMaps", agreementPersonalInformationService.getAgreeMap());
         model.addAttribute("agreementPersonalInformation", agreementPersonalInformation);
 
         //2021.03.16 - 이미지 로고 / 회사 이름 공통화
