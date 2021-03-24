@@ -70,7 +70,13 @@
                                                         <a href="/rf/${status.name()?lower_case}/download/${rfVer.id}?lang=eng" class="btn btn-default"><i class="fa fa-download"></i></a>
                                                     </#if>
 
-                                                    <button data-target="#rf-modal" data-toggle="modal" data-id="${rfVer.id}" data-lang="eng" class="btn btn-default"><i class="fa fa-search-plus"></i></button>
+                                                    <#if rfVer.rfEngOriginalFileName?last_index_of(".hwp") != -1 && rfVer.rfEngHwpPdfFileName?has_content == false>
+                                                        <button class="btn btn-danger" disabled="disabled"><i class="fa fa-search"></i></button>
+                                                    <#else>
+                                                        <button data-target="#rf-modal" data-toggle="modal" data-id="${rfVer.id}" data-lang="eng" class="btn btn-default"><i class="fa fa-search-plus"></i></button>
+                                                    </#if>
+
+
 
                                                 </div>
                                                 <div class="media-left"><i class="fa ${getExtIcon(rfVer.ext?default('')?lower_case)}"></i></div>
@@ -94,7 +100,9 @@
                                         <a href="/rf/${status.name()?lower_case}/download/${rfVer.id}?lang=kor" class="btn btn-default"><i class="fa fa-download"></i></a>
                                     </#if>
 
-                                    <#if  rfVer.rfKorHwpPdfFileName?has_content>
+                                    <#if rfVer.rfKorOriginalFileName?last_index_of(".hwp") != -1 && !rfVer.rfKorHwpPdfFileName?has_content == false>
+                                        <button class="btn btn-danger" disabled="disabled"><i class="fa fa-search"></i></button>
+                                    <#else>
                                         <button data-target="#rf-modal" data-toggle="modal" data-id="${rfVer.id}" data-lang="kor" class="btn btn-default"><i class="fa fa-search-plus"></i></button>
                                     </#if>
 
