@@ -176,11 +176,28 @@
                         <@spring.showErrors "" "color:red;"/>
                     </div>
                 </div>
+                <div id="engHwpPdf" class="form-group" style="display:none;">
+                    <label class="col-sm-3 control-label">View PDF File (ENG)</label>
+                    <div class="col-sm-9">
+                        <#assign accept = '.pdf'/>
+                        <@spring.formInput "documentVersion.uploadHwpEngPdfFile" "class='form-control' placeholder='RF Document File(ENG)' accept='${accept}'" "file"/>
+                        <small style="color:red;">해당 입력 창에 PDF 파일을 업로드 하지 않았을 경우, 한글 문서(hwp)에 대한 뷰어가 적용되지 않습니다.</small>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label class="col-sm-3 control-label">RF Document File(KOR)</label>
                     <div class="col-sm-9">
                         <@spring.formInput "documentVersion.uploadRfKorFile" "class='form-control' placeholder='RF Document File(KOR)' accept='${accept}'" "file"/>
                         <@spring.showErrors "" "color:red;"/>
+                    </div>
+                </div>
+                <div id="korHwpPdf" class="form-group" style="display:none;">
+                    <label class="col-sm-3 control-label">View PDF File (KOR)</label>
+                    <div class="col-sm-9">
+                        <#assign accept = '.pdf'/>
+                        <@spring.formInput "documentVersion.uploadHwpKorPdfFile" "class='form-control' placeholder='RF Document File(ENG)' accept='${accept}'" "file"/>
+                        <small style="color:red;">해당 입력 창에 PDF 파일을 업로드 하지 않았을 경우, 한글 문서(hwp)에 대한 뷰어가 적용되지 않습니다.</small>
                     </div>
                 </div>
             </#if>
@@ -237,31 +254,25 @@
             var $btn = $("#submitBtn").button('save');
             setTimeout(function() {
                 $btn.button('loading');
-                // setTimeout(function() {
-                //     $('#submitBtn').attr("disabled", "disabled");
-                // }, 250);
-
             }, 1500);
         });
 
 
         $("#uploadRfEngFile").change(function(e){
             if ($(this).val().indexOf('.hwp') > -1) {
-                bootbox.confirm("[한글 문서 확인] .hwp 파일은 Viewer가 제공되지 않습니다. 계속 하시겠습니까?", function (result) {
-                    if (result == false) {
-                        $("#uploadRfEngFile").val("");
-                    }
-                });
+                $("#engHwpPdf").css('display', '');
+            } else {
+                $("#engHwpPdf").css('display', 'none');
+                $("#uploadHwpEngPdfFile").val('');
             }
         });
 
         $("#uploadRfKorFile").change(function(e){
             if ($(this).val().indexOf('.hwp') > -1) {
-                bootbox.confirm("[한글 문서 확인] .hwp 파일은 Viewer가 제공되지 않습니다. 계속 하시겠습니까?", function (result) {
-                    if (result == false) {
-                        $("#uploadRfKorFile").val("");
-                    }
-                });
+                $("#korHwpPdf").css('display', '');
+            } else {
+                $("#korHwpPdf").css('display', 'none');
+                $("#uploadHwpKorPdfFile").val('');
             }
         });
 

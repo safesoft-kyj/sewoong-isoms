@@ -41,6 +41,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.WebUtils;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -151,7 +152,6 @@ public class AdminSOPController {
                 TreeMap<String, String> statusMap = new TreeMap<>();
                 statusMap.put(DocumentStatus.APPROVED.name(), DocumentStatus.APPROVED.getLabel());
                 statusMap.put(DocumentStatus.EFFECTIVE.name(), DocumentStatus.EFFECTIVE.getLabel());
-
                 model.addAttribute("statusMap", statusMap);
             } else if(action == SOPAction.edit) {
                 QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
@@ -188,6 +188,7 @@ public class AdminSOPController {
                        @PathVariable("stringStatus") String stringStatus, @PathVariable(value = "id", required = false) String id, @ModelAttribute("documentVersion") DocumentVersion documentVersion,
                        BindingResult bindingResult, SessionStatus sessionStatus,
                        @PathVariable(value = "action", required = false) SOPAction action,
+                       HttpServletRequest request,
                        RedirectAttributes attributes, Model model) {
 
         documentVersionValidator.validate(documentVersion, bindingResult);

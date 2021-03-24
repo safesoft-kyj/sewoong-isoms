@@ -32,8 +32,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -258,6 +261,13 @@ public class DocumentVersionService {
         //RF(KOR)
         if(!ObjectUtils.isEmpty(documentVersion.getUploadRfKorFile()) && !documentVersion.getUploadRfKorFile().isEmpty()) {
             String fileName = fileStorageService.storeFile(documentVersion.getUploadRfKorFile(), documentVersion.getId()+"_KOR");
+
+            //2021-03-24 YSH :: UploadHwpKorPdfFile이 있으면 같이 업로드
+            if(!ObjectUtils.isEmpty(documentVersion.getUploadHwpKorPdfFile()) && !documentVersion.getUploadHwpKorPdfFile().isEmpty()) {
+                String pdfFileName = fileStorageService.storeFile(documentVersion.getUploadHwpKorPdfFile(), documentVersion.getId() + "_KOR_PDF");
+                documentVersion.setRfKorHwpPdfFileName(pdfFileName);
+            }
+
             String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
 
             documentVersion.setRfKorFileName(fileName);
@@ -265,11 +275,19 @@ public class DocumentVersionService {
             documentVersion.setRfKorFileType(documentVersion.getUploadRfKorFile().getContentType());
             documentVersion.setRfKorFileSize(documentVersion.getUploadRfKorFile().getSize());
             documentVersion.setRfKorExt(ext);
+
         }
+
         //RF(ENG)
         if(!ObjectUtils.isEmpty(documentVersion.getUploadRfEngFile()) && !documentVersion.getUploadRfEngFile().isEmpty()) {
             String fileName = fileStorageService.storeFile(documentVersion.getUploadRfEngFile(), documentVersion.getId()+"_ENG");
             String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
+
+            //2021-03-24 YSH :: UploadHwpEngPdfFile이 있으면 같이 업로드
+            if(!ObjectUtils.isEmpty(documentVersion.getUploadHwpEngPdfFile()) && !documentVersion.getUploadHwpEngPdfFile().isEmpty()) {
+                String pdfFileName = fileStorageService.storeFile(documentVersion.getUploadHwpEngPdfFile(), documentVersion.getId() + "_ENG_PDF");
+                documentVersion.setRfEngHwpPdfFileName(pdfFileName);
+            }
 
             documentVersion.setRfEngFileName(fileName);
             documentVersion.setRfEngOriginalFileName(documentVersion.getUploadRfEngFile().getOriginalFilename());
