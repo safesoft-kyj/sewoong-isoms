@@ -66,6 +66,9 @@ public class AdminSOPController {
     @Value("${sop.prefix}")
     private String sopPrefix;
 
+    @Value("${form.prefix}")
+    private String formPrefix;
+
     @GetMapping("/management/{status}")
     public String management(@PathVariable("type") DocumentType type,
                              @PathVariable("status") String stringStatus,
@@ -176,8 +179,9 @@ public class AdminSOPController {
             model.addAttribute("languageMap", languageMap);
         }
 
-        //2021-03-17 YSH :: SOP Prefix 값 전달
+        //2021-03-17 YSH :: SOP/RF Prefix 값 전달
         model.addAttribute("sopPrefix", sopPrefix);
+        model.addAttribute("formPrefix", formPrefix);
 
         return "admin/sop/edit";
     }
@@ -197,8 +201,9 @@ public class AdminSOPController {
         if(bindingResult.hasErrors()) {
             log.debug("--- Document Version Validate ---\n{}", bindingResult.getAllErrors());
 
-            //2021-03-17 YSH :: SOP Prefix 값 전달
+            //2021-03-17 YSH :: SOP/RF Prefix 값 전달
             model.addAttribute("sopPrefix", sopPrefix);
+            model.addAttribute("formPrefix", formPrefix);
 
             return "admin/sop/edit";
         }

@@ -62,13 +62,13 @@
                 var prefix = $(this).val();
                 var documentNo = $("#document\\.documentNo").val();
 
-                $("#document\\.docId").val(prefix + "-RF" + documentNo);
+                $("#document\\.docId").val(prefix + "${formPrefix}" + documentNo);
             });
             $("#document\\.documentNo").keyup(function() {
                 var prefix = $("#document\\.sop\\.docId").val();
                 var documentNo = $(this).val();
 
-                $("#document\\.docId").val(prefix + "-RF" + documentNo);
+                $("#document\\.docId").val(prefix + "${formPrefix}" + documentNo);
             });
             </#if>
 
