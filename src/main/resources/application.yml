@@ -1,7 +1,6 @@
 server:
   port: 8051
 
-
 logging:
   level:
     root: INFO
@@ -96,13 +95,13 @@ mail:
 
 #Site별 설정.
 site:
-  code: "DKUH"
-  link: "https://www.dkuh.co.kr/"
-  iso-title: "ISO 14155"
-  company-title: "Dankook University Hospital"
-  company-kor-title: "단국대학교병원"
-  footer-msg: "Copyright (C) Dankook University Hospital. All Rights Reserved."
-  image-logo: "https://www.dkuh.co.kr/html_2016/images/common/logo.png"
+  code: "SafeSoft"
+  link: "http://www.safesoft.co.kr/"
+  iso-title: "ISO 9001"
+  company-title: "SafeSoft"
+  company-kor-title: "세이프소프트"
+  footer-msg: "Copyright© SafeSoft Co.,Ltd. All Rights Reserved."
+  image-logo: "http://www.safesoft.co.kr/wp-content/uploads/2020/04/%ED%9A%8C%EC%82%AC%EB%A1%9C%EA%B3%A0.jpg"
   login-image: "/static/img/signup-image.jpg"
 
   #세션 타이머(초 단위)
@@ -111,14 +110,14 @@ site:
   session-second: "00"
 
 meta:
-  description: "Dankook University Hospital ISO Management System"
-  keywords: "단국대학교,iso"
+  description: "SafeSoft ISO Management System"
+  keywords: "세이프소프트,iso"
 
 sop:
-  prefix: "DKUH-"
-  deviation-doc-id: "DKUH-SSP700"
-  agreement-personal-information-doc-id: "DKUH-SSP700-RF11"
-  disclosure-doc-id: "DKUH-SSP700-RF10"
+  prefix: "SS-"
+  deviation-doc-id: "SS-SSP700"
+  agreement-personal-information-doc-id: "SS-SSP700-RF11"
+  disclosure-doc-id: "SS-SSP700-RF10"
 
 form:
   prefix: "-RF"
