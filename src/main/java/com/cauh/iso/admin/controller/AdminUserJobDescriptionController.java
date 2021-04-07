@@ -47,6 +47,9 @@ public class AdminUserJobDescriptionController {
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qAccount.enabled.eq(true));
         builder.and(qAccount.userStatus.eq(UserStatus.ACTIVE));
+
+        //TODO 2021-04-07 HKH
+        builder.and(qAccount.username.ne("admin"));
         model.addAttribute("userJobDescriptions", userRepository.findAll(builder, pageable));
         return "admin/jobDescription/userJobDescriptions";
     }
