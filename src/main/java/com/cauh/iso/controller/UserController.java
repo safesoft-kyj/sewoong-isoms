@@ -3,6 +3,7 @@ package com.cauh.iso.controller;
 import com.cauh.common.entity.*;
 import com.cauh.common.entity.constant.RoleStatus;
 import com.cauh.common.entity.constant.UserStatus;
+import com.cauh.common.entity.constant.UserType;
 import com.cauh.common.repository.SignatureRepository;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.common.security.annotation.CurrentUser;
@@ -25,6 +26,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,6 +35,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
@@ -114,6 +118,10 @@ public class UserController {
         Account savedUser = userService.saveOrUpdate(user);
         log.debug("Save User : {}", savedUser);
         status.setComplete();
+
+        //TODO 2021-04-07 :: 현재 유저 정보 업데이트
+        currentUserComponent.updateCurrentUserList(); //접속중인 유저 정보에 대한 업데이트
+        updateAuthentication(savedUser); //현재 접속중인 유저 Session 정보 업데이트
 
         attributes.addFlashAttribute("message", "Profile 정보가 수정되었습니다.");
         return "redirect:/user/profile";
@@ -351,11 +359,37 @@ public class UserController {
         return resultMap;
     }
 
+    //TODO 2021-04-07 :: User Session 정보 업데이트.
     public void updateAuthentication(Account userDetails) {
-        Collection authorities = userDetails.getSopAuthorities();
+        List<GrantedAuthority> authorities = null;
+
+        if(userDetails.getUserType() == UserType.ADMIN) { //초기 ADMIN 계정
+            authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(UserType.ADMIN.name());
+            log.info("===> ADMIN : {}", authorities);
+
+        } else if (userDetails.getUserType() == UserType.USER) { // 내부 사용자 인 경우,
+            if (!ObjectUtils.isEmpty(userDetails.getUserJobDescriptions())) {
+                //Enabled Y / Manager Y 된 role이 있으면 ADMIN으로 적용, 아니면 USER로 적용
+                String managerAuthorities = userDetails.getUserJobDescriptions().stream()
+                        .filter(role -> role.getJobDescription().isEnabled() && role.getJobDescription().isManager())
+                        .map(role -> role.getJobDescription().getShortName()).collect(Collectors.joining(","));
+
+                if(!StringUtils.isEmpty(managerAuthorities)) {
+                    authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(UserType.ADMIN.name());
+                } else {
+                    authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(UserType.USER.name());
+                }
+            } else {
+                authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(UserType.USER.name());
+            }
+        } else if (userDetails.getUserType() == UserType.AUDITOR) {
+            authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(UserType.AUDITOR.name());
+        }
+
         Authentication authentication = new CustomUsernamePasswordAuthenticationToken(userDetails, null, authorities);
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
+
     }
 }
 
