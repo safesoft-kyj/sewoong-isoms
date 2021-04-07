@@ -48,8 +48,9 @@ public class AdminUserJobDescriptionController {
         builder.and(qAccount.enabled.eq(true));
         builder.and(qAccount.userStatus.eq(UserStatus.ACTIVE));
 
-        //TODO 2021-04-07 HKH
+        //TODO 2021-04-07 admin 계정 안나오게 수정
         builder.and(qAccount.username.ne("admin"));
+        
         model.addAttribute("userJobDescriptions", userRepository.findAll(builder, pageable));
         return "admin/jobDescription/userJobDescriptions";
     }
