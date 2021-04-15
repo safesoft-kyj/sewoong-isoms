@@ -57,16 +57,14 @@ public class InitializeDataRunner implements ApplicationRunner {
         log.info("springJpaDDLAuto => {}", springJpaDDLAuto);
         log.info("@Env : {}", activeProfile);
 
-        if("prod".equals(activeProfile) && !userService.findByUsername("admin").isPresent()) {
+        if(/*"prod".equals(activeProfile) && */!userService.findByUsername("admin").isPresent()) {
             //DEV 환경에서 시작 시, 초기 세팅
-            //Role savedRole = addRole(1L, "ADMIN", "관리자");
-//            JobDescription jobDescription = addJobDescription(1, "ADMIN", "관리자");
-//            log.info("JD : {}", jobDescription);
-
-            //Admin 유저 추가.
-              addUser(1, "admin", "admin", "관리자", "Administrator", true, null);
-//            UserJobDescription userJobDescription = addUserJobDescription(1, savedAccount, jobDescription);
-//            log.info("User JDs : {}", userJobDescription);
+            Role savedRole = addRole(1L, "ADMIN", "관리자");
+            JobDescription jobDescription = addJobDescription(1, "ADMIN", "관리자");
+            log.info("JD : {}", jobDescription);
+            Account savedAccount = addUser(1, "admin", "admin", "관리자", "Administrator", true, null);
+            UserJobDescription userJobDescription = addUserJobDescription(1, savedAccount, jobDescription);
+            log.info("User JDs : {}", userJobDescription);
         }
 
         //현재 유저 Update

@@ -180,7 +180,6 @@ public class MyTraining implements Serializable {
                 if(ObjectUtils.isEmpty(inDateOrJobAssignDate)) {
                     return endDate;
                 }
-
                 Date plusEndDate = DateUtils.addDay(inDateOrJobAssignDate, 57);
                 if (documentVersion.getEffectiveDate().compareTo(plusEndDate) <= 0 || documentVersion.getEffectiveDate().compareTo(inDateOrJobAssignDate) <= 0) {
                     log.info("Effective Date 가 입사일/직무배정일 + 57보다 이전인 경우");

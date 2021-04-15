@@ -40,7 +40,7 @@
                 <span  class="file-details">
                     <div class="media-block">
                         <div class="media-right">
-                            <a class="btn btn-default" href="#document-modal" data-toggle="modal" data-document-id="${sopVer.id}" data-total="${(sopVer.totalPage?has_content)?then(sopVer.totalPage, 0)}">
+                            <a class="btn btn-default" href="#document-modal" data-toggle="modal" data-backdrop="static" data-document-id="${sopVer.id}" data-total="${(sopVer.totalPage?has_content)?then(sopVer.totalPage, 0)}">
                                 <i class="fa fa-search-plus"></i>
                             </a>
                         </div>
@@ -245,7 +245,7 @@
             <!--Modal header-->
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
-                <h4 class="modal-title">RF Viewer</h4>
+                <h4 class="modal-title">${formName} Viewer</h4>
             </div>
 
             <!--Modal body-->

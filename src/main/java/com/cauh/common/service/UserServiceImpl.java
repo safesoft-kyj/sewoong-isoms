@@ -22,6 +22,8 @@ import com.cauh.iso.repository.ConfidentialityPledgeRepository;
 import com.cauh.iso.repository.NonDisclosureAgreementRepository;
 import com.cauh.iso.service.*;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -192,7 +194,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public Account signUpAccept(Account account, Account manager) {
         //가입 수락 - 가입 날짜 설정
-        account.setIndate(new Date());
+        //TODO 한경훈 추가 회원가입시 필수 입력 항목으로 빠짐
+        //account.setIndate(new Date());
         //가입 수락 - 계정 기한 설정
         LocalDate accountExpiredDate = LocalDate.of(9999, 12, 31);
         account.setAccountExpiredDate(Date.from(accountExpiredDate.atStartOfDay(ZoneId.systemDefault()).toInstant())); //9999-12-31 설정
@@ -455,28 +458,6 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-
-    protected void userDisabled(List<String> activeUsernames) {
-        log.debug("=> 비활성화 처리 할 계정 정보 확인 ***********");
-        List<String> usernames = userRepository.findAll()
-                .stream().map(user -> user.getUsername())
-                .collect(Collectors.toList());
-
-        usernames.removeAll(activeUsernames);
-
-        if(!ObjectUtils.isEmpty(usernames)) {
-            for(String username : usernames) {
-                log.info("=> @username : {} 비활성화.", username);
-                Account user = userRepository.findByUsername(username).get();
-                user.setEnabled(false);
-
-                userRepository.save(user);
-            }
-        } else {
-            log.info("<= 비활성화 할 계정이 존재하지 않습니다.");
-        }
-    }
-
     protected Date toDate(String empNo) {
         String s = empNo.replace("S", "20");
         return DateUtils.toDate(s.substring(0, s.length() - 2), "yyyyMMdd");
@@ -502,6 +483,7 @@ public class UserServiceImpl implements UserService {
         QAccount qAccount = QAccount.account;
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qAccount.userType.eq(UserType.USER));
+        builder.and(qAccount.userStatus.eq(UserStatus.ACTIVE));
 
         Iterable<Account> users = userRepository.findAll(builder, Sort.by(Sort.Direction.ASC, "deptName", "teamName"));
         Map<String, String> userAscMap = StreamSupport.stream(users.spliterator(), false)

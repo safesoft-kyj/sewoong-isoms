@@ -81,7 +81,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
         localeChangeInterceptor.setParamName("language"); // Query string parameter name
-        registry.addInterceptor(localeChangeInterceptor);        //외부사용자 전용 인터셉터
+        registry.addInterceptor(localeChangeInterceptor);
+
+        registry.addInterceptor(themeChangeInterceptor());
+
+        //외부사용자 전용 인터셉터
         registry.addInterceptor(externalCustomerCheckInterceptor())
                 .addPathPatterns("/**")
                 .excludePathPatterns("/static/**", "/login", "/signUp/**", "/logout", "/error", "/expired", "/invalidSession", "/api/**", "/favicon.ico", "/ajax/**",
@@ -100,10 +104,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/denied",
                         "/internal-user-terms-of-use",
                         "/user/signature");
-
-        registry.addInterceptor(themeChangeInterceptor());
-
-
     }
 
     @Bean

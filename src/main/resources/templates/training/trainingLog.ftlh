@@ -21,7 +21,6 @@
 
     <!--Tabs Content-->
     <div class="tab-content">
-
         <div class="tab-pane fade active in">
             <#if trainingLog.content?has_content>
             <div class="text-right">
@@ -37,7 +36,7 @@
                 <tbody>
                 <tr>
                     <th class="col-xs-2 bg-gray-light">Affiliation:</th>
-                    <td class="col-xs-4 text-primary">${siteCompanyTitle}</td>
+                    <td class="col-xs-4 text-primary">${siteCompanyTitle!''}</td>
                     <th class="col-xs-2 bg-gray-light">Department:</th>
                     <td class="col-xs-4 text-primary">${user.deptName!'N/A'}</td>
                 </tr>

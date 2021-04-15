@@ -50,7 +50,7 @@ public class AdminUserJobDescriptionController {
 
         //TODO 2021-04-07 admin 계정 안나오게 수정
         builder.and(qAccount.username.ne("admin"));
-        
+
         model.addAttribute("userJobDescriptions", userRepository.findAll(builder, pageable));
         return "admin/jobDescription/userJobDescriptions";
     }

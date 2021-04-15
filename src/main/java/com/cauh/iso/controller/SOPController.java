@@ -18,6 +18,7 @@ import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.tools.imageio.ImageIOUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -40,6 +41,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -67,6 +69,9 @@ public class SOPController {
 
     private final DocumentAccessLogService documentAccessLogService;
     private final DocumentVersionRepository documentVersionRepository;
+
+    @Value("${form.name}")
+    private String formName;
 
     public static <T> Predicate<T> distinctByKey(
             Function<? super T, ?> keyExtractor) {
@@ -153,6 +158,8 @@ public class SOPController {
         model.addAttribute("sopId", sopId);
         model.addAttribute("status", status);
         model.addAttribute("sopList", filteredList);
+
+        model.addAttribute("formName", formName);
         return "sop/list";
     }
 
@@ -172,9 +179,17 @@ public class SOPController {
             contentType = "application/octet-stream";
         }
 
+        String orgFileName = documentVersion.getOriginalFileName();
+        String browser = request.getHeader("User-Agent");
+        boolean isMs = browser.contains("MSIE") || browser.contains("Trident");
+        orgFileName = URLEncoder.encode(orgFileName).replaceAll("\\+", "%20");
+        String filenameRfc5987 = "UTF-8''" + orgFileName;
+
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + documentVersion.getOriginalFileName() + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + orgFileName + "\";" +
+                                (isMs ? "" : "filename*=\"" + filenameRfc5987 + "\";"))
                 .body(resource);
     }
     
@@ -204,9 +219,16 @@ public class SOPController {
             contentType = "application/octet-stream";
         }
 
+        String browser = request.getHeader("User-Agent");
+        boolean isMs = browser.contains("MSIE") || browser.contains("Trident");
+        orgFileName = URLEncoder.encode(orgFileName).replaceAll("\\+", "%20");
+        String filenameRfc5987 = "UTF-8''" + orgFileName;
+
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + orgFileName+ "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + orgFileName + "\";" +
+                                (isMs ? "" : "filename*=\"" + filenameRfc5987 + "\";"))
                 .body(resource);
     }
 

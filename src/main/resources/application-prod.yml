@@ -5,19 +5,19 @@ spring:
       enabled: false
   freemarker:
     cache: true
-#  mail:
-#    host: smtp.gmail.com
-#    port: 587
-#    protocol: smtp
-#    username: sano.noreply@gmail.com
-#    password: apfhd..6!
-#    default-encoding: UTF-8
-#    properties:
-#      mail:
-#        smtp:
-#          starttls:
-#            enable: true
-#          auth: true
+  #  mail:
+  #    host: smtp.gmail.com
+  #    port: 587
+  #    protocol: smtp
+  #    username: sano.noreply@gmail.com
+  #    password: apfhd..6!
+  #    default-encoding: UTF-8
+  #    properties:
+  #      mail:
+  #        smtp:
+  #          starttls:
+  #            enable: true
+  #          auth: true
   jpa:
     show-sql: false
     #    format-sql: true
@@ -51,20 +51,20 @@ spring:
     table: flyway_sop_schema_history
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    #url: jdbc:sqlserver://183.111.104.67:20170;DatabaseName=ss_isoms_dev
     url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=ss_isoms_dev
-#    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=cauh_dev
+    #url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=ss_isoms_qa_20210413
+    #    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=cauh_dev
     username: sa
     password: safe123!@#
 
 #logging.level.org.hibernate.SQL: TRACE
 #logging.level.org.hibernate.type.descriptor.sql:  INFO
 logging.level:
-#  root: debug
-#  org.springframework:
-#    web: warn
-#    security: info
-#    boot: info
+  #  root: debug
+  #  org.springframework:
+  #    web: warn
+  #    security: info
+  #    boot: info
   org.hibernate:
     SQL: info
     type:
@@ -73,8 +73,8 @@ logging.level:
 #  com.dtnsm: debug
 
 server:
-  domain: cauhiso.safesoft.co.kr
-  port: 9090
+  domain: isoqa.safesoft.co.kr
+  port: 9191
 
 file:
   upload-dir: C:\UploadFiles\iso

@@ -3,6 +3,7 @@ package com.cauh.iso.service;
 
 import com.cauh.common.entity.QAccount;
 import com.cauh.common.entity.Account;
+import com.cauh.common.entity.constant.UserStatus;
 import com.cauh.common.repository.UserRepository;
 import com.cauh.iso.domain.Mail;
 import com.querydsl.core.BooleanBuilder;
@@ -48,6 +49,9 @@ public class MailServiceImpl implements MailService {
     @Value("${mail.notice.address}")
     private String emailAddress;
 
+    @Value("${form.name}")
+    private String formName;
+
     private String EMAIL_PATH = "email/";
 
     public String processTemplate(String fileName, HashMap<String, Object> model, Locale locale) {
@@ -57,9 +61,12 @@ public class MailServiceImpl implements MailService {
             if (ObjectUtils.isEmpty(model)) {
                 model = new HashMap<>();
             }
+
+            //TODO 한경훈 공통분석
             model.put("domain", domain);
             model.put("siteCode", siteCode);
             model.put("footerMsg", footerMsg);
+            model.put("formName", formName);
 
             String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
 
@@ -104,6 +111,7 @@ public class MailServiceImpl implements MailService {
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qUser.receiveEmail.eq(true));
         builder.and(qUser.email.isNotNull());
+        builder.and(qUser.userStatus.eq(UserStatus.ACTIVE));
 
         Iterable<Account> iterable = userRepository.findAll(builder);
         return StreamSupport.stream(iterable.spliterator(), false)
