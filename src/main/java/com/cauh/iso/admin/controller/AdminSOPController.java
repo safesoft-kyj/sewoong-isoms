@@ -72,6 +72,12 @@ public class AdminSOPController {
     @Value("${form.name}")
     private String formName;
 
+    @Value("${sop.sop-no-size}")
+    private String sopNoSize;
+
+    @Value("${sop.sop-no-display}")
+    private String sopNoDisplay;
+
     @GetMapping("/management/{status}")
     public String management(@PathVariable("type") DocumentType type,
                              @PathVariable("status") String stringStatus,
@@ -185,6 +191,8 @@ public class AdminSOPController {
         }
 
         //2021-03-17 YSH :: SOP/RF Prefix 값 전달
+        model.addAttribute("sopNoDisplay", sopNoDisplay);
+        model.addAttribute("sopNoSize", sopNoSize);
         model.addAttribute("sopPrefix", sopPrefix);
         model.addAttribute("formPrefix", formPrefix);
         model.addAttribute("formName", formName);
@@ -207,6 +215,8 @@ public class AdminSOPController {
             log.debug("--- Document Version Validate ---\n{}", bindingResult.getAllErrors());
 
             //2021-03-17 YSH :: SOP/RF Prefix 값 전달
+            model.addAttribute("sopNoDisplay", sopNoDisplay);
+            model.addAttribute("sopNoSize", sopNoSize);
             model.addAttribute("sopPrefix", sopPrefix);
             model.addAttribute("formPrefix", formPrefix);
             model.addAttribute("formName", formName);

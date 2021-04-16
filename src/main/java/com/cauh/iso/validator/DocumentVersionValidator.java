@@ -28,8 +28,10 @@ import java.util.Optional;
 public class DocumentVersionValidator implements Validator {
     private final DocumentService documentService;
     private final DocumentVersionService documentVersionService;
-
     private final DocumentVersionRepository documentVersionRepository;
+
+    @org.springframework.beans.factory.annotation.Value("${sop.sop-no-size}")
+    private int sopNoSize;
 
     @Override
     public boolean supports(Class<?> aClass) {
@@ -56,7 +58,7 @@ public class DocumentVersionValidator implements Validator {
         if (StringUtils.isEmpty(documentVersion.getDocument().getDocumentNo())) {
             errors.rejectValue("document.documentNo", "message.required", "필수 입력 항목 입니다.");
         } else {
-            int maxLength = documentVersion.getDocument().getType() == DocumentType.SOP ? 3 : 2;
+            int maxLength = documentVersion.getDocument().getType() == DocumentType.SOP ? sopNoSize : 2;
             if(documentVersion.getDocument().getDocumentNo().length() != maxLength) {
                 errors.rejectValue("document.documentNo", "message.length", maxLength+"자리에 맞춰 입력해 주세요.");
             } else if(!NumberUtils.isNumberOnly(documentVersion.getDocument().getDocumentNo())) {

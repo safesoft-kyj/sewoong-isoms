@@ -118,7 +118,9 @@ sop:
   deviation-doc-id: "SS-SSP700"
   agreement-personal-information-doc-id: "SS-SSP700-RF11"
   disclosure-doc-id: "SS-SSP700-RF10"
-
+  sop-no-size: 2
+  sop-no-display: "00"
+  
 form:
   prefix: "-"
   name: "RF"

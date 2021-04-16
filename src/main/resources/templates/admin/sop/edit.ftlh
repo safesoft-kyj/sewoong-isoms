@@ -30,7 +30,8 @@
     </#if>
     <script>
         $(document).ready(function() {
-            $("#document\\.documentNo").mask('${(type == 'SOP')?then('000', '00')}', {placeholder:'${(type == 'SOP')?then('000', '00')}'});
+            $("#document\\.documentNo").mask('${(type == 'SOP')?then('${sopNoDisplay}', '00')}', {placeholder:'${(type == 'SOP')?then('${sopNoDisplay}', '00')}'});
+            <#--$("#document\\.documentNo").mask('${(type == 'SOP')?then('000', '00')}', {placeholder:'${(type == 'SOP')?then('000', '00')}'});-->
             <#if type == 'SOP'>
             $('#document\\.category\\.shortName').select2({
                 placeholder: "Select a Category"

@@ -172,8 +172,10 @@ public class AdminTrainingController {
 
 
         if(trainingPeriod.getNotification()) {
-            trainingPeriodService.refreshNotification(trainingPeriod);
+            DocumentVersion docver = documentVersionService.findById(trainingPeriod.getDocumentVersion().getId());
+            trainingPeriodService.refreshNotification(trainingPeriod, docver);
         }
+
 
         return "redirect:/admin/training/sop/refresh-training";
     }

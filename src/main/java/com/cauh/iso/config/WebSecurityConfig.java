@@ -26,6 +26,8 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,6 +122,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .expiredUrl("/login?sessionExpired");
 //                .sessionRegistry(sessionRegistry());
 
+//        CharacterEncodingFilter filter = new CharacterEncodingFilter();
+//        filter.setEncoding("UTF-8");
+//        filter.setForceEncoding(true);
+//        http.addFilterBefore(filter, CsrfFilter.class);
     }
 
     @Bean
@@ -256,5 +262,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //    public HttpSessionEventPublisher httpSessionEventPublisher() {
 //        return new HttpSessionEventPublisher();
 //    }
-
 }

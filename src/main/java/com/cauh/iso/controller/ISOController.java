@@ -46,6 +46,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -644,9 +645,17 @@ public class ISOController {
                 contentType = "application/octet-stream";
             }
 
+            String orgFileName = attachFile.getOriginalFileName();
+            String browser = request.getHeader("User-Agent");
+            boolean isMs = browser.contains("MSIE") || browser.contains("Trident");
+            orgFileName = URLEncoder.encode(orgFileName).replaceAll("\\+", "%20");
+            String filenameRfc5987 = "UTF-8''" + orgFileName;
+
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(contentType))
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + attachFile.getOriginalFileName() + "\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=\"" + orgFileName + "\";" +
+                                    (isMs ? "" : "filename*=\"" + filenameRfc5987 + "\";"))
                     .body(resource);
         } else {
             return ResponseEntity.of(Optional.empty());

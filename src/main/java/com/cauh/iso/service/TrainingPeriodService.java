@@ -71,12 +71,12 @@ public class TrainingPeriodService {
         trainingPeriodRepository.deleteById(id);
     }
 
-    public void refreshNotification(TrainingPeriod trainingPeriod) {
+    public void refreshNotification(TrainingPeriod trainingPeriod, DocumentVersion documentVersion) {
 
         //계정 Mail 전송 구간.
         HashMap<String, Object> model = new HashMap<>();
         model.put("title", "Refresh Training 등록 알림");
-        model.put("docVerInfo", trainingPeriod.getDocumentVersion().getDocInfo());
+        model.put("docVerInfo", documentVersion.getDocInfo());
         model.put("trainingPeriod", trainingPeriod.getStrTrainingDate("yyyy-MM-dd"));
         String title = "";
 

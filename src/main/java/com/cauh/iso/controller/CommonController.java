@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -162,9 +163,17 @@ public class CommonController {
                 contentType = "application/octet-stream";
             }
 
+            String orgFileName = attachFile.getOriginalFileName();
+            String browser = request.getHeader("User-Agent");
+            boolean isMs = browser.contains("MSIE") || browser.contains("Trident");
+            orgFileName = URLEncoder.encode(orgFileName).replaceAll("\\+", "%20");
+            String filenameRfc5987 = "UTF-8''" + orgFileName;
+
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(contentType))
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + attachFile.getOriginalFileName() + "\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=\"" + orgFileName + "\";" +
+                                    (isMs ? "" : "filename*=\"" + filenameRfc5987 + "\";"))
                     .body(resource);
         } else {
             return ResponseEntity.of(Optional.empty());
