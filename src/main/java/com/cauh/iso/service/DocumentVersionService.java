@@ -501,7 +501,8 @@ public class DocumentVersionService {
             log.debug("-> "+formName+" retirement 처리 완료");
         }
 
-        if(hasRetirementSOPs || hasRetirementRFs || hasRetirementSOPs || hasRetirementRFs) {
+        //TODO 20210419
+        if(hasRetirementSOPs || hasEffectiveRFs || hasRetirementSOPs || hasRetirementRFs) {
 //            if(!ObjectUtils.isEmpty(effectiveSOPs) || !ObjectUtils.isEmpty(effectiveRDs)) {
 //                sb.append(" Effective");
 //            }
@@ -521,6 +522,10 @@ public class DocumentVersionService {
             model.put("effectiveRFs", effectiveRFs);
             model.put("retirementSOPs", retirementSOPs);
             model.put("retirementRFs", retirementRFs);
+
+            //TODO 20210419
+            model.put("formName", formName);
+
 //            Mail mail = Mail.builder()
 //                    .to(new String[]{"jhseo@dtnsm.com"})
 //                    .subject(sb.toString())

@@ -33,7 +33,8 @@
                         <br/>
                     </#if>
                     <#if approval.sopRfRequestForm.newRDDevelopment == true && approval.sopRfRequestForm.rdDevelopmentDocs?has_content>
-                        <strong>[New RD Development]</strong><br/>
+                        <!-- TODO 20210419 -->
+                        <strong>[New ${formName} Development]</strong><br/>
                         <#list approval.sopRfRequestForm.rdDevelopmentDocs as rd>
                             - ${rd.docId}/${rd.title}/v${rd.version}<br/>
                         </#list>
@@ -47,7 +48,8 @@
                         <br/>
                     </#if>
                     <#if rdRevisionDocs?has_content>
-                        <strong>[RD Revision]</strong><br/>
+                        <!-- TODO 20210419 -->
+                        <strong>[${formName} Revision]</strong><br/>
                         <#list rdRevisionDocs as rd>
                             - ${rd.document.docId}/${rd.document.title}/v${rd.version}<br/>
                         </#list>
