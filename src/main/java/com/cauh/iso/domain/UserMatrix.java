@@ -27,7 +27,7 @@ import javax.persistence.IdClass;
         "on (a.document_version_id = b.document_version_id\n" +
         "\tand (\n" +
         "\t\t(b.type='SELF' and b.start_date<=GETDATE())\n" +
-        "\t\tor (b.type='RE_FRESH'  and b.start_date>=a.indate)\n" +
+        "\t\tor (b.type='REFRESH'  and b.start_date>=a.indate)\n" +
         "\t\tor (b.type='RE_TRAINING' and b.retraining_user_id=a.user_id)\n" +
         "\t)\n" +
         ") inner join s_document_version d\n" +

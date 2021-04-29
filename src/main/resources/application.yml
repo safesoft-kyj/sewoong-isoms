@@ -120,11 +120,16 @@ sop:
   disclosure-doc-id: "SS-SSP700-RF10"
   sop-no-size: 2
   sop-no-display: "00"
-  
+
+category:
+  suffix: ""
+
 form:
   prefix: "-"
   name: "RF"
-
+  sop-no-size: 2
+  sop-no-display: "00"
+  
 cert:
   header: "SAFESOFT-ISO 14155 GCP-"
 

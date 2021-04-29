@@ -25,17 +25,14 @@ public class UserEditValidator implements Validator {
     public void validate(Object target, Errors errors) {
         Account account = (Account) target;
 
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        String strBirthDate = df.format(account.getBirthDate());
-
-//        if(ObjectUtils.isEmpty(account.getPhone())){
-//            errors.rejectValue("phone", "message.phone.isEmpty", "연락처가 입력되지 않았습니다.");
-//        }else
-
         //TODO 2021-04-07 :: Validator 정보 수정 (연락처 제외)
-        if(ObjectUtils.isEmpty(strBirthDate)){
+        if(ObjectUtils.isEmpty(account.getBirthDate())){
             errors.rejectValue("birthDate", "message.birthDate.isEmpty", "생년월일이 입력되지 않았습니다.");
-        }else if(StringUtils.isEmpty(account.getEmail())){
+        }
+        else if(ObjectUtils.isEmpty(account.getIndate())){
+            errors.rejectValue("indate", "message.indate.isEmpty", "입사일이 입력되지 않았습니다.");
+        }
+        else if(StringUtils.isEmpty(account.getEmail())){
             errors.rejectValue("email", "message.email.isEmpty", "이메일이 입력되지 않았습니다.");
         }
     }

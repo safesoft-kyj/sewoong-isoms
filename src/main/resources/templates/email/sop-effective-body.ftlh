@@ -25,7 +25,8 @@
     </table>
 </#if>
 <#if effectiveRFs?has_content>
-    <h5>Effective Form Information</h5>
+    <!-- //TODO 20210419 -->
+    <h5>Effective ${formName} Information</h5>
     <table class="table table-bordered">
         <thead>
         <tr>
@@ -75,7 +76,8 @@
     </table>
 </#if>
 <#if retirementRFs?has_content>
-    <h5>Retirement RF Information</h5>
+    <!-- //TODO 20210419 -->
+    <h5>Retirement ${formName} Information</h5>
     <table class="table table-bordered">
         <thead>
         <tr>

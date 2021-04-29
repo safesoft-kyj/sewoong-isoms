@@ -1,7 +1,12 @@
 <#import "/spring.ftl" as spring />
 <html>
 <head>
-    <title>Admin > ${type.name()}</title>
+    <#if type == 'SOP'>
+        <title>Admin > ${type.name()}</title>
+    <#else>
+        <title>Admin > ${formName}</title>
+    </#if>
+
     <script src="/static/js/jquery.mask.min.js"></script>
     <link href="/static/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
     <script src="/static/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
@@ -30,7 +35,7 @@
     </#if>
     <script>
         $(document).ready(function() {
-            $("#document\\.documentNo").mask('${(type == 'SOP')?then('${sopNoDisplay}', '00')}', {placeholder:'${(type == 'SOP')?then('${sopNoDisplay}', '00')}'});
+            $("#document\\.documentNo").mask('${(type == 'SOP')?then('${sopNoDisplay}', '${formNoDisplay}')}', {placeholder:'${(type == 'SOP')?then('${sopNoDisplay}', '${formNoDisplay}')}'});
             <#--$("#document\\.documentNo").mask('${(type == 'SOP')?then('000', '00')}', {placeholder:'${(type == 'SOP')?then('000', '00')}'});-->
             <#if type == 'SOP'>
             $('#document\\.category\\.shortName').select2({
@@ -44,13 +49,13 @@
                 var categoryId = $(this).val();
                 var documentNo = $("#document\\.documentNo").val();
 
-                $("#document\\.docId").val("${sopPrefix}" + categoryId + documentNo);
+                $("#document\\.docId").val("${sopPrefix}" + categoryId + "${categorySuffix}" +documentNo);
             });
             $("#document\\.documentNo").keyup(function() {
                 var categoryId = $("#document\\.category\\.shortName").val();
                 var documentNo = $(this).val();
 
-                $("#document\\.docId").val("${sopPrefix}" + categoryId + documentNo);
+                $("#document\\.docId").val("${sopPrefix}" + categoryId + "${categorySuffix}" + documentNo);
             });
             <#else>
             $('#document\\.sop\\.docId').select2({
@@ -99,7 +104,11 @@
 
 <div class="panel">
     <div class="panel-heading">
-        <h3 class="panel-title">${type.name()}</h3>
+        <#if type == 'SOP'>
+            <h3 class="panel-title">${type.name()}</h3>
+        <#else>
+            <h3 class="panel-title">${formName}</h3>
+        </#if>
     </div>
     <form class="form-horizontal" method="post" enctype="multipart/form-data" id="documentForm">
         <@spring.formHiddenInput "documentVersion.id"/>

@@ -67,6 +67,7 @@
                         <tr>
                             <td style="text-align: center">
                                 <small>본 이메일의 발신자 주소는 발신전용으로 회신되지 않습니다.<br/>
+                                    <!-- TODO 20210419 -->
                                     ${footerMsg}
                                 </small></td>
                         </tr>
