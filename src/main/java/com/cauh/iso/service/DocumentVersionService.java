@@ -565,11 +565,12 @@ public class DocumentVersionService {
                 Notice savedSopNotice = noticeService.save(sopNotice, null);
                 log.info("=> SOP Current Index 공지 등록 : {}", savedSopNotice);
             }
+
             if(!ObjectUtils.isEmpty(effectiveRFs)) {
                 Iterable<DocumentVersion> iterable = findAll(getPredicate(DocumentType.RF, DocumentStatus.EFFECTIVE, null, null, null));
                 List<DocumentVersion> documentVersions = StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList());
                 model.clear();
-                model.put("current"+formName+"s", documentVersions);
+                model.put("currentRFs", documentVersions);
                 Notice sopNotice = Notice.builder()
                         .title("Current "+formName+" List("+ DateUtils.format(new Date(), "yyyy.MM.dd") +"일자)")
                         .content(mailService.processTemplate("rf-index-notice.ftlh", model, null))

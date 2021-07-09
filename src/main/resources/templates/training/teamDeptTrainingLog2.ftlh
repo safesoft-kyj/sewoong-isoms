@@ -99,7 +99,7 @@
                         <select name="userId" id="userList" class="form-control">
                             <option value=""${(pUserId == 0)?then('', ' selected')}>ALL</option>
                             <#list userList as user>
-                                <option value="${user.id}"${(pUserId != 0)?then((pUserId == user.id)?then(' selected', ''), '')}>${user.engName?has_content?then(user.engName, user.korName)}</option>
+                                <option value="${user.id}"${(pUserId != 0)?then((pUserId == user.id)?then(' selected', ''), '')}>${user.engName?has_content?then(user.engName, user.name)}</option>
                             </#list>
                         </select>
                         <#--                        </div>-->

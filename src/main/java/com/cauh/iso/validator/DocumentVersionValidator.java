@@ -12,6 +12,7 @@ import com.cauh.iso.service.DocumentVersionService;
 import com.cauh.iso.utils.NumberUtils;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
@@ -32,6 +33,9 @@ public class DocumentVersionValidator implements Validator {
 
     @org.springframework.beans.factory.annotation.Value("${sop.sop-no-size}")
     private int sopNoSize;
+
+    @org.springframework.beans.factory.annotation.Value("${form.sop-no-size}")
+    private int formNoSize;
 
     @Override
     public boolean supports(Class<?> aClass) {
@@ -58,7 +62,7 @@ public class DocumentVersionValidator implements Validator {
         if (StringUtils.isEmpty(documentVersion.getDocument().getDocumentNo())) {
             errors.rejectValue("document.documentNo", "message.required", "필수 입력 항목 입니다.");
         } else {
-            int maxLength = documentVersion.getDocument().getType() == DocumentType.SOP ? sopNoSize : 2;
+            int maxLength = documentVersion.getDocument().getType() == DocumentType.SOP ? sopNoSize : formNoSize;
             if(documentVersion.getDocument().getDocumentNo().length() != maxLength) {
                 errors.rejectValue("document.documentNo", "message.length", maxLength+"자리에 맞춰 입력해 주세요.");
             } else if(!NumberUtils.isNumberOnly(documentVersion.getDocument().getDocumentNo())) {

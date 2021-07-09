@@ -308,9 +308,9 @@ public class AdminSOPController {
     @Transactional
     @DeleteMapping("/management/{stringStatus}/{id}/remove")
     public String remove(@PathVariable("type") DocumentType type,
-                         @PathVariable("stringStatus") String stringStatus, @PathVariable(value = "id") String id,
-                         @CurrentUser Account user,
-                         RedirectAttributes attributes) {
+                       @PathVariable("stringStatus") String stringStatus, @PathVariable(value = "id") String id,
+                       @CurrentUser Account user,
+                       RedirectAttributes attributes) {
 
         log.info("@Document 삭제 요청 Doc Ver Id : {}, User : {}", id, user.getUsername());
         DocumentStatus status = DocumentStatus.valueOf(stringStatus.toUpperCase());
@@ -327,9 +327,9 @@ public class AdminSOPController {
     @Transactional
     @PutMapping("/management/{stringStatus}/{id}/approved")
     public String approved(@PathVariable("type") DocumentType type,
-                           @PathVariable("stringStatus") String stringStatus,
-                           @PathVariable(value = "id") String id,
-                           RedirectAttributes attributes) {
+                             @PathVariable("stringStatus") String stringStatus,
+                             @PathVariable(value = "id") String id,
+                             RedirectAttributes attributes) {
 
         DocumentVersion documentVersion = documentVersionService.approved(id);
         attributes.addFlashAttribute("message", documentVersion.getDocument().getDocId() +" " + documentVersion.getVersion() + " 이 Approved 처리 되었습니다.");
@@ -338,8 +338,8 @@ public class AdminSOPController {
 
     @GetMapping("/management/{stringStatus}/{docVerId}/quiz")
     public String quiz(@PathVariable("type") DocumentType type,
-                       @PathVariable("docVerId") String docVerId,
-                       Model model) {
+                             @PathVariable("docVerId") String docVerId,
+                             Model model) {
 
         model.addAttribute("type", type);
         DocumentVersion documentVersion = documentVersionService.findById(docVerId);
@@ -405,8 +405,8 @@ public class AdminSOPController {
 
     @GetMapping("/management/{stringStatus}/{docVerId}/quiz/upload")
     public String quizUpload(@PathVariable("type") DocumentType type,
-                             @PathVariable("docVerId") String docVerId,
-                             Model model) {
+                       @PathVariable("docVerId") String docVerId,
+                       Model model) {
 
 //        model.addAttribute("docVerId", docVerId);
         DocumentVersion documentVersion = documentVersionService.findById(docVerId);
@@ -418,10 +418,10 @@ public class AdminSOPController {
 
     @PutMapping("/management/{stringStatus}/{docVerId}/quiz")
     public String quizUploaded(@PathVariable("type") DocumentType type,
-                               @PathVariable("stringStatus") String stringStatus,
-                               @PathVariable("docVerId") String docVerId,
-                               @RequestParam("quizTemplate") MultipartFile multipartFile,
-                               Model model, RedirectAttributes attributes) {
+                       @PathVariable("stringStatus") String stringStatus,
+                       @PathVariable("docVerId") String docVerId,
+                       @RequestParam("quizTemplate") MultipartFile multipartFile,
+                       Model model, RedirectAttributes attributes) {
 
         model.addAttribute("docVerId", docVerId);
         model.addAttribute("type", type);
@@ -524,8 +524,8 @@ public class AdminSOPController {
 
     @GetMapping("/management/{stringStatus}/{docVerId}/quiz/test")
     public String quizTest(@PathVariable("type") DocumentType type,
-                           @PathVariable("docVerId") String docVerId,
-                           Model model) throws Exception {
+                       @PathVariable("docVerId") String docVerId,
+                       Model model) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         Quiz quiz = objectMapper.readValue(documentVersionService.findById(docVerId).getQuiz(), Quiz.class);
         Collections.shuffle(quiz.getQuizQuestions());

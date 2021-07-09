@@ -131,7 +131,8 @@
                             </td>
                             <td class="text-center">
                                 <@spring.formCheckbox "jobDescription.enabled" "checked"/>
-                                <@spring.showErrors "" "color:red;"/></td>
+                                <@spring.showErrors "" "color:red;"/>
+                            </td>
                             <td>
                                 <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-check"></i>
                                     저장

@@ -61,20 +61,14 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
+
+#  gmail 로그인  PW : sa12fe30
   mail:
     host: smtp.gmail.com
     port: 587
     protocol: smtp
     username: safesoft.dev@gmail.com
-    password: sa12fe30
-
-    #   중앙대학교 병원
-    #    host: smtp.office365.com
-    #    port: 587
-    #    protocol: smtp
-    #    username: ISOCAU@caumc.or.kr
-    #    password: ISO14155cau
-
+    password: pixkjqesqvpwympr
     default-encoding: UTF-8
     properties:
       mail:
@@ -114,19 +108,19 @@ meta:
   keywords: "세이프소프트,iso"
 
 sop:
-  prefix: "SS-"
-  deviation-doc-id: "SS-SSP700"
-  agreement-personal-information-doc-id: "SS-SSP700-RF11"
-  disclosure-doc-id: "SS-SSP700-RF10"
-  sop-no-size: 2
-  sop-no-display: "00"
+  prefix: ""
+  deviation-doc-id: "SSP-701-06"
+  agreement-personal-information-doc-id: "SSP-810-05"
+  disclosure-doc-id: "SSP-810-06"
+  sop-no-size: 3
+  sop-no-display: "000"
 
 category:
   suffix: ""
 
 form:
   prefix: "-"
-  name: "RF"
+  name: "Form"
   sop-no-size: 2
   sop-no-display: "00"
   

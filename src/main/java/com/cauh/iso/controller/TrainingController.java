@@ -105,6 +105,8 @@ public class TrainingController {
         model.addAttribute("trainingMatrix", sopTrainingMatrices);
         model.addAttribute("userJobDescriptions", user.getUserJobDescriptions());
 
+
+
         return "training/myTrainingMatrix";
     }
 

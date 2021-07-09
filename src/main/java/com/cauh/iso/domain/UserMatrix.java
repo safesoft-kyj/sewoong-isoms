@@ -33,7 +33,7 @@ import javax.persistence.IdClass;
         ") inner join s_document_version d\n" +
         "on a.document_version_id = d.id\n" +
         "and d.status in('APPROVED', 'EFFECTIVE')\n" +
-        "group by a.user_id, d.document_id, d.status")
+        "group by a.user_id, d.document_id, d.status, b.type")
 //@Subselect("select a.user_id, a.document_version_id, b.id training_period_id from(\n" +
 //        "\tselect b.id user_id, b.indate, a.document_version_id from(\n" +
 //        "\t\tselect distinct jd.username, m.document_version_id from(\n" +

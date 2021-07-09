@@ -357,7 +357,11 @@
                                             <tr>
                                                 <td class="text-center">${(userPageList.totalElements - (userPageList.size * userPageList.number)) - u?index}</td>
                                                 <td class="text-center">${u.deptName}</td>
-                                                <td class="text-center">${u.teamName}</td>
+                                                <#if u.teamName?has_content>
+                                                    <td class="text-center">${u.teamName}</td>
+                                                <#else>
+                                                    <td class="text-center"></td>
+                                                </#if>
                                                 <td class="text-center">${u.name}</td>
                                                 <td class="text-center">${u.createdDate?string('yyyy-MM-dd')}</td>
                                             </tr>

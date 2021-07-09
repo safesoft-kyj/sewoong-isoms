@@ -121,11 +121,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                })
                 .expiredUrl("/login?sessionExpired");
 //                .sessionRegistry(sessionRegistry());
-
-//        CharacterEncodingFilter filter = new CharacterEncodingFilter();
-//        filter.setEncoding("UTF-8");
-//        filter.setForceEncoding(true);
-//        http.addFilterBefore(filter, CsrfFilter.class);
     }
 
     @Bean
@@ -262,4 +257,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //    public HttpSessionEventPublisher httpSessionEventPublisher() {
 //        return new HttpSessionEventPublisher();
 //    }
+
 }

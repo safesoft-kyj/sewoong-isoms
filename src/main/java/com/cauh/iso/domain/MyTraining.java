@@ -115,11 +115,16 @@ public class MyTraining implements Serializable {
                 .stream()
                 .filter(t -> t.isTrainingAll()).findFirst();
 
+        //Training All
         if(optionalSOPTrainingMatrix.isPresent()) {
+            if(!ObjectUtils.isEmpty(jobAssignDate))            {
+                log.info("@jobAssignDate 반환 : {}", jobAssignDate);
+                return DateUtils.truncate(jobAssignDate);
+            }
+
             log.debug("<= 입사일을 기준으로 :: {}", inDate);
             return inDate;
         } else {
-
             if(!ObjectUtils.isEmpty(jobAssignDate)) {
                 log.info("@jobAssignDate 반환 : {}", jobAssignDate);
                 return DateUtils.truncate(jobAssignDate);

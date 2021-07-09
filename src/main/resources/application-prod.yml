@@ -51,9 +51,10 @@ spring:
     table: flyway_sop_schema_history
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=ss_isoms_dev
-    #url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=ss_isoms_qa_20210413
+#    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=ss_isoms_dev
+#    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=ss_isoms_qa_20210413
     #    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=cauh_dev
+    url: jdbc:sqlserver://183.111.104.67:20170;DatabaseName=safesoft_isoms_prod
     username: sa
     password: safe123!@#
 
@@ -73,20 +74,20 @@ logging.level:
 #  com.dtnsm: debug
 
 server:
-  domain: isoqa.safesoft.co.kr
-  port: 9191
+  domain: isoms.safesoft.co.kr
+  port: 9081
 
 file:
-  upload-dir: C:\UploadFiles\iso
-  training-log-upload-dir: C:\UploadFiles\iso\binder\
-  certification-upload-dir: C:\UploadFiles\iso\cert\
-  binder-dir: C:\UploadFiles\iso\binder\
+  upload-dir: D:\UploadFiles\isoss
+  training-log-upload-dir: D:\UploadFiles\isoss\binder\
+  certification-upload-dir: D:\UploadFiles\isoss\cert\
+  binder-dir: D:\UploadFiles\isoss\binder\
 
 gw:
   userTbl: gw.GWareNet10_Dtnc.dbo.tblUser_1
   deptTbl: gw.GWareNet10_Dtnc.dbo.tblDepart_1
 
 groupdocs:
-  license: C:\\Servers\\deploy\\GroupDocs.Total.Java.lic
+  license: D:\\Servers\\deploy\\GroupDocs.Total.Java.lic
 #  license: D:\\Servers\\deploy\\GroupDocs.Total.Java.lic
 

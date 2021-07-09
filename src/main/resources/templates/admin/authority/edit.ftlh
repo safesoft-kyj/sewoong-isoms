@@ -136,7 +136,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label" >email</label>
+                <label class="col-sm-3 control-label">email</label>
                 <div class="col-sm-9">
                     <@spring.formInput "account.email" "class='form-control'"/>
                     <@spring.showErrors "" "color:red;"/>

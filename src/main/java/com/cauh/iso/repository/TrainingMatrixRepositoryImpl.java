@@ -12,6 +12,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -214,6 +215,10 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
      * 필수 트레이닝 이며, Training을 완료한 경우는 제외하고 리스트를 가져온다.
      */
     private JPAQuery getMyMandatoryTrainingListJpaQuery(Department department, Integer userId, String docId, Account loginUser, BooleanBuilder docStatus, BooleanBuilder completeStatus) {
+        QUserJobDescription qUserJobDescription1 = new QUserJobDescription("userJobDescription1");
+        QUserJobDescription qUserJobDescription2 = new QUserJobDescription("userJobDescription1");
+        QTrainingMatrix qsopTrainingMatrix1 = new QTrainingMatrix("qTrainingMatrix1");
+
         QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
         QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
         QTrainingPeriod qTrainingPeriod = QTrainingPeriod.trainingPeriod;
@@ -250,10 +255,55 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
                 qTrainingLog,
                 qTrainingPeriod.startDate,
                 qTrainingPeriod.endDate,
-                ExpressionUtils.as(JPAExpressions.select(min(qUserJobDescription.assignDate))
-                        .from(qUserJobDescription)
-                        .where(qUserJobDescription.user.username.eq(qUser.username)
-                        .and(qUserJobDescription.status.eq(JobDescriptionStatus.APPROVED))), "assignDate")
+//                ExpressionUtils.as(JPAExpressions.select(min(qUserJobDescription.assignDate))
+//                        .from(qUserJobDescription)
+//                        .where(qUserJobDescription.user.username.eq(qUser.username)
+//                        .and(qUserJobDescription.status.eq(JobDescriptionStatus.APPROVED))), "assignDate")
+
+                ExpressionUtils.as
+                (
+                        JPAExpressions
+                        .select(
+                                new CaseBuilder()
+                                .when( min(qUserJobDescription1.assignDate).isNotNull())
+                                .then(min(qUserJobDescription1.assignDate))
+                                .otherwise(
+                                        JPAExpressions.select(min(qUserJobDescription.assignDate))
+                                        .from(qUserJobDescription)
+                                        .where(qUserJobDescription.user.username.eq(qUser.username)
+                                        .and(qUserJobDescription.status.eq(JobDescriptionStatus.APPROVED)))
+                                )
+                        )
+                        .from(qUserJobDescription1)
+                        .where(qUserJobDescription1.user.id.eq(qUser.id))
+                        .where
+                        (
+                                qUserJobDescription1.jobDescription.id.in
+                                (
+                                        JPAExpressions
+                                        .select(qsopTrainingMatrix1.jobDescription.id)
+                                        .from(qsopTrainingMatrix1)
+                                        .where(qsopTrainingMatrix1.documentVersion.id.eq(qDocumentVersion.id))
+                                        .where
+                                        (
+                                                qsopTrainingMatrix1.trainingAll.eq(true)
+                                                .or
+                                                (
+                                                        qsopTrainingMatrix1.jobDescription.id.in
+                                                        (
+                                                                JPAExpressions
+                                                                .select(qUserJobDescription2.jobDescription.id)
+                                                                .from(qUserJobDescription2)
+                                                                .where(qUserJobDescription2.user.id.eq(qUser.id))
+                                                                .where(qUserJobDescription2.status.eq(JobDescriptionStatus.APPROVED))
+                                                        )
+                                                )
+                                        )
+                                )
+                        )
+                , "assignDate")
+
+
         ))
                 .from(qUser)
                 .join(qUserMatrix)
@@ -281,6 +331,10 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
     }
 
     private JPAQuery getTrainingListJpaQuery(Department department, Integer userId, String docId, Account loginUser, BooleanBuilder docStatus, List<JobDescriptionStatus> statusList) {
+        QUserJobDescription qUserJobDescription1 = new QUserJobDescription("userJobDescription1");
+        QUserJobDescription qUserJobDescription2 = new QUserJobDescription("userJobDescription1");
+        QTrainingMatrix qsopTrainingMatrix1 = new QTrainingMatrix("qTrainingMatrix1");
+
         QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
         QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
         QTrainingPeriod qTrainingPeriod = QTrainingPeriod.trainingPeriod;
@@ -320,8 +374,50 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
                     qTrainingLog,
                     qTrainingPeriod.startDate,
                     qTrainingPeriod.endDate,
-                    ExpressionUtils.as(JPAExpressions.select(min(qUserJobDescription.assignDate))
-                    .from(qUserJobDescription).where(qUserJobDescription.user.username.eq(qUser.username).and(qUserJobDescription.status.eq(JobDescriptionStatus.APPROVED))), "assignDate")
+//                    ExpressionUtils.as(JPAExpressions.select(min(qUserJobDescription.assignDate))
+//                    .from(qUserJobDescription).where(qUserJobDescription.user.username.eq(qUser.username).and(qUserJobDescription.status.eq(JobDescriptionStatus.APPROVED))), "assignDate")
+                ExpressionUtils.as
+                        (
+                                JPAExpressions
+                                        .select(
+                                                new CaseBuilder()
+                                                        .when( min(qUserJobDescription1.assignDate).isNotNull())
+                                                        .then(min(qUserJobDescription1.assignDate))
+                                                        .otherwise(
+                                                                JPAExpressions.select(min(qUserJobDescription.assignDate))
+                                                                        .from(qUserJobDescription)
+                                                                        .where(qUserJobDescription.user.username.eq(qUser.username)
+                                                                                .and(qUserJobDescription.status.eq(JobDescriptionStatus.APPROVED)))
+                                                        )
+                                        )
+                                        .from(qUserJobDescription1)
+                                        .where(qUserJobDescription1.user.id.eq(qUser.id))
+                                        .where
+                                                (
+                                                        qUserJobDescription1.jobDescription.id.in
+                                                                (
+                                                                        JPAExpressions
+                                                                                .select(qsopTrainingMatrix1.jobDescription.id)
+                                                                                .from(qsopTrainingMatrix1)
+                                                                                .where(qsopTrainingMatrix1.documentVersion.id.eq(qDocumentVersion.id))
+                                                                                .where
+                                                                                        (
+                                                                                                qsopTrainingMatrix1.trainingAll.eq(true)
+                                                                                                        .or
+                                                                                                                (
+                                                                                                                        qsopTrainingMatrix1.jobDescription.id.in
+                                                                                                                                (
+                                                                                                                                        JPAExpressions
+                                                                                                                                                .select(qUserJobDescription2.jobDescription.id)
+                                                                                                                                                .from(qUserJobDescription2)
+                                                                                                                                                .where(qUserJobDescription2.user.id.eq(qUser.id))
+                                                                                                                                                .where(qUserJobDescription2.status.eq(JobDescriptionStatus.APPROVED))
+                                                                                                                                )
+                                                                                                                )
+                                                                                        )
+                                                                )
+                                                )
+                                , "assignDate")
                 ))
                 .from(qUser)
                 .leftJoin(qUserJobDescription).on(qUser.username.eq(qUserJobDescription.user.username).and(qUserJobDescription.status.in(statusList)))
@@ -395,6 +491,122 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
         }
     }
 
+    @Override
+    public Page<MyTraining> getCompletedTrainingList(Department department, Integer userId, String docId, Account user, Pageable pageable, BooleanBuilder docStatus, BooleanBuilder completeStatus) {
+        QUserJobDescription qUserJobDescription1 = new QUserJobDescription("userJobDescription1");
+        QUserJobDescription qUserJobDescription2 = new QUserJobDescription("userJobDescription1");
+        QTrainingMatrix qsopTrainingMatrix1 = new QTrainingMatrix("qTrainingMatrix1");
+
+        QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
+        QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
+        QDocument qDocument = QDocument.document;
+        QTrainingPeriod qTrainingPeriod = QTrainingPeriod.trainingPeriod;
+        QAccount qUser = QAccount.account;
+        QTrainingLog qTrainingLog = QTrainingLog.trainingLog;
+
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qUser.enabled.eq(true));
+        builder.and(qUser.indate.isNotNull());
+        builder.and(qUser.userType.eq(UserType.USER));
+        builder.and(qUser.userStatus.eq(UserStatus.ACTIVE));
+
+        if (!StringUtils.isEmpty(department)) {
+            builder.and(qUser.department.eq(department));
+        }
+        if(!ObjectUtils.isEmpty(userId)) {
+            builder.and(qUser.id.eq(userId));
+        }
+
+        if(!StringUtils.isEmpty(docId)) {
+            log.info("@DocId : {}", docId);
+            if(!docId.toUpperCase().startsWith(sopPrefix)) {
+                docId = sopPrefix + docId;
+            }
+            builder.and(qDocumentVersion.document.docId.like(docId.toUpperCase() + "%"));
+        }
+
+        JPAQuery<MyTraining> jpaQuery = queryFactory.select(Projections.constructor(MyTraining.class,
+                qUser,
+                qDocumentVersion.document,
+                qDocumentVersion,
+                qTrainingPeriod,
+                qTrainingLog,
+                qTrainingPeriod.startDate,
+                qTrainingPeriod.endDate,
+
+                ExpressionUtils.as
+                (
+                        JPAExpressions
+                        .select
+                        (
+                                new CaseBuilder()
+                                    .when( min(qUserJobDescription1.assignDate).isNotNull())
+                                        .then(min(qUserJobDescription1.assignDate))
+                                        .otherwise(
+                                                JPAExpressions.select(min(qUserJobDescription.assignDate))
+                                                        .from(qUserJobDescription)
+                                                        .where(qUserJobDescription.user.username.eq(qUser.username)
+                                                                .and(qUserJobDescription.status.eq(JobDescriptionStatus.APPROVED)))
+                                        )
+                        )
+                        .from(qUserJobDescription1)
+                        .where(qUserJobDescription1.user.id.eq(qUser.id))
+                        .where
+                        (
+                                qUserJobDescription1.jobDescription.id.in
+                                (
+                                        JPAExpressions
+                                        .select(qsopTrainingMatrix1.jobDescription.id)
+                                        .from(qsopTrainingMatrix1)
+                                        .where(qsopTrainingMatrix1.documentVersion.id.eq(qDocumentVersion.id))
+                                        .where
+                                        (
+                                                qsopTrainingMatrix1.trainingAll.eq(true)
+                                                .or
+                                                (
+                                                        qsopTrainingMatrix1.jobDescription.id.in
+                                                        (
+                                                                JPAExpressions
+                                                                .select(qUserJobDescription2.jobDescription.id)
+                                                                .from(qUserJobDescription2)
+                                                                .where(qUserJobDescription2.user.id.eq(qUser.id))
+                                                                .where(qUserJobDescription2.status.eq(JobDescriptionStatus.APPROVED))
+                                                        )
+                                                )
+                                        )
+                                )
+                        )
+                , "assignDate")
+
+        ))
+                .from(qUser)
+                .innerJoin(qTrainingLog)
+                .on(qTrainingLog.user.id.eq(qUser.id))
+                .innerJoin(qDocumentVersion)
+                .on(qDocumentVersion.id.eq(qTrainingLog.documentVersion.id))
+                .innerJoin(qDocument)
+                .on(qDocumentVersion.document.id.eq(qDocument.id))
+                .innerJoin(qTrainingPeriod)
+                .on(qTrainingPeriod.documentVersion.id.eq(qDocumentVersion.id)
+                        .and(qTrainingPeriod.id.eq(qTrainingLog.trainingPeriod.id))
+                        .and(docStatus))
+                .where(builder)
+                .where(completeStatus)
+                .orderBy(qDocumentVersion.effectiveDate.asc()) //2021-03-04 :: Effective가 임박한 순으로 조회 되어야 함.
+                //TODO 한경훈 Update 예정
+                .orderBy(qDocumentVersion.document.docId.desc()); //2021-03-29 DOCID 내림차순
+        try{
+            QueryResults<MyTraining> results = jpaQuery.offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .fetchResults();
+
+            return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+        }catch(Exception e) {
+            log.error("@Completed Training Log List 동작 중 에러 발생 : {}", e.getMessage());
+            return new PageImpl<>(new ArrayList<>(), pageable, 0);
+        }
+    }
+
     public List<MyTraining> getDownloadTrainingList(Department department, Integer userId, String docId, Account user, BooleanBuilder completeStatus) {
         BooleanBuilder docStatus = new BooleanBuilder();
         QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
@@ -406,6 +618,119 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
 //        docStatus.and(qDocumentVersion.status.notIn(DocumentStatus.REVISION, DocumentStatus.DEVELOPMENT));
 //
 //        JPAQuery<MyTraining> jpaQuery = getTrainingListJpaQuery(deptCode, teamCode, userId, docId, user, docStatus, statusList);
+
+        try{
+            return jpaQuery.fetch();
+        }catch(Exception e) {
+            log.error("@Training Log List 동작 중 에러 발생 : {}", e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public List<MyTraining> getCompletedDownloadTrainingList(Department department, Integer userId, String docId, Account user, BooleanBuilder completeStatus) {
+        QUserJobDescription qUserJobDescription1 = new QUserJobDescription("userJobDescription1");
+        QUserJobDescription qUserJobDescription2 = new QUserJobDescription("userJobDescription1");
+        QTrainingMatrix qsopTrainingMatrix1 = new QTrainingMatrix("qTrainingMatrix1");
+
+        QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
+        QDocumentVersion qDocumentVersion = QDocumentVersion.documentVersion;
+        QDocument qDocument = QDocument.document;
+        QTrainingPeriod qTrainingPeriod = QTrainingPeriod.trainingPeriod;
+        QAccount qUser = QAccount.account;
+        QTrainingLog qTrainingLog = QTrainingLog.trainingLog;
+
+        BooleanBuilder docStatus = new BooleanBuilder();
+        docStatus.and(qDocumentVersion.status.in(DocumentStatus.APPROVED, DocumentStatus.EFFECTIVE));
+
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qUser.enabled.eq(true));
+        builder.and(qUser.indate.isNotNull());
+        builder.and(qUser.userType.eq(UserType.USER));
+        builder.and(qUser.userStatus.eq(UserStatus.ACTIVE));
+
+        if (!StringUtils.isEmpty(department)) {
+            builder.and(qUser.department.eq(department));
+        }
+        if(!ObjectUtils.isEmpty(userId)) {
+            builder.and(qUser.id.eq(userId));
+        }
+
+        if(!StringUtils.isEmpty(docId)) {
+            log.info("@DocId : {}", docId);
+            if(!docId.toUpperCase().startsWith(sopPrefix)) {
+                docId = sopPrefix + docId;
+            }
+            builder.and(qDocumentVersion.document.docId.like(docId.toUpperCase() + "%"));
+        }
+
+        JPAQuery<MyTraining> jpaQuery = queryFactory.select(Projections.constructor(MyTraining.class,
+                qUser,
+                qDocumentVersion.document,
+                qDocumentVersion,
+                qTrainingPeriod,
+                qTrainingLog,
+                qTrainingPeriod.startDate,
+                qTrainingPeriod.endDate,
+                ExpressionUtils.as
+                (
+                        JPAExpressions
+                        .select(
+                                new CaseBuilder()
+                                .when( min(qUserJobDescription1.assignDate).isNotNull())
+                                .then(min(qUserJobDescription1.assignDate))
+                                .otherwise(
+                                        JPAExpressions.select(min(qUserJobDescription.assignDate))
+                                                .from(qUserJobDescription)
+                                                .where(qUserJobDescription.user.username.eq(qUser.username)
+                                                        .and(qUserJobDescription.status.eq(JobDescriptionStatus.APPROVED)))
+                                )
+                        )
+                        .from(qUserJobDescription1)
+                        .where(qUserJobDescription1.user.id.eq(qUser.id))
+                        .where
+                        (
+                                qUserJobDescription1.jobDescription.id.in
+                                (
+                                        JPAExpressions
+                                        .select(qsopTrainingMatrix1.jobDescription.id)
+                                        .from(qsopTrainingMatrix1)
+                                        .where(qsopTrainingMatrix1.documentVersion.id.eq(qDocumentVersion.id))
+                                        .where
+                                        (
+                                                qsopTrainingMatrix1.trainingAll.eq(true)
+                                                .or
+                                                (
+                                                        qsopTrainingMatrix1.jobDescription.id.in
+                                                        (
+                                                                JPAExpressions
+                                                                .select(qUserJobDescription2.jobDescription.id)
+                                                                .from(qUserJobDescription2)
+                                                                .where(qUserJobDescription2.user.id.eq(qUser.id))
+                                                                .where(qUserJobDescription2.status.eq(JobDescriptionStatus.APPROVED))
+                                                        )
+                                                )
+                                        )
+                                )
+                        )
+                , "assignDate")
+        ))
+                .from(qUser)
+                .innerJoin(qTrainingLog)
+                .on(qTrainingLog.user.id.eq(qUser.id))
+                .innerJoin(qDocumentVersion)
+                .on(qDocumentVersion.id.eq(qTrainingLog.documentVersion.id))
+                .innerJoin(qDocument)
+                .on(qDocumentVersion.document.id.eq(qDocument.id))
+                .innerJoin(qTrainingPeriod)
+                .on(qTrainingPeriod.documentVersion.id.eq(qDocumentVersion.id)
+                        .and(qTrainingPeriod.id.eq(qTrainingLog.trainingPeriod.id))
+                        .and(docStatus))
+                .where(builder)
+                .where(completeStatus)
+                .orderBy(qDocumentVersion.effectiveDate.asc()) //2021-03-04 :: Effective가 임박한 순으로 조회 되어야 함.
+                //TODO 한경훈 Update 예정
+                .orderBy(qDocumentVersion.document.docId.desc()); //2021-03-29 DOCID 내림차순
 
         try{
             return jpaQuery.fetch();
@@ -561,5 +886,20 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
             log.error("@ISO Training Log Download List 동작 중 에러 발생 : {}", e.getMessage());
             return new ArrayList<>();
         }
+    }
+
+
+    /**
+     *  JD 배정일 중이 가장 과거의 배정일을 가져온다.
+     */
+    public Date getMyPastestJDAssinedDate(Integer userId) {
+        QUserJobDescription qUserJobDescription = QUserJobDescription.userJobDescription;
+        List<Date> fetch = queryFactory.select(min(qUserJobDescription.assignDate))
+                .from(qUserJobDescription).where(qUserJobDescription.user.id.eq(userId).and(qUserJobDescription.status.eq(JobDescriptionStatus.APPROVED))).fetch();
+
+        if(fetch.size() > 0)
+            return fetch.get(0);
+
+        return null;
     }
 }

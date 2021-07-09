@@ -12,6 +12,8 @@ import com.cauh.iso.domain.constant.DocumentStatus;
 import com.cauh.iso.domain.constant.DocumentType;
 import com.cauh.iso.domain.constant.TrainingType;
 import com.cauh.iso.repository.*;
+import com.cauh.iso.service.DocumentVersionService;
+import com.cauh.iso.xdocreport.ISOTrainingCertificationService;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,19 +49,28 @@ public class InitializeDataRunner implements ApplicationRunner {
     private final TrainingMatrixRepository trainingMatrixRepository;
     private final TrainingPeriodRepository trainingPeriodRepository;
     private final JobDescriptionVersionRepository jobDescriptionVersionRepository;
-
+    private final DocumentVersionService documentVersionService;
     private final CurrentUserComponent currentUserComponent;
+    private final ISOTrainingCertificationRepository isoTrainingCertificationRepository;
 
+    private final ISOTrainingCertificationService isoTrainingCertificationService;
 //    private final DeptUserMapper deptUserMapper;
     private final UserService userService;
 
-    public void run(ApplicationArguments args) {
+    public void run(ApplicationArguments args) throws Exception {
         log.info("springJpaDDLAuto => {}", springJpaDDLAuto);
         log.info("@Env : {}", activeProfile);
+        
+//갱신하기
+//        Iterable<ISOTrainingCertification> all = isoTrainingCertificationRepository.findAll();
+//        for (ISOTrainingCertification isoTrainingCertification : all) {
+//            isoTrainingCertificationService.createCertificationFile(isoTrainingCertification);
+//        }
 
-        if(/*"prod".equals(activeProfile) && */!userService.findByUsername("admin").isPresent()) {
+
+        if("prod".equals(activeProfile) && !userService.findByUsername("admin").isPresent()) {
             //DEV 환경에서 시작 시, 초기 세팅
-            Role savedRole = addRole(1L, "ADMIN", "관리자");
+//            Role savedRole = addRole(1L, "ADMIN", "관리자");
             JobDescription jobDescription = addJobDescription(1, "ADMIN", "관리자");
             log.info("JD : {}", jobDescription);
             Account savedAccount = addUser(1, "admin", "admin", "관리자", "Administrator", true, null);

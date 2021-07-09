@@ -1,4 +1,3 @@
-
 spring:
   devtools:
     livereload:
@@ -40,7 +39,7 @@ spring:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     #    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=dtnsm_prod
     #    url: jdbc:sqlserver://220.117.192.209:20170;DatabaseName=cauh_dev_20201106
-    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=ss_dev_hoon20210413
+    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=ss_isoms_qa_20210413
     username: sa
     password: safe123!@#
 
@@ -53,10 +52,10 @@ server:
   port: 8081
 
 file:
-  upload-dir: C:\UploadFiles\iso
-  training-log-upload-dir: C:\UploadFiles\iso\binder\
-  certification-upload-dir: C:\UploadFiles\iso\cert\
-  binder-dir: C:\UploadFiles\iso\binder\
+  upload-dir: C:\UploadFiles\isoss
+  training-log-upload-dir: C:\UploadFiles\isoss\binder\
+  certification-upload-dir: C:\UploadFiles\isoss\cert\
+  binder-dir: C:\UploadFiles\isoss\binder\
 
 #gw:
 #  userTbl: gw.GWareNet10_Dtnc.dbo.tblUser_1

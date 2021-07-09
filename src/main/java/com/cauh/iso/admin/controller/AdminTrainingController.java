@@ -244,13 +244,13 @@ public class AdminTrainingController {
 
         if(StringUtils.isEmpty(isComplete)) {
             completeStatus.and(qTrainingLog.status.notIn(TrainingStatus.COMPLETED).or(qTrainingLog.status.isNull()));
+            model.addAttribute("trainingLog", trainingMatrixRepository.getTrainingList(department, userId, docId, null, pageable, docStatus, completeStatus));
         } else if(!StringUtils.isEmpty(isComplete) && isComplete.equals("completed")) {
             completeStatus.and(qTrainingLog.status.in(TrainingStatus.COMPLETED));
+            model.addAttribute("trainingLog", trainingMatrixRepository.getCompletedTrainingList(department, userId, docId, null, pageable, docStatus, completeStatus));
         } else {
             return "redirect:/admin/training/sop/trainingLog";
         }
-
-        model.addAttribute("trainingLog", trainingMatrixRepository.getTrainingList(department, userId, docId, null, pageable, docStatus, completeStatus));
         return "training/teamDeptTrainingLog2";
     }
 
@@ -286,19 +286,23 @@ public class AdminTrainingController {
         QTrainingLog qTrainingLog = QTrainingLog.trainingLog;
 
         TrainingLogType trainingLogType = null;
+        List<MyTraining> trainingList = null;
 
         if(StringUtils.isEmpty(isComplete)) {
             completeStatus.and(qTrainingLog.status.notIn(TrainingStatus.COMPLETED).or(qTrainingLog.status.isNull()));
             trainingLogType = TrainingLogType.SOP_ADMIN_NOT_COMPLETE_LOG;
+            trainingList = trainingMatrixRepository.getDownloadTrainingList(department, userId, docId, null, completeStatus);
         } else if(!StringUtils.isEmpty(isComplete) && isComplete.equals("completed")) {
             completeStatus.and(qTrainingLog.status.in(TrainingStatus.COMPLETED));
             trainingLogType = TrainingLogType.SOP_ADMIN_COMPLETE_LOG;
+
+            trainingList = trainingMatrixRepository.getCompletedDownloadTrainingList(department, userId, docId, null, completeStatus);
         } else {
             log.error("Training Export Error : 존재하지 않는 URI입니다 : {}", request.getRequestURI());
             return;
         }
 
-        List<MyTraining> trainingList = trainingMatrixRepository.getDownloadTrainingList(department, userId, docId, null, completeStatus);
+
         InputStream is = IndexReportService.class.getResourceAsStream("Admin_SOP_TrainingLog.xlsx");
 
         Context context = new Context();
