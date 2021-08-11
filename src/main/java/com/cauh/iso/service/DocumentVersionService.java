@@ -502,7 +502,7 @@ public class DocumentVersionService {
         }
 
         //TODO 20210419
-        if(hasRetirementSOPs || hasEffectiveRFs || hasRetirementSOPs || hasRetirementRFs) {
+        if(hasEffectiveSOPs || hasEffectiveRFs || hasRetirementSOPs || hasRetirementRFs) {
 //            if(!ObjectUtils.isEmpty(effectiveSOPs) || !ObjectUtils.isEmpty(effectiveRDs)) {
 //                sb.append(" Effective");
 //            }

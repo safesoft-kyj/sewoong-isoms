@@ -17,6 +17,10 @@
 <!--STYLESHEET-->
 <!--=================================================-->
 
+<!--Pace - Page Load Progress Par [OPTIONAL]-->
+<link href="/static/plugins/pace/themes/pace-theme-corner-indicator.css" rel="stylesheet">
+<script src="/static/plugins/pace/pace.min.js"></script>
+
 <!--Open Sans Font [ OPTIONAL ] -->
 <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;subset=latin" rel="stylesheet">
 

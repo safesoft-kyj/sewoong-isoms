@@ -61,7 +61,7 @@ public class InitializeDataRunner implements ApplicationRunner {
         log.info("springJpaDDLAuto => {}", springJpaDDLAuto);
         log.info("@Env : {}", activeProfile);
         
-//갱신하기
+//수료증 변경된 포맷으로 모두 변경하기 갱신하기
 //        Iterable<ISOTrainingCertification> all = isoTrainingCertificationRepository.findAll();
 //        for (ISOTrainingCertification isoTrainingCertification : all) {
 //            isoTrainingCertificationService.createCertificationFile(isoTrainingCertification);

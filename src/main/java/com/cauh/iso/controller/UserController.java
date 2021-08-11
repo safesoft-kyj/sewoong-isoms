@@ -380,6 +380,12 @@ public class UserController {
 
     //TODO 2021-04-07 :: User Session 정보 업데이트.
     public void updateAuthentication(Account userDetails) {
+
+        //TODO 2021-07-14 개인정보 활용 동의 및 비밀보장 서약 동의도 업데이트 해준다.
+        Account user = (Account)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        userDetails.setConfidentialityPledge(user.isConfidentialityPledge());
+        userDetails.setAgreementCollectUse(user.isAgreementCollectUse());
+
         List<GrantedAuthority> authorities = null;
 
         if(userDetails.getUserType() == UserType.ADMIN) { //초기 ADMIN 계정
