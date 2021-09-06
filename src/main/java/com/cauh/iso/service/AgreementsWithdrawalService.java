@@ -92,7 +92,7 @@ public class AgreementsWithdrawalService {
             }
 
             //TODO :: 회원탈퇴 절차 추가 필요.
-            if(ObjectUtils.isEmpty(user)) {
+            if(!ObjectUtils.isEmpty(user)) {
                 //회원탈퇴 절차 진행
                 user.setEnabled(false);
                 user.setAccountExpiredDate(new Date());

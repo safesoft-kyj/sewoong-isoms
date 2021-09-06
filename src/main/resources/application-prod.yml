@@ -52,9 +52,9 @@ spring:
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 #    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=ss_isoms_dev
-#    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=ss_isoms_qa_20210413
+    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=ss_isoms_qa_20210413
     #    url: jdbc:sqlserver://192.168.9.183:20170;DatabaseName=cauh_dev
-    url: jdbc:sqlserver://183.111.104.67:20170;DatabaseName=safesoft_isoms_prod
+#    url: jdbc:sqlserver://183.111.104.67:20170;DatabaseName=safesoft_isoms_prod
     username: sa
     password: safe123!@#
 
