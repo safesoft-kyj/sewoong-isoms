@@ -276,6 +276,7 @@ public class TrainingMatrixRepositoryImpl implements TrainingMatrixRepositoryCus
                         )
                         .from(qUserJobDescription1)
                         .where(qUserJobDescription1.user.id.eq(qUser.id))
+                        .where(qUserJobDescription1.status.eq(JobDescriptionStatus.APPROVED))
                         .where
                         (
                                 qUserJobDescription1.jobDescription.id.in
