@@ -46,7 +46,7 @@ public class UserAgreementController {
     private final ConfidentialityPledgeService confidentialityPledgeService;
     private final ExternalCustomerRepository externalCustomerRepository;
     private final SignatureRepository signatureRepository;
-
+//COMMIT TEST
     @Value("${sop.agreement-personal-information-doc-id}")
     private String apiDocId;
 
@@ -80,9 +80,9 @@ public class UserAgreementController {
     @ResponseBody
     public Map<String, String> auth(@RequestParam("accessCode") String accessCode, @CurrentUser Account user) {
         Map<String, String> result = new HashMap<>();
-        boolean eq = user.getAccessCode().equals(accessCode) || "010208".equals(accessCode);
-        result.put("result", eq ? "Y" : "N");
+        boolean eq = user.getAccessCode().equals(accessCode);
 
+        result.put("result", eq ? "Y" : "N");
         if(eq == true) {
             user.setActivate(true);
             updateAuthentication(user);
